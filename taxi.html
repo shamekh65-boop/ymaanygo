@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="nl">
 <head>
+  <link rel="icon" href="favicon.ico">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Taxi boeken</title>
+  <title>Taxi Boeken</title>
 
   <style>
     :root{
@@ -140,6 +141,9 @@
     .note{font-size:12px;color:var(--muted);margin-top:8px}
     .meta{font-size:13px;color:rgba(0,0,0,.70);margin-top:8px}
     .small{font-size:12px;color:rgba(0,0,0,.65)}
+
+    /* ✅ nieuw: conditionele velden verbergen/tonen */
+    .hidden{display:none !important;}
   </style>
 </head>
 
@@ -253,16 +257,32 @@
           <div>
             <label>&nbsp;</label>
             <div class="inline">
-              <input type="checkbox" id="retour">
+              <input type="checkbox" id="retour" onchange="toggleRetour()">
               <strong>Retour</strong>
             </div>
           </div>
         </div>
 
+        <!-- ✅ nieuw: Retour datum/tijd (alleen zichtbaar bij retour) -->
+        <div id="retourBlock" class="row hidden">
+          <div>
+            <label for="retour_tijd">Retour datum & tijd</label>
+            <input type="datetime-local" id="retour_tijd">
+          </div>
+        </div>
+
         <div class="row">
           <div class="inline">
-            <input type="checkbox" id="luchthaven">
+            <input type="checkbox" id="luchthaven" onchange="toggleLuchthaven()">
             <strong>Vanuit luchthaven?</strong>
+          </div>
+        </div>
+
+        <!-- ✅ nieuw: Vluchtnummer (alleen zichtbaar bij luchthaven) -->
+        <div id="flightBlock" class="row hidden">
+          <div>
+            <label for="vluchtnummer">Vluchtnummer</label>
+            <input type="text" id="vluchtnummer" placeholder="Bijv. KL1234">
           </div>
         </div>
 
@@ -300,12 +320,42 @@
       setTimeout(()=>document.getElementById('van_adres').focus(), 350);
     }
 
+    // ✅ nieuw: toggle retour veld
+    function toggleRetour(){
+      const on = document.getElementById('retour').checked;
+      const block = document.getElementById('retourBlock');
+      const field = document.getElementById('retour_tijd');
+      if(on){
+        block.classList.remove('hidden');
+        field.required = true;
+      }else{
+        block.classList.add('hidden');
+        field.required = false;
+        field.value = "";
+      }
+    }
+
+    // ✅ nieuw: toggle luchthaven veld
+    function toggleLuchthaven(){
+      const on = document.getElementById('luchthaven').checked;
+      const block = document.getElementById('flightBlock');
+      const field = document.getElementById('vluchtnummer');
+      if(on){
+        block.classList.remove('hidden');
+        field.required = true;
+      }else{
+        block.classList.add('hidden');
+        field.required = false;
+        field.value = "";
+      }
+    }
+
     // ====== PRIJSMODEL (غيّر الأرقام براحتك) ======
     const START_TARIEF = 5.00;      // بداية
-    const PER_KM = 2.20;            // لكل كيلومتر
+    const PER_KM = 2.00;            // لكل كيلومتر
     const COMFORT_TOESLAG = 7.00;   // زيادة للـ Comfort
-    const BUSJE_TOESLAG = 20.00;    // زيادة للباص
-    const EXTRA_REIZIGER = 3.00;    // لكل راكب بعد 4
+    const BUSJE_PER_KM = 2.50;      // ✅ busje per kilometer (i.p.v. €20 vast)
+    const EXTRA_REIZIGER = 0.00;    // لكل راكب بعد 4
 
     function fullPickup(){
       const a = document.getElementById('van_adres').value.trim();
@@ -349,6 +399,16 @@
         return;
       }
 
+      // ✅ enforce required fields when toggles are on
+      if(retour && !document.getElementById('retour_tijd').value){
+        alert("Vul Retour datum & tijd in.");
+        return;
+      }
+      if(document.getElementById('luchthaven').checked && !document.getElementById('vluchtnummer').value.trim()){
+        alert("Vul het vluchtnummer in.");
+        return;
+      }
+
       document.getElementById('prijs').innerText = "Bezig...";
       document.getElementById('afstand').innerText = "";
 
@@ -371,7 +431,9 @@
       let prijs = START_TARIEF + (r.km * PER_KM);
 
       if (voertuig === "Comfort") prijs += COMFORT_TOESLAG;
-      if (voertuig === "Busje") prijs += BUSJE_TOESLAG;
+
+      // ✅ busje per km
+      if (voertuig === "Busje") prijs += (r.km * BUSJE_PER_KM);
 
       if (reizigers > 4) prijs += (reizigers - 4) * EXTRA_REIZIGER;
       if (retour) prijs = prijs * 2;
@@ -394,11 +456,22 @@
       const retour = document.getElementById('retour').checked;
       const luchthaven = document.getElementById('luchthaven').checked;
 
+      const retourTijd = document.getElementById('retour_tijd').value;
+      const vluchtnummer = document.getElementById('vluchtnummer').value.trim();
+
       const prijs = document.getElementById('prijs').innerText || "Nog niet berekend";
       const afstandInfo = document.getElementById('afstand').innerText || "";
 
       if(!naam || !tel || !tijd || !van || !naar){
         alert("Vul alle verplichte velden in.");
+        return;
+      }
+      if(retour && !retourTijd){
+        alert("Vul Retour datum & tijd in.");
+        return;
+      }
+      if(luchthaven && !vluchtnummer){
+        alert("Vul het vluchtnummer in.");
         return;
       }
 
@@ -412,7 +485,9 @@ Ophaalmoment: ${tijd}
 Voertuig: ${voertuig}
 Aantal reizigers: ${reizigers}
 Retour: ${retour ? "Ja" : "Nee"}
+${retour ? "Retour datum & tijd: " + retourTijd : ""}
 Luchthaven: ${luchthaven ? "Ja" : "Nee"}
+${luchthaven ? "Vluchtnummer: " + vluchtnummer : ""}
 ${afstandInfo ? afstandInfo : ""}
 Prijs: ${prijs}`;
 
@@ -424,3 +499,4 @@ Prijs: ${prijs}`;
 
 </body>
 </html>
+ 
