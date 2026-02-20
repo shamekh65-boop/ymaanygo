@@ -1,28 +1,273 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <link rel="icon" href="favicon.ico">
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- SEO -->
   <title>YmaanyGo Taxi – Betrouwbare taxi service in Nederland</title>
-
   <meta name="description" content="YmaanyGo is een betrouwbare taxi service in Nederland. Taxi boeken snel en eenvoudig.">
-
   <meta name="robots" content="index, follow">
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+
+      --panel:rgba(255,255,255,.9);
+      --glass:rgba(255,255,255,.7);
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(
+        to bottom,
+        var(--bg-light) 0%,
+        var(--bg-mid) 60%,
+        var(--bg-dark) 100%
+      );
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 18px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(
+        to bottom,
+        rgba(245,248,246,.95),
+        rgba(210,232,220,.92)
+      );
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--text);
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      object-fit:contain;
+    }
+
+    .brand-name{
+      display:flex;
+      flex-direction:column;
+      gap:1px;
+    }
+    .brand-name strong{ font-size:15px; }
+    .brand-name span{ font-size:12.5px; color:var(--muted); }
+
+    nav{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      padding:8px 10px;
+      border-radius:12px;
+    }
+
+    nav a:hover{
+      background:rgba(46,204,113,.08);
+      color:var(--text);
+    }
+
+    .btn{
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:700;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      white-space:nowrap;
+      display:inline-block;
+    }
+
+    .hero{ padding:56px 0 70px; }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 14px 32px rgba(0,0,0,.08);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,44px);
+    }
+
+    .subtitle,
+    .hero-text{ color:var(--muted); }
+
+    .usp-item{
+      margin-top:12px;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(46,204,113,.08);
+      border:1px solid rgba(46,204,113,.25);
+    }
+
+    .usp-item h3{ margin:0 0 6px; font-size:16px; }
+    .usp-item p{ margin:0; font-size:14px; }
+
+    .cta-row{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn-ghost{
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      text-decoration:none;
+      color:var(--text);
+      background:#fff;
+      display:inline-block;
+    }
+
+    .side-title{ margin:0 0 10px; font-size:16px; }
+    .side-list{ padding-left:18px; color:var(--muted); }
+
+    @media (max-width:920px){
+      .hero-grid{ grid-template-columns:1fr; }
+      nav{ justify-content:flex-start; }
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <div class="wrap">
+      <div class="header-inner">
+        <a class="brand" href="#">
+          <img class="logo"
+               src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
+               alt="ymaanyGO">
+          <div class="brand-name">
+            <strong>ymaanyGO</strong>
+            <span>Taxi • Nederland • DE/BE luchthavens</span>
+          </div>
+        </a>
 
-<h1>YmaanyGo Taxi Service</h1>
+        <nav>
+          <a href="#voordelen"></a>
+          <a href="#info"></a>
+          <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
-<p>
-Welkom bij <strong>YmaanyGo</strong>, uw betrouwbare taxi service in Nederland.
-</p>
+  <main class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
 
-<p>
-<a href="taxi.html">Taxi boeken</a>
-</p>
+        <section class="card">
+          <h1>Slim, Betrouwbaar en Voordelig Taxi Vervoer</h1>
+          <p class="subtitle">
+            Met ymaanyGO reis je comfortabel van en naar iedere locatie in Nederland
+            en luchthavens in Duitsland en België.
+          </p>
 
+          <div id="voordelen">
+            <div class="usp-item">
+              <h3>Scherpe tarieven</h3>
+              <p>Tot 70% goedkoper dan de meterprijs. Vaste tarieven.</p>
+            </div>
+
+            <div class="usp-item">
+              <h3>Overal in Nederland</h3>
+              <p>Je reist van en naar iedere locatie in Nederland en vliegvelden in Duitsland en België.</p>
+            </div>
+
+            <div class="usp-item">
+              <h3>Betrouwbaar</h3>
+              <p>Wij houden ons aan de afspraak. De chauffeur staat op het afgesproken tijdstip voor je klaar.</p>
+            </div>
+          </div>
+
+          <p id="info" class="hero-text">
+            Via het online boekingsplatform van ymaanyGO boek je eenvoudig een taxi naar onder andere
+            luchthavens, zorginstellingen, zakelijke afspraken, festivals, hotels of een dagje uit.
+            Je hebt keuze uit standaard, luxe vervoer, elektrisch vervoer of een taxibus (t/m 8 personen). Je
+            reist altijd privé met een gecertificeerd taxibedrijf. Bagage is gratis, je kunt je rit wijzigen en tot 3 uur
+            voor vertrek kosteloos annuleren.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+            <a class="btn-ghost" href="https://ymaanygo.nl/taxi.html">Bekijk tarieven</a>
+          </div>
+        </section>
+
+        <aside class="card">
+          <p class="side-title"><strong>Snel boeken, zonder gedoe</strong></p>
+          <ul class="side-list">
+            <li>Vaste prijs vooraf</li>
+            <li>Privé-taxi met gecertificeerde chauffeurs</li>
+            <li>Gratis bagage</li>
+            <li>Gratis annuleren tot 3 uur voor vertrek</li>
+            <li>Keuze: standaard / luxe / elektrisch / taxibus</li>
+          </ul>
+        </aside>
+
+      </div>
+    </div>
+  </main>
 </body>
 </html>
-
