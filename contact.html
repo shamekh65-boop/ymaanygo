@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <title>Contact – ymaanyGo Taxi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Neem direct contact op met ymaanyGo Taxi. 24/7 bereikbaar via WhatsApp, telefoon en e-mail.">
+
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+      --panel:#ffffffee;
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width:900px;
+      margin:0 auto;
+      padding:24px 18px;
+    }
+
+    header{
+      background:rgba(245,248,246,.95);
+      border-bottom:1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+    }
+
+    .logo{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+    }
+
+    h1{
+      margin:20px 0 8px;
+      font-size:clamp(26px,4vw,38px);
+    }
+
+    p{ color:var(--muted); }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px;
+      margin-top:20px;
+      box-shadow:0 14px 30px rgba(0,0,0,.08);
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      margin-top:20px;
+    }
+
+    .btn{
+      display:block;
+      text-align:center;
+      padding:14px;
+      border-radius:16px;
+      font-weight:700;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+    }
+
+    .btn.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    .info{
+      margin-top:16px;
+      font-size:14px;
+    }
+
+    .info strong{ color:var(--text); }
+
+    footer{
+      margin-top:30px;
+      font-size:12.5px;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      padding-top:12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <img class="logo"
+           src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
+           alt="ymaanyGo">
+      ymaanyGo
+    </a>
+    <!-- Taxi boeken is NU groen -->
+    <a class="btn" href="/taxi.html">Taxi boeken</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Direct contact</h1>
+  <p>
+    <strong>Heb je een vraag of direct een taxi nodig?</strong>
+    De klantenservice van ymaanyGo staat 24/7 voor je klaar bij vragen, opmerkingen of klachten.
+  </p>
+
+  <section class="card">
+    <div class="actions">
+
+      <!-- WhatsApp -->
+      <a class="btn"
+         href="https://wa.me/31633337184?text=Hallo%20ymaanyGo,%20ik%20wil%20een%20taxi%20boeken.%0A%0AOphaaladres:%20%0ABestemming:%20%0ADatum%20&%20tijd:%20%0AAantal%20personen:"
+         target="_blank" rel="noopener">
+        WhatsApp – direct chatten
+      </a>
+
+      <!-- Call -->
+      <a class="btn secondary" href="tel:0633337184">
+        Bel direct: 0633337184
+      </a>
+
+      <!-- Email -->
+      <a class="btn secondary" href="mailto:Info@ymaanygo.nl">
+        E-mail: Info@ymaanygo.nl
+      </a>
+
+    </div>
+
+    <div class="info">
+      <p><strong>Beschikbaar:</strong> 24/7</p>
+      <p><strong>Adres:</strong><br>
+        Jan in 't Veltstraat 92<br>
+        1781 SL Den Helder
+      </p>
+      <p><strong>KvK-nummer:</strong> 92893724</p>
+      <p>Werkzaam door heel Nederland + DE / BE luchthavens</p>
+    </div>
+  </section>
+
+  <footer>
+    © ymaanyGo Taxi – Betrouwbaar vervoer • Gecertificeerde chauffeurs • Privacyvriendelijk
+  </footer>
+</main>
+
+</body>
+</html>
