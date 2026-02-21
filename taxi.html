@@ -31,7 +31,14 @@
     }
 
     *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);margin:0;color:var(--text)}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      margin:0;
+      color:var(--text);
+      /* ✅ buttons are no longer floating */
+      padding-bottom:0;
+    }
     a{color:inherit;text-decoration:none}
     .hidden{display:none !important}
 
@@ -97,7 +104,9 @@
     }
     .inline input{width:auto;height:auto;padding:0;border:0}
 
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+    /* ✅ old buttons row hidden (we use the styled buttons below, in-form) */
+    .actions{display:none !important;}
+
     .btn{padding:12px 14px;border-radius:14px;border:0;cursor:pointer;background:#111;color:#fff;font-weight:900;}
     .btn.secondary{background:#f2f2f2;color:#111;border:1px solid rgba(0,0,0,.12)}
     .price{font-size:18px;font-weight:900}
@@ -199,20 +208,9 @@
     .picker-search input{border:0 !important;outline:none !important;background:transparent !important;padding:0 !important;font-size:18px;width:100%;height:auto;}
     .picker-search .search-btn{width:38px;height:38px;border-radius:14px;border:0;background:#f2f2f2;cursor:pointer;display:grid;place-items:center;font-size:18px;}
 
-    /* ✅ map wrapper FIX (no white gap) */
-    .picker-map-wrap{
-      position:relative;
-      flex:1;
-      display:flex;
-      min-height:0;
-    }
-    #pickerMap{
-      width:100%;
-      height:100%;
-      min-height:0;
-    }
+    .picker-map-wrap{position:relative;flex:1;display:flex;min-height:0;}
+    #pickerMap{width:100%;height:100%;min-height:0;}
 
-    /* ✅ fixed pin */
     .center-pin{
       position:absolute;left:50%;top:50%;
       width:26px;height:44px;
@@ -242,6 +240,96 @@
     .confirm-btn:active{transform:translateY(1px)}
 
     .whatsapp-note{color:red;}
+
+    /* ✅ SAME GLASS BUTTON LOOK, BUT FIXED INSIDE FORM */
+    .floating-actions{
+      position:static;           /* ✅ was fixed */
+      left:auto; right:auto;
+      bottom:auto;
+      padding:0;
+      display:flex;
+      gap:12px;
+      z-index:auto;
+      margin-top:6px;           /* ✅ small spacing under checkbox */
+    }
+    .fab{
+      flex:1;
+      height:56px;
+      border-radius:28px;
+      font-size:17px;
+      font-weight:800;
+      border:0;
+      cursor:pointer;
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      box-shadow:
+        0 12px 24px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.35);
+    }
+    .fab.primary{
+      background:linear-gradient(180deg,#3bbf6b,#2f7d32);
+      color:#fff;
+    }
+    .fab.secondary{
+      background:rgba(255,255,255,.85);
+      color:#111;
+      border:1px solid rgba(0,0,0,.12);
+    }
+    .fab:active{transform:translateY(1px) scale(.98);}
+
+    /* ✅ Glass/Water alert modal (NO browser dialogs) */
+    .app-alert{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.18);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      z-index:99999;
+      display:flex; align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .app-alert.hidden{display:none !important;}
+    .app-alert-card{
+      width:min(520px, 100%);
+      border-radius:22px;
+      background:rgba(255,255,255,.78);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border:1px solid rgba(255,255,255,.55);
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.22),
+        0 10px 24px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      padding:16px;
+    }
+    .app-alert-head{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:10px;
+    }
+    .app-alert-title{font-weight:900; font-size:18px; color:rgba(0,0,0,.88);}
+    .app-alert-x{
+      width:42px; height:42px; border-radius:16px;
+      border:1px solid rgba(0,0,0,.08);
+      background:rgba(255,255,255,.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      cursor:pointer; font-size:20px; line-height:1;
+    }
+    .app-alert-msg{
+      font-size:15px; line-height:1.45;
+      color:rgba(0,0,0,.82);
+      padding:8px 2px 14px;
+      white-space:pre-line;
+    }
+    .app-alert-ok{
+      width:100%;
+      border:0; border-radius:18px;
+      padding:14px 16px;
+      background:#2f7d32; color:#fff;
+      font-weight:900; font-size:16px;
+      cursor:pointer;
+      box-shadow:0 10px 18px rgba(0,0,0,.12);
+    }
+    .app-alert-ok:active{transform:translateY(1px)}
   </style>
 </head>
 
@@ -290,7 +378,6 @@
             <div class="field">
               <span class="glass"></span>
 
-              <!-- ✅ autocomplete wrapper -->
               <div class="suggest-wrap">
                 <input id="from" type="text" placeholder="Ophaallocatie" autocomplete="off" required>
                 <div id="from-suggest" class="suggest-list hidden"></div>
@@ -300,7 +387,7 @@
             </div>
 
             <div class="side-buttons">
-              <button class="icon-square" type="button" title="Extra stop (later)" onclick="alert('Later: extra stop');">＋</button>
+              <button class="icon-square" type="button" title="Extra stop (later)" onclick="showAlert('Deze functie komt binnenkort.', 'Binnenkort');">＋</button>
             </div>
           </div>
 
@@ -310,7 +397,6 @@
             <div class="field">
               <span class="glass"></span>
 
-              <!-- ✅ autocomplete wrapper -->
               <div class="suggest-wrap">
                 <input id="to" type="text" placeholder="Bestemming" autocomplete="off" required>
                 <div id="to-suggest" class="suggest-list hidden"></div>
@@ -397,6 +483,12 @@
           </div>
         </div>
 
+        <!-- ✅ الأزرار ثابتة هنا تحت Vanuit luchthaven? -->
+        <div class="floating-actions" aria-label="Acties">
+          <button class="fab secondary" type="button" onclick="berekenPrijs()">Bereken mijn ritprijs</button>
+          <button class="fab primary" type="button" onclick="whatsappBoeking()">WhatsApp boeking</button>
+        </div>
+
         <div id="flightBlock" class="row hidden">
           <div>
             <label for="vluchtnummer">Vluchtnummer</label>
@@ -404,12 +496,14 @@
           </div>
         </div>
 
+        <!-- (actions hidden) -->
         <div class="actions">
           <button class="btn" type="button" onclick="berekenPrijs()">Bereken mijn ritprijs</button>
           <button class="btn secondary" type="button" onclick="whatsappBoeking()">WhatsApp boeking</button>
-          <span id="prijs" class="price"></span>
         </div>
 
+        <!-- ✅ ONLY ONE prijs element (fixed duplicate id bug) -->
+        <span id="prijs" class="price"></span>
         <div id="afstand" class="meta"></div>
 
         <div class="note whatsapp-note">
@@ -431,7 +525,6 @@
       </div>
     </div>
 
-    <!-- ✅ wrapper fix -->
     <div class="picker-map-wrap">
       <div id="pickerMap"></div>
       <div class="center-pin" aria-hidden="true"><span></span></div>
@@ -443,7 +536,40 @@
     </div>
   </div>
 
+  <!-- ✅ Custom Alert Modal -->
+  <div id="appAlert" class="app-alert hidden" role="dialog" aria-modal="true" aria-labelledby="appAlertTitle">
+    <div class="app-alert-card">
+      <div class="app-alert-head">
+        <div id="appAlertTitle" class="app-alert-title">Melding</div>
+        <button class="app-alert-x" type="button" onclick="hideAlert()">×</button>
+      </div>
+      <div id="appAlertMsg" class="app-alert-msg"></div>
+      <button class="app-alert-ok" type="button" onclick="hideAlert()">OK</button>
+    </div>
+  </div>
+
   <script>
+    // ✅ Replace alert() with in-app modal
+    function showAlert(msg, title = "Melding"){
+      const box = document.getElementById("appAlert");
+      document.getElementById("appAlertTitle").textContent = title;
+      document.getElementById("appAlertMsg").textContent = msg;
+      box.classList.remove("hidden");
+    }
+    function hideAlert(){
+      document.getElementById("appAlert").classList.add("hidden");
+    }
+    document.addEventListener("click", (e) => {
+      const box = document.getElementById("appAlert");
+      if(box && !box.classList.contains("hidden") && e.target === box) hideAlert();
+    });
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        const box = document.getElementById("appAlert");
+        if(box && !box.classList.contains("hidden")) hideAlert();
+      }
+    });
+
     // ===== MENU =====
     function openMenu(){
       document.getElementById('overlay').classList.add('open');
@@ -468,7 +594,6 @@
              "T" + pad2(d.getHours()) + ":" + pad2(d.getMinutes());
     }
 
-    // ✅ منع وقت ماضي (حارس منطقي)
     function parseLocalDateTime(v){
       if(!v) return null;
       const d = new Date(v);
@@ -490,7 +615,7 @@
       document.getElementById('retour_tijd').min = minVal;
     }
     setMinDateTimes();
-    window.addEventListener("focus", setMinDateTimes); // ✅ يحدث min عند الرجوع للصفحة
+    window.addEventListener("focus", setMinDateTimes);
 
     // ===== Toggles =====
     function toggleRetour(){
@@ -519,7 +644,7 @@
 
     // ===== Geocode / Reverse (Nominatim) =====
     const NOMINATIM_BASE = "https://nominatim.openstreetmap.org";
-    const NOMINATIM_EMAIL = ""; // optional
+    const NOMINATIM_EMAIL = "";
 
     async function geocode(q){
       const url = NOMINATIM_BASE + "/search?format=json&limit=1&countrycodes=nl&addressdetails=1" +
@@ -573,30 +698,38 @@
       const voertuig = document.getElementById('auto').value;
       const retour = document.getElementById('retour').checked;
 
-      // ✅ منع الحجز في الماضي (حتى لو min انكسر)
       const tijd = document.getElementById('tijd').value;
       if(isPastPickup(tijd, 15)){
-        alert("❌ لا يمكن الحجز في الماضي. اختر وقتًا بعد الآن بـ 15 دقيقة على الأقل.");
+        showAlert(
+          "Controleer de vertrektijd. Boeken in het verleden is niet mogelijk. Kies een tijdstip minimaal 15 minuten vanaf nu.",
+          "Ongeldige tijd"
+        );
         document.getElementById('prijs').innerText = "";
         document.getElementById('afstand').innerText = "";
         return;
       }
 
-      // ✅ retour لازم بعد الذهاب
       if(retour){
         const retourTijd = document.getElementById('retour_tijd').value;
         const td  = parseLocalDateTime(tijd);
         const rtd = parseLocalDateTime(retourTijd);
         if(!rtd || rtd.getTime() <= td.getTime()){
-          alert("❌ وقت الرجعة يجب أن يكون بعد وقت الذهاب.");
+          showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
           return;
         }
       }
 
-      if(!van || !naar){ alert("Vul Ophaallocatie en Bestemming in."); return; }
-      if(retour && !document.getElementById('retour_tijd').value){ alert("Vul Retour datum & tijd in."); return; }
+      if(!van || !naar){
+        showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
+        return;
+      }
+      if(retour && !document.getElementById('retour_tijd').value){
+        showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens");
+        return;
+      }
       if(document.getElementById('luchthaven').checked && !document.getElementById('vluchtnummer').value.trim()){
-        alert("Vul het vluchtnummer in."); return;
+        showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens");
+        return;
       }
 
       document.getElementById('prijs').innerText = "Bezig...";
@@ -605,13 +738,17 @@
       const A = await geocode(van);
       const B = await geocode(naar);
       if(!A || !B){
-        alert("❗ العنوان غير واضح. اضغط على الدبوس وحدّد المكان على الخريطة.");
+        showAlert("Het adres is onduidelijk. Plaats de pin handmatig op de kaart.", "Adres probleem");
         document.getElementById('prijs').innerText = "";
         return;
       }
 
       const r = await routeDistanceKm(A, B);
-      if(!r){ alert("Kon afstand niet berekenen."); document.getElementById('prijs').innerText = ""; return; }
+      if(!r){
+        showAlert("De afstand kon niet worden berekend. Probeer opnieuw.", "Route probleem");
+        document.getElementById('prijs').innerText = "";
+        return;
+      }
 
       const perKm = (voertuig === "Busje") ? PER_KM_BUSJE : PER_KM_STANDAARD;
 
@@ -650,26 +787,39 @@
       const prijs = document.getElementById('prijs').innerText || "Nog niet berekend";
       const afstandInfo = document.getElementById('afstand').innerText || "";
 
-      // ✅ منع الحجز في الماضي
       if(isPastPickup(tijd, 15)){
-        alert("❌ لا يمكن الحجز في الماضي. اختر وقتًا بعد الآن بـ 15 دقيقة على الأقل.");
+        showAlert(
+          "Controleer de vertrektijd. Boeken in het verleden is niet mogelijk. Kies een tijdstip minimaal 15 minuten vanaf nu.",
+          "Ongeldige tijd"
+        );
         return;
       }
 
-      // ✅ retour لازم بعد الذهاب
       if(retour){
         const td  = parseLocalDateTime(tijd);
         const rtd = parseLocalDateTime(retourTijd);
         if(!rtd || rtd.getTime() <= td.getTime()){
-          alert("❌ وقت الرجعة يجب أن يكون بعد وقت الذهاب.");
+          showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
           return;
         }
       }
 
-      if(!naam || !tel || !tijd || !van || !naar){ alert("Vul alle verplichte velden in."); return; }
-      if(!isValidNLPhone(tel)){ alert("Telefoonnummer is ongeldig. Gebruik 06xxxxxxxx of +31xxxxxxxxx."); return; }
-      if(retour && !retourTijd){ alert("Vul Retour datum & tijd in."); return; }
-      if(luchthaven && !vluchtnummer){ alert("Vul het vluchtnummer in."); return; }
+      if(!naam || !tel || !tijd || !van || !naar){
+        showAlert("Vul alle verplichte velden in.", "Ontbrekende gegevens");
+        return;
+      }
+      if(!isValidNLPhone(tel)){
+        showAlert("Telefoonnummer is ongeldig. Gebruik 06xxxxxxxx of +31xxxxxxxxx.", "Telefoonnummer");
+        return;
+      }
+      if(retour && !retourTijd){
+        showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens");
+        return;
+      }
+      if(luchthaven && !vluchtnummer){
+        showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens");
+        return;
+      }
 
       const bericht =
 `Nieuwe taxi boeking:
@@ -692,15 +842,21 @@ Prijs: ${prijs}`;
       window.open(url, "_blank");
     }
 
-    // ===== Open route: Apple on iPhone/Mac, Google others =====
+    // ===== Open route =====
     async function openRoute(){
       const origin = document.getElementById('from').value.trim();
       const destination = document.getElementById('to').value.trim();
-      if(!origin || !destination){ alert("Vul Ophaallocatie en Bestemming in."); return; }
+      if(!origin || !destination){
+        showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
+        return;
+      }
 
       const A = await geocode(origin);
       const B = await geocode(destination);
-      if(!A || !B){ alert("❗ العنوان غير واضح. اضغط على الدبوس وحدّد المكان على الخريطة."); return; }
+      if(!A || !B){
+        showAlert("Het adres is onduidelijk. Plaats de pin handmatig op de kaart.", "Adres probleem");
+        return;
+      }
 
       const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
 
@@ -724,21 +880,27 @@ Prijs: ${prijs}`;
 
     // ===== Set From = GPS =====
     async function useCurrentAsFrom(){
-      if(!navigator.geolocation){ alert("المتصفح لا يدعم تحديد الموقع."); return; }
+      if(!navigator.geolocation){
+        showAlert("Uw browser ondersteunt geen locatievoorzieningen.", "Locatie");
+        return;
+      }
 
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
         const addr = await reverseGeocode(lat, lon);
-        if(!addr){ alert("لم يتم التعرف على العنوان."); return; }
+        if(!addr){
+          showAlert("Het adres kon niet worden herkend.", "Adres probleem");
+          return;
+        }
         document.getElementById('from').value = addr;
       }, () => {
-        alert("لم يتم السماح بتحديد الموقع.");
+        showAlert("Locatietoegang is geweigerd.", "Locatie");
       });
     }
 
-    // ===== Autocomplete (Nominatim) =====
+    // ===== Autocomplete =====
     function debounce(fn, ms){
       let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), ms); };
     }
@@ -830,7 +992,6 @@ Prijs: ${prijs}`;
     // ===== Picker Logic =====
     let pickerMap = null;
     let activeFieldId = "from";
-    let currentAddressText = "—";
     let updating = false;
 
     function getPinLatLng(){
@@ -902,9 +1063,7 @@ Prijs: ${prijs}`;
       const p = getPinLatLng();
       const addr = await reverseGeocode(p.lat, p.lng);
 
-      currentAddressText = addr || "العنوان غير واضح — حرّك الخريطة";
-      document.getElementById('pickedAddress').textContent = currentAddressText;
-
+      document.getElementById('pickedAddress').textContent = addr || "Adres niet exact — verplaats de kaart.";
       updating = false;
     }
 
@@ -913,7 +1072,7 @@ Prijs: ${prijs}`;
       if(!q){ return; }
       const p = await geocode(q);
       if(!p){
-        alert("لم يتم العثور على العنوان. جرّب كتابة أو حرّك الخريطة.");
+        showAlert("Adres niet gevonden. Pas de invoer aan of verplaats de kaart.", "Adres probleem");
         return;
       }
       pickerMap.setView([p.lat, p.lon], 17);
@@ -927,7 +1086,7 @@ Prijs: ${prijs}`;
       const addr = await reverseGeocode(p.lat, p.lng);
 
       if(!addr){
-        alert("العنوان غير واضح. حرّك الخريطة قليلاً ثم حاول.");
+        showAlert("Adres onvoldoende nauwkeurig. Verplaats de kaart en probeer opnieuw.", "Adres probleem");
         return;
       }
       document.getElementById(activeFieldId).value = addr;
@@ -940,8 +1099,19 @@ Prijs: ${prijs}`;
         pickerSearch();
       }
     });
+    // ===== Auto switch & lock Busje if passengers > 4 =====
+document.getElementById('reizigers').addEventListener('change', function () {
+  const aantal = parseInt(this.value, 10);
+  const autoSelect = document.getElementById('auto');
 
-    // ✅ start autocomplete
+  if (aantal > 4) {
+    autoSelect.value = 'Busje';
+    autoSelect.disabled = true;
+  } else {
+    autoSelect.disabled = false;
+  }
+});
+
     bindAutocomplete("from");
     bindAutocomplete("to");
   </script>
