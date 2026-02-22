@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>ymaanyGO – Veiligheid & voorwaarden</title>
+  <meta name="description" content="Veiligheid, voorwaarden en privacy van ymaanyGO taxi in Nederland.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+
+      --panel:rgba(255,255,255,.92);
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(to bottom, var(--bg-light) 0%, var(--bg-mid) 60%, var(--bg-dark) 100%);
+      color:var(--text);
+      line-height:1.55;
+    }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--text);
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      object-fit:contain;
+    }
+
+    .brand-name{ display:flex; flex-direction:column; gap:1px; }
+    .brand-name strong{ font-size:15px; }
+    .brand-name span{ font-size:12.5px; color:var(--muted); }
+
+    nav{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      padding:8px 10px;
+      border-radius:12px;
+    }
+    nav a:hover{ background:rgba(46,204,113,.08); color:var(--text); }
+
+    .btn{
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:800;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      white-space:nowrap;
+      display:inline-block;
+    }
+
+    .btn-ghost{
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      text-decoration:none;
+      color:var(--text);
+      background:#fff;
+      display:inline-block;
+      font-weight:700;
+    }
+
+    main{ padding:34px 0 70px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 14px 32px rgba(0,0,0,.08);
+      text-align:left;
+    }
+
+    h1{ margin:0 0 8px; font-size:clamp(26px,3.6vw,38px); }
+    .subtitle{ margin:0; color:var(--muted); }
+
+    .section-title{
+      margin:22px 0 10px;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+
+    .muted{ color:var(--muted); }
+
+    /* ✅ Fix 1: bullets start netjes (geen rare inspringing) */
+    ul{
+      margin:10px 0 0;
+      padding-left:22px;           /* فقط مقدار بسيط */
+      list-style-position:outside; /* النقطة خارج النص */
+    }
+    li{
+      margin:8px 0;
+    }
+    li::marker{
+      color:rgba(20,90,60,.65);
+      font-size:1.05em;
+    }
+
+    .callout{
+      margin-top:10px;
+      padding:16px 16px;
+      border-radius:16px;
+      background:rgba(46,204,113,.08);
+      border:1px solid rgba(46,204,113,.25);
+    }
+    .callout strong{ font-weight:900; }
+
+    .divider{
+      margin:18px 0;
+      border:0;
+      border-top:1px solid rgba(0,0,0,.08);
+    }
+
+    .cta-bottom{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .small{
+      font-size:13.5px;
+      color:var(--muted);
+      margin-top:10px;
+    }
+
+    @media (max-width:920px){
+      nav{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="header-inner">
+        <a class="brand" href="https://ymaanygo.nl/">
+          <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico" alt="ymaanyGO">
+          <div class="brand-name">
+            <strong>ymaanyGO</strong>
+            <span>Taxi • Nederland • DE/BE luchthavens</span>
+          </div>
+        </a>
+
+        <nav>
+          <a href="#voorwaarden">Voorwaarden</a>
+          <a href="#privacy">Privacy</a>
+          <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="grid">
+
+        <section class="card" id="voorwaarden">
+          <h1>Veiligheid & voorwaarden</h1>
+          <p class="subtitle">Duidelijke afspraken die zowel passagier als chauffeur beschermen.</p>
+
+          <div class="section-title">1) Definities</div>
+          <ul>
+            <li><strong>Klant / passagier:</strong> de persoon die de rit boekt en/of meereist.</li>
+            <li><strong>Chauffeur:</strong> de uitvoerende bestuurder namens ymaanyGO.</li>
+            <li><strong>Rit:</strong> vervoer van ophaallocatie naar bestemming (eventuele stops alleen als vooraf afgesproken).</li>
+          </ul>
+
+          <div class="section-title">2) Boeking & bevestiging</div>
+          <ul>
+            <li>Een rit is definitief zodra de klant via WhatsApp (of schriftelijk) een bevestiging heeft ontvangen.</li>
+            <li>De klant is verantwoordelijk voor het aanleveren van correcte gegevens (naam, telefoon, ophaaltijd, adressen).</li>
+            <li>Bij onduidelijke adressen kan de chauffeur contact opnemen om het adres te verifiëren.</li>
+          </ul>
+
+          <div class="section-title">3) Vaste prijzen (Vast tarief)</div>
+          <div class="callout">
+            <strong>Vast = vast.</strong>
+            De klant betaalt de prijs die via WhatsApp is bevestigd.
+            De prijs verandert <strong>niet</strong> door verkeer/drukte of door een andere route van de chauffeur,
+            zolang de rit inhoudelijk hetzelfde blijft.
+          </div>
+
+          <div class="section-title">4) Wanneer mag de prijs wél veranderen?</div>
+          <!-- ✅ Fix 2: stijl hetzelfde als #3 -->
+          <div class="callout">
+            Alleen bij wijzigingen door de klant of extra tijd/werk buiten de afspraak.
+            In deze gevallen wordt een <strong>nieuwe prijs</strong> afgesproken via WhatsApp (of mondeling met directe bevestiging).
+            <ul>
+              <li><strong>Te laat</strong> op de afgesproken ophaaltijd (wachttijd buiten redelijke gratis marge).</li>
+              <li><strong>Bestemming wijzigen</strong> na bevestiging.</li>
+              <li><strong>Extra stop(s)</strong> toevoegen die niet vooraf waren afgesproken.</li>
+              <li><strong>Extra diensten</strong> op verzoek (bijv. extra wachttijd, omwegen op verzoek, uitzonderlijk veel bagage).</li>
+            </ul>
+          </div>
+
+          <div class="section-title">5) Wachttijd</div>
+          <ul>
+            <li>Een korte, redelijke wachttijd is inbegrepen (situatie-afhankelijk).</li>
+            <li>Bij langere wachttijd kan een meerprijs gelden; dit wordt vooraf (zoveel mogelijk) gecommuniceerd en bevestigd.</li>
+          </ul>
+
+          <div class="section-title">6) Annuleren & no-show</div>
+          <ul>
+            <li>Annuleren kan tot <strong>3 uur</strong> voor vertrek kosteloos, tenzij anders afgesproken.</li>
+            <li>Bij late annulering of no-show kunnen gemaakte kosten (bijv. aanrij- en wachttijd) in rekening worden gebracht.</li>
+          </ul>
+
+          <div class="section-title">7) Gedrag & veiligheid</div>
+          <ul>
+            <li>Respectvol gedrag is verplicht. Discriminatie, agressie, vandalisme of gevaarlijk gedrag wordt niet geaccepteerd.</li>
+            <li>De chauffeur mag de rit weigeren/stoppen bij onveilige situaties. Redelijke kosten tot dat moment kunnen worden doorberekend.</li>
+            <li>Alcohol/drugs: bij overlast of gevaar kan de rit worden beëindigd.</li>
+          </ul>
+
+          <div class="section-title">8) Kinderen, bagage en huisdieren</div>
+          <ul>
+            <li><strong>Kinderen:</strong> de klant zorgt voor een wettelijk vereist kinderzitje als dat nodig is.</li>
+            <li><strong>Bagage:</strong> normaal bagagevervoer is inbegrepen; uitzonderlijke hoeveelheden graag vooraf melden.</li>
+            <li><strong>Huisdieren:</strong> alleen in overleg (bij voorkeur in een reismand), tenzij het om een hulphond gaat (conform regels).</li>
+          </ul>
+
+          <div class="section-title">9) Overmacht & vertraging</div>
+          <ul>
+            <li>Vertraging door verkeer, weer, wegafsluitingen of incidenten kan voorkomen; we doen ons best om op tijd te rijden.</li>
+            <li>Bij overmacht kan er geen absolute garantie worden gegeven op aankomsttijd.</li>
+          </ul>
+
+          <div class="section-title">10) Betaling & schade</div>
+          <ul>
+            <li>Betaling volgens afspraak bij bevestiging.</li>
+            <li>Bij schade of vervuiling door de klant kunnen redelijke kosten worden doorberekend (met bewijs).</li>
+          </ul>
+
+          <hr class="divider">
+
+          <div class="section-title">Bedrijfsgegevens</div>
+          <ul>
+            <li><strong>KVK-nummer:</strong> 92893724</li>
+            <li><strong>BTW-identificatienummer:</strong> NL004984269B78</li>
+          </ul>
+
+          <p class="small muted">
+            Laatst bijgewerkt: <span id="lastUpdated">—</span>
+          </p>
+        </section>
+
+        <section class="card" id="privacy">
+          <div class="section-title" style="margin-top:0;">Privacy (kort & duidelijk)</div>
+          <ul>
+            <li>We gebruiken gegevens alleen om jouw rit te plannen en contact op te nemen (naam, telefoon, locaties, tijd).</li>
+            <li>We verkopen jouw gegevens niet.</li>
+            <li>WhatsApp-contact valt onder normale communicatie voor de uitvoering van de dienst.</li>
+            <li>Je kunt verzoeken om correctie/verwijdering van gegevens voor zover dit wettelijk is toegestaan.</li>
+          </ul>
+
+          <!-- ✅ Fix 3: knoppen onderaan de pagina (na privacy) -->
+          <div class="cta-bottom">
+            <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+            <a class="btn-ghost" href="https://ymaanygo.nl/">Terug naar home</a>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // simple last updated date
+    (function(){
+      const el = document.getElementById("lastUpdated");
+      if(!el) return;
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      el.textContent = dd + "-" + mm + "-" + yyyy;
+    })();
+  </script>
+</body>
+</html>
