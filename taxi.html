@@ -739,7 +739,7 @@
       const A = await geocode(van);
       const B = await geocode(naar);
       if(!A || !B){
-        showAlert("Het adres is onduidelijk. Plaats de pin handmatig op de kaart.", "Adres probleem");
+        showAlert("Het adres is onduidelijk. Plaats de pin 📍 handmatig op de kaart.", "Adres probleem");
         document.getElementById('prijs').innerText = "";
         return;
       }
@@ -1118,5 +1118,6 @@ document.getElementById('reizigers').addEventListener('change', function () {
   </script>
 </body>
 </html>
+
 
 
