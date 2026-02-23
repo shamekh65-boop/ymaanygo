@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Over ons – ymaanyGO Taxi</title>
+  <meta name="description" content="Leer ymaanyGO kennen. Persoonlijke taxiservice met aandacht voor elke rit.">
+  <meta name="robots" content="index, follow">
+
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+      --panel:rgba(255,255,255,.92);
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 18px;
+    }
+
+    /* ===== HEADER ===== */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(
+        to bottom,
+        rgba(245,248,246,.95),
+        rgba(210,232,220,.92)
+      );
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--text);
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      object-fit:contain;
+    }
+
+    .brand-name{
+      display:flex;
+      flex-direction:column;
+      gap:1px;
+    }
+    .brand-name strong{ font-size:15px; }
+    .brand-name span{ font-size:12.5px; color:var(--muted); }
+
+    nav{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn{
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:700;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      white-space:nowrap;
+      display:inline-block;
+    }
+
+    /* ===== CONTENT ===== */
+    main{ padding:40px 0 70px; }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:0 14px 32px rgba(0,0,0,.08);
+      margin-bottom:18px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,40px);
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:20px;
+    }
+
+    p{ margin:0 0 14px; color:var(--muted); }
+
+    .highlight{
+      background:rgba(46,204,113,.08);
+      border:1px solid rgba(46,204,113,.25);
+      border-radius:14px;
+      padding:14px;
+      margin-top:10px;
+    }
+
+    .values{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .value{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    /* ======================================================
+       toegevoegde stijlen voor nieuwe elementen
+       Waarom klanten voor ons kiezen – chips
+       ====================================================== */
+    .chip{
+      display:inline-block;
+      background: rgba(46, 204, 113, .1);     /* خلفية 10% */
+      border: 1px solid rgba(46, 204, 113, .3); /* حد 30% */
+      color: var(--text);                     /* #0b2e1f */
+      border-radius:999px;
+      padding:8px 12px;
+      margin:6px 8px 0 0;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .cta{
+      margin-top:22px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width:768px){
+      main{ padding:34px 0 60px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <img class="logo"
+             src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
+             alt="ymaanyGO">
+        <span class="brand-name">
+          <strong>ymaanyGO</strong>
+          <span>Taxi · Nederland · DE/BE luchthavens</span>
+        </span>
+      </a>
+
+      <nav>
+        <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section class="card">
+      <h1>Over ymaanyGO</h1>
+      <p>
+        Bij <strong>ymaanyGO</strong> geloven wij dat goed vervoer verder gaat dan
+        alleen van A naar B. Elke rit draait om vertrouwen, aandacht en duidelijke
+        communicatie.
+      </p>
+      <div class="highlight">
+        <strong>Persoonlijke service met aandacht voor elke rit.</strong>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Wie zijn wij</h2>
+      <p>
+        ymaanyGO is ontstaan vanuit de behoefte aan een taxiservice waar afspraken
+        worden nagekomen en klanten zich gehoord voelen.
+      </p>
+      <p>
+        Geen onduidelijkheid, maar menselijk contact en heldere afspraken.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Onze werkwijze</h2>
+      <p>
+        Je boekt online. Daarna ontvang je een <strong>persoonlijke bevestiging via WhatsApp</strong>
+        met de vaste prijs en alle ritdetails. Pas na jouw akkoord is de boeking definitief.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Waar wij voor staan</h2>
+      <div class="values">
+        <div class="value"><strong>Betrouwbaarheid</strong><p>Afspraak is afspraak.</p></div>
+        <div class="value"><strong>Respect</strong><p>Voor elke klant en elke rit.</p></div>
+        <div class="value"><strong>Duidelijkheid</strong><p>Geen verrassingen.</p></div>
+        <div class="value"><strong>Comfort</strong><p>Rustig en verzorgd vervoer.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <strong>Waarom klanten voor ons kiezen</strong><br><br>
+      <span class="chip">✔ Vaste prijs vooraf</span>
+      <span class="chip">✔ Privé vervoer</span>
+      <span class="chip">✔ Heldere afspraken</span>
+      <span class="chip">✔ Comfortabel & netjes</span>
+      <span class="chip">✔ NL + DE/BE luchthavens</span>
+    </section>
+
+    <section class="card">
+      <h2>Onze belofte</h2>
+      <p>
+        Met ymaanyGO kies je voor een taxiservice die verder kijkt dan alleen vervoer.
+        Wij zorgen dat jij met een gerust gevoel onderweg bent.
+      </p>
+      <div class="cta">
+        <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>
