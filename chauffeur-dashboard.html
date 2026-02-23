@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chauffeursdashboard – ymaanyGO</title>
+  <meta name="description" content="Dashboard voor chauffeurs van ymaanyGO.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+      --panel:rgba(255,255,255,.92);
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      background: linear-gradient(to bottom, var(--bg-light) 0%, var(--bg-mid) 60%, var(--bg-dark) 100%);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text); line-height:1.5; min-height:100vh; display:flex; flex-direction:column;
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; width:100%; }
+    header{
+      background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
+      backdrop-filter: blur(10px); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10;
+    }
+    .header-inner{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; }
+    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .logo{ width:42px; height:42px; border-radius:10px; background:#fff; padding:4px; border:1px solid var(--line); object-fit:contain; }
+    main{ flex:1; padding:34px 0; }
+    .dashboard-header{ margin-bottom:24px; }
+    .dashboard-header h1{ font-size:28px; margin-bottom:8px; }
+    .dashboard-header p{ color:var(--muted); font-size:16px; }
+    .dashboard-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px; }
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px; box-shadow:0 14px 28px rgba(0,0,0,.05); }
+    .card h2{ font-size:18px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .driver-info p{ margin:8px 0; font-size:15px; }
+    .driver-info strong{ font-weight:600; color:var(--text); }
+    .trip-list{ list-style:none; }
+    .trip-item{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
+    .trip-item:last-child{ border-bottom:none; }
+    .trip-date{ font-weight:600; font-size:14px; }
+    .trip-route{ font-size:14px; color:var(--muted); }
+    .trip-status{ background:rgba(46,204,113,.15); padding:4px 10px; border-radius:40px; font-size:12px; font-weight:600; color:var(--accent2); }
+    .logout-btn{ background:transparent; border:1.5px solid var(--accent2); color:var(--accent2); padding:10px 24px; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:8px; }
+    .logout-btn:hover{ background:var(--accent2); color:#fff; }
+    footer{ text-align:center; padding:18px 0; color:var(--muted); font-size:13px; border-top:1px solid var(--line); background:rgba(255,255,255,.20); }
+    footer a{ color:var(--accent2); text-decoration:none; }
+    footer a:hover{ text-decoration:underline; }
+    .error-box{ background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 20px; border-radius: var(--radius); text-align: center; margin: 50px auto; max-width: 500px; }
+    .error-box a{ color: var(--accent2); font-weight: bold; }
+    @media (max-width:480px){ .dashboard-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico" alt="ymaanyGO">
+        <strong>ymaanyGO</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" id="mainContent">
+    <!-- المحتوى سيتم تعبئته بواسطة JavaScript -->
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 ymaanyGO. <a href="/">Terug naar de website</a>
+  </div>
+</footer>
+
+<script>
+  (function() {
+    // ✅ تم التعديل هنا: اسم صفحة تسجيل الدخول الصحيح هو driver-login.html
+    const LOGIN_PAGE = 'driver-login.html';
+
+    const sessionUser = localStorage.getItem('ymaanygo_driver_session');
+    const storedUser = localStorage.getItem('ymaanygo_driver_user');
+    const mainDiv = document.getElementById('mainContent');
+
+    if (!sessionUser) {
+      // عرض رسالة خطأ مع رابط لتسجيل الدخول
+      mainDiv.innerHTML = `
+        <div class="error-box">
+          <h2>🔒 Niet ingelogd</h2>
+          <p>Je bent niet ingelogd. Klik <a href="${LOGIN_PAGE}">hier</a> om in te loggen.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // إذا كان هناك جلسة، نعرض المحتوى الطبيعي
+    mainDiv.innerHTML = `
+      <div class="dashboard-header">
+        <h1>Chauffeursdashboard</h1>
+        <p id="welcomeMessage">Welkom, <span id="driverNameSpan">${storedUser || sessionUser}</span></p>
+      </div>
+      <div class="dashboard-grid">
+        <div class="card">
+          <h2>👤 Jouw gegevens</h2>
+          <div class="driver-info">
+            <p><strong>Naam:</strong> <span id="driverName">${storedUser || sessionUser}</span></p>
+            <p><strong>Status:</strong> <span style="color:var(--accent2);">Beschikbaar</span></p>
+            <p><strong>Voertuig:</strong> Tesla Model 3 (NL-2025)</p>
+          </div>
+        </div>
+        <div class="card">
+          <h2>📋 Ritten vandaag</h2>
+          <ul class="trip-list" id="tripList"></ul>
+        </div>
+        <div class="card">
+          <h2>🔔 Meldingen</h2>
+          <p style="margin-bottom:12px;">Geen nieuwe meldingen.</p>
+          <button class="logout-btn" id="logoutBtn">⇢ Uitloggen</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:10px;">
+        <h2>📅 Laatste 5 ritten</h2>
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--line);">
+              <th style="padding:8px 4px;">Datum</th>
+              <th style="padding:8px 4px;">Van</th>
+              <th style="padding:8px 4px;">Naar</th>
+              <th style="padding:8px 4px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="recentTripsTable"></tbody>
+        </table>
+      </div>
+    `;
+
+    // بيانات الرحلات (نفسها)
+    const tripsToday = [
+      { time: '08:30', from: 'Amsterdam Centraal', to: 'Schiphol', status: 'Voltooid' },
+      { time: '11:15', from: 'Utrecht', to: 'Rotterdam Centraal', status: 'Voltooid' },
+      { time: '14:45', from: 'Den Haag', to: 'Leiden', status: 'Gepland' },
+    ];
+
+    const recentTrips = [
+      { date: '2026-02-22', from: 'Amsterdam', to: 'Schiphol', status: 'Voltooid' },
+      { date: '2026-02-21', from: 'Rotterdam', to: 'Den Haag', status: 'Voltooid' },
+      { date: '2026-02-20', from: 'Utrecht', to: 'Eindhoven', status: 'Voltooid' },
+      { date: '2026-02-19', from: 'Leiden', to: 'Amsterdam', status: 'Geannuleerd' },
+      { date: '2026-02-18', from: 'Schiphol', to: 'Den Haag', status: 'Voltooid' },
+    ];
+
+    const tripList = document.getElementById('tripList');
+    if (tripList) {
+      tripsToday.forEach(trip => {
+        const li = document.createElement('li');
+        li.className = 'trip-item';
+        li.innerHTML = `
+          <div>
+            <div class="trip-date">${trip.time}</div>
+            <div class="trip-route">${trip.from} → ${trip.to}</div>
+          </div>
+          <span class="trip-status">${trip.status}</span>
+        `;
+        tripList.appendChild(li);
+      });
+    }
+
+    const tableBody = document.getElementById('recentTripsTable');
+    if (tableBody) {
+      recentTrips.forEach(trip => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid var(--line)';
+        row.innerHTML = `
+          <td style="padding:10px 4px;">${trip.date}</td>
+          <td style="padding:10px 4px;">${trip.from}</td>
+          <td style="padding:10px 4px;">${trip.to}</td>
+          <td style="padding:10px 4px;"><span class="trip-status">${trip.status}</span></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      localStorage.removeItem('ymaanygo_driver_session');
+      window.location.href = LOGIN_PAGE;
+    });
+  })();
+</script>
+</body>
+</html>
