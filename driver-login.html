@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
@@ -7,6 +7,7 @@
   <title>Inloggen chauffeurs – ymaanyGO</title>
   <meta name="description" content="Inlogpagina voor chauffeurs van ymaanyGO.">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#2ecc71">
 
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
 
@@ -24,19 +25,10 @@
       --radius:18px;
     }
 
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
 
     body{
-      background: linear-gradient(
-        to bottom,
-        var(--bg-light) 0%,
-        var(--bg-mid) 60%,
-        var(--bg-dark) 100%
-      );
+      background: linear-gradient(to bottom,var(--bg-light) 0%,var(--bg-mid) 60%,var(--bg-dark) 100%);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
       line-height:1.5;
@@ -45,20 +37,10 @@
       flex-direction:column;
     }
 
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 18px;
-      width:100%;
-    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; width:100%; }
 
-    /* ----- NIEUWE HEADER STIJLEN (afkomstig van de hoofdpagina) ----- */
     header{
-      background: linear-gradient(
-        to bottom,
-        rgba(245,248,246,.95),
-        rgba(210,232,220,.92)
-      );
+      background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
       backdrop-filter: blur(10px);
       border-bottom:1px solid var(--line);
       position:sticky;
@@ -92,33 +74,11 @@
       object-fit:contain;
     }
 
-    .brand-name{
-      display:flex;
-      flex-direction:column;
-      gap:1px;
-    }
+    .brand-name{ display:flex; flex-direction:column; gap:1px; }
     .brand-name strong{ font-size:15px; }
     .brand-name span{ font-size:12.5px; color:var(--muted); }
 
-    nav{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    nav a{
-      color:var(--muted);
-      text-decoration:none;
-      font-size:14px;
-      padding:8px 10px;
-      border-radius:12px;
-    }
-
-    nav a:hover{
-      background:rgba(46,204,113,.08);
-      color:var(--text);
-    }
+    nav{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
     .btn{
       padding:10px 16px;
@@ -132,7 +92,6 @@
       display:inline-block;
     }
 
-    /* ----- originele stijlen voor de login-card (ongewijzigd) ----- */
     main{
       flex:1;
       display:flex;
@@ -141,111 +100,58 @@
       padding:34px 0;
     }
 
-    .login-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:30px 26px;
-      box-shadow:0 20px 44px rgba(0,0,0,.09);
+    /* ===== Login Card (ymaanyGO themed) ===== */
+    .login-container{
+      max-width: 360px;
+      margin: 0 auto;
+      background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(240,248,244,1) 100%);
+      border-radius: 28px;
+      padding: 26px 30px;
+      border: 1px solid var(--line);
+      box-shadow: 0 22px 30px -18px rgba(11,46,31,.35);
       width:100%;
-      max-width:440px;
-      margin:0 auto;
-      position:relative;
-      overflow:hidden;
     }
 
-    .login-card::before{
-      content:"";
-      position:absolute;
-      inset:-60px -60px auto auto;
-      width:180px;
-      height:180px;
-      background: radial-gradient(circle, rgba(46,204,113,.20), transparent 60%);
-      pointer-events:none;
-    }
-
-    .login-card h1{
-      font-size:28px;
-      margin-bottom:8px;
+    .login-heading{
+      text-align:center;
+      font-weight:900;
+      font-size:26px;
       color:var(--text);
-      letter-spacing:-0.2px;
     }
 
-    .login-card .sub{
+    .login-sub{
+      text-align:center;
       color:var(--muted);
-      margin-bottom:18px;
-      font-size:15px;
-    }
-
-    .trust{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:0 0 18px;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(46, 204, 113, .10);
-      border: 1px solid rgba(46, 204, 113, .22);
-      color: var(--text);
-      font-size:13px;
-      font-weight:600;
-    }
-
-    .msg{
-      display:none;
-      margin:10px 0 0;
-      padding:12px 14px;
-      border-radius:14px;
       font-size:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
-    }
-    .msg.err{
-      border-color: rgba(231,76,60,.35);
-      background: rgba(231,76,60,.08);
-    }
-    .msg.ok{
-      border-color: rgba(46,204,113,.35);
-      background: rgba(46,204,113,.08);
+      margin-top:6px;
     }
 
-    .input-group{
-      margin-bottom:16px;
+    .login-form{
+      margin-top:18px;
     }
 
-    .input-group label{
-      display:block;
-      margin-bottom:6px;
-      font-weight:600;
-      font-size:13.5px;
-      color:var(--text);
-    }
-
-    .input-wrap{
-      position:relative;
-    }
-
-    .input-group input{
+    .login-input{
       width:100%;
-      padding:12px 42px 12px 14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      font-size:15px;
-      background:white;
-      transition:border 0.2s, box-shadow 0.2s;
+      background:#fff;
+      border:none;
+      padding:14px 18px;
+      border-radius:16px;
+      margin-top:14px;
+      font-size:14px;
+      color:var(--text);
+      box-shadow: 0 10px 12px -8px rgba(46,204,113,.35);
+      border-inline:2px solid transparent;
     }
 
-    .input-group input:focus{
+    .login-input::placeholder{ color:var(--muted); }
+
+    .login-input:focus{
       outline:none;
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(46,204,113,.18);
+      border-inline:2px solid var(--accent);
+    }
+
+    .pw-row{
+      position:relative;
     }
 
     .toggle{
@@ -263,56 +169,66 @@
       font-size:12px;
     }
 
-    .toggle:hover{
-      background: rgba(46,204,113,.10);
-      color: var(--text);
-    }
+    .toggle:hover{ background: rgba(46,204,113,.10); color: var(--text); }
 
-    .row{
+    .forgot-password{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      margin-top:6px;
+      gap:10px;
+      margin-top:10px;
+      padding:0 6px;
       flex-wrap:wrap;
     }
 
-    .check{
+    .forgot-password a{
+      font-size:12px;
+      color:var(--accent2);
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .remember{
       display:flex;
       align-items:center;
       gap:10px;
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       user-select:none;
+      white-space:nowrap;
     }
 
-    .check input{
+    .remember input{
       width:18px;
       height:18px;
       accent-color: var(--accent2);
     }
 
-    .login-btn{
-      width:100%;
-      padding:14px 20px;
-      border:none;
-      border-radius:14px;
-      font-weight:800;
-      font-size:16px;
-      color:#fff;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 12px 26px rgba(46,204,113,.28);
-      cursor:pointer;
-      transition:transform 0.12s ease, opacity 0.2s ease;
-      margin-top:14px;
+    .login-button{
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:10px;
+      width:100%;
+      font-weight:800;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color:#fff;
+      padding:14px;
+      margin:18px auto 0;
+      border-radius:18px;
+      border:none;
+      cursor:pointer;
+      box-shadow:0 16px 22px -14px rgba(46,204,113,.6);
+      transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
     }
 
-    .login-btn:hover{ opacity:0.95; }
-    .login-btn:active{ transform:translateY(1px); }
+    .login-button:hover{
+      transform:scale(1.02);
+      opacity:.97;
+      box-shadow:0 20px 26px -14px rgba(46,204,113,.7);
+    }
+
+    .login-button:active{ transform:scale(.98); }
 
     .spinner{
       width:16px;
@@ -325,26 +241,29 @@
     }
     @keyframes spin{ to{ transform:rotate(360deg);} }
 
-    .forgot-link{
-      display:inline-block;
-      margin-top:14px;
-      color:var(--muted);
+    .msg{
+      display:none;
+      margin:12px 0 0;
+      padding:12px 14px;
+      border-radius:14px;
       font-size:14px;
-      text-decoration:none;
-      border-bottom:1px dashed transparent;
-      transition:border-color 0.2s, color 0.2s;
-    }
-
-    .forgot-link:hover{
-      border-bottom-color:var(--accent);
+      border:1px solid var(--line);
+      background:#fff;
       color:var(--text);
     }
+    .msg.err{ border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.08); }
+    .msg.ok{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.08); }
 
-    .hint{
-      margin-top:12px;
+    .agreement{
+      display:block;
+      text-align:center;
+      margin-top:14px;
+    }
+
+    .agreement a{
+      text-decoration:none;
       color:var(--muted);
-      font-size:12.8px;
-      line-height:1.45;
+      font-size:11px;
     }
 
     footer{
@@ -356,23 +275,17 @@
       background:rgba(255,255,255,.20);
     }
 
-    footer a{
-      color:var(--accent2);
-      text-decoration:none;
-    }
-
-    footer a:hover{
-      text-decoration:underline;
-    }
+    footer a{ color:var(--accent2); text-decoration:none; }
+    footer a:hover{ text-decoration:underline; }
 
     @media (max-width:480px){
-      .login-card{ padding:24px 18px; }
+      .login-container{ padding:22px 18px; }
     }
   </style>
 </head>
+
 <body>
 
-<!-- HEADER VERVANGEN door de versie van de hoofdpagina (alleen de header) -->
 <header>
   <div class="wrap">
     <div class="header-inner">
@@ -386,7 +299,6 @@
         </div>
       </a>
       <nav>
-        <!-- Alleen de knop "Taxi boeken" is overgenomen, de lege ankerlinks zijn weggelaten voor een nettere header -->
         <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
       </nav>
     </div>
@@ -395,51 +307,48 @@
 
 <main>
   <div class="wrap">
-    <div class="login-card" aria-live="polite">
-      <h1>Inloggen chauffeurs</h1>
-      <p class="sub">Toegang tot het chauffeursportaal</p>
+    <!-- ✅ واجهة جديدة -->
+    <section class="login-container" aria-live="polite">
+      <div class="login-heading">Inloggen chauffeurs</div>
+      <div class="login-sub">Toegang tot het chauffeursportaal</div>
 
-      <form id="loginForm" action="#" method="post" novalidate>
-        <div class="input-group">
-          <label for="username">Gebruikersnaam of e-mail</label>
-          <div class="input-wrap">
-            <input type="text" id="username" name="username" placeholder="" autocomplete="username" required>
-          </div>
+      <form id="loginForm" class="login-form" action="#" method="post" novalidate>
+        <!-- نستخدم نفس أسماء الحقول للسكربت -->
+        <input required class="login-input" type="text" name="username" id="username" placeholder="Gebruikersnaam of e-mail" autocomplete="username">
+        
+        <div class="pw-row">
+          <input required class="login-input" type="password" name="password" id="password" placeholder="Wachtwoord" autocomplete="current-password" minlength="4">
+          <button class="toggle" type="button" id="togglePw" aria-label="Wachtwoord tonen/verbergen">TOON</button>
         </div>
 
-        <div class="input-group">
-          <label for="password">Wachtwoord</label>
-          <div class="input-wrap">
-            <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required minlength="4">
-            <button class="toggle" type="button" id="togglePw" aria-label="Wachtwoord tonen/verbergen">TOON</button>
-          </div>
-        </div>
-
-        <div class="row">
-          <label class="check">
+        <div class="forgot-password">
+          <label class="remember">
             <input type="checkbox" id="remember">
-            Onthouden op dit apparaat
+            Onthouden
           </label>
 
-          <a href="#" class="forgot-link" id="forgot">Wachtwoord vergeten?</a>
+          <a href="#" id="forgot">Wachtwoord vergeten?</a>
         </div>
 
-        <button type="submit" class="login-btn" id="loginBtn">
-          <span class="spinner" id="spin"></span>
+        <button class="login-button" type="submit" id="loginBtn">
+          <span class="spinner" id="spin" aria-hidden="true"></span>
           <span id="btnText">Inloggen</span>
         </button>
 
-        <div id="msgErr" class="msg err">Onjuiste gegevens. Controleer je invoer.</div>
-        <div id="msgOk" class="msg ok">Succes! Doorsturen…</div>
-
+        <div id="msgErr" class="msg err" role="alert">Onjuiste gegevens. Controleer je invoer.</div>
+        <div id="msgOk" class="msg ok" role="status">Succes! Doorsturen…</div>
       </form>
-    </div>
+
+      <span class="agreement">
+        <a href="/">Terug naar de website</a>
+      </span>
+    </section>
   </div>
 </main>
 
 <footer>
   <div class="wrap">
-    &copy; 2026 ymaanyGO. <a href="/">Terug naar de website</a>
+    &copy; 2026 ymaanyGO.
   </div>
 </footer>
 
@@ -448,6 +357,7 @@
   const USERS = {
     "driver01": "1111",
     "driver02": "2222",
+    "Shamekh": "1112",
     "chauffeur": "1234"
   };
 
@@ -524,7 +434,6 @@
       localStorage.setItem('ymaanygo_driver_session', u);
 
       show(msgOk);
-
       window.location.href = "/chauffeur-dashboard.html";
     }, 650);
   });
