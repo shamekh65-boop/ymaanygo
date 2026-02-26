@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chauffeursdashboard – ymaanyGO</title>
-  <meta name="description" content="Dashboard voor chauffeurs van ymaanyGO.">
-  <meta name="robots" content="noindex, nofollow">
+  <title>Chauffeur Dashboard – ymaanyGO</title>
+  <meta name="theme-color" content="#2ecc71">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
   <style>
     :root{
       --bg-light:#f6fbf8;
@@ -19,182 +20,520 @@
       --accent:#2ecc71;
       --accent2:#27ae60;
       --radius:18px;
+      --danger:#e74c3c;
+      --warn:#f1c40f;
     }
+
     *{ box-sizing:border-box; margin:0; padding:0; }
     body{
-      background: linear-gradient(to bottom, var(--bg-light) 0%, var(--bg-mid) 60%, var(--bg-dark) 100%);
+      background: linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text); line-height:1.5; min-height:100vh; display:flex; flex-direction:column;
+      color:var(--text);
+      min-height:100vh;
     }
     .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; width:100%; }
+
     header{
+      position:sticky; top:0; z-index:10;
       background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
-      backdrop-filter: blur(10px); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
     }
-    .header-inner{ display:flex; align-items:center; justify-content:space-between; padding:12px 0; }
-    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
-    .logo{ width:42px; height:42px; border-radius:10px; background:#fff; padding:4px; border:1px solid var(--line); object-fit:contain; }
-    main{ flex:1; padding:34px 0; }
-    .dashboard-header{ margin-bottom:24px; }
-    .dashboard-header h1{ font-size:28px; margin-bottom:8px; }
-    .dashboard-header p{ color:var(--muted); font-size:16px; }
-    .dashboard-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px; }
-    .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px; box-shadow:0 14px 28px rgba(0,0,0,.05); }
-    .card h2{ font-size:18px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-    .driver-info p{ margin:8px 0; font-size:15px; }
-    .driver-info strong{ font-weight:600; color:var(--text); }
-    .trip-list{ list-style:none; }
-    .trip-item{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
-    .trip-item:last-child{ border-bottom:none; }
-    .trip-date{ font-weight:600; font-size:14px; }
-    .trip-route{ font-size:14px; color:var(--muted); }
-    .trip-status{ background:rgba(46,204,113,.15); padding:4px 10px; border-radius:40px; font-size:12px; font-weight:600; color:var(--accent2); }
-    .logout-btn{ background:transparent; border:1.5px solid var(--accent2); color:var(--accent2); padding:10px 24px; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:8px; }
-    .logout-btn:hover{ background:var(--accent2); color:#fff; }
-    footer{ text-align:center; padding:18px 0; color:var(--muted); font-size:13px; border-top:1px solid var(--line); background:rgba(255,255,255,.20); }
-    footer a{ color:var(--accent2); text-decoration:none; }
-    footer a:hover{ text-decoration:underline; }
-    .error-box{ background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 20px; border-radius: var(--radius); text-align: center; margin: 50px auto; max-width: 500px; }
-    .error-box a{ color: var(--accent2); font-weight: bold; }
-    @media (max-width:480px){ .dashboard-grid{ grid-template-columns:1fr; } }
+    .header-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0; gap:14px;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text); }
+    .logo{
+      width:42px; height:42px; border-radius:12px; background:#fff; padding:6px;
+      border:1px solid var(--line); object-fit:contain;
+    }
+    .brand-name{ display:flex; flex-direction:column; gap:1px; }
+    .brand-name strong{ font-size:15px; }
+    .brand-name span{ font-size:12.5px; color:var(--muted); }
+
+    .top-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.7);
+      color:var(--text); font-weight:800; font-size:13px;
+      user-select:none;
+    }
+    .dot{ width:10px; height:10px; border-radius:50%; background:var(--muted); }
+
+    .btn{
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:800;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      color:var(--text);
+    }
+    .btn.primary{
+      border:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+    }
+    .btn.danger{
+      border:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--danger),#c0392b);
+      box-shadow:0 10px 22px rgba(231,76,60,.20);
+    }
+
+    main{ padding:22px 0 34px; }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:0 14px 32px rgba(0,0,0,.08);
+    }
+    h1{ font-size:22px; margin-bottom:6px; }
+    .sub{ color:var(--muted); font-size:14px; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .kpi{
+      flex:1 1 160px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(46,204,113,.22);
+      background:rgba(46,204,113,.08);
+    }
+    .kpi b{ display:block; font-size:16px; }
+    .kpi span{ color:var(--muted); font-size:13px; }
+
+    .section-title{ font-size:14px; color:var(--muted); margin:12px 0 8px; font-weight:800; }
+
+    .list{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+    .ride{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    .ride .meta{ flex:1; }
+    .ride .meta b{ display:block; margin-bottom:4px; }
+    .ride .meta small{ color:var(--muted); display:block; }
+    .ride .actions{ display:flex; flex-direction:column; gap:8px; min-width:140px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      font-size:12px; font-weight:900;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.7);
+      width:max-content;
+    }
+    .badge.pending{ border-color: rgba(241,196,15,.35); background: rgba(241,196,15,.12); }
+    .badge.active{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.12); }
+    .badge.done{ border-color: rgba(0,0,0,.10); background: rgba(0,0,0,.04); }
+
+    .form-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:14px;
+    }
+
+    .msg{
+      display:none;
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:14px;
+    }
+    .msg.ok{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.08); }
+    .msg.err{ border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.08); }
+
+    @media (max-width:920px){
+      .grid{ grid-template-columns:1fr; }
+    }
   </style>
 </head>
+
 <body>
 <header>
   <div class="wrap">
     <div class="header-inner">
       <a class="brand" href="/">
         <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico" alt="ymaanyGO">
-        <strong>ymaanyGO</strong>
+        <div class="brand-name">
+          <strong>ymaanyGO</strong>
+          <span>Chauffeursportaal</span>
+        </div>
       </a>
+
+      <div class="top-actions">
+        <div class="chip" id="statusChip" title="Status">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">Offline</span>
+        </div>
+        <button class="btn primary" id="toggleOnlineBtn">Ga online</button>
+        <button class="btn" id="installBtn" style="display:none;">Installeer app</button>
+        <button class="btn danger" id="logoutBtn">Uitloggen</button>
+      </div>
     </div>
   </div>
 </header>
 
 <main>
-  <div class="wrap" id="mainContent">
-    <!-- المحتوى سيتم تعبئته بواسطة JavaScript -->
+  <div class="wrap">
+    <div class="grid">
+
+      <section class="card">
+        <h1>Dashboard</h1>
+        <div class="sub">Welkom, <span id="driverName">chauffeur</span></div>
+
+        <div class="row" style="margin-top:12px;">
+          <div class="kpi">
+            <b id="kpiToday">0</b>
+            <span>Ritten vandaag</span>
+          </div>
+          <div class="kpi">
+            <b id="kpiActive">0</b>
+            <span>Actieve ritten</span>
+          </div>
+          <div class="kpi">
+            <b id="kpiEur">€0</b>
+            <span>Omzet (demo)</span>
+          </div>
+        </div>
+
+        <div class="section-title">Nieuwe aanvragen</div>
+        <div class="list" id="requestsList"></div>
+
+        <div class="section-title">Actieve rit</div>
+        <div class="list" id="activeList"></div>
+
+        <div class="section-title">Geschiedenis</div>
+        <div class="list" id="historyList"></div>
+
+        <div id="msgOk" class="msg ok"></div>
+        <div id="msgErr" class="msg err"></div>
+      </section>
+
+      <aside class="card">
+        <h1>Nieuwe rit toevoegen (demo)</h1>
+        <div class="sub">Voor test. Later komt dit van het boekingssysteem.</div>
+
+        <div style="margin-top:12px;" class="form-row">
+          <input class="input" id="pickup" placeholder="Ophaaladres">
+          <input class="input" id="dropoff" placeholder="Bestemming">
+          <input class="input" id="time" placeholder="Tijd (bijv. 14:30)">
+          <input class="input" id="price" placeholder="Prijs (bijv. 45)">
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn primary" id="addRideBtn">Voeg aanvraag toe</button>
+          <button class="btn" id="seedBtn">Demo aanvragen</button>
+        </div>
+
+        <div class="section-title">Snelle acties</div>
+        <div class="row">
+          <button class="btn" id="clearBtn">Wis demo data</button>
+        </div>
+
+        <div class="section-title">PWA</div>
+        <div class="sub">
+          Open deze pagina op iPhone/Android → “Add to Home Screen”.  
+          Dit werkt als app.
+        </div>
+      </aside>
+
+    </div>
   </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    &copy; 2026 ymaanyGO. <a href="/">Terug naar de website</a>
-  </div>
-</footer>
-
 <script>
-  (function() {
-    // ✅ تم التعديل هنا: اسم صفحة تسجيل الدخول الصحيح هو driver-login.html
-    const LOGIN_PAGE = 'driver-login.html';
+  // ====== Session check (من صفحة تسجيل الدخول demo) ======
+  const sessionUser = localStorage.getItem('ymaanygo_driver_session');
+  if (!sessionUser) {
+    window.location.href = "/login.html";
+  }
 
-    const sessionUser = localStorage.getItem('ymaanygo_driver_session');
-    const storedUser = localStorage.getItem('ymaanygo_driver_user');
-    const mainDiv = document.getElementById('mainContent');
+  // ====== Local "database" (demo) ======
+  const KEY = "ymaanygo_driver_data_v1";
+  const DEFAULT_DATA = {
+    online: false,
+    driver: { name: sessionUser || "chauffeur" },
+    stats: { eur: 0, today: 0 },
+    requests: [],
+    active: [],
+    history: []
+  };
 
-    if (!sessionUser) {
-      // عرض رسالة خطأ مع رابط لتسجيل الدخول
-      mainDiv.innerHTML = `
-        <div class="error-box">
-          <h2>🔒 Niet ingelogd</h2>
-          <p>Je bent niet ingelogd. Klik <a href="${LOGIN_PAGE}">hier</a> om in te loggen.</p>
-        </div>
-      `;
-      return;
+  function loadData(){
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : structuredClone(DEFAULT_DATA);
+    } catch {
+      return structuredClone(DEFAULT_DATA);
     }
+  }
+  function saveData(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
 
-    // إذا كان هناك جلسة، نعرض المحتوى الطبيعي
-    mainDiv.innerHTML = `
-      <div class="dashboard-header">
-        <h1>Chauffeursdashboard</h1>
-        <p id="welcomeMessage">Welkom, <span id="driverNameSpan">${storedUser || sessionUser}</span></p>
+  let data = loadData();
+
+  // ====== UI helpers ======
+  const $ = (id) => document.getElementById(id);
+  const msgOk = $("msgOk");
+  const msgErr = $("msgErr");
+  function showMsg(el, text){
+    msgOk.style.display="none"; msgErr.style.display="none";
+    el.textContent = text;
+    el.style.display="block";
+    setTimeout(()=> el.style.display="none", 2500);
+  }
+
+  function euro(n){
+    const v = Number(n || 0);
+    return "€" + v.toFixed(0);
+  }
+
+  function setStatusUI(){
+    $("driverName").textContent = data.driver.name || "chauffeur";
+    $("kpiToday").textContent = String(data.stats.today || 0);
+    $("kpiActive").textContent = String(data.active.length || 0);
+    $("kpiEur").textContent = euro(data.stats.eur || 0);
+
+    const online = !!data.online;
+    $("statusText").textContent = online ? "Online" : "Offline";
+    $("statusDot").style.background = online ? "var(--accent2)" : "var(--muted)";
+    $("toggleOnlineBtn").textContent = online ? "Ga offline" : "Ga online";
+    $("toggleOnlineBtn").className = online ? "btn" : "btn primary";
+  }
+
+  function rideCard(r, type){
+    const statusClass = type === "requests" ? "pending" : (type === "active" ? "active" : "done");
+    const badgeText = type === "requests" ? "Aanvraag" : (type === "active" ? "Actief" : "Afgerond");
+
+    const wrap = document.createElement("div");
+    wrap.className = "ride";
+    wrap.innerHTML = `
+      <div class="meta">
+        <span class="badge ${statusClass}">${badgeText}</span>
+        <b>${r.pickup} → ${r.dropoff}</b>
+        <small>Tijd: ${r.time || "-"} • Prijs: ${euro(r.price || 0)}</small>
+        <small>Id: ${r.id}</small>
       </div>
-      <div class="dashboard-grid">
-        <div class="card">
-          <h2>👤 Jouw gegevens</h2>
-          <div class="driver-info">
-            <p><strong>Naam:</strong> <span id="driverName">${storedUser || sessionUser}</span></p>
-            <p><strong>Status:</strong> <span style="color:var(--accent2);">Beschikbaar</span></p>
-            <p><strong>Voertuig:</strong> Tesla Model 3 (NL-2025)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h2>📋 Ritten vandaag</h2>
-          <ul class="trip-list" id="tripList"></ul>
-        </div>
-        <div class="card">
-          <h2>🔔 Meldingen</h2>
-          <p style="margin-bottom:12px;">Geen nieuwe meldingen.</p>
-          <button class="logout-btn" id="logoutBtn">⇢ Uitloggen</button>
-        </div>
-      </div>
-      <div class="card" style="margin-top:10px;">
-        <h2>📅 Laatste 5 ritten</h2>
-        <table style="width:100%; border-collapse:collapse; text-align:left;">
-          <thead>
-            <tr style="border-bottom:2px solid var(--line);">
-              <th style="padding:8px 4px;">Datum</th>
-              <th style="padding:8px 4px;">Van</th>
-              <th style="padding:8px 4px;">Naar</th>
-              <th style="padding:8px 4px;">Status</th>
-            </tr>
-          </thead>
-          <tbody id="recentTripsTable"></tbody>
-        </table>
-      </div>
+      <div class="actions"></div>
     `;
 
-    // بيانات الرحلات (نفسها)
-    const tripsToday = [
-      { time: '08:30', from: 'Amsterdam Centraal', to: 'Schiphol', status: 'Voltooid' },
-      { time: '11:15', from: 'Utrecht', to: 'Rotterdam Centraal', status: 'Voltooid' },
-      { time: '14:45', from: 'Den Haag', to: 'Leiden', status: 'Gepland' },
-    ];
+    const actions = wrap.querySelector(".actions");
 
-    const recentTrips = [
-      { date: '2026-02-22', from: 'Amsterdam', to: 'Schiphol', status: 'Voltooid' },
-      { date: '2026-02-21', from: 'Rotterdam', to: 'Den Haag', status: 'Voltooid' },
-      { date: '2026-02-20', from: 'Utrecht', to: 'Eindhoven', status: 'Voltooid' },
-      { date: '2026-02-19', from: 'Leiden', to: 'Amsterdam', status: 'Geannuleerd' },
-      { date: '2026-02-18', from: 'Schiphol', to: 'Den Haag', status: 'Voltooid' },
-    ];
+    if (type === "requests") {
+      const b1 = document.createElement("button");
+      b1.className = "btn primary";
+      b1.textContent = "Accepteer";
+      b1.onclick = () => acceptRide(r.id);
 
-    const tripList = document.getElementById('tripList');
-    if (tripList) {
-      tripsToday.forEach(trip => {
-        const li = document.createElement('li');
-        li.className = 'trip-item';
-        li.innerHTML = `
-          <div>
-            <div class="trip-date">${trip.time}</div>
-            <div class="trip-route">${trip.from} → ${trip.to}</div>
-          </div>
-          <span class="trip-status">${trip.status}</span>
-        `;
-        tripList.appendChild(li);
-      });
+      const b2 = document.createElement("button");
+      b2.className = "btn";
+      b2.textContent = "Weiger";
+      b2.onclick = () => rejectRide(r.id);
+
+      actions.appendChild(b1);
+      actions.appendChild(b2);
     }
 
-    const tableBody = document.getElementById('recentTripsTable');
-    if (tableBody) {
-      recentTrips.forEach(trip => {
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid var(--line)';
-        row.innerHTML = `
-          <td style="padding:10px 4px;">${trip.date}</td>
-          <td style="padding:10px 4px;">${trip.from}</td>
-          <td style="padding:10px 4px;">${trip.to}</td>
-          <td style="padding:10px 4px;"><span class="trip-status">${trip.status}</span></td>
-        `;
-        tableBody.appendChild(row);
-      });
+    if (type === "active") {
+      const b1 = document.createElement("button");
+      b1.className = "btn";
+      b1.textContent = "Start";
+      b1.onclick = () => startRide(r.id);
+
+      const b2 = document.createElement("button");
+      b2.className = "btn primary";
+      b2.textContent = "Afronden";
+      b2.onclick = () => finishRide(r.id);
+
+      actions.appendChild(b1);
+      actions.appendChild(b2);
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      localStorage.removeItem('ymaanygo_driver_session');
-      window.location.href = LOGIN_PAGE;
+    if (type === "history") {
+      const b = document.createElement("button");
+      b.className = "btn";
+      b.textContent = "Kopieer";
+      b.onclick = async () => {
+        await navigator.clipboard.writeText(`${r.pickup} -> ${r.dropoff} (${r.time}) ${euro(r.price)}`);
+        showMsg(msgOk, "Gekopieerd.");
+      };
+      actions.appendChild(b);
+    }
+
+    return wrap;
+  }
+
+  function render(){
+    setStatusUI();
+
+    const req = $("requestsList");
+    const act = $("activeList");
+    const hist = $("historyList");
+
+    req.innerHTML = "";
+    act.innerHTML = "";
+    hist.innerHTML = "";
+
+    if (!data.requests.length) req.innerHTML = `<div class="sub">Geen nieuwe aanvragen.</div>`;
+    if (!data.active.length) act.innerHTML = `<div class="sub">Geen actieve rit.</div>`;
+    if (!data.history.length) hist.innerHTML = `<div class="sub">Nog geen geschiedenis.</div>`;
+
+    data.requests.forEach(r => req.appendChild(rideCard(r, "requests")));
+    data.active.forEach(r => act.appendChild(rideCard(r, "active")));
+    data.history.slice().reverse().forEach(r => hist.appendChild(rideCard(r, "history")));
+  }
+
+  // ====== Actions ======
+  function acceptRide(id){
+    if (!data.online) return showMsg(msgErr, "Je bent offline. Zet online om te accepteren.");
+    const idx = data.requests.findIndex(x => x.id === id);
+    if (idx < 0) return;
+    const r = data.requests.splice(idx, 1)[0];
+    r.state = "accepted";
+    data.active.unshift(r);
+    saveData(data);
+    showMsg(msgOk, "Rit geaccepteerd.");
+    render();
+  }
+
+  function rejectRide(id){
+    const idx = data.requests.findIndex(x => x.id === id);
+    if (idx < 0) return;
+    data.requests.splice(idx, 1);
+    saveData(data);
+    showMsg(msgOk, "Aanvraag geweigerd.");
+    render();
+  }
+
+  function startRide(id){
+    const r = data.active.find(x => x.id === id);
+    if (!r) return;
+    r.state = "started";
+    saveData(data);
+    showMsg(msgOk, "Rit gestart.");
+    render();
+  }
+
+  function finishRide(id){
+    const idx = data.active.findIndex(x => x.id === id);
+    if (idx < 0) return;
+    const r = data.active.splice(idx, 1)[0];
+    r.state = "done";
+    r.doneAt = new Date().toISOString();
+    data.history.push(r);
+
+    data.stats.today = (data.stats.today || 0) + 1;
+    data.stats.eur = (data.stats.eur || 0) + Number(r.price || 0);
+
+    saveData(data);
+    showMsg(msgOk, "Rit afgerond.");
+    render();
+  }
+
+  function addRequest(ride){
+    data.requests.unshift(ride);
+    saveData(data);
+    render();
+  }
+
+  function newId(){
+    return "R" + Math.random().toString(16).slice(2, 8).toUpperCase();
+  }
+
+  // Buttons
+  $("toggleOnlineBtn").addEventListener("click", () => {
+    data.online = !data.online;
+    saveData(data);
+    showMsg(msgOk, data.online ? "Je bent online." : "Je bent offline.");
+    render();
+  });
+
+  $("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("ymaanygo_driver_session");
+    window.location.href = "/login.html";
+  });
+
+  $("addRideBtn").addEventListener("click", () => {
+    const pickup = $("pickup").value.trim();
+    const dropoff = $("dropoff").value.trim();
+    const time = $("time").value.trim();
+    const price = $("price").value.trim();
+
+    if (!pickup || !dropoff) return showMsg(msgErr, "Vul ophaaladres en bestemming in.");
+
+    addRequest({
+      id: newId(),
+      pickup, dropoff,
+      time: time || "-",
+      price: price || 0,
+      state: "pending"
     });
-  })();
+
+    $("pickup").value=""; $("dropoff").value=""; $("time").value=""; $("price").value="";
+    showMsg(msgOk, "Aanvraag toegevoegd.");
+  });
+
+  $("seedBtn").addEventListener("click", () => {
+    const samples = [
+      { pickup:"Amsterdam Centraal", dropoff:"Schiphol", time:"12:10", price:45 },
+      { pickup:"Rotterdam", dropoff:"Den Haag", time:"13:20", price:35 },
+      { pickup:"Utrecht", dropoff:"Eindhoven Airport", time:"15:00", price:95 }
+    ];
+    samples.forEach(s => addRequest({ id:newId(), ...s, state:"pending" }));
+    showMsg(msgOk, "Demo aanvragen toegevoegd.");
+  });
+
+  $("clearBtn").addEventListener("click", () => {
+    localStorage.removeItem(KEY);
+    data = loadData();
+    showMsg(msgOk, "Demo data gewist.");
+    render();
+  });
+
+  // ===== PWA install button =====
+  let deferredPrompt = null;
+  const installBtn = $("installBtn");
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "inline-block";
+  });
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+  });
+
+  // Initial render
+  render();
+
+  // Optional: service worker register (if you have /sw.js)
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js").catch(()=>{});
+  }
 </script>
 </body>
 </html>
