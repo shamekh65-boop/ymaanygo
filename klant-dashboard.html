@@ -1,1936 +1,1660 @@
 <!doctype html>
-<html lang="nl" dir="ltr">
+<html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#2ecc71" />
-  <title>Klant Dashboard – ymaanyGO</title>
-
-  <link rel="icon" href="favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f7d32" />
+  <title>ymaanyGO – Klant Dashboard</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
 
   <style>
     :root{
-      --bg:#f6fbf8;
-      --card:rgba(255,255,255,.86);
-      --text:#0b2e1f;
-      --muted:#4f7f68;
-      --line:rgba(0,0,0,.08);
-      --shadow: 0 18px 40px rgba(0,0,0,.08);
-      --radius:22px;
+      --bg:#f6f6f6;
+      --card:#ffffff;
+      --text:#111;
+      --muted:rgba(0,0,0,.60);
+      --border:rgba(0,0,0,.10);
+      --shadow:0 12px 26px rgba(0,0,0,.10);
+      --radius:18px;
 
-      --accent:#2ecc71;
-      --accent2:#27ae60;
+      /* Brand */
+      --accent:#2f7d32;
+      --accent2:#3bbf6b;
 
-      --nav-h:76px;
-      --tap:54px;
+      /* Controls */
+      --control-h:52px;
+      --control-radius:18px;
 
-      --sheetBlur: blur(16px) saturate(150%);
-      --glass: rgba(255,255,255,.72);
-      --glass2: rgba(255,255,255,.92);
-
-      --danger:#e74c3c;
-
-      --font: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      /* Bottom nav */
+      --nav-h:72px;
     }
 
-    [data-theme="dark"]{
-      --bg:#0c1411;
-      --card:rgba(20,28,24,.78);
-      --text:#e9fff3;
-      --muted:rgba(233,255,243,.70);
-      --line:rgba(255,255,255,.10);
-      --shadow: 0 18px 50px rgba(0,0,0,.35);
-      --glass: rgba(24,32,28,.60);
-      --glass2: rgba(24,32,28,.90);
-    }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:var(--font);
-      background:
-        radial-gradient(900px 420px at 20% -10%, rgba(46,204,113,.22), transparent 60%),
-        radial-gradient(800px 360px at 85% 0%, rgba(39,174,96,.16), transparent 55%),
-        linear-gradient(to bottom, var(--bg), var(--bg));
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
       color:var(--text);
-      overflow-x:hidden;
+      padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
     }
 
-    a{ color:inherit; text-decoration:none; }
-    button{ font-family:inherit; }
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+    .hidden{display:none !important}
 
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:14px 14px calc(var(--nav-h) + 18px);
+    /* ===== App shell ===== */
+    .wrap{max-width:820px;margin:0 auto;padding:0 14px;}
+    .top{
+      position:sticky; top:0; z-index:50;
+      background:rgba(246,246,246,.85);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-bottom:1px solid var(--border);
     }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
+    .top-inner{
+      max-width:820px;margin:0 auto;
       padding:10px 14px;
-      background: linear-gradient(to bottom, rgba(245,248,246,.88), rgba(210,232,220,.82));
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:10px;
     }
-    [data-theme="dark"] .topbar{
-      background: linear-gradient(to bottom, rgba(12,20,17,.78), rgba(12,20,17,.60));
+
+    .logo{
+      height:34px;
+      width:auto;
+      display:block;
+      object-fit:contain;
     }
-    .topbar-inner{
-      max-width:980px;
-      margin:0 auto;
-      display:flex;
-      align-items:center;
-      gap:12px;
+
+    .pill{
+      margin-left:auto;
+      display:flex;align-items:center;gap:10px;
     }
 
     .icon-btn{
       width:44px;height:44px;
       border-radius:16px;
-      border:1px solid var(--line);
-      background:var(--glass2);
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-      box-shadow: 0 10px 22px rgba(0,0,0,.06);
-      display:grid;
-      place-items:center;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
       cursor:pointer;
+      display:grid;place-items:center;
     }
-    .icon-btn:active{ transform:translateY(1px); }
+    .icon-btn:active{transform:translateY(1px)}
 
-    .brand{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-width:0;
-    }
-    .brand-pill{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 14px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:var(--glass);
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-      box-shadow: 0 14px 30px rgba(0,0,0,.06);
-      max-width:100%;
-    }
-    .brand-pill img{
-      height:22px;
-      width:auto;
-      display:block;
-      object-fit:contain;
-    }
-    .brand-pill .brand-text{
-      font-weight:900;
-      font-size:14px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .page{
+      padding:14px 0 18px;
     }
 
     .card{
       background:var(--card);
-      border:1px solid var(--line);
+      border:1px solid var(--border);
       border-radius:var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-    }
-
-    .profile-head{
-      margin-top:14px;
-      padding:18px 16px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      text-align:center;
-    }
-    .avatar{
-      width:84px;height:84px;
-      border-radius:50%;
-      border:1px solid var(--line);
-      background: radial-gradient(circle at 30% 30%, rgba(46,204,113,.20), rgba(255,255,255,.10));
-      display:grid;
-      place-items:center;
-      position:relative;
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .avatar svg{ opacity:.85; }
-    .name{
+    .card.pad{padding:14px}
+    .section-title{
       font-weight:900;
       font-size:18px;
-      margin-top:4px;
+      margin:6px 0 10px;
     }
-    .subline{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:-4px;
-    }
+    .subtle{color:var(--muted);font-size:13px}
 
-    .section{
-      margin-top:14px;
-      padding:12px;
+    /* ===== Profile header (Account) ===== */
+    .profile{
+      text-align:center;
+      padding:16px 14px 10px;
+      background:linear-gradient(180deg, rgba(59,191,107,.10), rgba(255,255,255,0));
     }
+    .avatar{
+      width:82px;height:82px;border-radius:999px;
+      background:rgba(0,0,0,.06);
+      margin:4px auto 10px;
+      display:grid;place-items:center;
+      position:relative;
+    }
+    .avatar svg{opacity:.75}
+    .name{font-weight:900;font-size:18px;margin:0}
+    .email{margin:4px 0 0;color:var(--muted);font-size:13px}
 
-    .list{
-      margin-top:8px;
-      overflow:hidden;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.52);
-    }
-    [data-theme="dark"] .list{
-      background: rgba(0,0,0,.12);
-    }
-
+    /* ===== List rows ===== */
+    .list{display:flex;flex-direction:column}
     .row{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:14px 14px;
-      border-top:1px solid var(--line);
+      display:flex;align-items:center;gap:12px;
+      padding:14px;
+      border-top:1px solid rgba(0,0,0,.06);
+      background:#fff;
       cursor:pointer;
-      user-select:none;
     }
-    .row:first-child{ border-top:0; }
-    .row:active{ background: rgba(46,204,113,.08); }
-    .row .ico{
-      width:38px;height:38px;
-      border-radius:14px;
-      border:1px solid rgba(46,204,113,.30);
-      background: rgba(46,204,113,.10);
-      display:grid;
-      place-items:center;
-      flex:0 0 38px;
+    .row:first-child{border-top:0}
+    .row:hover{background:rgba(0,0,0,.015)}
+    .row .left{
+      width:40px;height:40px;border-radius:14px;
+      border:1px solid rgba(47,125,50,.22);
+      background:rgba(59,191,107,.10);
+      display:grid;place-items:center;
+      flex:0 0 40px;
     }
-    .row .txt{ flex:1; min-width:0; }
-    .row .title{
-      font-weight:900;
-      font-size:15px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .row .mid{flex:1;min-width:0}
+    .row .t{font-weight:900}
+    .row .d{font-size:13px;color:var(--muted);margin-top:2px}
+    .row .chev{opacity:.55}
+
+    /* ===== Search bar (Home) ===== */
+    .search{
+      display:flex;align-items:center;gap:10px;
+      height:var(--control-h);
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:rgba(255,255,255,.92);
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
+      padding:0 14px;
     }
-    .row .desc{
-      margin-top:2px;
-      font-size:12.5px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .search input{
+      border:0;outline:0;background:transparent;
+      width:100%;
+      font-size:16px;
     }
-    .row .chev{
-      opacity:.55;
-      flex:0 0 auto;
+
+    .hero{
+      display:grid;gap:12px;
     }
 
     .promo{
+      border-radius:22px;
+      padding:16px;
+      background:linear-gradient(135deg, rgba(47,125,50,.95), rgba(59,191,107,.80));
+      color:#fff;
+      box-shadow:0 20px 34px rgba(0,0,0,.16);
+      position:relative;
+      overflow:hidden;
+    }
+    .promo h3{margin:0 0 6px;font-size:20px}
+    .promo p{margin:0;opacity:.92}
+    .promo .btn{
       margin-top:12px;
-      padding:14px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background: linear-gradient(90deg, rgba(46,204,113,.16), rgba(39,174,96,.10));
-      display:flex;
-      align-items:center;
-      gap:12px;
+      width:fit-content;
+      border:0;
+      background:rgba(255,255,255,.92);
+      color:#111;
+      font-weight:900;
+      padding:12px 16px;
+      border-radius:14px;
       cursor:pointer;
     }
-    .promo:active{ transform:translateY(1px); }
-    .promo .gift{
-      width:42px;height:42px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.08);
-      background: rgba(255,255,255,.70);
-      display:grid;
-      place-items:center;
+    .promo .blob{
+      position:absolute;right:-40px;top:-40px;
+      width:160px;height:160px;border-radius:999px;
+      background:rgba(255,255,255,.14);
+      filter: blur(0px);
     }
-    .promo .p-txt{ flex:1; }
-    .promo .p-title{ font-weight:900; font-size:16px; }
-    .promo .p-sub{ color:var(--muted); font-size:12.5px; margin-top:2px; }
 
-    .group-title{
+    /* ===== Rides empty ===== */
+    .empty{
+      text-align:center;
+      padding:28px 14px;
+    }
+    .empty .ic{
+      width:64px;height:64px;border-radius:999px;
+      background:rgba(59,191,107,.12);
+      border:1px solid rgba(47,125,50,.20);
+      margin:0 auto 12px;
+      display:grid;place-items:center;
+    }
+    .empty h2{margin:0 0 6px;font-size:22px}
+    .empty p{margin:0;color:var(--muted)}
+    .primary{
+      margin-top:14px;
+      width:100%;
+      height:56px;
+      border:0;
+      border-radius:28px;
+      background:linear-gradient(180deg, var(--accent2), var(--accent));
+      color:#fff;
       font-weight:900;
-      font-size:15px;
-      margin:4px 2px 10px;
-      color:rgba(0,0,0,.70);
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:0 14px 26px rgba(0,0,0,.16);
     }
-    [data-theme="dark"] .group-title{ color:rgba(233,255,243,.75); }
+    .primary:active{transform:translateY(1px) scale(.99)}
 
-    .center-action{
-      margin-top:12px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .linkish{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 14px;
+    /* ===== Tabs (Rides) ===== */
+    .seg{
+      display:flex; gap:10px;
+      background:rgba(0,0,0,.05);
+      border:1px solid rgba(0,0,0,.06);
       border-radius:999px;
-      border:1px solid var(--line);
-      background:var(--glass);
-      cursor:pointer;
-      font-weight:900;
+      padding:8px;
+      overflow:hidden;
     }
-    .linkish:active{ transform:translateY(1px); }
-
-    .tiny{
-      margin-top:10px;
-      text-align:center;
-      color:var(--muted);
-      font-size:12.5px;
-      line-height:1.4;
-    }
-
-    .bottom-nav{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      height:var(--nav-h);
-      background: rgba(255,255,255,.78);
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-      border-top:1px solid var(--line);
-      z-index:80;
-      display:flex;
-      justify-content:center;
-      padding:10px 12px 12px;
-    }
-    [data-theme="dark"] .bottom-nav{
-      background: rgba(12,20,17,.70);
-    }
-    .nav-inner{
-      width:min(520px, 100%);
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .tab{
+    .seg button{
       flex:1;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      cursor:pointer;
-      user-select:none;
-      padding:8px 6px;
-      border-radius:18px;
-    }
-    .tab .lbl{ font-size:12px; color:var(--muted); font-weight:800; }
-    .tab.active{
-      background: rgba(46,204,113,.10);
-      border:1px solid rgba(46,204,113,.24);
-    }
-    .tab.active .lbl{ color: var(--accent2); }
-    .tab svg{ opacity:.75; }
-    .tab.active svg{ opacity:1; }
-
-    .view{ display:none; }
-    .view.active{ display:block; }
-
-    .screenbar{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:12px 12px;
-      border-bottom:1px solid var(--line);
-      border-radius: var(--radius) var(--radius) 0 0;
-      background: rgba(255,255,255,.55);
-    }
-    [data-theme="dark"] .screenbar{ background: rgba(0,0,0,.10); }
-    .screenbar h2{
-      margin:0;
-      font-size:17px;
-      font-weight:900;
-      flex:1;
-      text-align:center;
-    }
-    .back-btn{
-      width:44px;height:44px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:var(--glass2);
-      cursor:pointer;
-      display:grid;
-      place-items:center;
-    }
-    .back-btn:active{ transform:translateY(1px); }
-
-    .content-pad{ padding:14px; }
-
-    .field{ margin-top:12px; }
-    label{
-      display:block;
-      font-weight:900;
-      font-size:12.5px;
-      margin-bottom:6px;
-      color:rgba(0,0,0,.72);
-    }
-    [data-theme="dark"] label{ color:rgba(233,255,243,.80); }
-
-    input{
-      width:100%;
-      height:48px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.86);
-      padding:0 14px;
-      color:var(--text);
-      font-size:15px;
-      outline:none;
-    }
-    [data-theme="dark"] input{
-      background: rgba(20,28,24,.80);
-    }
-    input:focus{ border-color: rgba(46,204,113,.55); }
-
-    .btn{
-      width:100%;
-      height:54px;
-      border-radius:18px;
+      height:44px;
+      border-radius:999px;
       border:0;
       cursor:pointer;
       font-weight:900;
-      font-size:15.5px;
-      background: linear-gradient(90deg,var(--accent),var(--accent2));
-      color:#fff;
-      box-shadow: 0 16px 26px rgba(46,204,113,.25);
-      margin-top:14px;
+      background:transparent;
+      color:rgba(0,0,0,.55);
     }
-    .btn:active{ transform:translateY(1px) scale(.99); }
-    .btn.secondary{
-      background: rgba(255,255,255,.78);
-      color:var(--text);
-      border:1px solid var(--line);
-      box-shadow:none;
+    .seg button.active{
+      background:#fff;
+      color:#111;
+      box-shadow:0 10px 16px rgba(0,0,0,.10);
     }
 
-    .note{
-      margin-top:10px;
-      font-size:12.5px;
-      color:var(--muted);
-      line-height:1.35;
+    /* ===== Bottom Nav ===== */
+    .bottom{
+      position:fixed; left:0; right:0; bottom:0;
+      height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+      padding-bottom:env(safe-area-inset-bottom);
+      background:rgba(255,255,255,.92);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-top:1px solid var(--border);
+      z-index:90;
     }
+    .bottom-inner{
+      max-width:820px;margin:0 auto;
+      height:var(--nav-h);
+      display:flex;align-items:center;justify-content:space-around;
+      padding:8px 10px;
+    }
+    .tab{
+      width:110px;
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      border:0;background:transparent;cursor:pointer;
+      color:rgba(0,0,0,.45);
+      font-weight:900;
+      padding:8px 10px;border-radius:16px;
+    }
+    .tab svg{opacity:.6}
+    .tab.active{
+      color:var(--accent);
+    }
+    .tab.active svg{opacity:1}
+    .tab:active{transform:translateY(1px)}
 
-    .empty{
-      padding:34px 16px 16px;
-      text-align:center;
-    }
-    .empty .big-ico{
-      width:70px;height:70px;
-      border-radius:24px;
-      margin:0 auto 12px;
-      display:grid;
-      place-items:center;
-      border:1px solid rgba(46,204,113,.30);
-      background: rgba(46,204,113,.10);
-    }
-    .empty h3{ margin:8px 0 6px; font-size:20px; font-weight:1000; }
-    .empty p{ margin:0; color:var(--muted); }
-
+    /* ===== Sheets (Bottom modals) ===== */
     .overlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.28);
-      display:none;
+      background:rgba(0,0,0,.30);
       z-index:120;
+      display:none;
     }
-    .overlay.show{ display:block; }
-
+    .overlay.show{display:block}
     .sheet{
-      position:fixed;
-      left:0; right:0; bottom:-100%;
-      z-index:130;
-      background: var(--glass2);
-      backdrop-filter: var(--sheetBlur);
-      -webkit-backdrop-filter: var(--sheetBlur);
-      border-top-left-radius:24px;
-      border-top-right-radius:24px;
-      border-top:1px solid var(--line);
-      box-shadow: 0 -30px 60px rgba(0,0,0,.18);
-      transition: bottom .22s ease;
-      padding:10px 14px 16px;
+      position:fixed; left:0; right:0; bottom:-110%;
+      z-index:121;
+      transition:bottom .22s ease;
+      padding:10px 10px calc(14px + env(safe-area-inset-bottom));
     }
-    .sheet.open{ bottom:0; }
-    .grab{
-      width:46px;height:5px;
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
-      margin:8px auto 10px;
+    .sheet.open{bottom:0}
+    .sheet-card{
+      max-width:820px;margin:0 auto;
+      background:rgba(255,255,255,.96);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:22px;
+      box-shadow:0 30px 80px rgba(0,0,0,.22);
+      overflow:hidden;
     }
-    [data-theme="dark"] .grab{ background: rgba(255,255,255,.22); }
-
-    .sheet h3{
-      margin:6px 4px 10px;
-      font-size:18px;
-      font-weight:1000;
+    .sheet-grip{
+      width:48px;height:5px;border-radius:999px;
+      background:rgba(0,0,0,.18);
+      margin:10px auto 0;
     }
-
-    .radio-row{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:14px 10px;
-      border-top:1px solid var(--line);
+    .sheet-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px;
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .sheet-title{font-weight:900;font-size:18px}
+    .sheet-x{
+      width:42px;height:42px;border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      cursor:pointer;
+      font-size:20px; line-height:1;
+    }
+    .sheet-body{padding:12px 14px}
+    .sheet-actions{padding:12px 14px; border-top:1px solid rgba(0,0,0,.06)}
+    .btn-ghost{
+      width:100%;
+      height:52px;border-radius:18px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      font-weight:900;
       cursor:pointer;
     }
-    .radio-row:first-of-type{ border-top:0; }
-    .radio-row .left{
-      width:34px;height:34px;
-      border-radius:14px;
-      display:grid;place-items:center;
-      border:1px solid rgba(0,0,0,.08);
-      background: rgba(255,255,255,.70);
+
+    /* ===== Forms in sheets ===== */
+    .field{
+      display:grid; gap:8px;
+      margin:10px 0;
     }
-    [data-theme="dark"] .radio-row .left{
-      background: rgba(0,0,0,.20);
-      border-color: rgba(255,255,255,.10);
+    .field label{font-size:13px;font-weight:900;color:rgba(0,0,0,.75)}
+    .field input{
+      height:48px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.14);
+      padding:0 12px;
+      font-size:16px;
+      outline:none;
+      background:#fff;
     }
-    .radio-row .r-txt{ flex:1; }
-    .radio-row .r-title{ font-weight:900; }
-    .radio-row .r-sub{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+    .field input:focus{border-color:#111}
+
+    .radio-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 2px;
+      border-top:1px solid rgba(0,0,0,.06);
+      cursor:pointer;
+    }
+    .radio-row:first-child{border-top:0}
+    .radio-row .l{display:flex;align-items:center;gap:10px}
     .dot{
-      width:22px;height:22px;border-radius:50%;
+      width:20px;height:20px;border-radius:999px;
       border:2px solid rgba(0,0,0,.25);
       display:grid;place-items:center;
     }
-    [data-theme="dark"] .dot{ border-color: rgba(255,255,255,.35); }
-    .dot .in{
-      width:10px;height:10px;border-radius:50%;
-      background: transparent;
-    }
-    .radio-row.active .dot{ border-color: var(--accent2); }
-    .radio-row.active .dot .in{ background: var(--accent2); }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom: calc(var(--nav-h) + 14px);
-      background: rgba(0,0,0,.70);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:800;
-      font-size:13px;
+    .dot i{
+      width:10px;height:10px;border-radius:999px;
+      background:var(--accent);
       display:none;
-      z-index:200;
-      max-width: calc(100% - 26px);
-      text-align:center;
     }
-    .toast.show{ display:block; }
+    .radio-row.active .dot{border-color:var(--accent)}
+    .radio-row.active .dot i{display:block}
 
-    [dir="rtl"] .topbar-inner{ direction:rtl; }
-    [dir="rtl"] .brand{ justify-content:center; }
-    [dir="rtl"] .row{ direction:rtl; }
-    [dir="rtl"] .screenbar{ direction:rtl; }
-    [dir="rtl"] .row .txt{ text-align:right; }
-    [dir="rtl"] label{ text-align:right; }
-
-    @media (min-width: 860px){
-      .wrap{ padding-left:18px; padding-right:18px; }
-    }
+    /* ===== RTL (Arabic) ===== */
+    body[dir="rtl"] .top-inner{flex-direction:row-reverse}
+    body[dir="rtl"] .pill{margin-left:0;margin-right:auto}
+    body[dir="rtl"] .row{flex-direction:row-reverse}
+    body[dir="rtl"] .row .mid{text-align:right}
+    body[dir="rtl"] .sheet-head{flex-direction:row-reverse}
+    body[dir="rtl"] .radio-row{flex-direction:row-reverse}
+    body[dir="rtl"] .radio-row .l{flex-direction:row-reverse}
   </style>
 </head>
 
 <body>
-  <!-- Topbar -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <button class="icon-btn" type="button" aria-label="Back" id="topBackBtn" onclick="navBack()" style="display:none">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
 
-      <div class="brand" aria-label="ymaanyGO">
-        <div class="brand-pill">
-          <img src="logo.png" alt="ymaanyGO logo" onerror="this.style.display='none'">
-          <div class="brand-text">ymaanyGO</div>
-        </div>
-      </div>
+  <!-- Top -->
+  <div class="top">
+    <div class="top-inner">
+      <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/logo.png" alt="ymaanyGO"
+           onerror="this.src='https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/logo.jpeg'">
 
-      <button class="icon-btn" type="button" aria-label="More" onclick="openSheet('moreSheet')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M5 12h.01M12 12h.01M19 12h.01" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
-        </svg>
-      </button>
-
-      <button class="icon-btn" type="button" aria-label="Search" onclick="toast(t('soon'))">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2.2"/>
-          <path d="M16.6 16.6 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <div class="wrap">
-    <!-- ===== VIEW: ACCOUNT (HOME) ===== -->
-    <section id="view-account" class="view active">
-      <div class="card profile-head">
-        <div class="avatar" title="Profile">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-            <path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M4.8 20.2c1.8-3.6 4.6-5.2 7.2-5.2s5.4 1.6 7.2 5.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <div class="pill">
+        <button class="icon-btn" type="button" aria-label="Language" onclick="openSheet('langSheet')">
+          <!-- globe -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20"></path>
+            <path d="M12 2a15 15 0 0 1 0 20"></path>
+            <path d="M12 2a15 15 0 0 0 0 20"></path>
           </svg>
-        </div>
+        </button>
 
-        <div class="name" id="userName">—</div>
-        <div class="subline" id="userEmail">—</div>
+        <button class="icon-btn" type="button" aria-label="Theme" onclick="openSheet('themeSheet')">
+          <!-- sun/moon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+          </svg>
+        </button>
       </div>
+    </div>
+  </div>
 
-      <div class="card section">
-        <div class="list">
-          <div class="row" onclick="openView('view-personal')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M8 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M8 11h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="personal_title">Persoonlijke gegevens</div>
-              <div class="desc" data-i18n="personal_desc">Naam • Telefoon • E-mail</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
+  <!-- Pages -->
+  <div class="wrap">
+    <!-- HOME -->
+    <section id="pageHome" class="page">
+      <div class="hero">
+        <div class="card pad">
+          <div class="search" onclick="goTaxi()">
+            <!-- search icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.75">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M21 21l-4.3-4.3"></path>
+            </svg>
+            <input id="homeSearch" type="text" readonly value="" />
           </div>
-
-          <div class="row" onclick="openView('view-security')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2"/>
-                <path d="M6 11h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="security_title">Inloggen en beveiliging</div>
-              <div class="desc" data-i18n="security_desc">Wachtwoord • Beveiliging</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="row" onclick="openView('view-discounts')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M3 12l9-9h6l3 3v6l-9 9L3 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M16 8h.01" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="discounts_title">Kortingen</div>
-              <div class="desc" data-i18n="discounts_desc">Kortingscodes • Acties</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="row" onclick="openView('view-payment')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M3 7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M16 12h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16 9h5v6h-5a3 3 0 0 1 0-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="payment_title">Betaalmethoden</div>
-              <div class="desc" data-i18n="payment_desc">Betalen bij chauffeur</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="row" onclick="openView('view-favorites')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2l3.1 6.4 7 .9-5.1 5 1.3 7-6.3-3.4-6.3 3.4 1.3-7-5.1-5 7-.9L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="fav_title">Favoriete locaties</div>
-              <div class="desc" data-i18n="fav_desc">Beheer je favorieten</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="row" onclick="openView('view-support')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M4 12a8 8 0 0 1 16 0v5a3 3 0 0 1-3 3h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 13v3a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M20 13v3a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="support_title">Klantenservice</div>
-              <div class="desc" data-i18n="support_desc">Hulp • Contact</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="row" onclick="openView('view-news')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2l1.2 4.6L18 8l-4.8 1.4L12 14l-1.2-4.6L6 8l4.8-1.4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M19 13l.7 2.6L22 16l-2.3.4L19 19l-.7-2.6L16 16l2.3-.4L19 13Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="txt">
-              <div class="title" data-i18n="news_title">Wat is er nieuw?</div>
-              <div class="desc" data-i18n="news_desc">Updates • Nieuws</div>
-            </div>
-            <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
+          <div class="subtle" style="margin-top:10px" id="homeHint"></div>
         </div>
 
-        <div class="promo" onclick="toast(t('invite'))">
-          <div class="gift">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M20 12v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9" stroke="currentColor" stroke-width="2"/>
-              <path d="M2 8h20v4H2V8Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 8v14" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 8c-2.8 0-5-1.3-5-3 0-1.1.9-2 2-2 2.2 0 3 2.5 3 5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M12 8c2.8 0 5-1.3 5-3 0-1.1-.9-2-2-2-2.2 0-3 2.5-3 5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="p-txt">
-            <div class="p-title" data-i18n="promo_title">Verdien tegoed</div>
-            <div class="p-sub" data-i18n="promo_sub">Nodig vrienden uit</div>
-          </div>
-          <div class="chev">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+        <div class="promo">
+          <div class="blob" aria-hidden="true"></div>
+          <h3 id="promoTitle"></h3>
+          <p id="promoText"></p>
+          <button class="btn" type="button" onclick="goTaxi()" id="promoBtn"></button>
+        </div>
+
+        <div class="card">
+          <div class="list">
+            <div class="row" onclick="openFavorites()">
+              <div class="left">
+                <!-- star -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l3 7 7 .6-5.2 4.5 1.6 7-6.4-4-6.4 4 1.6-7L2 9.6 9 9l3-7Z"></path>
+                </svg>
+              </div>
+              <div class="mid">
+                <div class="t" id="favTitle"></div>
+                <div class="d" id="favDesc"></div>
+              </div>
+              <div class="chev">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+              </div>
+            </div>
+
+            <div class="row" onclick="goTaxi()">
+              <div class="left">
+                <!-- route -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path>
+                  <path d="M18 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path>
+                  <path d="M8 6h4a4 4 0 0 1 4 4v4"></path>
+                </svg>
+              </div>
+              <div class="mid">
+                <div class="t" id="quickBookTitle"></div>
+                <div class="d" id="quickBookDesc"></div>
+              </div>
+              <div class="chev">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"></path>
+                </svg>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="card section">
-        <div class="group-title" data-i18n="other">Overig</div>
+    <!-- RIDES -->
+    <section id="pageRides" class="page hidden">
+      <div class="card pad" style="margin-bottom:12px;">
+        <div class="seg" role="tablist" aria-label="Ritten tabs">
+          <button id="segUpcoming" class="active" type="button" onclick="setRidesTab('upcoming')"></button>
+          <button id="segPast" type="button" onclick="setRidesTab('past')"></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="ridesList" class="hidden"></div>
+
+        <div id="ridesEmpty" class="empty">
+          <div class="ic">
+            <!-- calendar -->
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.75">
+              <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+              <path d="M16 2v4M8 2v4M3 10h18"></path>
+            </svg>
+          </div>
+          <h2 id="ridesEmptyTitle"></h2>
+          <p id="ridesEmptyText"></p>
+          <button class="primary" type="button" onclick="goTaxi()" id="ridesEmptyBtn"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNT -->
+    <section id="pageAccount" class="page hidden">
+      <div class="card">
+        <div class="profile">
+          <div class="avatar">
+            <!-- user -->
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21a8 8 0 0 0-16 0"></path>
+              <circle cx="12" cy="8" r="4"></circle>
+            </svg>
+          </div>
+          <p class="name" id="accName"></p>
+          <p class="email" id="accEmail"></p>
+        </div>
+
         <div class="list">
+          <div class="row" onclick="openSheet('profileSheet')">
+            <div class="left">
+              <!-- user -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21a8 8 0 0 0-16 0"></path>
+                <circle cx="12" cy="8" r="4"></circle>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t" id="miProfile"></div>
+              <div class="d" id="miProfileDesc"></div>
+            </div>
+            <div class="chev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="row" onclick="openSheet('securitySheet')">
+            <div class="left">
+              <!-- lock -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t" id="miSecurity"></div>
+              <div class="d" id="miSecurityDesc"></div>
+            </div>
+            <div class="chev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="row" onclick="openSheet('paymentSheet')">
+            <div class="left">
+              <!-- wallet -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"></path>
+                <path d="M16 13h6"></path>
+                <path d="M6 7V5a2 2 0 0 1 2-2h10"></path>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t" id="miPayment"></div>
+              <div class="d" id="miPaymentDesc"></div>
+            </div>
+            <div class="chev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="row" onclick="openFavorites()">
+            <div class="left">
+              <!-- pin -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21s7-4.4 7-11a7 7 0 0 0-14 0c0 6.6 7 11 7 11Z"></path>
+                <circle cx="12" cy="10" r="2"></circle>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t" id="miFav"></div>
+              <div class="d" id="miFavDesc"></div>
+            </div>
+            <div class="chev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="row" onclick="openSheet('supportSheet')">
+            <div class="left">
+              <!-- headset -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12a8 8 0 0 1 16 0"></path>
+                <path d="M4 12v5a2 2 0 0 0 2 2h2"></path>
+                <path d="M20 12v5a2 2 0 0 1-2 2h-2"></path>
+                <path d="M8 19a4 4 0 0 0 8 0"></path>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t" id="miSupport"></div>
+              <div class="d" id="miSupportDesc"></div>
+            </div>
+            <div class="chev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="card pad">
+        <div class="section-title" id="otherTitle"></div>
+        <div class="list" style="border-top:1px solid rgba(0,0,0,.06)">
           <div class="row" onclick="openSheet('langSheet')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M2 12h20" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 2c3 3.2 4.5 6.6 4.5 10S15 18.8 12 22c-3-3.2-4.5-6.6-4.5-10S9 5.2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <div class="left">
+              <!-- language -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 5h7"></path>
+                <path d="M7 5v15"></path>
+                <path d="M4 19h7"></path>
+                <path d="M13 7h7"></path>
+                <path d="M13 17h7"></path>
+                <path d="M13 7c1.5 3.5 4 6 7 7"></path>
+                <path d="M20 7c-1.5 3.5-4 6-7 7"></path>
               </svg>
             </div>
-            <div class="txt">
-              <div class="title" data-i18n="lang">Taal</div>
-              <div class="desc" id="langLabel">Nederlands</div>
+            <div class="mid">
+              <div class="t" id="miLang"></div>
+              <div class="d" id="miLangDesc"></div>
             </div>
             <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
               </svg>
             </div>
           </div>
 
           <div class="row" onclick="openSheet('themeSheet')">
-            <div class="ico">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-1a2 2 0 0 0 0 4h1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M7.5 10h.01M9.5 6.5h.01M14.5 6.5h.01M16.5 10h.01" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+            <div class="left">
+              <!-- theme -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
               </svg>
             </div>
-            <div class="txt">
-              <div class="title" data-i18n="theme">Thema</div>
-              <div class="desc" id="themeLabel" data-i18n="theme_auto">Automatisch</div>
+            <div class="mid">
+              <div class="t" id="miTheme"></div>
+              <div class="d" id="miThemeDesc"></div>
             </div>
             <div class="chev">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
               </svg>
             </div>
           </div>
-        </div>
 
-        <div class="center-action">
-          <button class="linkish" type="button" onclick="logout()">
-            <span data-i18n="logout">Uitloggen</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M10 17l-1 4-4-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M14 7l1-4 4 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7 14a7 7 0 0 1 10-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M17 10a7 7 0 0 1-10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="tiny">
-          <div>© 2026 ymaanyGO</div>
-          <div><a href="voorwaarden-en-privacy.html" style="font-weight:900;">Algemene voorwaarden</a></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: RIDES ===== -->
-    <section id="view-rides" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="rides">Ritten</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="list" style="display:flex; gap:10px; padding:10px; border-radius:999px;">
-            <button class="linkish" style="flex:1; justify-content:center;" type="button" onclick="loadRides('upcoming')" id="tabUpcoming" data-i18n="upcoming">Aankomend</button>
-            <button class="linkish" style="flex:1; justify-content:center; opacity:.75;" type="button" onclick="loadRides('past')" id="tabPast" data-i18n="past">Geweest</button>
-          </div>
-
-          <div id="ridesWrap" class="empty">
-            <div class="big-ico">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                <path d="M7 3v3M17 3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 7h16" stroke="currentColor" stroke-width="2"/>
-                <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M8 11h8M8 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <div class="row" onclick="logout()">
+            <div class="left">
+              <!-- logout -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17l5-5-5-5"></path>
+                <path d="M15 12H3"></path>
+                <path d="M21 4v16"></path>
               </svg>
             </div>
-            <h3 data-i18n="no_rides_title">Geen ritten</h3>
-            <p data-i18n="no_rides_sub">Je hebt nog geen ritten.</p>
-            <button class="btn secondary" type="button" onclick="window.location.href='taxi.html'" data-i18n="book_now">Boek nu een rit</button>
-          </div>
-
-          <div id="ridesList" class="list" style="display:none;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: PERSONAL ===== -->
-    <section id="view-personal" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="personal_title">Persoonlijke gegevens</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="field">
-            <label data-i18n="name">Naam</label>
-            <input id="fName" type="text" autocomplete="name" />
-          </div>
-          <div class="field">
-            <label data-i18n="phone">Telefoonnummer</label>
-            <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" />
-          </div>
-          <div class="field">
-            <label data-i18n="email">E-mail</label>
-            <input id="fEmail" type="email" autocomplete="email" />
-          </div>
-          <button class="btn" type="button" onclick="saveProfile()" data-i18n="save">Opslaan</button>
-          <div class="note" data-i18n="profile_note">Wijzigingen worden direct opgeslagen in je account.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: SECURITY ===== -->
-    <section id="view-security" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="security_title">Inloggen en beveiliging</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="list">
-            <div class="row" onclick="openView('view-password')">
-              <div class="ico">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2"/>
-                  <path d="M6 11h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" data-i18n="password">Wachtwoord</div>
-                <div class="desc" id="pwMeta" data-i18n="pw_meta">Beheer je wachtwoord</div>
-              </div>
-              <div class="chev">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
+            <div class="mid">
+              <div class="t" id="miLogout"></div>
+              <div class="d" id="miLogoutDesc"></div>
             </div>
-
-            <div class="row" onclick="toast(t('soon'))">
-              <div class="ico">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2l8 4v6c0 5-3.5 9.6-8 10-4.5-.4-8-5-8-10V6l8-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" data-i18n="2fa">Tweestapsverificatie</div>
-                <div class="desc" data-i18n="inactive">Inactief</div>
-              </div>
-              <div class="chev">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-
-            <div class="row" onclick="deleteAccount()">
-              <div class="ico" style="border-color:rgba(231,76,60,.35);background:rgba(231,76,60,.10);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M10 11v7M14 11v7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M6 7l1 14h10l1-14" stroke="currentColor" stroke-width="2"/>
-                  <path d="M9 7V4h6v3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" style="color:var(--danger);" data-i18n="delete_account">Account verwijderen</div>
-                <div class="desc" data-i18n="delete_account_desc">Permanent verwijderen</div>
-              </div>
-              <div class="chev" style="opacity:.45;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
+            <div class="chev" style="opacity:.2"></div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ===== VIEW: CHANGE PASSWORD ===== -->
-    <section id="view-password" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-security')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="change_pw">Wachtwoord wijzigen</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="field">
-            <label data-i18n="current_pw">Huidig wachtwoord</label>
-            <input id="curPw" type="password" autocomplete="current-password"/>
-          </div>
-          <div class="field">
-            <label data-i18n="new_pw">Nieuw wachtwoord</label>
-            <input id="newPw" type="password" autocomplete="new-password"/>
-          </div>
-          <div class="field">
-            <label data-i18n="repeat_pw">Herhaal wachtwoord</label>
-            <input id="newPw2" type="password" autocomplete="new-password"/>
-          </div>
-          <button class="btn" type="button" onclick="changePassword()" data-i18n="save">Opslaan</button>
-          <div class="note" data-i18n="pw_rule">Gebruik minimaal 8 tekens, met hoofdletter, kleine letter en cijfer.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: DISCOUNTS ===== -->
-    <section id="view-discounts" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="discounts_title">Kortingen</h2>
-          <div style="width:44px"></div>
-        </div>
-        <div class="content-pad">
-          <div class="field">
-            <label data-i18n="coupon">Kortingscode</label>
-            <input id="coupon" type="text" placeholder="ABC123" />
-          </div>
-          <button class="btn" type="button" onclick="applyCoupon()" data-i18n="apply">Toepassen</button>
-          <div class="note" data-i18n="coupon_note">Kortingscodes worden direct gecontroleerd.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: PAYMENT ===== -->
-    <section id="view-payment" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="payment_title">Betaalmethoden</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="list">
-            <div class="row" onclick="setPaymentMethod('driver')">
-              <div class="ico">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 11V7a1 1 0 0 1 2 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M9 11V6a1 1 0 0 1 2 0v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M11 11V7a1 1 0 0 1 2 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M13 11V8a1 1 0 0 1 2 0v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2l2-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" data-i18n="pay_driver">Betalen bij chauffeur</div>
-                <div class="desc" data-i18n="pay_driver_desc">Contant of afspraak met chauffeur</div>
-              </div>
-              <div class="chev" id="payDriverCheck" style="opacity:1; display:none;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div class="note" data-i18n="payment_note">
-            Betaalmethode wordt gebruikt bij het boeken.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: FAVORITES ===== -->
-    <section id="view-favorites" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="fav_title">Favoriete locaties</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div id="favEmpty" class="empty" style="padding-top:26px;">
-            <div class="big-ico">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                <path d="M12 22s7-5.2 7-12a7 7 0 0 0-14 0c0 6.8 7 12 7 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M12 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-            <h3 data-i18n="fav_empty_title">Voeg je favoriete locaties toe</h3>
-            <p data-i18n="fav_empty_sub">Je kunt hier adressen opslaan om sneller te boeken.</p>
-          </div>
-
-          <div id="favList" class="list" style="display:none;"></div>
-
-          <button class="btn" type="button" onclick="openView('view-fav-add')" data-i18n="add_location">Locatie toevoegen</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: ADD FAVORITE ===== -->
-    <section id="view-fav-add" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-favorites')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="add_location">Locatie toevoegen</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="field">
-            <label data-i18n="label_name">Naam (bijv. Thuis)</label>
-            <input id="favName" type="text" />
-          </div>
-          <div class="field">
-            <label data-i18n="address">Adres</label>
-            <input id="favAddr" type="text" />
-          </div>
-          <button class="btn" type="button" onclick="addFavorite()" data-i18n="save">Opslaan</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: SUPPORT ===== -->
-    <section id="view-support" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="support_title">Klantenservice</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div class="list">
-            <div class="row" onclick="window.location.href='contact.html'">
-              <div class="ico">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-                  <path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" data-i18n="contact">Contact</div>
-                <div class="desc" data-i18n="contact_desc">Neem contact met ons op</div>
-              </div>
-              <div class="chev">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-
-            <div class="row" onclick="window.location.href='voorwaarden-en-privacy.html'">
-              <div class="ico">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 3h7l3 3v15a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-                  <path d="M14 3v4h4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="txt">
-                <div class="title" data-i18n="terms">Algemene voorwaarden</div>
-                <div class="desc" data-i18n="terms_desc">Privacy & voorwaarden</div>
-              </div>
-              <div class="chev">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VIEW: NEWS ===== -->
-    <section id="view-news" class="view">
-      <div class="card">
-        <div class="screenbar">
-          <button class="back-btn" type="button" onclick="openView('view-account')" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <h2 data-i18n="news_title">Wat is er nieuw?</h2>
-          <div style="width:44px"></div>
-        </div>
-
-        <div class="content-pad">
-          <div id="newsList" class="list"></div>
-        </div>
+        <div class="subtle" style="text-align:center;margin-top:10px" id="versionLine"></div>
       </div>
     </section>
   </div>
 
-  <!-- Bottom nav -->
-  <nav class="bottom-nav" aria-label="Bottom navigation">
-    <div class="nav-inner">
-      <div class="tab" id="tabHome" onclick="goto('index.html')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M4 11l8-7 8 7v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Bottom Nav -->
+  <div class="bottom" role="navigation" aria-label="Bottom navigation">
+    <div class="bottom-inner">
+      <button id="tabHome" class="tab active" type="button" onclick="showPage('home')">
+        <!-- home -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10.5 12 3l9 7.5V21a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 21v-10.5Z"></path>
+          <path d="M9 22v-7h6v7"></path>
         </svg>
-        <div class="lbl" data-i18n="home">Home</div>
-      </div>
-      <div class="tab" id="tabRides" onclick="openView('view-rides'); loadRides('upcoming')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M7 3v3M17 3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M4 7h16" stroke="currentColor" stroke-width="2"/>
-          <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-          <path d="M8 11h8M8 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <div id="tabHomeLbl"></div>
+      </button>
+
+      <button id="tabRides" class="tab" type="button" onclick="showPage('rides')">
+        <!-- calendar/clock -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+          <path d="M16 2v4M8 2v4M3 10h18"></path>
+          <path d="M12 14v4l3 2"></path>
         </svg>
-        <div class="lbl" data-i18n="rides">Ritten</div>
-      </div>
-      <div class="tab active" id="tabAccount" onclick="openView('view-account')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12Z" stroke="currentColor" stroke-width="2"/>
-          <path d="M4.8 20.2c1.8-3.6 4.6-5.2 7.2-5.2s5.4 1.6 7.2 5.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <div id="tabRidesLbl"></div>
+      </button>
+
+      <button id="tabAccount" class="tab" type="button" onclick="showPage('account')">
+        <!-- user -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21a8 8 0 0 0-16 0"></path>
+          <circle cx="12" cy="8" r="4"></circle>
         </svg>
-        <div class="lbl" data-i18n="account">Account</div>
-      </div>
+        <div id="tabAccountLbl"></div>
+      </button>
     </div>
-  </nav>
+  </div>
 
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
-
-  <!-- Overlay + Sheets -->
+  <!-- Overlay for all sheets -->
   <div id="overlay" class="overlay" onclick="closeAllSheets()"></div>
 
-  <!-- Language sheet -->
-  <div id="langSheet" class="sheet" role="dialog" aria-modal="true">
-    <div class="grab"></div>
-    <h3 data-i18n="select_lang">Selecteer je taal</h3>
+  <!-- ===== Sheets ===== -->
 
-    <div class="radio-row" id="lang-nl" onclick="setLang('nl')">
-      <div class="left">🇳🇱</div>
-      <div class="r-txt"><div class="r-title">Nederlands</div></div>
-      <div class="dot"><div class="in"></div></div>
-    </div>
-
-    <div class="radio-row" id="lang-en" onclick="setLang('en')">
-      <div class="left">🇬🇧</div>
-      <div class="r-txt"><div class="r-title">English</div></div>
-      <div class="dot"><div class="in"></div></div>
-    </div>
-
-    <div class="radio-row" id="lang-ar" onclick="setLang('ar')">
-      <div class="left">🇸🇦</div>
-      <div class="r-txt"><div class="r-title">العربية</div></div>
-      <div class="dot"><div class="in"></div></div>
+  <!-- Language -->
+  <div id="langSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="langTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('langSheet')">×</button>
+      </div>
+      <div class="sheet-body">
+        <div id="langNL" class="radio-row" onclick="setLang('nl')">
+          <div class="l"><strong>Nederlands</strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+        <div id="langEN" class="radio-row" onclick="setLang('en')">
+          <div class="l"><strong>English</strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+        <div id="langAR" class="radio-row" onclick="setLang('ar')">
+          <div class="l"><strong>العربية</strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('langSheet')" id="closeLbl"></button>
+      </div>
     </div>
   </div>
 
-  <!-- Theme sheet -->
-  <div id="themeSheet" class="sheet" role="dialog" aria-modal="true">
-    <div class="grab"></div>
-    <h3 data-i18n="theme">Thema</h3>
-
-    <div class="radio-row" id="theme-light" onclick="setTheme('light')">
-      <div class="left">☀️</div>
-      <div class="r-txt"><div class="r-title" data-i18n="light">Licht</div></div>
-      <div class="dot"><div class="in"></div></div>
-    </div>
-
-    <div class="radio-row" id="theme-dark" onclick="setTheme('dark')">
-      <div class="left">🌙</div>
-      <div class="r-txt"><div class="r-title" data-i18n="dark">Donker</div></div>
-      <div class="dot"><div class="in"></div></div>
-    </div>
-
-    <div class="radio-row" id="theme-auto" onclick="setTheme('auto')">
-      <div class="left">🌓</div>
-      <div class="r-txt"><div class="r-title" data-i18n="theme_auto">Automatisch</div></div>
-      <div class="dot"><div class="in"></div></div>
+  <!-- Theme -->
+  <div id="themeSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="themeTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('themeSheet')">×</button>
+      </div>
+      <div class="sheet-body">
+        <div id="themeLight" class="radio-row" onclick="setTheme('light')">
+          <div class="l"><strong id="themeLightLbl"></strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+        <div id="themeDark" class="radio-row" onclick="setTheme('dark')">
+          <div class="l"><strong id="themeDarkLbl"></strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+        <div id="themeAuto" class="radio-row" onclick="setTheme('auto')">
+          <div class="l"><strong id="themeAutoLbl"></strong></div>
+          <div class="dot"><i></i></div>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('themeSheet')" id="closeThemeLbl"></button>
+      </div>
     </div>
   </div>
 
-  <!-- More sheet -->
-  <div id="moreSheet" class="sheet" role="dialog" aria-modal="true">
-    <div class="grab"></div>
-    <h3 data-i18n="more">Meer</h3>
-
-    <div class="radio-row" onclick="openSheet('langSheet')">
-      <div class="left">🌐</div>
-      <div class="r-txt">
-        <div class="r-title" data-i18n="lang">Taal</div>
-        <div class="r-sub" id="langLabel2">Nederlands</div>
+  <!-- Favorites -->
+  <div id="favSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="sheet-title" id="favSheetTitle"></div>
+          <div class="subtle" id="favSheetDesc"></div>
+        </div>
+        <button class="sheet-x" type="button" onclick="closeSheet('favSheet')">×</button>
       </div>
-      <div class="chev">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="sheet-body">
+        <div id="favList"></div>
+
+        <div class="card pad" style="box-shadow:none;border:1px dashed rgba(0,0,0,.14);margin-top:12px;">
+          <div class="section-title" style="margin:0 0 8px" id="addFavTitle"></div>
+
+          <div class="field">
+            <label id="favNameLbl" for="favName"></label>
+            <input id="favName" type="text" placeholder="Bijv. Thuis">
+          </div>
+
+          <div class="field">
+            <label id="favAddrLbl" for="favAddr"></label>
+            <input id="favAddr" type="text" placeholder="Straat + nummer, stad">
+          </div>
+
+          <button class="primary" type="button" onclick="addFavorite()" id="addFavBtn"></button>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('favSheet')" id="closeFavLbl"></button>
       </div>
     </div>
+  </div>
 
-    <div class="radio-row" onclick="openSheet('themeSheet')">
-      <div class="left">🎨</div>
-      <div class="r-txt">
-        <div class="r-title" data-i18n="theme">Thema</div>
-        <div class="r-sub" id="themeLabel2" data-i18n="theme_auto">Automatisch</div>
+  <!-- Profile -->
+  <div id="profileSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="profileTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('profileSheet')">×</button>
       </div>
-      <div class="chev">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="sheet-body">
+        <div class="field">
+          <label id="nameLbl" for="pName"></label>
+          <input id="pName" type="text">
+        </div>
+        <div class="field">
+          <label id="phoneLbl" for="pPhone"></label>
+          <input id="pPhone" type="tel" inputmode="tel" placeholder="06... / +31...">
+        </div>
+        <div class="field">
+          <label id="emailLbl" for="pEmail"></label>
+          <input id="pEmail" type="email">
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="primary" type="button" onclick="saveProfile()" id="saveProfileLbl"></button>
+        <div style="height:10px"></div>
+        <button class="btn-ghost" type="button" onclick="closeSheet('profileSheet')" id="closeProfileLbl"></button>
       </div>
     </div>
+  </div>
 
-    <div class="radio-row" onclick="logout()">
-      <div class="left">⎋</div>
-      <div class="r-txt"><div class="r-title" data-i18n="logout">Uitloggen</div></div>
-      <div class="chev"></div>
+  <!-- Security -->
+  <div id="securitySheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="securityTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('securitySheet')">×</button>
+      </div>
+      <div class="sheet-body">
+        <div class="card pad" style="box-shadow:none">
+          <div class="section-title" style="margin:0 0 6px" id="pwTitle"></div>
+          <div class="subtle" id="pwDesc"></div>
+
+          <div class="field" style="margin-top:12px">
+            <label id="newPwLbl" for="newPw"></label>
+            <input id="newPw" type="password" minlength="8" placeholder="********">
+          </div>
+          <div class="field">
+            <label id="newPw2Lbl" for="newPw2"></label>
+            <input id="newPw2" type="password" minlength="8" placeholder="********">
+          </div>
+
+          <button class="primary" type="button" onclick="changePassword()" id="changePwBtn"></button>
+          <div class="subtle" style="margin-top:10px" id="pwNote"></div>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('securitySheet')" id="closeSecLbl"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div id="paymentSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="paymentTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('paymentSheet')">×</button>
+      </div>
+      <div class="sheet-body">
+        <div class="card pad" style="box-shadow:none">
+          <div class="section-title" style="margin:0 0 6px" id="payDriverTitle"></div>
+          <div class="subtle" id="payDriverDesc"></div>
+
+          <div style="height:12px"></div>
+
+          <div id="payCash" class="radio-row" onclick="setPayment('cash')">
+            <div class="l"><strong id="payCashLbl"></strong></div>
+            <div class="dot"><i></i></div>
+          </div>
+          <div id="payCard" class="radio-row" onclick="setPayment('card')">
+            <div class="l"><strong id="payCardLbl"></strong></div>
+            <div class="dot"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('paymentSheet')" id="closePayLbl"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Support -->
+  <div id="supportSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title" id="supportTitle"></div>
+        <button class="sheet-x" type="button" onclick="closeSheet('supportSheet')">×</button>
+      </div>
+      <div class="sheet-body">
+        <div class="card pad" style="box-shadow:none">
+          <div class="section-title" style="margin:0 0 6px" id="supportHow"></div>
+          <div class="subtle" id="supportText"></div>
+
+          <div style="height:12px"></div>
+          <button class="primary" type="button" onclick="openWhatsAppSupport()" id="supportBtn"></button>
+          <div class="subtle" style="margin-top:10px" id="supportNote"></div>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('supportSheet')" id="closeSupLbl"></button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* ==========================================================
-       ✅ Customer Dashboard (No API) — Uses same login session
-       login sets: localStorage["ymaanygo_customer_session"] = username/email
-       ========================================================== */
+    /* ===========================
+       "REAL" (بدون سيرفر) يعني:
+       - بيانات حقيقية على الجهاز (localStorage)
+       - صفحات وتبديل وتفاعل كامل
+       - إذا تريد "حقيقي" 100% على سيرفر + قاعدة بيانات + تسجيل دخول فعلي -> لازم Backend
+       =========================== */
 
-    const SESSION_KEY = "ymaanygo_customer_session";
+    const LS = {
+      profile: 'ymaanygo_profile_v1',
+      lang: 'ymaanygo_lang_v1',
+      theme: 'ymaanygo_theme_v1',
+      payment: 'ymaanygo_payment_v1',
+      favs: 'ymaanygo_favs_v1',
+      rides: 'ymaanygo_rides_v1',
+      pw: 'ymaanygo_pw_v1'
+    };
 
-    function readCustomer(){
-      return localStorage.getItem(SESSION_KEY) || "";
-    }
-    function clearCustomer(){
-      localStorage.removeItem(SESSION_KEY);
-    }
-    function goto(href){ window.location.href = href; }
-
-    // ===== Views (SPA) =====
-    const views = [
-      "view-account","view-rides","view-personal","view-security","view-password",
-      "view-discounts","view-payment","view-favorites","view-fav-add","view-support","view-news"
-    ];
-    let viewStack = ["view-account"];
-
-    function setActiveTab(tab){
-      document.getElementById("tabHome").classList.remove("active");
-      document.getElementById("tabRides").classList.remove("active");
-      document.getElementById("tabAccount").classList.remove("active");
-      if(tab) document.getElementById(tab).classList.add("active");
-    }
-
-    function openView(id){
-      views.forEach(v=>{
-        const el = document.getElementById(v);
-        if(el) el.classList.toggle("active", v === id);
-      });
-
-      // top back button
-      const topBack = document.getElementById("topBackBtn");
-      topBack.style.display = (id !== "view-account" && id !== "view-rides") ? "grid" : "none";
-
-      // bottom tabs
-      if (id === "view-account") setActiveTab("tabAccount");
-      else if (id === "view-rides") setActiveTab("tabRides");
-      else setActiveTab("tabAccount");
-
-      const last = viewStack[viewStack.length - 1];
-      if (last !== id) viewStack.push(id);
-
-      if (id === "view-favorites") loadFavorites();
-      if (id === "view-news") loadNews();
-      if (id === "view-payment") syncPaymentUI();
-    }
-
-    function navBack(){
-      if (viewStack.length <= 1){
-        openView("view-account");
-        viewStack = ["view-account"];
-        return;
-      }
-      viewStack.pop();
-      const prev = viewStack[viewStack.length - 1] || "view-account";
-      views.forEach(v=>{
-        const el = document.getElementById(v);
-        if(el) el.classList.toggle("active", v === prev);
-      });
-      if (prev === "view-account") setActiveTab("tabAccount");
-      if (prev === "view-rides") setActiveTab("tabRides");
-
-      document.getElementById("topBackBtn").style.display =
-        (prev !== "view-account" && prev !== "view-rides") ? "grid" : "none";
-    }
-
-    // ===== Sheets =====
-    function openSheet(id){
-      closeAllSheets();
-      document.getElementById("overlay").classList.add("show");
-      document.getElementById(id).classList.add("open");
-    }
-    function closeAllSheets(){
-      document.getElementById("overlay").classList.remove("show");
-      ["langSheet","themeSheet","moreSheet"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el) el.classList.remove("open");
-      });
-    }
-
-    // ===== Toast =====
-    let toastT = null;
-    function toast(msg){
-      const el = document.getElementById("toast");
-      el.textContent = msg;
-      el.classList.add("show");
-      clearTimeout(toastT);
-      toastT = setTimeout(()=>el.classList.remove("show"), 2400);
-    }
-
-    // ===== i18n =====
-    const I18N = {
+    const i18n = {
       nl: {
-        soon: "Binnenkort.",
-        invite: "Uitnodigen komt binnenkort.",
-        error_generic: "Er is iets misgegaan",
-        personal_title: "Persoonlijke gegevens",
-        personal_desc: "Naam • Telefoon • E-mail",
-        security_title: "Inloggen en beveiliging",
-        security_desc: "Wachtwoord • Beveiliging",
-        discounts_title: "Kortingen",
-        discounts_desc: "Kortingscodes • Acties",
-        payment_title: "Betaalmethoden",
-        payment_desc: "Betalen bij chauffeur",
-        fav_title: "Favoriete locaties",
-        fav_desc: "Beheer je favorieten",
-        support_title: "Klantenservice",
-        support_desc: "Hulp • Contact",
-        news_title: "Wat is er nieuw?",
-        news_desc: "Updates • Nieuws",
-        promo_title: "Verdien tegoed",
-        promo_sub: "Nodig vrienden uit",
-        other: "Overig",
-        lang: "Taal",
-        select_lang: "Selecteer je taal",
-        theme: "Thema",
-        theme_auto: "Automatisch",
-        light: "Licht",
-        dark: "Donker",
-        logout: "Uitloggen",
-        account: "Account",
-        rides: "Ritten",
-        home: "Home",
-        upcoming: "Aankomend",
-        past: "Geweest",
-        no_rides_title: "Geen ritten",
-        no_rides_sub: "Je hebt nog geen ritten.",
-        book_now: "Boek nu een rit",
-        name: "Naam",
-        phone: "Telefoonnummer",
-        email: "E-mail",
-        save: "Opslaan",
-        profile_note: "Wijzigingen worden direct opgeslagen in je account.",
-        password: "Wachtwoord",
-        pw_meta: "Beheer je wachtwoord",
-        change_pw: "Wachtwoord wijzigen",
-        current_pw: "Huidig wachtwoord",
-        new_pw: "Nieuw wachtwoord",
-        repeat_pw: "Herhaal wachtwoord",
-        pw_rule: "Gebruik minimaal 8 tekens, met hoofdletter, kleine letter en cijfer.",
-        "2fa":"Tweestapsverificatie",
-        inactive:"Inactief",
-        delete_account:"Account verwijderen",
-        delete_account_desc:"Permanent verwijderen",
-        coupon:"Kortingscode",
-        apply:"Toepassen",
-        coupon_note:"Kortingscodes worden direct gecontroleerd.",
-        pay_driver:"Betalen bij chauffeur",
-        pay_driver_desc:"Contant of afspraak met chauffeur",
-        payment_note:"Betaalmethode wordt gebruikt bij het boeken.",
-        fav_empty_title:"Voeg je favoriete locaties toe",
-        fav_empty_sub:"Je kunt hier adressen opslaan om sneller te boeken.",
-        add_location:"Locatie toevoegen",
-        label_name:"Naam (bijv. Thuis)",
-        address:"Adres",
-        contact:"Contact",
-        contact_desc:"Neem contact met ons op",
-        terms:"Algemene voorwaarden",
-        terms_desc:"Privacy & voorwaarden",
-        more:"Meer",
-        confirm_delete:"Weet je zeker dat je je account wilt verwijderen?",
-        deleted:"Account verwijderd.",
-        saved:"Opgeslagen.",
-        updated:"Bijgewerkt.",
-        invalid_pw:"Wachtwoord voldoet niet aan de eisen.",
-        mismatch_pw:"Wachtwoorden komen niet overeen.",
-        pay_set:"Betaalmethode ingesteld.",
-        not_real:"هذه صفحة تجريبية بدون Backend."
+        tabHome:"Home", tabRides:"Ritten", tabAccount:"Account",
+        homeSearch:"Waar wil je heen?",
+        homeHint:"Tik om direct naar Taxi boeken te gaan.",
+        promoTitle:"Snel taxi boeken",
+        promoText:"Vul je rit in en ontvang de prijs. Bevestiging via WhatsApp.",
+        promoBtn:"Taxi boeken",
+        favTitle:"Favoriete locaties",
+        favDesc:"Beheer je favorieten",
+        quickBookTitle:"Boek nu een rit",
+        quickBookDesc:"Open Taxi boeken",
+
+        segUpcoming:"Aankomend", segPast:"Geweest",
+        ridesEmptyTitle:"Geen ritten",
+        ridesEmptyText:"Je hebt geen ritten in deze lijst.",
+        ridesEmptyBtn:"Boek nu een rit",
+
+        miProfile:"Persoonlijke gegevens",
+        miProfileDesc:"Naam, telefoon, e-mail",
+        miSecurity:"Inloggen en beveiliging",
+        miSecurityDesc:"Wachtwoord wijzigen",
+        miPayment:"Betaalmethoden",
+        miPaymentDesc:"Betalen bij chauffeur",
+        miFav:"Favoriete locaties",
+        miFavDesc:"Beheer je favorieten",
+        miSupport:"Klantenservice",
+        miSupportDesc:"Hulp via WhatsApp",
+
+        other:"Overig",
+        miLang:"Taal",
+        miLangDesc:"Nederlands / English / العربية",
+        miTheme:"Thema",
+        miThemeDesc:"Licht / Donker / Automatisch",
+        miLogout:"Uitloggen",
+        miLogoutDesc:"Verwijder lokale sessie",
+        version:"versie 2026.0.0 • web",
+
+        langTitle:"Selecteer je taal",
+        close:"Sluiten",
+
+        themeTitle:"Thema",
+        themeLight:"Licht",
+        themeDark:"Donker",
+        themeAuto:"Automatisch",
+
+        favSheetTitle:"Favoriete locaties",
+        favSheetDesc:"Je kunt hier je favoriete adressen toevoegen om tijd te besparen bij het boeken.",
+        addFavTitle:"Locatie toevoegen",
+        favNameLbl:"Naam",
+        favAddrLbl:"Adres",
+        addFavBtn:"Locatie toevoegen",
+
+        profileTitle:"Persoonlijke gegevens",
+        nameLbl:"Naam",
+        phoneLbl:"Telefoonnummer",
+        emailLbl:"E-mail",
+        save:"Opslaan",
+
+        securityTitle:"Inloggen en beveiliging",
+        pwTitle:"Wachtwoord",
+        pwDesc:"Wijzig je wachtwoord (lokaal).",
+        newPw:"Nieuw wachtwoord",
+        newPw2:"Herhaal wachtwoord",
+        changePw:"Wachtwoord wijzigen",
+        pwNote:"Tip: minimaal 8 tekens, hoofdletter, kleine letter en cijfer.",
+
+        paymentTitle:"Betaalmethoden",
+        payDriverTitle:"Betalen bij chauffeur",
+        payDriverDesc:"Je betaalt direct aan de chauffeur bij aankomst of vertrek.",
+        payCash:"Contant",
+        payCard:"Pin / kaart",
+
+        supportTitle:"Klantenservice",
+        supportHow:"Contact",
+        supportText:"Stuur je vraag via WhatsApp. We reageren zo snel mogelijk.",
+        supportBtn:"WhatsApp klantenservice",
+        supportNote:"Let op: dit opent WhatsApp."
       },
+
       en: {
-        soon: "Coming soon.",
-        invite: "Invite feature coming soon.",
-        error_generic: "Something went wrong",
-        personal_title:"Personal details",
-        personal_desc:"Name • Phone • Email",
-        security_title:"Login & security",
-        security_desc:"Password • Security",
-        discounts_title:"Discounts",
-        discounts_desc:"Codes • Promotions",
-        payment_title:"Payment methods",
-        payment_desc:"Pay the driver",
-        fav_title:"Favorite locations",
-        fav_desc:"Manage favorites",
-        support_title:"Support",
-        support_desc:"Help • Contact",
-        news_title:"What’s new?",
-        news_desc:"Updates • News",
-        promo_title:"Earn credit",
-        promo_sub:"Invite friends",
+        tabHome:"Home", tabRides:"Rides", tabAccount:"Account",
+        homeSearch:"Where are you going?",
+        homeHint:"Tap to open Taxi booking.",
+        promoTitle:"Book fast",
+        promoText:"Fill your ride and get a price. Confirmation via WhatsApp.",
+        promoBtn:"Book a taxi",
+        favTitle:"Favorite locations",
+        favDesc:"Manage your favorites",
+        quickBookTitle:"Book a ride now",
+        quickBookDesc:"Open Taxi booking",
+
+        segUpcoming:"Upcoming", segPast:"Past",
+        ridesEmptyTitle:"No rides",
+        ridesEmptyText:"You have no rides in this list.",
+        ridesEmptyBtn:"Book a ride",
+
+        miProfile:"Personal details",
+        miProfileDesc:"Name, phone, email",
+        miSecurity:"Login & security",
+        miSecurityDesc:"Change password",
+        miPayment:"Payment",
+        miPaymentDesc:"Pay the driver",
+        miFav:"Favorite locations",
+        miFavDesc:"Manage favorites",
+        miSupport:"Support",
+        miSupportDesc:"Help via WhatsApp",
+
         other:"Other",
-        lang:"Language",
-        select_lang:"Select your language",
-        theme:"Theme",
-        theme_auto:"Automatic",
-        light:"Light",
-        dark:"Dark",
-        logout:"Log out",
-        account:"Account",
-        rides:"Rides",
-        home:"Home",
-        upcoming:"Upcoming",
-        past:"Past",
-        no_rides_title:"No rides",
-        no_rides_sub:"You have no rides yet.",
-        book_now:"Book a ride",
-        name:"Name",
-        phone:"Phone number",
-        email:"Email",
+        miLang:"Language",
+        miLangDesc:"Nederlands / English / العربية",
+        miTheme:"Theme",
+        miThemeDesc:"Light / Dark / Auto",
+        miLogout:"Log out",
+        miLogoutDesc:"Clear local session",
+        version:"version 2026.0.0 • web",
+
+        langTitle:"Select language",
+        close:"Close",
+
+        themeTitle:"Theme",
+        themeLight:"Light",
+        themeDark:"Dark",
+        themeAuto:"Auto",
+
+        favSheetTitle:"Favorite locations",
+        favSheetDesc:"Add your favorite addresses to save time when booking.",
+        addFavTitle:"Add location",
+        favNameLbl:"Name",
+        favAddrLbl:"Address",
+        addFavBtn:"Add location",
+
+        profileTitle:"Personal details",
+        nameLbl:"Name",
+        phoneLbl:"Phone number",
+        emailLbl:"Email",
         save:"Save",
-        profile_note:"Changes are saved to your account.",
-        password:"Password",
-        pw_meta:"Manage your password",
-        change_pw:"Change password",
-        current_pw:"Current password",
-        new_pw:"New password",
-        repeat_pw:"Repeat password",
-        pw_rule:"Use at least 8 chars with upper, lower and digit.",
-        "2fa":"Two-step verification",
-        inactive:"Inactive",
-        delete_account:"Delete account",
-        delete_account_desc:"Permanent delete",
-        coupon:"Discount code",
-        apply:"Apply",
-        coupon_note:"Codes are checked instantly.",
-        pay_driver:"Pay the driver",
-        pay_driver_desc:"Cash or agreed with driver",
-        payment_note:"This payment method is used for bookings.",
-        fav_empty_title:"Add favorite locations",
-        fav_empty_sub:"Save addresses to book faster.",
-        add_location:"Add location",
-        label_name:"Label (e.g. Home)",
-        address:"Address",
-        contact:"Contact",
-        contact_desc:"Get in touch",
-        terms:"Terms",
-        terms_desc:"Privacy & terms",
-        more:"More",
-        confirm_delete:"Are you sure you want to delete your account?",
-        deleted:"Account deleted.",
-        saved:"Saved.",
-        updated:"Updated.",
-        invalid_pw:"Password does not meet requirements.",
-        mismatch_pw:"Passwords do not match.",
-        pay_set:"Payment method set.",
-        not_real:"Demo dashboard without backend."
+
+        securityTitle:"Login & security",
+        pwTitle:"Password",
+        pwDesc:"Change your password (local).",
+        newPw:"New password",
+        newPw2:"Repeat password",
+        changePw:"Change password",
+        pwNote:"Tip: at least 8 chars, uppercase, lowercase and a number.",
+
+        paymentTitle:"Payment",
+        payDriverTitle:"Pay the driver",
+        payDriverDesc:"You pay the driver directly at pickup or drop-off.",
+        payCash:"Cash",
+        payCard:"Card / pin",
+
+        supportTitle:"Support",
+        supportHow:"Contact",
+        supportText:"Send your question via WhatsApp. We’ll reply ASAP.",
+        supportBtn:"WhatsApp support",
+        supportNote:"Note: this opens WhatsApp."
       },
+
       ar: {
-        soon: "قريباً.",
-        invite: "ميزة الدعوة قريباً.",
-        error_generic: "حدث خطأ",
-        personal_title:"البيانات الشخصية",
-        personal_desc:"الاسم • الهاتف • الإيميل",
-        security_title:"تسجيل الدخول والأمان",
-        security_desc:"كلمة المرور • الأمان",
-        discounts_title:"الخصومات",
-        discounts_desc:"أكواد • عروض",
-        payment_title:"طرق الدفع",
-        payment_desc:"الدفع للسائق",
-        fav_title:"المواقع المفضلة",
-        fav_desc:"إدارة المفضلة",
-        support_title:"خدمة العملاء",
-        support_desc:"مساعدة • تواصل",
-        news_title:"ما الجديد؟",
-        news_desc:"تحديثات • أخبار",
-        promo_title:"اربح رصيد",
-        promo_sub:"ادعُ أصدقاءك",
+        tabHome:"الرئيسية", tabRides:"الرحلات", tabAccount:"الحساب",
+        homeSearch:"إلى أين تريد الذهاب؟",
+        homeHint:"اضغط للانتقال إلى صفحة حجز التاكسي.",
+        promoTitle:"احجز بسرعة",
+        promoText:"أدخل بيانات الرحلة وخذ السعر. التأكيد عبر واتساب.",
+        promoBtn:"حجز تاكسي",
+        favTitle:"المواقع المفضلة",
+        favDesc:"إدارة المفضلات",
+        quickBookTitle:"احجز الآن",
+        quickBookDesc:"فتح صفحة الحجز",
+
+        segUpcoming:"القادمة", segPast:"السابقة",
+        ridesEmptyTitle:"لا توجد رحلات",
+        ridesEmptyText:"لا توجد رحلات في هذه القائمة.",
+        ridesEmptyBtn:"احجز رحلة الآن",
+
+        miProfile:"البيانات الشخصية",
+        miProfileDesc:"الاسم، الهاتف، البريد",
+        miSecurity:"تسجيل الدخول والأمان",
+        miSecurityDesc:"تغيير كلمة المرور",
+        miPayment:"طريقة الدفع",
+        miPaymentDesc:"الدفع عند السائق",
+        miFav:"المواقع المفضلة",
+        miFavDesc:"إدارة المفضلات",
+        miSupport:"خدمة العملاء",
+        miSupportDesc:"مساعدة عبر واتساب",
+
         other:"أخرى",
-        lang:"اللغة",
-        select_lang:"اختر لغتك",
-        theme:"المظهر",
-        theme_auto:"تلقائي",
-        light:"فاتح",
-        dark:"داكن",
-        logout:"تسجيل خروج",
-        account:"الحساب",
-        rides:"الرحلات",
-        home:"الرئيسية",
-        upcoming:"القادمة",
-        past:"السابقة",
-        no_rides_title:"لا توجد رحلات",
-        no_rides_sub:"ليس لديك رحلات حالياً.",
-        book_now:"احجز رحلة الآن",
-        name:"الاسم",
-        phone:"رقم الهاتف",
-        email:"البريد الإلكتروني",
+        miLang:"اللغة",
+        miLangDesc:"Nederlands / English / العربية",
+        miTheme:"المظهر",
+        miThemeDesc:"فاتح / داكن / تلقائي",
+        miLogout:"تسجيل خروج",
+        miLogoutDesc:"حذف الجلسة من الجهاز",
+        version:"الإصدار 2026.0.0 • ويب",
+
+        langTitle:"اختر اللغة",
+        close:"إغلاق",
+
+        themeTitle:"المظهر",
+        themeLight:"فاتح",
+        themeDark:"داكن",
+        themeAuto:"تلقائي",
+
+        favSheetTitle:"المواقع المفضلة",
+        favSheetDesc:"أضف عناوينك المفضلة لتوفير الوقت أثناء الحجز.",
+        addFavTitle:"إضافة موقع",
+        favNameLbl:"اسم الموقع",
+        favAddrLbl:"العنوان",
+        addFavBtn:"إضافة",
+
+        profileTitle:"البيانات الشخصية",
+        nameLbl:"الاسم",
+        phoneLbl:"رقم الهاتف",
+        emailLbl:"البريد الإلكتروني",
         save:"حفظ",
-        profile_note:"يتم حفظ التغييرات مباشرة في حسابك.",
-        password:"كلمة المرور",
-        pw_meta:"إدارة كلمة المرور",
-        change_pw:"تغيير كلمة المرور",
-        current_pw:"كلمة المرور الحالية",
-        new_pw:"كلمة مرور جديدة",
-        repeat_pw:"أعد كلمة المرور",
-        pw_rule:"حد أدنى 8 أحرف مع حرف كبير وصغير ورقم.",
-        "2fa":"التحقق بخطوتين",
-        inactive:"غير مفعل",
-        delete_account:"حذف الحساب",
-        delete_account_desc:"حذف نهائي",
-        coupon:"كود الخصم",
-        apply:"تطبيق",
-        coupon_note:"يتم التحقق من الكود مباشرة.",
-        pay_driver:"الدفع للسائق",
-        pay_driver_desc:"كاش أو حسب الاتفاق مع السائق",
-        payment_note:"سيتم استخدام طريقة الدفع هذه عند الحجز.",
-        fav_empty_title:"أضف مواقعك المفضلة",
-        fav_empty_sub:"احفظ العناوين لتسريع الحجز.",
-        add_location:"إضافة موقع",
-        label_name:"اسم (مثال: البيت)",
-        address:"العنوان",
-        contact:"تواصل",
-        contact_desc:"تواصل معنا",
-        terms:"الشروط",
-        terms_desc:"الخصوصية والشروط",
-        more:"المزيد",
-        confirm_delete:"هل أنت متأكد أنك تريد حذف الحساب؟",
-        deleted:"تم حذف الحساب.",
-        saved:"تم الحفظ.",
-        updated:"تم التحديث.",
-        invalid_pw:"كلمة المرور لا تحقق الشروط.",
-        mismatch_pw:"كلمتا المرور غير متطابقتين.",
-        pay_set:"تم ضبط طريقة الدفع.",
-        not_real:"هذه صفحة تجريبية بدون سيرفر."
+
+        securityTitle:"تسجيل الدخول والأمان",
+        pwTitle:"كلمة المرور",
+        pwDesc:"تغيير كلمة المرور (محليًا على الجهاز).",
+        newPw:"كلمة مرور جديدة",
+        newPw2:"تأكيد كلمة المرور",
+        changePw:"تغيير كلمة المرور",
+        pwNote:"ملاحظة: 8 أحرف على الأقل + حرف كبير + حرف صغير + رقم.",
+
+        paymentTitle:"طريقة الدفع",
+        payDriverTitle:"الدفع عند السائق",
+        payDriverDesc:"الدفع مباشرة للسائق عند الانطلاق أو الوصول.",
+        payCash:"نقدًا",
+        payCard:"بطاقة / جهاز PIN",
+
+        supportTitle:"خدمة العملاء",
+        supportHow:"تواصل",
+        supportText:"أرسل سؤالك عبر واتساب وسنرد بأسرع وقت.",
+        supportBtn:"واتساب خدمة العملاء",
+        supportNote:"ملاحظة: سيتم فتح واتساب."
       }
     };
 
-    function t(key){
-      const lang = localStorage.getItem("ymaanygo_lang") || "nl";
-      return (I18N[lang] && I18N[lang][key]) ? I18N[lang][key] : (I18N.nl[key] || key);
+    function getLang(){
+      return localStorage.getItem(LS.lang) || 'nl';
+    }
+    function getTheme(){
+      return localStorage.getItem(LS.theme) || 'auto';
     }
 
-    function applyI18n(){
-      const lang = localStorage.getItem("ymaanygo_lang") || "nl";
+    function applyTheme(){
+      const t = getTheme();
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const dark = (t === 'dark') || (t === 'auto' && prefersDark);
+
+      if(dark){
+        document.documentElement.style.setProperty('--bg', '#0f1111');
+        document.documentElement.style.setProperty('--card', '#151818');
+        document.documentElement.style.setProperty('--text', '#f2f4f4');
+        document.documentElement.style.setProperty('--muted', 'rgba(255,255,255,.62)');
+        document.documentElement.style.setProperty('--border', 'rgba(255,255,255,.10)');
+        document.documentElement.style.setProperty('--shadow', '0 16px 40px rgba(0,0,0,.40)');
+      }else{
+        document.documentElement.style.setProperty('--bg', '#f6f6f6');
+        document.documentElement.style.setProperty('--card', '#ffffff');
+        document.documentElement.style.setProperty('--text', '#111');
+        document.documentElement.style.setProperty('--muted', 'rgba(0,0,0,.60)');
+        document.documentElement.style.setProperty('--border', 'rgba(0,0,0,.10)');
+        document.documentElement.style.setProperty('--shadow', '0 12px 26px rgba(0,0,0,.10)');
+      }
+
+      // update theme radios
+      setActiveRadio('themeLight', t === 'light');
+      setActiveRadio('themeDark',  t === 'dark');
+      setActiveRadio('themeAuto',  t === 'auto');
+    }
+
+    function setTheme(val){
+      localStorage.setItem(LS.theme, val);
+      applyTheme();
+    }
+
+    function applyLang(){
+      const lang = getLang();
+      const T = i18n[lang] || i18n.nl;
+
+      document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
       document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
 
-      document.querySelectorAll("[data-i18n]").forEach(el=>{
-        const k = el.getAttribute("data-i18n");
-        el.textContent = t(k);
-      });
+      // Bottom tabs
+      document.getElementById('tabHomeLbl').textContent = T.tabHome;
+      document.getElementById('tabRidesLbl').textContent = T.tabRides;
+      document.getElementById('tabAccountLbl').textContent = T.tabAccount;
 
-      const labelMap = { nl:"Nederlands", en:"English", ar:"العربية" };
-      document.getElementById("langLabel").textContent = labelMap[lang] || "Nederlands";
-      document.getElementById("langLabel2").textContent = labelMap[lang] || "Nederlands";
+      // Home
+      document.getElementById('homeSearch').value = T.homeSearch;
+      document.getElementById('homeHint').textContent = T.homeHint;
+      document.getElementById('promoTitle').textContent = T.promoTitle;
+      document.getElementById('promoText').textContent = T.promoText;
+      document.getElementById('promoBtn').textContent = T.promoBtn;
+      document.getElementById('favTitle').textContent = T.favTitle;
+      document.getElementById('favDesc').textContent = T.favDesc;
+      document.getElementById('quickBookTitle').textContent = T.quickBookTitle;
+      document.getElementById('quickBookDesc').textContent = T.quickBookDesc;
 
-      ["lang-nl","lang-en","lang-ar"].forEach(id=>document.getElementById(id).classList.remove("active"));
-      document.getElementById("lang-" + lang).classList.add("active");
+      // Rides
+      document.getElementById('segUpcoming').textContent = T.segUpcoming;
+      document.getElementById('segPast').textContent = T.segPast;
+      document.getElementById('ridesEmptyTitle').textContent = T.ridesEmptyTitle;
+      document.getElementById('ridesEmptyText').textContent = T.ridesEmptyText;
+      document.getElementById('ridesEmptyBtn').textContent = T.ridesEmptyBtn;
+
+      // Account items
+      document.getElementById('miProfile').textContent = T.miProfile;
+      document.getElementById('miProfileDesc').textContent = T.miProfileDesc;
+      document.getElementById('miSecurity').textContent = T.miSecurity;
+      document.getElementById('miSecurityDesc').textContent = T.miSecurityDesc;
+      document.getElementById('miPayment').textContent = T.miPayment;
+      document.getElementById('miPaymentDesc').textContent = T.miPaymentDesc;
+      document.getElementById('miFav').textContent = T.miFav;
+      document.getElementById('miFavDesc').textContent = T.miFavDesc;
+      document.getElementById('miSupport').textContent = T.miSupport;
+      document.getElementById('miSupportDesc').textContent = T.miSupportDesc;
+
+      document.getElementById('otherTitle').textContent = T.other;
+      document.getElementById('miLang').textContent = T.miLang;
+      document.getElementById('miLangDesc').textContent = T.miLangDesc;
+      document.getElementById('miTheme').textContent = T.miTheme;
+      document.getElementById('miThemeDesc').textContent = T.miThemeDesc;
+      document.getElementById('miLogout').textContent = T.miLogout;
+      document.getElementById('miLogoutDesc').textContent = T.miLogoutDesc;
+      document.getElementById('versionLine').textContent = T.version;
+
+      // Sheets labels
+      document.getElementById('langTitle').textContent = T.langTitle;
+      document.getElementById('closeLbl').textContent = T.close;
+
+      document.getElementById('themeTitle').textContent = T.themeTitle;
+      document.getElementById('themeLightLbl').textContent = T.themeLight;
+      document.getElementById('themeDarkLbl').textContent = T.themeDark;
+      document.getElementById('themeAutoLbl').textContent = T.themeAuto;
+      document.getElementById('closeThemeLbl').textContent = T.close;
+
+      document.getElementById('favSheetTitle').textContent = T.favSheetTitle;
+      document.getElementById('favSheetDesc').textContent = T.favSheetDesc;
+      document.getElementById('addFavTitle').textContent = T.addFavTitle;
+      document.getElementById('favNameLbl').textContent = T.favNameLbl;
+      document.getElementById('favAddrLbl').textContent = T.favAddrLbl;
+      document.getElementById('addFavBtn').textContent = T.addFavBtn;
+      document.getElementById('closeFavLbl').textContent = T.close;
+
+      document.getElementById('profileTitle').textContent = T.profileTitle;
+      document.getElementById('nameLbl').textContent = T.nameLbl;
+      document.getElementById('phoneLbl').textContent = T.phoneLbl;
+      document.getElementById('emailLbl').textContent = T.emailLbl;
+      document.getElementById('saveProfileLbl').textContent = T.save;
+      document.getElementById('closeProfileLbl').textContent = T.close;
+
+      document.getElementById('securityTitle').textContent = T.securityTitle;
+      document.getElementById('pwTitle').textContent = T.pwTitle;
+      document.getElementById('pwDesc').textContent = T.pwDesc;
+      document.getElementById('newPwLbl').textContent = T.newPw;
+      document.getElementById('newPw2Lbl').textContent = T.newPw2;
+      document.getElementById('changePwBtn').textContent = T.changePw;
+      document.getElementById('pwNote').textContent = T.pwNote;
+      document.getElementById('closeSecLbl').textContent = T.close;
+
+      document.getElementById('paymentTitle').textContent = T.paymentTitle;
+      document.getElementById('payDriverTitle').textContent = T.payDriverTitle;
+      document.getElementById('payDriverDesc').textContent = T.payDriverDesc;
+      document.getElementById('payCashLbl').textContent = T.payCash;
+      document.getElementById('payCardLbl').textContent = T.payCard;
+      document.getElementById('closePayLbl').textContent = T.close;
+
+      document.getElementById('supportTitle').textContent = T.supportTitle;
+      document.getElementById('supportHow').textContent = T.supportHow;
+      document.getElementById('supportText').textContent = T.supportText;
+      document.getElementById('supportBtn').textContent = T.supportBtn;
+      document.getElementById('supportNote').textContent = T.supportNote;
+      document.getElementById('closeSupLbl').textContent = T.close;
+
+      // lang radios
+      setActiveRadio('langNL', lang === 'nl');
+      setActiveRadio('langEN', lang === 'en');
+      setActiveRadio('langAR', lang === 'ar');
+
+      refreshProfileUI();
+      refreshFavoritesUI();
+      refreshPaymentUI();
+      refreshRidesUI();
     }
 
     function setLang(lang){
-      localStorage.setItem("ymaanygo_lang", lang);
-      applyI18n();
-      closeAllSheets();
+      localStorage.setItem(LS.lang, lang);
+      applyLang();
     }
 
-    // ===== Theme =====
-    function applyTheme(){
-      const mode = localStorage.getItem("ymaanygo_theme") || "auto";
-      document.getElementById("themeLabel").textContent =
-        mode === "light" ? t("light") : mode === "dark" ? t("dark") : t("theme_auto");
-      document.getElementById("themeLabel2").textContent =
-        mode === "light" ? t("light") : mode === "dark" ? t("dark") : t("theme_auto");
+    function setActiveRadio(id, on){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.toggle('active', !!on);
+    }
 
-      ["theme-light","theme-dark","theme-auto"].forEach(id=>document.getElementById(id).classList.remove("active"));
+    // ===== Pages
+    function showPage(which){
+      document.getElementById('pageHome').classList.toggle('hidden', which !== 'home');
+      document.getElementById('pageRides').classList.toggle('hidden', which !== 'rides');
+      document.getElementById('pageAccount').classList.toggle('hidden', which !== 'account');
 
-      if (mode === "light"){
-        document.body.removeAttribute("data-theme");
-        document.getElementById("theme-light").classList.add("active");
-      } else if (mode === "dark"){
-        document.body.setAttribute("data-theme","dark");
-        document.getElementById("theme-dark").classList.add("active");
-      } else {
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (prefersDark) document.body.setAttribute("data-theme","dark");
-        else document.body.removeAttribute("data-theme");
-        document.getElementById("theme-auto").classList.add("active");
+      document.getElementById('tabHome').classList.toggle('active', which === 'home');
+      document.getElementById('tabRides').classList.toggle('active', which === 'rides');
+      document.getElementById('tabAccount').classList.toggle('active', which === 'account');
+
+      if(which === 'rides') refreshRidesUI();
+      if(which === 'account') refreshProfileUI();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // ===== Sheets
+    function openSheet(id){
+      document.getElementById('overlay').classList.add('show');
+      const s = document.getElementById(id);
+      if(!s) return;
+      s.classList.add('open');
+      s.setAttribute('aria-hidden','false');
+    }
+    function closeSheet(id){
+      const s = document.getElementById(id);
+      if(!s) return;
+      s.classList.remove('open');
+      s.setAttribute('aria-hidden','true');
+
+      // close overlay if no sheet open
+      setTimeout(() => {
+        const anyOpen = document.querySelector('.sheet.open');
+        if(!anyOpen) document.getElementById('overlay').classList.remove('show');
+      }, 30);
+    }
+    function closeAllSheets(){
+      document.querySelectorAll('.sheet.open').forEach(s => s.classList.remove('open'));
+      document.getElementById('overlay').classList.remove('show');
+      document.querySelectorAll('.sheet').forEach(s => s.setAttribute('aria-hidden','true'));
+    }
+
+    // ===== Profile (local "real")
+    function getProfile(){
+      const fallback = { name: "ymaanyGO klant", phone: "", email: "" };
+      try{
+        return Object.assign(fallback, JSON.parse(localStorage.getItem(LS.profile) || "{}"));
+      }catch(e){
+        return fallback;
       }
     }
-
-    function setTheme(mode){
-      localStorage.setItem("ymaanygo_theme", mode);
-      applyTheme();
-      closeAllSheets();
+    function saveProfileToLS(p){
+      localStorage.setItem(LS.profile, JSON.stringify(p));
     }
 
-    if (window.matchMedia){
-      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{
-        const mode = localStorage.getItem("ymaanygo_theme") || "auto";
-        if (mode === "auto") applyTheme();
-      });
-    }
+    function refreshProfileUI(){
+      const p = getProfile();
+      document.getElementById('accName').textContent = p.name || "—";
+      document.getElementById('accEmail').textContent = p.email || "—";
 
-    // ===== Local (No backend) data per customer =====
-    function keyProfile(user){ return "ymaanygo_customer_profile_" + user; }
-    function keyFavs(user){ return "ymaanygo_customer_favorites_" + user; }
-    function keyRides(user){ return "ymaanygo_customer_rides_" + user; }
-    function keyPay(user){ return "ymaanygo_customer_payment_" + user; }
-
-    function getProfile(user){
-      const raw = localStorage.getItem(keyProfile(user));
-      if(!raw) return { name:user, phone:"", email: user.includes("@") ? user : "" };
-      try{ return JSON.parse(raw); }catch(e){ return { name:user, phone:"", email:"" }; }
-    }
-    function setProfile(user, obj){
-      localStorage.setItem(keyProfile(user), JSON.stringify(obj));
-    }
-
-    // ===== Actions =====
-    function logout(){
-      clearCustomer();
-      window.location.href = "klant-login.html";
-    }
-
-    function deleteAccount(){
-      const ok = confirm(t("confirm_delete"));
-      if(!ok) return;
-      const user = readCustomer();
-      if(user){
-        localStorage.removeItem(keyProfile(user));
-        localStorage.removeItem(keyFavs(user));
-        localStorage.removeItem(keyRides(user));
-        localStorage.removeItem(keyPay(user));
-      }
-      clearCustomer();
-      toast(t("deleted"));
-      setTimeout(()=>window.location.href="klant-login.html", 300);
+      document.getElementById('pName').value = p.name || "";
+      document.getElementById('pPhone').value = p.phone || "";
+      document.getElementById('pEmail').value = p.email || "";
     }
 
     function saveProfile(){
-      const user = readCustomer();
-      const payload = {
-        name: document.getElementById("fName").value.trim(),
-        phone: document.getElementById("fPhone").value.trim(),
-        email: document.getElementById("fEmail").value.trim()
-      };
-      setProfile(user, payload);
-      toast(t("saved"));
-      loadMe();
+      const p = getProfile();
+      p.name = (document.getElementById('pName').value || "").trim();
+      p.phone = (document.getElementById('pPhone').value || "").trim();
+      p.email = (document.getElementById('pEmail').value || "").trim();
+      saveProfileToLS(p);
+      refreshProfileUI();
+      closeSheet('profileSheet');
     }
 
-    function validPw(p){
-      if (!p || p.length < 8) return false;
-      if (!/[A-Z]/.test(p)) return false;
-      if (!/[a-z]/.test(p)) return false;
-      if (!/\d/.test(p)) return false;
-      return true;
+    function isStrongPw(p){
+      return (p || "").length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /\d/.test(p);
     }
 
     function changePassword(){
-      // No backend: just validate and show toast
-      const n1  = document.getElementById("newPw").value;
-      const n2  = document.getElementById("newPw2").value;
+      const lang = getLang();
+      const T = i18n[lang] || i18n.nl;
 
-      if (!validPw(n1)){ toast(t("invalid_pw")); return; }
-      if (n1 !== n2){ toast(t("mismatch_pw")); return; }
+      const a = (document.getElementById('newPw').value || "").trim();
+      const b = (document.getElementById('newPw2').value || "").trim();
 
-      document.getElementById("curPw").value = "";
-      document.getElementById("newPw").value = "";
-      document.getElementById("newPw2").value = "";
-      toast(t("updated"));
-      openView("view-security");
-    }
-
-    // ===== Payment (local) =====
-    function syncPaymentUI(){
-      const user = readCustomer();
-      const m = localStorage.getItem(keyPay(user)) || "driver";
-      document.getElementById("payDriverCheck").style.display = (m === "driver") ? "block" : "none";
-    }
-
-    function setPaymentMethod(method){
-      const user = readCustomer();
-      localStorage.setItem(keyPay(user), method);
-      syncPaymentUI();
-      toast(t("pay_set"));
-    }
-
-    // ===== Coupons (local demo) =====
-    function applyCoupon(){
-      const code = document.getElementById("coupon").value.trim();
-      if(!code){ toast(t("error_generic")); return; }
-      toast(t("updated"));
-    }
-
-    // ===== Favorites (local) =====
-    function getFavs(user){
-      const raw = localStorage.getItem(keyFavs(user));
-      if(!raw) return [];
-      try{ return JSON.parse(raw) || []; }catch(e){ return []; }
-    }
-    function setFavs(user, favs){
-      localStorage.setItem(keyFavs(user), JSON.stringify(favs));
-    }
-
-    function loadFavorites(){
-      const user = readCustomer();
-      const list = getFavs(user);
-      const favList = document.getElementById("favList");
-      const empty = document.getElementById("favEmpty");
-
-      if (!Array.isArray(list) || list.length === 0){
-        favList.style.display = "none";
-        favList.innerHTML = "";
-        empty.style.display = "block";
+      if(!isStrongPw(a)){
+        alert(T.pwNote);
+        return;
+      }
+      if(a !== b){
+        alert(lang === 'ar' ? "كلمتا المرور غير متطابقتين." : (lang === 'en' ? "Passwords do not match." : "Wachtwoorden komen niet overeen."));
         return;
       }
 
-      empty.style.display = "none";
-      favList.style.display = "block";
-      favList.innerHTML = list.map(item => `
-        <div class="row" onclick="useFavorite('${item.id}')">
-          <div class="ico">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 22s7-5.2 7-12a7 7 0 0 0-14 0c0 6.8 7 12 7 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M12 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="txt">
-            <div class="title">${escapeHtml(item.label || '')}</div>
-            <div class="desc">${escapeHtml(item.address || '')}</div>
-          </div>
-          <div class="chev" onclick="event.stopPropagation(); removeFavorite('${item.id}')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-            </svg>
-          </div>
-        </div>
-      `).join("");
+      localStorage.setItem(LS.pw, a);
+      document.getElementById('newPw').value = "";
+      document.getElementById('newPw2').value = "";
+      closeSheet('securitySheet');
     }
 
-    function useFavorite(id){
-      window.location.href = "taxi.html?fav=" + encodeURIComponent(id);
+    // ===== Payment (pay driver)
+    function getPayment(){
+      return localStorage.getItem(LS.payment) || 'card';
+    }
+    function setPayment(v){
+      localStorage.setItem(LS.payment, v);
+      refreshPaymentUI();
+    }
+    function refreshPaymentUI(){
+      const v = getPayment();
+      setActiveRadio('payCash', v === 'cash');
+      setActiveRadio('payCard', v === 'card');
+    }
+
+    // ===== Favorites (CRUD)
+    function getFavs(){
+      try{
+        const arr = JSON.parse(localStorage.getItem(LS.favs) || "[]");
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){
+        return [];
+      }
+    }
+    function setFavs(arr){
+      localStorage.setItem(LS.favs, JSON.stringify(arr));
     }
 
     function addFavorite(){
-      const user = readCustomer();
-      const label = document.getElementById("favName").value.trim();
-      const address = document.getElementById("favAddr").value.trim();
-      if(!label || !address){ toast(t("error_generic")); return; }
+      const lang = getLang();
+      const name = (document.getElementById('favName').value || "").trim();
+      const addr = (document.getElementById('favAddr').value || "").trim();
 
-      const list = getFavs(user);
-      list.unshift({ id: String(Date.now()), label, address });
-      setFavs(user, list);
-
-      document.getElementById("favName").value = "";
-      document.getElementById("favAddr").value = "";
-      toast(t("saved"));
-      openView("view-favorites");
-      loadFavorites();
-    }
-
-    function removeFavorite(id){
-      const user = readCustomer();
-      const list = getFavs(user).filter(x => x.id !== id);
-      setFavs(user, list);
-      toast(t("updated"));
-      loadFavorites();
-    }
-
-    // ===== Rides (local demo) =====
-    function getRides(user){
-      const raw = localStorage.getItem(keyRides(user));
-      if(!raw) return [];
-      try{ return JSON.parse(raw) || []; }catch(e){ return []; }
-    }
-
-    function loadRides(status){
-      const up = document.getElementById("tabUpcoming");
-      const pa = document.getElementById("tabPast");
-      if(status === "upcoming"){ up.style.opacity = "1"; pa.style.opacity = ".75"; }
-      else { pa.style.opacity = "1"; up.style.opacity = ".75"; }
-
-      const user = readCustomer();
-      const ridesAll = getRides(user);
-
-      const rides = ridesAll.filter(r => (status === "upcoming" ? r.when === "upcoming" : r.when === "past"));
-
-      const empty = document.getElementById("ridesWrap");
-      const list = document.getElementById("ridesList");
-
-      if(!Array.isArray(rides) || rides.length === 0){
-        empty.style.display = "block";
-        list.style.display = "none";
-        list.innerHTML = "";
+      if(!name || !addr){
+        alert(lang === 'ar' ? "اكتب الاسم والعنوان." : (lang === 'en' ? "Enter name and address." : "Vul naam en adres in."));
         return;
       }
 
-      empty.style.display = "none";
-      list.style.display = "block";
-      list.innerHTML = rides.map(r => `
-        <div class="row" onclick="openRide('${r.id}')">
-          <div class="ico">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M7 3v3M17 3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4 7h16" stroke="currentColor" stroke-width="2"/>
-              <path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="txt">
-            <div class="title">${escapeHtml(r.from || '')} → ${escapeHtml(r.to || '')}</div>
-            <div class="desc">${escapeHtml(r.datetime || '')} • ${escapeHtml(r.status || '')}</div>
-          </div>
-          <div class="chev">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-      `).join("");
+      const favs = getFavs();
+      favs.unshift({ id: cryptoRandom(), name, addr, createdAt: new Date().toISOString() });
+      setFavs(favs);
+
+      document.getElementById('favName').value = "";
+      document.getElementById('favAddr').value = "";
+
+      refreshFavoritesUI();
     }
 
-    function openRide(id){
-      window.location.href = "ride.html?id=" + encodeURIComponent(id);
+    function removeFav(id){
+      const favs = getFavs().filter(x => x.id !== id);
+      setFavs(favs);
+      refreshFavoritesUI();
     }
 
-    // ===== News (local demo) =====
-    function loadNews(){
-      const box = document.getElementById("newsList");
-      box.innerHTML = `
-        <div class="row" style="cursor:default;">
-          <div class="txt">
-            <div class="title">${escapeHtml(t("news_title"))}</div>
-            <div class="desc">${escapeHtml(t("soon"))}</div>
+    function openFavorites(){
+      refreshFavoritesUI();
+      openSheet('favSheet');
+    }
+
+    function refreshFavoritesUI(){
+      const lang = getLang();
+      const T = i18n[lang] || i18n.nl;
+
+      const favs = getFavs();
+      const list = document.getElementById('favList');
+
+      if(!favs.length){
+        list.innerHTML = `
+          <div class="subtle" style="padding:6px 2px;">
+            ${lang === 'ar' ? "لا يوجد مواقع مفضلة بعد." : (lang === 'en' ? "No favorites yet." : "Nog geen favorieten.")}
           </div>
+        `;
+      }else{
+        list.innerHTML = favs.map(f => `
+          <div class="row" style="border:1px solid rgba(0,0,0,.08);border-radius:18px;margin:10px 0;cursor:default;">
+            <div class="left" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21s7-4.4 7-11a7 7 0 0 0-14 0c0 6.6 7 11 7 11Z"></path>
+                <circle cx="12" cy="10" r="2"></circle>
+              </svg>
+            </div>
+            <div class="mid">
+              <div class="t">${escapeHtml(f.name)}</div>
+              <div class="d">${escapeHtml(f.addr)}</div>
+            </div>
+            <button class="icon-btn" type="button" onclick="removeFav('${f.id}')"
+                    aria-label="${lang === 'ar' ? "حذف" : (lang === 'en' ? "Delete" : "Verwijderen")}"
+                    style="width:44px;height:44px;box-shadow:none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.85">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4h8v2"></path>
+                <path d="M19 6l-1 16H6L5 6"></path>
+              </svg>
+            </button>
+          </div>
+        `).join("");
+      }
+
+      // Home line refresh
+      document.getElementById('favTitle').textContent = T.favTitle;
+      document.getElementById('favDesc').textContent = T.favDesc;
+    }
+
+    // ===== Rides (placeholder local, real on device)
+    let ridesTab = 'upcoming';
+    function setRidesTab(t){
+      ridesTab = t;
+      document.getElementById('segUpcoming').classList.toggle('active', t === 'upcoming');
+      document.getElementById('segPast').classList.toggle('active', t === 'past');
+      refreshRidesUI();
+    }
+
+    function getRides(){
+      try{
+        const arr = JSON.parse(localStorage.getItem(LS.rides) || "[]");
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){
+        return [];
+      }
+    }
+
+    function refreshRidesUI(){
+      const lang = getLang();
+      const T = i18n[lang] || i18n.nl;
+
+      const rides = getRides();
+      const now = Date.now();
+
+      const filtered = rides.filter(r => {
+        const ts = new Date(r.when).getTime();
+        return ridesTab === 'upcoming' ? (ts >= now) : (ts < now);
+      }).sort((a,b)=> new Date(a.when) - new Date(b.when));
+
+      const empty = document.getElementById('ridesEmpty');
+      const list = document.getElementById('ridesList');
+
+      if(!filtered.length){
+        list.classList.add('hidden');
+        empty.classList.remove('hidden');
+        document.getElementById('ridesEmptyTitle').textContent = T.ridesEmptyTitle;
+        document.getElementById('ridesEmptyText').textContent = T.ridesEmptyText;
+        document.getElementById('ridesEmptyBtn').textContent = T.ridesEmptyBtn;
+        return;
+      }
+
+      empty.classList.add('hidden');
+      list.classList.remove('hidden');
+
+      list.innerHTML = `
+        <div class="list">
+          ${filtered.map(r => `
+            <div class="row" style="cursor:default">
+              <div class="left">
+                <!-- ticket -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 9a2 2 0 0 1 2-2h14v4a2 2 0 0 0 0 4v4H6a2 2 0 0 1-2-2V9Z"></path>
+                  <path d="M13 7v10"></path>
+                </svg>
+              </div>
+              <div class="mid">
+                <div class="t">${escapeHtml(r.from)} → ${escapeHtml(r.to)}</div>
+                <div class="d">${formatWhen(r.when, lang)} • ${escapeHtml(r.vehicle || "")}</div>
+              </div>
+            </div>
+          `).join("")}
         </div>
       `;
+    }
+
+    // ===== Navigation actions
+    function goTaxi(){
+      // عدّل الرابط حسب مشروعك
+      window.location.href = "taxi.html";
+    }
+
+    function openWhatsAppSupport(){
+      // عدّل الرقم إذا تريد
+      const whatsappNummer = "31633337184";
+      const lang = getLang();
+      const msg = (lang === 'ar')
+        ? "مرحبا، أحتاج مساعدة في ymaanyGO."
+        : (lang === 'en')
+          ? "Hi, I need help with ymaanyGO."
+          : "Hallo, ik heb hulp nodig met ymaanyGO.";
+      window.open("https://wa.me/" + whatsappNummer + "?text=" + encodeURIComponent(msg), "_blank");
+    }
+
+    function logout(){
+      // "حقيقي" على الجهاز: نمسح بيانات المستخدم المحلية (بدون حذف كل شيء إذا ما تريد)
+      localStorage.removeItem(LS.profile);
+      localStorage.removeItem(LS.pw);
+      // اختياري: favs/rides
+      // localStorage.removeItem(LS.favs);
+      // localStorage.removeItem(LS.rides);
+
+      refreshProfileUI();
+      showPage('home');
+      alert(getLang() === 'ar' ? "تم تسجيل الخروج." : (getLang()==='en' ? "Logged out." : "Uitgelogd."));
+    }
+
+    // ===== Utils
+    function cryptoRandom(){
+      // simple id without libs
+      return 'id_' + Math.random().toString(16).slice(2) + Date.now().toString(16);
     }
 
     function escapeHtml(s){
@@ -1942,36 +1666,56 @@
         .replaceAll("'","&#039;");
     }
 
-    // ===== Load "Me" (from local storage) =====
-    function loadMe(){
-      const user = readCustomer();
-      const p = getProfile(user);
-
-      document.getElementById("userName").textContent = p.name || user || "—";
-      document.getElementById("userEmail").textContent = p.email || (user.includes("@") ? user : "—");
-
-      document.getElementById("fName").value = p.name || "";
-      document.getElementById("fPhone").value = p.phone || "";
-      document.getElementById("fEmail").value = p.email || "";
+    function formatWhen(iso, lang){
+      const d = new Date(iso);
+      if(isNaN(d.getTime())) return iso;
+      const opts = { weekday:'short', year:'numeric', month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit' };
+      try{
+        return d.toLocaleString(lang === 'ar' ? 'ar' : (lang === 'en' ? 'en-US' : 'nl-NL'), opts);
+      }catch(e){
+        return d.toLocaleString();
+      }
     }
 
-    // ===== Start =====
-    (function init(){
-      applyI18n();
-      applyTheme();
-
-      const user = readCustomer();
-      if(!user){
-        window.location.href = "klant-login.html";
-        return;
+    // ===== Init
+    function ensureDefaults(){
+      // profile default
+      const p = getProfile();
+      if(!localStorage.getItem(LS.profile)){
+        // لو عندك ايميل/اسم مخزن سابقاً من تسجيل المستخدم المحلي ضع هنا
+        saveProfileToLS(p);
       }
+      // payment default
+      if(!localStorage.getItem(LS.payment)) localStorage.setItem(LS.payment, 'card');
+      // lang default
+      if(!localStorage.getItem(LS.lang)) localStorage.setItem(LS.lang, 'nl');
+      // theme default
+      if(!localStorage.getItem(LS.theme)) localStorage.setItem(LS.theme, 'auto');
+      // favs default empty
+      if(!localStorage.getItem(LS.favs)) localStorage.setItem(LS.favs, '[]');
+      // rides default empty
+      if(!localStorage.getItem(LS.rides)) localStorage.setItem(LS.rides, '[]');
+    }
 
-      // Ensure some defaults
-      if(!localStorage.getItem(keyPay(user))) localStorage.setItem(keyPay(user), "driver");
+    // Keyboard: ESC closes sheets
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeAllSheets();
+    });
 
-      loadMe();
-      syncPaymentUI();
-    })();
+    // watch system theme if auto
+    if(window.matchMedia){
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if(getTheme() === 'auto') applyTheme();
+      });
+    }
+
+    // Run
+    ensureDefaults();
+    applyTheme();
+    applyLang();
+    refreshPaymentUI();
+    setRidesTab('upcoming');
+    showPage('home');
   </script>
 </body>
 </html>
