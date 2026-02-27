@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Registreren klanten – ymaanyGO</title>
+  <meta name="description" content="Registratiepagina voor klanten van ymaanyGO.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#2ecc71">
+
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    body{
+      background: linear-gradient(to bottom,var(--bg-light) 0%,var(--bg-mid) 60%,var(--bg-dark) 100%);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      line-height:1.5;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; width:100%; }
+
+    header{
+      background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--text);
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:#fff;
+      padding:6px;
+      border:1px solid var(--line);
+      object-fit:contain;
+    }
+
+    .brand-name{ display:flex; flex-direction:column; gap:1px; }
+    .brand-name strong{ font-size:15px; }
+    .brand-name span{ font-size:12.5px; color:var(--muted); }
+
+    nav{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    .btn{
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:700;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      white-space:nowrap;
+      display:inline-block;
+    }
+
+    main{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:34px 0;
+    }
+
+    .card{
+      max-width: 420px;
+      margin: 0 auto;
+      background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(240,248,244,1) 100%);
+      border-radius: 28px;
+      padding: 26px 30px;
+      border: 1px solid var(--line);
+      box-shadow: 0 22px 30px -18px rgba(11,46,31,.35);
+      width:100%;
+    }
+
+    .title{
+      text-align:center;
+      font-weight:900;
+      font-size:26px;
+      color:var(--text);
+    }
+
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      margin-top:6px;
+    }
+
+    .form{ margin-top:18px; }
+
+    .input{
+      width:100%;
+      background:#fff;
+      border:none;
+      padding:14px 18px;
+      border-radius:16px;
+      margin-top:14px;
+      font-size:14px;
+      color:var(--text);
+      box-shadow: 0 10px 12px -8px rgba(46,204,113,.35);
+      border-inline:2px solid transparent;
+    }
+
+    .input:focus{
+      outline:none;
+      border-inline:2px solid var(--accent);
+    }
+
+    .pw-row{ position:relative; }
+
+    .toggle{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      border:0;
+      background:transparent;
+      cursor:pointer;
+      padding:6px 8px;
+      border-radius:10px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:12px;
+    }
+
+    .toggle:hover{ background: rgba(46,204,113,.10); color: var(--text); }
+
+    /* ===== Password Rules UI ===== */
+    .pw-rules{
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.85);
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .rule{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:4px 0;
+    }
+
+    .rule .icon{
+      width:18px;
+      height:18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:6px;
+      font-weight:900;
+      font-size:12px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      color:#b00020;
+    }
+
+    .rule.ok{ color: var(--text); }
+
+    .rule.ok .icon{
+      color:#0f7a2a;
+      border-color: rgba(46,204,113,.45);
+      background: rgba(46,204,113,.10);
+    }
+
+    .btn-main{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      width:100%;
+      font-weight:800;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color:#fff;
+      padding:14px;
+      margin:18px auto 0;
+      border-radius:18px;
+      border:none;
+      cursor:pointer;
+      box-shadow:0 16px 22px -14px rgba(46,204,113,.6);
+      transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+
+    .btn-main:hover{
+      transform:scale(1.02);
+      opacity:.97;
+      box-shadow:0 20px 26px -14px rgba(46,204,113,.7);
+    }
+
+    .btn-main:active{ transform:scale(.98); }
+
+    .spinner{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.45);
+      border-top-color:#fff;
+      display:none;
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg);} }
+
+    .msg{
+      display:none;
+      margin:12px 0 0;
+      padding:12px 14px;
+      border-radius:14px;
+      font-size:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+    }
+    .msg.err{ border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.08); }
+    .msg.ok{ border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.08); }
+
+    .links{
+      display:flex;
+      justify-content:space-between;
+      margin-top:12px;
+      padding:0 6px;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:12px;
+    }
+
+    .links a{ color:var(--accent2); text-decoration:none; font-weight:800; }
+    .links a:hover{ text-decoration:underline; }
+
+    footer{
+      text-align:center;
+      padding:18px 0;
+      color:var(--muted);
+      font-size:13px;
+      border-top:1px solid var(--line);
+      background:rgba(255,255,255,.20);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <img class="logo"
+             src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
+             alt="ymaanyGO">
+        <div class="brand-name">
+          <strong>ymaanyGO</strong>
+          <span>Taxi • Nederland • DE/BE luchthavens</span>
+        </div>
+      </a>
+      <nav>
+        <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="card" aria-live="polite">
+      <div class="title">Registreren</div>
+      <div class="sub">Maak een nieuw klantaccount</div>
+
+      <form id="registerForm" class="form" action="#" method="post" novalidate>
+        <input class="input" type="text" id="name" placeholder="Volledige naam" autocomplete="name" required>
+        <input class="input" type="email" id="email" placeholder="E-mail" autocomplete="email" required>
+
+        <div class="pw-row">
+          <input class="input" type="password" id="password" placeholder="Wachtwoord (min. 8)" minlength="8" required autocomplete="new-password">
+          <button class="toggle" type="button" id="togglePw" aria-label="Wachtwoord tonen/verbergen">TOON</button>
+        </div>
+
+        <!-- Password rules like the screenshot -->
+        <div class="pw-rules" id="pwRules" aria-live="polite">
+          <div class="rule" id="rUpper"><span class="icon">✗</span> Minimaal 1 hoofdletter</div>
+          <div class="rule" id="rLower"><span class="icon">✗</span> Minimaal 1 kleine letter</div>
+          <div class="rule" id="rDigit"><span class="icon">✗</span> Minimaal 1 cijfer</div>
+          <div class="rule" id="rLen"><span class="icon">✗</span> Minimaal 8 karakters</div>
+        </div>
+
+        <div class="pw-row">
+          <input class="input" type="password" id="password2" placeholder="Herhaal wachtwoord" minlength="8" required autocomplete="new-password">
+        </div>
+
+        <button class="btn-main" type="submit" id="regBtn">
+          <span class="spinner" id="spin" aria-hidden="true"></span>
+          <span id="btnText">Account maken</span>
+        </button>
+
+        <div id="msgErr" class="msg err" role="alert">Er is iets misgegaan.</div>
+        <div id="msgOk" class="msg ok" role="status">Succes! Doorsturen naar login…</div>
+
+        <div class="links">
+          <a href="/klant-login.html">Ik heb al een account</a>
+          <a href="/">Terug naar website</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 ymaanyGO.
+  </div>
+</footer>
+
+<script>
+  // ===== Demo registratie: opslaan in localStorage =====
+  // WARNING: غير آمن للإنتاج. للتجربة فقط.
+
+  const form = document.getElementById('registerForm');
+  const nameEl = document.getElementById('name');
+  const emailEl = document.getElementById('email');
+  const pw1 = document.getElementById('password');
+  const pw2 = document.getElementById('password2');
+
+  const msgErr = document.getElementById('msgErr');
+  const msgOk  = document.getElementById('msgOk');
+
+  const togglePw = document.getElementById('togglePw');
+  const btn = document.getElementById('regBtn');
+  const spin = document.getElementById('spin');
+  const btnText = document.getElementById('btnText');
+
+  function show(el){ el.style.display = 'block'; }
+  function hide(el){ el.style.display = 'none'; }
+
+  togglePw.addEventListener('click', () => {
+    const isPw = pw1.type === 'password';
+    pw1.type = isPw ? 'text' : 'password';
+    pw2.type = isPw ? 'text' : 'password';
+    togglePw.textContent = isPw ? 'VERBERG' : 'TOON';
+  });
+
+  function setLoading(isLoading){
+    btn.disabled = isLoading;
+    spin.style.display = isLoading ? 'inline-block' : 'none';
+    btnText.textContent = isLoading ? 'Bezig…' : 'Account maken';
+    btn.style.opacity = isLoading ? '0.85' : '1';
+  }
+
+  function getDb(){
+    try{
+      return JSON.parse(localStorage.getItem('ymaanygo_customer_db') || '{}');
+    }catch(e){
+      return {};
+    }
+  }
+
+  function setDb(db){
+    localStorage.setItem('ymaanygo_customer_db', JSON.stringify(db));
+  }
+
+  // ===== Live password rules =====
+  const rules = {
+    upper: document.getElementById('rUpper'),
+    lower: document.getElementById('rLower'),
+    digit: document.getElementById('rDigit'),
+    len:   document.getElementById('rLen'),
+  };
+
+  function setRule(el, ok){
+    if (!el) return;
+    el.classList.toggle('ok', !!ok);
+    el.querySelector('.icon').textContent = ok ? '✓' : '✗';
+  }
+
+  function validatePasswordLive(p){
+    setRule(rules.upper, /[A-Z]/.test(p));
+    setRule(rules.lower, /[a-z]/.test(p));
+    setRule(rules.digit, /\d/.test(p));
+    setRule(rules.len,   (p || '').length >= 8);
+  }
+
+  pw1.addEventListener('input', () => validatePasswordLive(pw1.value));
+  validatePasswordLive(pw1.value);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    hide(msgErr); hide(msgOk);
+
+    const name = (nameEl.value || '').trim();
+    const email = (emailEl.value || '').trim().toLowerCase();
+    const p1 = (pw1.value || '').trim();
+    const p2 = (pw2.value || '').trim();
+
+    if (!name || !email || !p1 || !p2) {
+      msgErr.textContent = "Vul alle velden in.";
+      show(msgErr);
+      return;
+    }
+
+    const hasUpper = /[A-Z]/.test(p1);
+    const hasLower = /[a-z]/.test(p1);
+    const hasDigit = /\d/.test(p1);
+    const hasLen = p1.length >= 8;
+
+    if (!hasUpper || !hasLower || !hasDigit || !hasLen) {
+      msgErr.textContent = "Wachtwoord voldoet niet aan de eisen.";
+      show(msgErr);
+      return;
+    }
+
+    if (p1 !== p2) {
+      msgErr.textContent = "Wachtwoorden komen niet overeen.";
+      show(msgErr);
+      return;
+    }
+
+    setLoading(true);
+
+    setTimeout(() => {
+      const db = getDb();
+
+      if (db[email]) {
+        setLoading(false);
+        msgErr.textContent = "Dit e-mail bestaat al. Log in.";
+        show(msgErr);
+        return;
+      }
+
+      db[email] = { name, password: p1, createdAt: new Date().toISOString() };
+      setDb(db);
+
+      // لتسهيل تجربة تسجيل الدخول مباشرة
+      localStorage.setItem('ymaanygo_customer_user', email);
+
+      show(msgOk);
+
+      setTimeout(() => {
+        window.location.href = "/klant-login.html";
+      }, 650);
+    }, 450);
+  });
+</script>
+
+</body>
+</html>
