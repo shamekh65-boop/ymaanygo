@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#2ecc71" />
-  <title>Account – ymaanyGO</title>
+  <title>Klant Dashboard – ymaanyGO</title>
 
   <link rel="icon" href="favicon.ico" />
 
@@ -29,7 +29,6 @@
       --glass2: rgba(255,255,255,.92);
 
       --danger:#e74c3c;
-      --ok:#2ecc71;
 
       --font: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
@@ -380,7 +379,7 @@
     }
     [data-theme="dark"] label{ color:rgba(233,255,243,.80); }
 
-    input, select{
+    input{
       width:100%;
       height:48px;
       border-radius:16px;
@@ -391,10 +390,10 @@
       font-size:15px;
       outline:none;
     }
-    [data-theme="dark"] input,[data-theme="dark"] select{
+    [data-theme="dark"] input{
       background: rgba(20,28,24,.80);
     }
-    input:focus, select:focus{ border-color: rgba(46,204,113,.55); }
+    input:focus{ border-color: rgba(46,204,113,.55); }
 
     .btn{
       width:100%;
@@ -545,6 +544,7 @@
 </head>
 
 <body>
+  <!-- Topbar -->
   <header class="topbar">
     <div class="topbar-inner">
       <button class="icon-btn" type="button" aria-label="Back" id="topBackBtn" onclick="navBack()" style="display:none">
@@ -576,6 +576,7 @@
   </header>
 
   <div class="wrap">
+    <!-- ===== VIEW: ACCOUNT (HOME) ===== -->
     <section id="view-account" class="view active">
       <div class="card profile-head">
         <div class="avatar" title="Profile">
@@ -1179,6 +1180,7 @@
     </section>
   </div>
 
+  <!-- Bottom nav -->
   <nav class="bottom-nav" aria-label="Bottom navigation">
     <div class="nav-inner">
       <div class="tab" id="tabHome" onclick="goto('index.html')">
@@ -1206,10 +1208,13 @@
     </div>
   </nav>
 
+  <!-- Toast -->
   <div id="toast" class="toast"></div>
 
+  <!-- Overlay + Sheets -->
   <div id="overlay" class="overlay" onclick="closeAllSheets()"></div>
 
+  <!-- Language sheet -->
   <div id="langSheet" class="sheet" role="dialog" aria-modal="true">
     <div class="grab"></div>
     <h3 data-i18n="select_lang">Selecteer je taal</h3>
@@ -1233,6 +1238,7 @@
     </div>
   </div>
 
+  <!-- Theme sheet -->
   <div id="themeSheet" class="sheet" role="dialog" aria-modal="true">
     <div class="grab"></div>
     <h3 data-i18n="theme">Thema</h3>
@@ -1256,6 +1262,7 @@
     </div>
   </div>
 
+  <!-- More sheet -->
   <div id="moreSheet" class="sheet" role="dialog" aria-modal="true">
     <div class="grab"></div>
     <h3 data-i18n="more">Meer</h3>
@@ -1294,65 +1301,22 @@
   </div>
 
   <script>
-    // =========================
-    // ✅ FIX: use same storage as login page
-    // login saves: localStorage["ymaanygo_session"] = { token, user, createdAt }
-    // =========================
-    const SESSION_KEY = "ymaanygo_session";
+    /* ==========================================================
+       ✅ Customer Dashboard (No API) — Uses same login session
+       login sets: localStorage["ymaanygo_customer_session"] = username/email
+       ========================================================== */
 
-    const API = {
-      me: "/api/me",
-      logout: "/api/auth/logout",
-      changePassword: "/api/auth/change-password",
-      deleteMe: "/api/me",
-      rides: "/api/rides",
-      favorites: "/api/favorites",
-      couponsApply: "/api/coupons/apply",
-      news: "/api/news",
-      payment: "/api/me/payment-method"
-    };
+    const SESSION_KEY = "ymaanygo_customer_session";
 
-    function readSession(){
-      const raw = localStorage.getItem(SESSION_KEY);
-      if(!raw) return null;
-      try { return JSON.parse(raw); } catch(e){ return null; }
+    function readCustomer(){
+      return localStorage.getItem(SESSION_KEY) || "";
     }
-
-    function clearSession(){
+    function clearCustomer(){
       localStorage.removeItem(SESSION_KEY);
     }
-
-    function getToken(){
-      const s = readSession();
-      return (s && s.token) ? s.token : "";
-    }
-
-    async function apiFetch(url, opts = {}){
-      const token = getToken();
-      const headers = Object.assign({ "Accept":"application/json" }, opts.headers || {});
-      if(token) headers["Authorization"] = "Bearer " + token;
-      if(opts.body && !(opts.body instanceof FormData)) headers["Content-Type"] = "application/json";
-
-      const res = await fetch(url, { ...opts, headers });
-
-      const ct = res.headers.get("content-type") || "";
-      const data = ct.includes("application/json")
-        ? await res.json().catch(()=>null)
-        : await res.text().catch(()=>null);
-
-      if(!res.ok){
-        // 401/403 => session invalid
-        if(res.status === 401 || res.status === 403){
-          clearSession();
-        }
-        const msg = (data && (data.message || data.error)) ? (data.message || data.error) : (t("error_generic") + " (" + res.status + ")");
-        throw new Error(msg);
-      }
-      return data;
-    }
-
     function goto(href){ window.location.href = href; }
 
+    // ===== Views (SPA) =====
     const views = [
       "view-account","view-rides","view-personal","view-security","view-password",
       "view-discounts","view-payment","view-favorites","view-fav-add","view-support","view-news"
@@ -1372,9 +1336,11 @@
         if(el) el.classList.toggle("active", v === id);
       });
 
+      // top back button
       const topBack = document.getElementById("topBackBtn");
       topBack.style.display = (id !== "view-account" && id !== "view-rides") ? "grid" : "none";
 
+      // bottom tabs
       if (id === "view-account") setActiveTab("tabAccount");
       else if (id === "view-rides") setActiveTab("tabRides");
       else setActiveTab("tabAccount");
@@ -1395,12 +1361,10 @@
       }
       viewStack.pop();
       const prev = viewStack[viewStack.length - 1] || "view-account";
-
       views.forEach(v=>{
         const el = document.getElementById(v);
         if(el) el.classList.toggle("active", v === prev);
       });
-
       if (prev === "view-account") setActiveTab("tabAccount");
       if (prev === "view-rides") setActiveTab("tabRides");
 
@@ -1408,6 +1372,7 @@
         (prev !== "view-account" && prev !== "view-rides") ? "grid" : "none";
     }
 
+    // ===== Sheets =====
     function openSheet(id){
       closeAllSheets();
       document.getElementById("overlay").classList.add("show");
@@ -1421,6 +1386,7 @@
       });
     }
 
+    // ===== Toast =====
     let toastT = null;
     function toast(msg){
       const el = document.getElementById("toast");
@@ -1430,6 +1396,7 @@
       toastT = setTimeout(()=>el.classList.remove("show"), 2400);
     }
 
+    // ===== i18n =====
     const I18N = {
       nl: {
         soon: "Binnenkort.",
@@ -1505,7 +1472,8 @@
         updated:"Bijgewerkt.",
         invalid_pw:"Wachtwoord voldoet niet aan de eisen.",
         mismatch_pw:"Wachtwoorden komen niet overeen.",
-        pay_set:"Betaalmethode ingesteld."
+        pay_set:"Betaalmethode ingesteld.",
+        not_real:"هذه صفحة تجريبية بدون Backend."
       },
       en: {
         soon: "Coming soon.",
@@ -1581,7 +1549,8 @@
         updated:"Updated.",
         invalid_pw:"Password does not meet requirements.",
         mismatch_pw:"Passwords do not match.",
-        pay_set:"Payment method set."
+        pay_set:"Payment method set.",
+        not_real:"Demo dashboard without backend."
       },
       ar: {
         soon: "قريباً.",
@@ -1657,7 +1626,8 @@
         updated:"تم التحديث.",
         invalid_pw:"كلمة المرور لا تحقق الشروط.",
         mismatch_pw:"كلمتا المرور غير متطابقتين.",
-        pay_set:"تم ضبط طريقة الدفع."
+        pay_set:"تم ضبط طريقة الدفع.",
+        not_real:"هذه صفحة تجريبية بدون سيرفر."
       }
     };
 
@@ -1690,6 +1660,7 @@
       closeAllSheets();
     }
 
+    // ===== Theme =====
     function applyTheme(){
       const mode = localStorage.getItem("ymaanygo_theme") || "auto";
       document.getElementById("themeLabel").textContent =
@@ -1726,30 +1697,52 @@
       });
     }
 
-    let ME = null;
+    // ===== Local (No backend) data per customer =====
+    function keyProfile(user){ return "ymaanygo_customer_profile_" + user; }
+    function keyFavs(user){ return "ymaanygo_customer_favorites_" + user; }
+    function keyRides(user){ return "ymaanygo_customer_rides_" + user; }
+    function keyPay(user){ return "ymaanygo_customer_payment_" + user; }
 
-    async function loadMe(){
-      ME = await apiFetch(API.me, { method:"GET" });
-      document.getElementById("userName").textContent = ME.name || "—";
-      document.getElementById("userEmail").textContent = ME.email || "—";
-
-      document.getElementById("fName").value = ME.name || "";
-      document.getElementById("fPhone").value = ME.phone || "";
-      document.getElementById("fEmail").value = ME.email || "";
-
-      localStorage.setItem("ymaanygo_payment_method", ME.paymentMethod || "driver");
-      syncPaymentUI();
+    function getProfile(user){
+      const raw = localStorage.getItem(keyProfile(user));
+      if(!raw) return { name:user, phone:"", email: user.includes("@") ? user : "" };
+      try{ return JSON.parse(raw); }catch(e){ return { name:user, phone:"", email:"" }; }
+    }
+    function setProfile(user, obj){
+      localStorage.setItem(keyProfile(user), JSON.stringify(obj));
     }
 
-    async function saveProfile(){
+    // ===== Actions =====
+    function logout(){
+      clearCustomer();
+      window.location.href = "klant-login.html";
+    }
+
+    function deleteAccount(){
+      const ok = confirm(t("confirm_delete"));
+      if(!ok) return;
+      const user = readCustomer();
+      if(user){
+        localStorage.removeItem(keyProfile(user));
+        localStorage.removeItem(keyFavs(user));
+        localStorage.removeItem(keyRides(user));
+        localStorage.removeItem(keyPay(user));
+      }
+      clearCustomer();
+      toast(t("deleted"));
+      setTimeout(()=>window.location.href="klant-login.html", 300);
+    }
+
+    function saveProfile(){
+      const user = readCustomer();
       const payload = {
         name: document.getElementById("fName").value.trim(),
         phone: document.getElementById("fPhone").value.trim(),
         email: document.getElementById("fEmail").value.trim()
       };
-      await apiFetch(API.me, { method:"PATCH", body: JSON.stringify(payload) });
+      setProfile(user, payload);
       toast(t("saved"));
-      await loadMe();
+      loadMe();
     }
 
     function validPw(p){
@@ -1760,63 +1753,55 @@
       return true;
     }
 
-    async function changePassword(){
-      const cur = document.getElementById("curPw").value;
+    function changePassword(){
+      // No backend: just validate and show toast
       const n1  = document.getElementById("newPw").value;
       const n2  = document.getElementById("newPw2").value;
 
       if (!validPw(n1)){ toast(t("invalid_pw")); return; }
       if (n1 !== n2){ toast(t("mismatch_pw")); return; }
 
-      await apiFetch(API.changePassword, {
-        method:"POST",
-        body: JSON.stringify({ currentPassword: cur, newPassword: n1 })
-      });
-
       document.getElementById("curPw").value = "";
       document.getElementById("newPw").value = "";
       document.getElementById("newPw2").value = "";
-
       toast(t("updated"));
       openView("view-security");
     }
 
-    async function deleteAccount(){
-      const ok = confirm(t("confirm_delete"));
-      if(!ok) return;
-      await apiFetch(API.deleteMe, { method:"DELETE" });
-      toast(t("deleted"));
-      clearSession();
-      window.location.href = "klant-login.html";
-    }
-
-    async function logout(){
-      try{ await apiFetch(API.logout, { method:"POST" }); }catch(e){}
-      clearSession();
-      window.location.href = "klant-login.html";
-    }
-
+    // ===== Payment (local) =====
     function syncPaymentUI(){
-      const m = localStorage.getItem("ymaanygo_payment_method") || "driver";
+      const user = readCustomer();
+      const m = localStorage.getItem(keyPay(user)) || "driver";
       document.getElementById("payDriverCheck").style.display = (m === "driver") ? "block" : "none";
     }
 
-    async function setPaymentMethod(method){
-      await apiFetch(API.payment, { method:"PATCH", body: JSON.stringify({ method }) });
-      localStorage.setItem("ymaanygo_payment_method", method);
+    function setPaymentMethod(method){
+      const user = readCustomer();
+      localStorage.setItem(keyPay(user), method);
       syncPaymentUI();
       toast(t("pay_set"));
     }
 
-    async function applyCoupon(){
+    // ===== Coupons (local demo) =====
+    function applyCoupon(){
       const code = document.getElementById("coupon").value.trim();
       if(!code){ toast(t("error_generic")); return; }
-      await apiFetch(API.couponsApply, { method:"POST", body: JSON.stringify({ code }) });
       toast(t("updated"));
     }
 
-    async function loadFavorites(){
-      const list = await apiFetch(API.favorites, { method:"GET" });
+    // ===== Favorites (local) =====
+    function getFavs(user){
+      const raw = localStorage.getItem(keyFavs(user));
+      if(!raw) return [];
+      try{ return JSON.parse(raw) || []; }catch(e){ return []; }
+    }
+    function setFavs(user, favs){
+      localStorage.setItem(keyFavs(user), JSON.stringify(favs));
+    }
+
+    function loadFavorites(){
+      const user = readCustomer();
+      const list = getFavs(user);
       const favList = document.getElementById("favList");
       const empty = document.getElementById("favEmpty");
 
@@ -1854,33 +1839,49 @@
       window.location.href = "taxi.html?fav=" + encodeURIComponent(id);
     }
 
-    async function addFavorite(){
+    function addFavorite(){
+      const user = readCustomer();
       const label = document.getElementById("favName").value.trim();
       const address = document.getElementById("favAddr").value.trim();
       if(!label || !address){ toast(t("error_generic")); return; }
 
-      await apiFetch(API.favorites, { method:"POST", body: JSON.stringify({ label, address }) });
+      const list = getFavs(user);
+      list.unshift({ id: String(Date.now()), label, address });
+      setFavs(user, list);
 
       document.getElementById("favName").value = "";
       document.getElementById("favAddr").value = "";
       toast(t("saved"));
       openView("view-favorites");
-      await loadFavorites();
+      loadFavorites();
     }
 
-    async function removeFavorite(id){
-      await apiFetch(API.favorites + "/" + encodeURIComponent(id), { method:"DELETE" });
+    function removeFavorite(id){
+      const user = readCustomer();
+      const list = getFavs(user).filter(x => x.id !== id);
+      setFavs(user, list);
       toast(t("updated"));
-      await loadFavorites();
+      loadFavorites();
     }
 
-    async function loadRides(status){
+    // ===== Rides (local demo) =====
+    function getRides(user){
+      const raw = localStorage.getItem(keyRides(user));
+      if(!raw) return [];
+      try{ return JSON.parse(raw) || []; }catch(e){ return []; }
+    }
+
+    function loadRides(status){
       const up = document.getElementById("tabUpcoming");
       const pa = document.getElementById("tabPast");
       if(status === "upcoming"){ up.style.opacity = "1"; pa.style.opacity = ".75"; }
       else { pa.style.opacity = "1"; up.style.opacity = ".75"; }
 
-      const rides = await apiFetch(API.rides + "?status=" + encodeURIComponent(status), { method:"GET" });
+      const user = readCustomer();
+      const ridesAll = getRides(user);
+
+      const rides = ridesAll.filter(r => (status === "upcoming" ? r.when === "upcoming" : r.when === "past"));
+
       const empty = document.getElementById("ridesWrap");
       const list = document.getElementById("ridesList");
 
@@ -1919,34 +1920,17 @@
       window.location.href = "ride.html?id=" + encodeURIComponent(id);
     }
 
-    async function loadNews(){
-      const items = await apiFetch(API.news, { method:"GET" });
+    // ===== News (local demo) =====
+    function loadNews(){
       const box = document.getElementById("newsList");
-      if(!Array.isArray(items) || items.length === 0){
-        box.innerHTML = `
-          <div class="row" style="cursor:default;">
-            <div class="txt">
-              <div class="title">${escapeHtml(t("news_title"))}</div>
-              <div class="desc">${escapeHtml(t("soon"))}</div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      box.innerHTML = items.map(n => `
+      box.innerHTML = `
         <div class="row" style="cursor:default;">
-          <div class="ico">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M7 4h10a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M9 8h8M9 12h8M9 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
           <div class="txt">
-            <div class="title">${escapeHtml(n.title || '')}</div>
-            <div class="desc">${escapeHtml(n.date || '')}</div>
+            <div class="title">${escapeHtml(t("news_title"))}</div>
+            <div class="desc">${escapeHtml(t("soon"))}</div>
           </div>
         </div>
-      `).join("");
+      `;
     }
 
     function escapeHtml(s){
@@ -1958,28 +1942,35 @@
         .replaceAll("'","&#039;");
     }
 
-    (async function init(){
-      try{
-        applyI18n();
-        applyTheme();
+    // ===== Load "Me" (from local storage) =====
+    function loadMe(){
+      const user = readCustomer();
+      const p = getProfile(user);
 
-        const s = readSession();
-        if(!s || !s.token){
-          window.location.href = "klant-login.html";
-          return;
-        }
+      document.getElementById("userName").textContent = p.name || user || "—";
+      document.getElementById("userEmail").textContent = p.email || (user.includes("@") ? user : "—");
 
-        await loadMe();
+      document.getElementById("fName").value = p.name || "";
+      document.getElementById("fPhone").value = p.phone || "";
+      document.getElementById("fEmail").value = p.email || "";
+    }
 
-        if(!localStorage.getItem("ymaanygo_payment_method")){
-          localStorage.setItem("ymaanygo_payment_method", "driver");
-        }
+    // ===== Start =====
+    (function init(){
+      applyI18n();
+      applyTheme();
 
-      }catch(e){
-        clearSession();
-        toast(e.message || t("error_generic"));
-        setTimeout(()=>window.location.href="klant-login.html", 600);
+      const user = readCustomer();
+      if(!user){
+        window.location.href = "klant-login.html";
+        return;
       }
+
+      // Ensure some defaults
+      if(!localStorage.getItem(keyPay(user))) localStorage.setItem(keyPay(user), "driver");
+
+      loadMe();
+      syncPaymentUI();
     })();
   </script>
 </body>
