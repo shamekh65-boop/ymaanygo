@@ -1,4 +1,4 @@
-  <!doctype html>
+<!doctype html>
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
@@ -17,15 +17,12 @@
       --shadow:0 12px 26px rgba(0,0,0,.10);
       --radius:18px;
 
-      /* Brand */
       --accent:#2f7d32;
       --accent2:#3bbf6b;
 
-      /* Controls */
       --control-h:52px;
       --control-radius:18px;
 
-      /* Bottom nav */
       --nav-h:72px;
     }
 
@@ -43,7 +40,6 @@
     button{font-family:inherit}
     .hidden{display:none !important}
 
-    /* ===== App shell ===== */
     .wrap{max-width:820px;margin:0 auto;padding:0 14px;}
     .top{
       position:sticky; top:0; z-index:50;
@@ -83,9 +79,7 @@
     }
     .icon-btn:active{transform:translateY(1px)}
 
-    .page{
-      padding:14px 0 18px;
-    }
+    .page{padding:14px 0 18px;}
 
     .card{
       background:var(--card);
@@ -95,14 +89,9 @@
       overflow:hidden;
     }
     .card.pad{padding:14px}
-    .section-title{
-      font-weight:900;
-      font-size:18px;
-      margin:6px 0 10px;
-    }
+    .section-title{font-weight:900;font-size:18px;margin:6px 0 10px;}
     .subtle{color:var(--muted);font-size:13px}
 
-    /* ===== Profile header (Account) ===== */
     .profile{
       text-align:center;
       padding:16px 14px 10px;
@@ -119,7 +108,6 @@
     .name{font-weight:900;font-size:18px;margin:0}
     .email{margin:4px 0 0;color:var(--muted);font-size:13px}
 
-    /* ===== List rows ===== */
     .list{display:flex;flex-direction:column}
     .row{
       display:flex;align-items:center;gap:12px;
@@ -142,7 +130,6 @@
     .row .d{font-size:13px;color:var(--muted);margin-top:2px}
     .row .chev{opacity:.55}
 
-    /* ===== Search bar (Home) ===== */
     .search{
       display:flex;align-items:center;gap:10px;
       height:var(--control-h);
@@ -158,9 +145,7 @@
       font-size:16px;
     }
 
-    .hero{
-      display:grid;gap:12px;
-    }
+    .hero{display:grid;gap:12px;}
 
     .promo{
       border-radius:22px;
@@ -188,14 +173,9 @@
       position:absolute;right:-40px;top:-40px;
       width:160px;height:160px;border-radius:999px;
       background:rgba(255,255,255,.14);
-      filter: blur(0px);
     }
 
-    /* ===== Rides empty ===== */
-    .empty{
-      text-align:center;
-      padding:28px 14px;
-    }
+    .empty{text-align:center;padding:28px 14px;}
     .empty .ic{
       width:64px;height:64px;border-radius:999px;
       background:rgba(59,191,107,.12);
@@ -220,7 +200,6 @@
     }
     .primary:active{transform:translateY(1px) scale(.99)}
 
-    /* ===== Tabs (Rides) ===== */
     .seg{
       display:flex; gap:10px;
       background:rgba(0,0,0,.05);
@@ -245,7 +224,6 @@
       box-shadow:0 10px 16px rgba(0,0,0,.10);
     }
 
-    /* ===== Bottom Nav ===== */
     .bottom{
       position:fixed; left:0; right:0; bottom:0;
       height:calc(var(--nav-h) + env(safe-area-inset-bottom));
@@ -271,9 +249,7 @@
       padding:8px 10px;border-radius:16px;
     }
     .tab svg{opacity:.6}
-    .tab.active{
-      color:var(--accent);
-    }
+    .tab.active{color:var(--accent);}
     .tab.active svg{opacity:1}
     .tab:active{transform:translateY(1px)}
 
@@ -285,30 +261,47 @@
       display:none;
     }
     .overlay.show{display:block}
+
+    /* ✅ مهم: الشيت وهو مقفل ما يلتقط لمس */
     .sheet{
-      position:fixed; left:0; right:0; bottom:-150%;
+      position:fixed; left:0; right:0; bottom:0;
       z-index:121;
-      transition:bottom .22s ease;
       padding:10px 10px calc(14px + env(safe-area-inset-bottom));
+      transform:translateY(110%);
+      transition:transform .22s ease;
+      will-change:transform;
+      pointer-events:none; /* ✅ */
     }
-    .sheet.open{bottom:0}
+    .sheet.open{
+      transform:translateY(0);
+      pointer-events:auto; /* ✅ */
+    }
+    .sheet.dragging{ transition:none; }
+
     .sheet-card{
-      max-width:820px;margin:0 auto;
+      max-width:820px;
+      margin:0 auto;
       background:rgba(255,255,255,.96);
       border:1px solid rgba(0,0,0,.08);
       border-radius:22px;
       box-shadow:0 30px 80px rgba(0,0,0,.22);
-      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      max-height:calc(100vh - 20px);
+      overflow:hidden; /* ✅ */
     }
+
     .sheet-grip{
       width:48px;height:5px;border-radius:999px;
       background:rgba(0,0,0,.18);
       margin:10px auto 0;
+      touch-action:none;
     }
     .sheet-head{
       display:flex;align-items:center;justify-content:space-between;
       padding:14px;
       border-bottom:1px solid rgba(0,0,0,.06);
+      touch-action:none;
     }
     .sheet-title{font-weight:900;font-size:18px}
     .sheet-x{
@@ -318,7 +311,16 @@
       cursor:pointer;
       font-size:20px; line-height:1;
     }
-    .sheet-body{padding:12px 14px}
+
+    /* ✅ هذا هو مفتاح حل "ما اقدر اسكرول" */
+    .sheet-body{
+      flex:1;                 /* ✅ */
+      overflow:auto;          /* ✅ */
+      -webkit-overflow-scrolling:touch;
+      padding:14px;
+      touch-action: pan-y;    /* ✅ */
+    }
+
     .sheet-actions{padding:12px 14px; border-top:1px solid rgba(0,0,0,.06)}
     .btn-ghost{
       width:100%;
@@ -329,13 +331,9 @@
       cursor:pointer;
     }
 
-    /* ===== Forms in sheets ===== */
-    .field{
-      display:grid; gap:8px;
-      margin:10px 0;
-    }
+    .field{display:grid; gap:8px;margin:10px 0;}
     .field label{font-size:13px;font-weight:900;color:rgba(0,0,0,.75)}
-    .field input{
+    .field input, .field select{
       height:48px;
       border-radius:16px;
       border:1px solid rgba(0,0,0,.14);
@@ -343,8 +341,9 @@
       font-size:16px;
       outline:none;
       background:#fff;
+      width:100%;
     }
-    .field input:focus{border-color:#111}
+    .field input:focus, .field select:focus{border-color:#111}
 
     .radio-row{
       display:flex;align-items:center;justify-content:space-between;
@@ -367,7 +366,6 @@
     .radio-row.active .dot{border-color:var(--accent)}
     .radio-row.active .dot i{display:block}
 
-    /* ===== RTL (Arabic) ===== */
     body[dir="rtl"] .top-inner{flex-direction:row-reverse}
     body[dir="rtl"] .pill{margin-left:0;margin-right:auto}
     body[dir="rtl"] .row{flex-direction:row-reverse}
@@ -375,91 +373,91 @@
     body[dir="rtl"] .sheet-head{flex-direction:row-reverse}
     body[dir="rtl"] .radio-row{flex-direction:row-reverse}
     body[dir="rtl"] .radio-row .l{flex-direction:row-reverse}
-    /* ===== Taxi (embedded) – namespaced ===== */
-.tx-wrap{display:grid;gap:12px}
-.tx-route-panel{background:rgba(0,0,0,.04);border-radius:18px;padding:12px}
-.tx-route-title{text-align:center;font-size:24px;font-weight:900;margin:0 0 10px}
-.tx-route-box{position:relative;border:2px solid var(--accent);border-radius:20px;background:var(--card);padding:8px;display:grid;gap:8px}
-.tx-route-row{display:flex;align-items:center;gap:10px}
-.tx-dot{width:10px;height:10px;border-radius:50%;flex:0 0 12px;background:#bbb;border:1px solid rgba(0,0,0,.06)}
-.tx-dot.start{background:#5b5bff}
-.tx-dot.end{background:#21a366}
 
-.tx-field{flex:1;display:flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);border-radius:16px;padding:0 10px;height:52px;min-width:0}
-.tx-glass{width:18px;height:18px;border:2px solid var(--text);border-radius:50%;position:relative;flex:0 0 18px;opacity:.8}
-.tx-glass::after{content:"";position:absolute;width:9px;height:2px;background:var(--text);right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px}
+    /* ===== Taxi (embedded) ===== */
+    .tx-wrap{display:grid;gap:12px}
+    .tx-route-panel{background:rgba(0,0,0,.04);border-radius:18px;padding:12px}
+    .tx-route-title{text-align:center;font-size:24px;font-weight:900;margin:0 0 10px}
+    .tx-route-box{position:relative;border:2px solid var(--accent);border-radius:20px;background:var(--card);padding:8px;display:grid;gap:8px}
+    .tx-route-row{display:flex;align-items:center;gap:10px}
+    .tx-dot{width:10px;height:10px;border-radius:50%;flex:0 0 12px;background:#bbb;border:1px solid rgba(0,0,0,.06)}
+    .tx-dot.start{background:#5b5bff}
+    .tx-dot.end{background:#21a366}
 
-.tx-field input{border:0 !important;outline:0 !important;background:transparent !important;height:100%;width:100%;font-size:16px}
-.tx-icon{width:44px;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer;display:grid;place-items:center;flex:0 0 44px}
-.tx-swap{position:absolute;right:-10px;top:50%;transform:translate(100%,-50%);width:42px;height:42px;border-radius:16px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer;box-shadow:0 10px 18px rgba(0,0,0,.12)}
+    .tx-field{flex:1;display:flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);border-radius:16px;padding:0 10px;height:52px;min-width:0}
+    .tx-glass{width:18px;height:18px;border:2px solid var(--text);border-radius:50%;position:relative;flex:0 0 18px;opacity:.8}
+    .tx-glass::after{content:"";position:absolute;width:9px;height:2px;background:var(--text);right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px}
 
-.tx-suggest-wrap{position:relative;flex:1;min-width:0}
-.tx-suggest{position:absolute;left:0;right:0;top:calc(52px + 6px);background:var(--card);border:1px solid rgba(0,0,0,.14);border-radius:14px;box-shadow:0 14px 28px rgba(0,0,0,.14);overflow:hidden;z-index:9999;max-height:240px;overflow-y:auto}
-.tx-item{padding:10px 12px;font-size:14px;cursor:pointer;border-top:1px solid rgba(0,0,0,.08)}
-.tx-item:first-child{border-top:0}
-.tx-item:hover{background:rgba(0,0,0,.04)}
-.tx-muted{opacity:.7;font-size:12px;margin-top:2px}
+    .tx-field input{border:0 !important;outline:0 !important;background:transparent !important;height:100%;width:100%;font-size:16px}
+    .tx-icon{width:44px;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer;display:grid;place-items:center;flex:0 0 44px}
+    .tx-swap{position:absolute;right:-10px;top:50%;transform:translate(100%,-50%);width:42px;height:42px;border-radius:16px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer;box-shadow:0 10px 18px rgba(0,0,0,.12)}
 
-.tx-grid{display:grid;gap:12px}
-.tx-row{display:grid;gap:10px}
-@media(min-width:760px){.tx-row.two{grid-template-columns:1fr 1fr}}
-.tx-inline{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:14px;background:rgba(255,255,255,.92)}
-.tx-inline input{width:auto;height:auto}
+    .tx-suggest-wrap{position:relative;flex:1;min-width:0}
+    .tx-suggest{position:absolute;left:0;right:0;top:calc(52px + 6px);background:var(--card);border:1px solid rgba(0,0,0,.14);border-radius:14px;box-shadow:0 14px 28px rgba(0,0,0,.14);overflow:hidden;z-index:9999;max-height:240px;overflow-y:auto}
+    .tx-item{padding:10px 12px;font-size:14px;cursor:pointer;border-top:1px solid rgba(0,0,0,.08)}
+    .tx-item:first-child{border-top:0}
+    .tx-item:hover{background:rgba(0,0,0,.04)}
+    .tx-muted{opacity:.7;font-size:12px;margin-top:2px}
 
-.tx-actions{display:flex;gap:12px}
-.tx-actions button{flex:1;height:56px;border-radius:28px;border:0;cursor:pointer;font-weight:900;font-size:16px;box-shadow:0 14px 26px rgba(0,0,0,.16)}
-.tx-actions .a{background:linear-gradient(180deg, var(--accent2), var(--accent));color:#fff}
-.tx-actions .b{background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.12);color:var(--text)}
+    .tx-row{display:grid;gap:10px}
+    @media(min-width:760px){.tx-row.two{grid-template-columns:1fr 1fr}}
+    .tx-inline{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:14px;background:rgba(255,255,255,.92)}
+    .tx-inline input{width:auto;height:auto}
 
-.tx-price{font-size:18px;font-weight:900}
-.tx-meta{font-size:13px;color:var(--muted)}
-.tx-note{font-size:12px;color:#c00}
+    .tx-actions{display:flex;gap:12px}
+    .tx-actions button{flex:1;height:56px;border-radius:28px;border:0;cursor:pointer;font-weight:900;font-size:16px;box-shadow:0 14px 26px rgba(0,0,0,.16)}
+    .tx-actions .a{background:linear-gradient(180deg, var(--accent2), var(--accent));color:#fff}
+    .tx-actions .b{background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.12);color:var(--text)}
 
-/* Fullscreen Picker */
-#txModal{position:fixed;inset:0;background:var(--card);z-index:200;display:none;flex-direction:column}
-#txModal.open{display:flex}
-.tx-picker-top{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
-.tx-back{width:44px;height:44px;border-radius:22px;border:0;background:rgba(255,255,255,.92);box-shadow:0 10px 20px rgba(0,0,0,.10);cursor:pointer;font-size:20px}
-.tx-pick-search{flex:1;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.92);border:2px solid var(--accent);border-radius:18px;padding:10px 12px;box-shadow:0 10px 18px rgba(0,0,0,.10)}
-.tx-pick-search input{border:0 !important;outline:none !important;background:transparent !important;font-size:18px;width:100%}
-.tx-pick-search button{width:38px;height:38px;border-radius:14px;border:0;background:rgba(0,0,0,.06);cursor:pointer}
-.tx-mapwrap{position:relative;flex:1;min-height:0}
-#txMap{width:100%;height:100%}
-.tx-pin{position:absolute;left:50%;top:50%;width:26px;height:44px;transform:translate(-50%,-100%);z-index:500;pointer-events:none}
-.tx-pin::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:var(--accent);box-shadow:0 12px 22px rgba(0,0,0,.25)}
-.tx-pin::after{content:"";position:absolute;left:50%;top:22px;transform:translateX(-50%);width:6px;height:22px;border-radius:0 0 6px 6px;background:var(--accent)}
-.tx-pin span{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#fff}
-.tx-bottom{padding:12px 14px 18px;background:var(--card);box-shadow:0 -16px 30px rgba(0,0,0,.10)}
-.tx-picked{font-size:18px;font-weight:900;margin:6px 0 10px}
-.tx-confirm{width:100%;border:0;border-radius:18px;padding:16px;background:var(--accent);color:#fff;font-weight:900;font-size:18px;cursor:pointer}
+    .tx-price{font-size:18px;font-weight:900}
+    .tx-meta{font-size:13px;color:var(--muted)}
+    .tx-note{font-size:12px;color:#c00}
 
-/* In-app alert */
-#txAlert{position:fixed;inset:0;background:rgba(0,0,0,.18);backdrop-filter: blur(14px) saturate(140%);-webkit-backdrop-filter: blur(14px) saturate(140%);z-index:99999;display:none;align-items:center;justify-content:center;padding:18px}
-#txAlert.show{display:flex}
-.tx-alert-card{width:min(520px,100%);border-radius:22px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.55);box-shadow:0 24px 70px rgba(0,0,0,.22);padding:16px}
-.tx-alert-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.tx-alert-title{font-weight:900;font-size:18px}
-.tx-alert-x{width:42px;height:42px;border-radius:16px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.65);cursor:pointer;font-size:20px}
-.tx-alert-msg{font-size:15px;line-height:1.45;padding:8px 2px 14px;white-space:pre-line}
-.tx-alert-ok{width:100%;border:0;border-radius:18px;padding:14px;background:var(--accent);color:#fff;font-weight:900;font-size:16px;cursor:pointer}
-.tx-stops{display:grid;gap:8px;margin-top:8px}
-.tx-stop-row{display:flex;align-items:center;gap:10px}
-.tx-stop-tag{width:10px;height:10px;border-radius:50%;flex:0 0 12px;background:#ff9800;border:1px solid rgba(0,0,0,.06)}
-.tx-remove{width:44px;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer}
+    #txModal{position:fixed;inset:0;background:var(--card);z-index:200;display:none;flex-direction:column}
+    #txModal.open{display:flex}
+    .tx-picker-top{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
+    .tx-back{width:44px;height:44px;border-radius:22px;border:0;background:rgba(255,255,255,.92);box-shadow:0 10px 20px rgba(0,0,0,.10);cursor:pointer;font-size:20px}
+    .tx-pick-search{flex:1;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.92);border:2px solid var(--accent);border-radius:18px;padding:10px 12px;box-shadow:0 10px 18px rgba(0,0,0,.10)}
+    .tx-pick-search input{border:0 !important;outline:none !important;background:transparent !important;font-size:18px;width:100%}
+    .tx-pick-search button{width:38px;height:38px;border-radius:14px;border:0;background:rgba(0,0,0,.06);cursor:pointer}
+    .tx-mapwrap{position:relative;flex:1;min-height:0}
+    #txMap{width:100%;height:100%}
+    .tx-pin{position:absolute;left:50%;top:50%;width:26px;height:44px;transform:translate(-50%,-100%);z-index:500;pointer-events:none}
+    .tx-pin::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:var(--accent);box-shadow:0 12px 22px rgba(0,0,0,.25)}
+    .tx-pin::after{content:"";position:absolute;left:50%;top:22px;transform:translateX(-50%);width:6px;height:22px;border-radius:0 0 6px 6px;background:var(--accent)}
+    .tx-pin span{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#fff}
+    .tx-bottom{padding:12px 14px 18px;background:var(--card);box-shadow:0 -16px 30px rgba(0,0,0,.10)}
+    .tx-picked{font-size:18px;font-weight:900;margin:6px 0 10px}
+    .tx-confirm{width:100%;border:0;border-radius:18px;padding:16px;background:var(--accent);color:#fff;font-weight:900;font-size:18px;cursor:pointer}
 
-.tx-addstop{
-  margin-top:10px;
-  width:100%;
-  height:48px;
-  border-radius:16px;
-  border:1px dashed rgba(0,0,0,.25);
-  background:rgba(255,255,255,.75);
-  font-weight:900;
-  cursor:pointer;
-}  
+    #txAlert{position:fixed;inset:0;background:rgba(0,0,0,.18);backdrop-filter: blur(14px) saturate(140%);-webkit-backdrop-filter: blur(14px) saturate(140%);z-index:99999;display:none;align-items:center;justify-content:center;padding:18px}
+    #txAlert.show{display:flex}
+    .tx-alert-card{width:min(520px,100%);border-radius:22px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.55);box-shadow:0 24px 70px rgba(0,0,0,.22);padding:16px}
+    .tx-alert-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .tx-alert-title{font-weight:900;font-size:18px}
+    .tx-alert-x{width:42px;height:42px;border-radius:16px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.65);cursor:pointer;font-size:20px}
+    .tx-alert-msg{font-size:15px;line-height:1.45;padding:8px 2px 14px;white-space:pre-line}
+    .tx-alert-ok{width:100%;border:0;border-radius:18px;padding:14px;background:var(--accent);color:#fff;font-weight:900;font-size:16px;cursor:pointer}
+
+    .tx-stops{display:grid;gap:8px;margin-top:8px}
+    .tx-stop-row{display:flex;align-items:center;gap:10px}
+    .tx-stop-tag{width:10px;height:10px;border-radius:50%;flex:0 0 12px;background:#ff9800;border:1px solid rgba(0,0,0,.06)}
+    .tx-remove{width:44px;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.92);cursor:pointer}
+
+    .tx-addstop{
+      margin-top:10px;
+      width:100%;
+      height:48px;
+      border-radius:16px;
+      border:1px dashed rgba(0,0,0,.25);
+      background:rgba(255,255,255,.75);
+      font-weight:900;
+      cursor:pointer;
+    }
   </style>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -472,7 +470,6 @@
 
       <div class="pill">
         <button class="icon-btn" type="button" aria-label="Language" onclick="openSheet('langSheet')">
-          <!-- globe -->
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M2 12h20"></path>
@@ -482,7 +479,6 @@
         </button>
 
         <button class="icon-btn" type="button" aria-label="Theme" onclick="openSheet('themeSheet')">
-          <!-- sun/moon -->
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
           </svg>
@@ -498,7 +494,6 @@
       <div class="hero">
         <div class="card pad">
           <div class="search" onclick="goTaxi()">
-            <!-- search icon -->
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.75">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.3-4.3"></path>
@@ -519,7 +514,6 @@
           <div class="list">
             <div class="row" onclick="openFavorites()">
               <div class="left">
-                <!-- star -->
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2l3 7 7 .6-5.2 4.5 1.6 7-6.4-4-6.4 4 1.6-7L2 9.6 9 9l3-7Z"></path>
                 </svg>
@@ -537,7 +531,6 @@
 
             <div class="row" onclick="goTaxi()">
               <div class="left">
-                <!-- route -->
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path>
                   <path d="M18 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path>
@@ -574,7 +567,6 @@
 
         <div id="ridesEmpty" class="empty">
           <div class="ic">
-            <!-- calendar -->
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.75">
               <rect x="3" y="4" width="18" height="18" rx="3"></rect>
               <path d="M16 2v4M8 2v4M3 10h18"></path>
@@ -592,7 +584,6 @@
       <div class="card">
         <div class="profile">
           <div class="avatar">
-            <!-- user -->
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21a8 8 0 0 0-16 0"></path>
               <circle cx="12" cy="8" r="4"></circle>
@@ -605,7 +596,6 @@
         <div class="list">
           <div class="row" onclick="openSheet('profileSheet')">
             <div class="left">
-              <!-- user -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21a8 8 0 0 0-16 0"></path>
                 <circle cx="12" cy="8" r="4"></circle>
@@ -624,7 +614,6 @@
 
           <div class="row" onclick="openSheet('securitySheet')">
             <div class="left">
-              <!-- lock -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="11" width="16" height="10" rx="2"></rect>
                 <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
@@ -643,7 +632,6 @@
 
           <div class="row" onclick="openSheet('paymentSheet')">
             <div class="left">
-              <!-- wallet -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"></path>
                 <path d="M16 13h6"></path>
@@ -663,7 +651,6 @@
 
           <div class="row" onclick="openFavorites()">
             <div class="left">
-              <!-- pin -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 21s7-4.4 7-11a7 7 0 0 0-14 0c0 6.6 7 11 7 11Z"></path>
                 <circle cx="12" cy="10" r="2"></circle>
@@ -682,7 +669,6 @@
 
           <div class="row" onclick="openSheet('supportSheet')">
             <div class="left">
-              <!-- headset -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 12a8 8 0 0 1 16 0"></path>
                 <path d="M4 12v5a2 2 0 0 0 2 2h2"></path>
@@ -710,7 +696,6 @@
         <div class="list" style="border-top:1px solid rgba(0,0,0,.06)">
           <div class="row" onclick="openSheet('langSheet')">
             <div class="left">
-              <!-- language -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 5h7"></path>
                 <path d="M7 5v15"></path>
@@ -734,7 +719,6 @@
 
           <div class="row" onclick="openSheet('themeSheet')">
             <div class="left">
-              <!-- theme -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
               </svg>
@@ -752,7 +736,6 @@
 
           <div class="row" onclick="logout()">
             <div class="left">
-              <!-- logout -->
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 17l5-5-5-5"></path>
                 <path d="M15 12H3"></path>
@@ -776,7 +759,6 @@
   <div class="bottom" role="navigation" aria-label="Bottom navigation">
     <div class="bottom-inner">
       <button id="tabHome" class="tab active" type="button" onclick="showPage('home')">
-        <!-- home -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 10.5 12 3l9 7.5V21a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 21v-10.5Z"></path>
           <path d="M9 22v-7h6v7"></path>
@@ -785,7 +767,6 @@
       </button>
 
       <button id="tabRides" class="tab" type="button" onclick="showPage('rides')">
-        <!-- calendar/clock -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="3"></rect>
           <path d="M16 2v4M8 2v4M3 10h18"></path>
@@ -795,7 +776,6 @@
       </button>
 
       <button id="tabAccount" class="tab" type="button" onclick="showPage('account')">
-        <!-- user -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21a8 8 0 0 0-16 0"></path>
           <circle cx="12" cy="8" r="4"></circle>
@@ -805,7 +785,7 @@
     </div>
   </div>
 
-  <!-- Overlay for all sheets -->
+  <!-- Overlay -->
   <div id="overlay" class="overlay" onclick="closeAllSheets()"></div>
 
   <!-- ===== Sheets ===== -->
@@ -964,7 +944,7 @@
     </div>
   </div>
 
-  <!-- Payment -->
+  <!-- Payment (✅ صار مستقل ومغلق صح) -->
   <div id="paymentSheet" class="sheet" aria-hidden="true">
     <div class="sheet-card">
       <div class="sheet-grip" aria-hidden="true"></div>
@@ -972,178 +952,6 @@
         <div class="sheet-title" id="paymentTitle"></div>
         <button class="sheet-x" type="button" onclick="closeSheet('paymentSheet')">×</button>
       </div>
-
-
-<!-- ===== Taxi Sheet (inside dashboard) ===== -->
-<div id="taxiSheet" class="sheet" aria-hidden="true">
-  <div class="sheet-card">
-    <div class="sheet-grip" aria-hidden="true"></div>
-    <div class="sheet-head">
-      <div class="sheet-title">Taxi boeken</div>
-      <button class="sheet-x" type="button" onclick="closeSheet('taxiSheet')">×</button>
-    </div>
-
-    <div class="sheet-body">
-      <div class="tx-wrap">
-
-        <div class="tx-route-panel">
-          <div class="tx-route-title">Waar wil je heen?</div>
-
-          <div class="tx-route-box">
-            <div class="tx-route-row">
-              <div class="tx-dot start"></div>
-
-              <div class="tx-field">
-                <span class="tx-glass"></span>
-
-                <div class="tx-suggest-wrap">
-                  <input id="txFrom" type="text" placeholder="Ophaallocatie" autocomplete="off">
-                  <div id="txFromSuggest" class="tx-suggest hidden"></div>
-                </div>
-
-                <button class="tx-icon" type="button" onclick="tx_openPicker('txFrom')">📍</button>
-              </div>
-            </div>
-
-            <div class="tx-route-row">
-              <div class="tx-dot end"></div>
-
-              <div class="tx-field">
-                <span class="tx-glass"></span>
-
-                <div class="tx-suggest-wrap">
-                  <input id="txTo" type="text" placeholder="Bestemming" autocomplete="off">
-                  <div id="txToSuggest" class="tx-suggest hidden"></div>
-                </div>
-
-                <button class="tx-icon" type="button" onclick="tx_openPicker('txTo')">📍</button>
-              </div>
-
-              <button class="tx-icon" type="button" title="Route" onclick="tx_openRoute()">🧭</button>
-            </div>
-               <!-- Tussenstops -->
-            <div id="txStops" class="tx-stops"></div>
-
-            <button id="txAddStop" class="tx-addstop" type="button" onclick="tx_addStop()">+ Tussenstop toevoegen</button>
-
-
-
-            <button class="tx-swap" type="button" title="Omwisselen" onclick="tx_swap()">⇅</button>
-          </div>
-            
-          <div style="margin-top:10px;">
-            <button type="button" onclick="tx_useCurrentAsFrom()"
-              style="display:flex;align-items:center;gap:10px;background:transparent;border:0;font-size:16px;font-weight:800;color:var(--text);cursor:pointer;">
-              <span style="font-size:20px;">📍</span> Huidige locatie
-            </button>
-          </div>
-        </div>
-
-          <div class="tx-row two">
-            <div>
-              <label>Ophaalmoment</label>
-              <input id="txTime" type="datetime-local">
-            </div>
-            <div>
-              <label>Voertuig</label>
-              <select id="txCar">
-                <option value="Standaard">Standaard</option>
-                <option value="Comfort">Comfort</option>
-                <option value="Busje">Busje (8 pers.)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="tx-row two">
-            <div>
-              <label>Aantal reizigers</label>
-              <select id="txPax">
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option>
-              </select>
-            </div>
-            <div>
-              <label>&nbsp;</label>
-              <div class="tx-inline">
-                <input id="txRetour" type="checkbox">
-                <strong>Retour</strong>
-              </div>
-            </div>
-          </div>
-
-          <div id="txRetourBlock" class="tx-row hidden">
-            <div>
-              <label>Retour datum & tijd</label>
-              <input id="txRetourTime" type="datetime-local">
-            </div>
-          </div>
-
-          <div class="tx-row">
-            <div class="tx-inline">
-              <input id="txAirport" type="checkbox">
-              <strong>Vanuit luchthaven?</strong>
-            </div>
-          </div>
-
-          <div id="txFlightBlock" class="tx-row hidden">
-            <div>
-              <label>Vluchtnummer</label>
-              <input id="txFlight" type="text" placeholder="Bijv. KL1234">
-            </div>
-          </div>
-
-          <!-- Auto pricing results -->
-          <div class="tx-actions">
-            <button class="b" type="button" onclick="tx_calc(true)">Bereken mijn ritprijs</button>
-            <button class="a" type="button" onclick="tx_whatsapp()">WhatsApp boeking</button>
-          </div>
-
-          <div class="tx-price" id="txPrice"></div>
-          <div class="tx-meta" id="txMeta"></div>
-          <div class="tx-note">Indicatieve prijs. Definitieve bevestiging via WhatsApp.</div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="sheet-actions">
-      <button class="btn-ghost" type="button" onclick="closeSheet('taxiSheet')">Sluiten</button>
-    </div>
-  </div>
-</div>
-
-<!-- Fullscreen Map Picker -->
-<div id="txModal">
-  <div class="tx-picker-top">
-    <button class="tx-back" type="button" onclick="tx_closePicker()">←</button>
-    <div class="tx-pick-search">
-      <span class="tx-glass"></span>
-      <input id="txPickSearch" type="text" placeholder="Zoek een adres..." />
-      <button type="button" onclick="tx_pickerSearch()">🔎</button>
-    </div>
-  </div>
-  <div class="tx-mapwrap">
-    <div id="txMap"></div>
-    <div class="tx-pin" aria-hidden="true"><span></span></div>
-  </div>
-  <div class="tx-bottom">
-    <div id="txPicked" class="tx-picked">—</div>
-    <button id="txConfirm" class="tx-confirm" type="button" onclick="tx_pickerConfirm()">Bevestigen</button>
-  </div>
-</div>
-
-<!-- In-app Alert -->
-<div id="txAlert" role="dialog" aria-modal="true">
-  <div class="tx-alert-card">
-    <div class="tx-alert-head">
-      <div id="txAlertTitle" class="tx-alert-title">Melding</div>
-      <button class="tx-alert-x" type="button" onclick="tx_hideAlert()">×</button>
-    </div>
-    <div id="txAlertMsg" class="tx-alert-msg"></div>
-    <button class="tx-alert-ok" type="button" onclick="tx_hideAlert()">OK</button>
-  </div>
-</div>
-
       <div class="sheet-body">
         <div class="card pad" style="box-shadow:none">
           <div class="section-title" style="margin:0 0 6px" id="payDriverTitle"></div>
@@ -1191,14 +999,184 @@
     </div>
   </div>
 
-  <script>
-    /* ===========================
-       "REAL" (بدون سيرفر) يعني:
-       - بيانات حقيقية على الجهاز (localStorage)
-       - صفحات وتبديل وتفاعل كامل
-       - إذا تريد "حقيقي" 100% على سيرفر + قاعدة بيانات + تسجيل دخول فعلي -> لازم Backend
-       =========================== */
+  <!-- ✅ Taxi Sheet صار مستقل (مهم جداً) -->
+  <div id="taxiSheet" class="sheet" aria-hidden="true">
+    <div class="sheet-card">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div class="sheet-title">Taxi boeken</div>
+        <button class="sheet-x" type="button" onclick="closeSheet('taxiSheet')">×</button>
+      </div>
 
+      <div class="sheet-body">
+        <div class="tx-wrap">
+
+          <!-- ✅ بيانات العميل (عشان txName/txPhone ما تعطي Error) -->
+          <div class="card pad" style="box-shadow:none">
+            <div class="section-title" style="margin:0 0 8px;">Gegevens</div>
+            <div class="field">
+              <label>Naam</label>
+              <input id="txName" type="text" placeholder="Naam">
+            </div>
+            <div class="field">
+              <label>Telefoon</label>
+              <input id="txPhone" type="tel" placeholder="06... / +31...">
+            </div>
+          </div>
+
+          <div class="tx-route-panel">
+            <div class="tx-route-title">Waar wil je heen?</div>
+
+            <div class="tx-route-box">
+              <div class="tx-route-row">
+                <div class="tx-dot start"></div>
+
+                <div class="tx-field">
+                  <span class="tx-glass"></span>
+
+                  <div class="tx-suggest-wrap">
+                    <input id="txFrom" type="text" placeholder="Ophaallocatie" autocomplete="off">
+                    <div id="txFromSuggest" class="tx-suggest hidden"></div>
+                  </div>
+
+                  <button class="tx-icon" type="button" onclick="tx_openPicker('txFrom')">📍</button>
+                </div>
+              </div>
+
+              <div class="tx-route-row">
+                <div class="tx-dot end"></div>
+
+                <div class="tx-field">
+                  <span class="tx-glass"></span>
+
+                  <div class="tx-suggest-wrap">
+                    <input id="txTo" type="text" placeholder="Bestemming" autocomplete="off">
+                    <div id="txToSuggest" class="tx-suggest hidden"></div>
+                  </div>
+
+                  <button class="tx-icon" type="button" onclick="tx_openPicker('txTo')">📍</button>
+                </div>
+
+                <button class="tx-icon" type="button" title="Route" onclick="tx_openRoute()">🧭</button>
+              </div>
+
+              <div id="txStops" class="tx-stops"></div>
+              <button id="txAddStop" class="tx-addstop" type="button" onclick="tx_addStop()">+ Tussenstop toevoegen</button>
+
+              <button class="tx-swap" type="button" title="Omwisselen" onclick="tx_swap()">⇅</button>
+            </div>
+
+            <div style="margin-top:10px;">
+              <button type="button" onclick="tx_useCurrentAsFrom()"
+                style="display:flex;align-items:center;gap:10px;background:transparent;border:0;font-size:16px;font-weight:800;color:var(--text);cursor:pointer;">
+                <span style="font-size:20px;">📍</span> Huidige locatie
+              </button>
+            </div>
+          </div>
+
+          <div class="tx-row two">
+            <div class="field">
+              <label>Ophaalmoment</label>
+              <input id="txTime" type="datetime-local">
+            </div>
+            <div class="field">
+              <label>Voertuig</label>
+              <select id="txCar">
+                <option value="Standaard">Standaard</option>
+                <option value="Comfort">Comfort</option>
+                <option value="Busje">Busje (8 pers.)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tx-row two">
+            <div class="field">
+              <label>Aantal reizigers</label>
+              <select id="txPax">
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <div class="tx-inline">
+                <input id="txRetour" type="checkbox">
+                <strong>Retour</strong>
+              </div>
+            </div>
+          </div>
+
+          <div id="txRetourBlock" class="tx-row hidden">
+            <div class="field">
+              <label>Retour datum & tijd</label>
+              <input id="txRetourTime" type="datetime-local">
+            </div>
+          </div>
+
+          <div class="tx-row">
+            <div class="tx-inline">
+              <input id="txAirport" type="checkbox">
+              <strong>Vanuit luchthaven?</strong>
+            </div>
+          </div>
+
+          <div id="txFlightBlock" class="tx-row hidden">
+            <div class="field">
+              <label>Vluchtnummer</label>
+              <input id="txFlight" type="text" placeholder="Bijv. KL1234">
+            </div>
+          </div>
+
+          <div class="tx-actions">
+            <button class="b" type="button" onclick="tx_calc(true)">Bereken mijn ritprijs</button>
+            <button class="a" type="button" onclick="tx_whatsapp()">WhatsApp boeking</button>
+          </div>
+
+          <div class="tx-price" id="txPrice"></div>
+          <div class="tx-meta" id="txMeta"></div>
+          <div class="tx-note">Indicatieve prijs. Definitieve bevestiging via WhatsApp.</div>
+        </div>
+      </div>
+
+      <div class="sheet-actions">
+        <button class="btn-ghost" type="button" onclick="closeSheet('taxiSheet')">Sluiten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Map Picker -->
+  <div id="txModal">
+    <div class="tx-picker-top">
+      <button class="tx-back" type="button" onclick="tx_closePicker()">←</button>
+      <div class="tx-pick-search">
+        <span class="tx-glass"></span>
+        <input id="txPickSearch" type="text" placeholder="Zoek een adres..." />
+        <button type="button" onclick="tx_pickerSearch()">🔎</button>
+      </div>
+    </div>
+    <div class="tx-mapwrap">
+      <div id="txMap"></div>
+      <div class="tx-pin" aria-hidden="true"><span></span></div>
+    </div>
+    <div class="tx-bottom">
+      <div id="txPicked" class="tx-picked">—</div>
+      <button id="txConfirm" class="tx-confirm" type="button" onclick="tx_pickerConfirm()">Bevestigen</button>
+    </div>
+  </div>
+
+  <!-- In-app Alert -->
+  <div id="txAlert" role="dialog" aria-modal="true">
+    <div class="tx-alert-card">
+      <div class="tx-alert-head">
+        <div id="txAlertTitle" class="tx-alert-title">Melding</div>
+        <button class="tx-alert-x" type="button" onclick="tx_hideAlert()">×</button>
+      </div>
+      <div id="txAlertMsg" class="tx-alert-msg"></div>
+      <button class="tx-alert-ok" type="button" onclick="tx_hideAlert()">OK</button>
+    </div>
+  </div>
+
+  <script>
     const LS = {
       profile: 'ymaanygo_profile_v1',
       lang: 'ymaanygo_lang_v1',
@@ -1288,7 +1266,6 @@
         supportBtn:"WhatsApp klantenservice",
         supportNote:"Let op: dit opent WhatsApp."
       },
-
       en: {
         tabHome:"Home", tabRides:"Rides", tabAccount:"Account",
         homeSearch:"Where are you going?",
@@ -1367,7 +1344,6 @@
         supportBtn:"WhatsApp support",
         supportNote:"Note: this opens WhatsApp."
       },
-
       ar: {
         tabHome:"الرئيسية", tabRides:"الرحلات", tabAccount:"الحساب",
         homeSearch:"إلى أين تريد الذهاب؟",
@@ -1448,12 +1424,8 @@
       }
     };
 
-    function getLang(){
-      return localStorage.getItem(LS.lang) || 'nl';
-    }
-    function getTheme(){
-      return localStorage.getItem(LS.theme) || 'auto';
-    }
+    function getLang(){ return localStorage.getItem(LS.lang) || 'nl'; }
+    function getTheme(){ return localStorage.getItem(LS.theme) || 'auto'; }
 
     function applyTheme(){
       const t = getTheme();
@@ -1476,7 +1448,6 @@
         document.documentElement.style.setProperty('--shadow', '0 12px 26px rgba(0,0,0,.10)');
       }
 
-      // update theme radios
       setActiveRadio('themeLight', t === 'light');
       setActiveRadio('themeDark',  t === 'dark');
       setActiveRadio('themeAuto',  t === 'auto');
@@ -1494,12 +1465,10 @@
       document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
       document.documentElement.lang = lang;
 
-      // Bottom tabs
       document.getElementById('tabHomeLbl').textContent = T.tabHome;
       document.getElementById('tabRidesLbl').textContent = T.tabRides;
       document.getElementById('tabAccountLbl').textContent = T.tabAccount;
 
-      // Home
       document.getElementById('homeSearch').value = T.homeSearch;
       document.getElementById('homeHint').textContent = T.homeHint;
       document.getElementById('promoTitle').textContent = T.promoTitle;
@@ -1510,14 +1479,12 @@
       document.getElementById('quickBookTitle').textContent = T.quickBookTitle;
       document.getElementById('quickBookDesc').textContent = T.quickBookDesc;
 
-      // Rides
       document.getElementById('segUpcoming').textContent = T.segUpcoming;
       document.getElementById('segPast').textContent = T.segPast;
       document.getElementById('ridesEmptyTitle').textContent = T.ridesEmptyTitle;
       document.getElementById('ridesEmptyText').textContent = T.ridesEmptyText;
       document.getElementById('ridesEmptyBtn').textContent = T.ridesEmptyBtn;
 
-      // Account items
       document.getElementById('miProfile').textContent = T.miProfile;
       document.getElementById('miProfileDesc').textContent = T.miProfileDesc;
       document.getElementById('miSecurity').textContent = T.miSecurity;
@@ -1538,7 +1505,6 @@
       document.getElementById('miLogoutDesc').textContent = T.miLogoutDesc;
       document.getElementById('versionLine').textContent = T.version;
 
-      // Sheets labels
       document.getElementById('langTitle').textContent = T.langTitle;
       document.getElementById('closeLbl').textContent = T.close;
 
@@ -1586,7 +1552,6 @@
       document.getElementById('supportNote').textContent = T.supportNote;
       document.getElementById('closeSupLbl').textContent = T.close;
 
-      // lang radios
       setActiveRadio('langNL', lang === 'nl');
       setActiveRadio('langEN', lang === 'en');
       setActiveRadio('langAR', lang === 'ar');
@@ -1608,7 +1573,6 @@
       el.classList.toggle('active', !!on);
     }
 
-    // ===== Pages
     function showPage(which){
       document.getElementById('pageHome').classList.toggle('hidden', which !== 'home');
       document.getElementById('pageRides').classList.toggle('hidden', which !== 'rides');
@@ -1623,44 +1587,51 @@
       window.scrollTo({top:0, behavior:'smooth'});
     }
 
-    // ===== Sheets
     function openSheet(id){
       document.getElementById('overlay').classList.add('show');
       const s = document.getElementById(id);
       if(!s) return;
+
+      s.style.transform = '';
       s.classList.add('open');
       s.setAttribute('aria-hidden','false');
+
+      // ✅ لما تفتح taxiSheet عبّي الاسم/الهاتف
+      if(id === 'taxiSheet'){
+        tx_fillFromProfile();
+        tx_autoCalc(true);
+      }
     }
+
     function closeSheet(id){
       const s = document.getElementById(id);
       if(!s) return;
+
+      s.style.transform = '';
       s.classList.remove('open');
       s.setAttribute('aria-hidden','true');
 
-      // close overlay if no sheet open
       setTimeout(() => {
         const anyOpen = document.querySelector('.sheet.open');
         if(!anyOpen) document.getElementById('overlay').classList.remove('show');
       }, 30);
     }
+
     function closeAllSheets(){
-      document.querySelectorAll('.sheet.open').forEach(s => s.classList.remove('open'));
+      document.querySelectorAll('.sheet.open').forEach(s => {
+        s.style.transform = '';
+        s.classList.remove('open');
+      });
       document.getElementById('overlay').classList.remove('show');
       document.querySelectorAll('.sheet').forEach(s => s.setAttribute('aria-hidden','true'));
     }
 
-    // ===== Profile (local "real")
     function getProfile(){
       const fallback = { name: "ymaanyGO klant", phone: "", email: "" };
-      try{
-        return Object.assign(fallback, JSON.parse(localStorage.getItem(LS.profile) || "{}"));
-      }catch(e){
-        return fallback;
-      }
+      try{ return Object.assign(fallback, JSON.parse(localStorage.getItem(LS.profile) || "{}")); }
+      catch(e){ return fallback; }
     }
-    function saveProfileToLS(p){
-      localStorage.setItem(LS.profile, JSON.stringify(p));
-    }
+    function saveProfileToLS(p){ localStorage.setItem(LS.profile, JSON.stringify(p)); }
 
     function refreshProfileUI(){
       const p = getProfile();
@@ -1693,10 +1664,7 @@
       const a = (document.getElementById('newPw').value || "").trim();
       const b = (document.getElementById('newPw2').value || "").trim();
 
-      if(!isStrongPw(a)){
-        alert(T.pwNote);
-        return;
-      }
+      if(!isStrongPw(a)){ alert(T.pwNote); return; }
       if(a !== b){
         alert(lang === 'ar' ? "كلمتا المرور غير متطابقتين." : (lang === 'en' ? "Passwords do not match." : "Wachtwoorden komen niet overeen."));
         return;
@@ -1708,32 +1676,21 @@
       closeSheet('securitySheet');
     }
 
-    // ===== Payment (pay driver)
-    function getPayment(){
-      return localStorage.getItem(LS.payment) || 'card';
-    }
-    function setPayment(v){
-      localStorage.setItem(LS.payment, v);
-      refreshPaymentUI();
-    }
+    function getPayment(){ return localStorage.getItem(LS.payment) || 'card'; }
+    function setPayment(v){ localStorage.setItem(LS.payment, v); refreshPaymentUI(); }
     function refreshPaymentUI(){
       const v = getPayment();
       setActiveRadio('payCash', v === 'cash');
       setActiveRadio('payCard', v === 'card');
     }
 
-    // ===== Favorites (CRUD)
     function getFavs(){
       try{
         const arr = JSON.parse(localStorage.getItem(LS.favs) || "[]");
         return Array.isArray(arr) ? arr : [];
-      }catch(e){
-        return [];
-      }
+      }catch(e){ return []; }
     }
-    function setFavs(arr){
-      localStorage.setItem(LS.favs, JSON.stringify(arr));
-    }
+    function setFavs(arr){ localStorage.setItem(LS.favs, JSON.stringify(arr)); }
 
     function addFavorite(){
       const lang = getLang();
@@ -1769,7 +1726,6 @@
     function refreshFavoritesUI(){
       const lang = getLang();
       const T = i18n[lang] || i18n.nl;
-
       const favs = getFavs();
       const list = document.getElementById('favList');
 
@@ -1805,12 +1761,10 @@
         `).join("");
       }
 
-      // Home line refresh
       document.getElementById('favTitle').textContent = T.favTitle;
       document.getElementById('favDesc').textContent = T.favDesc;
     }
 
-    // ===== Rides (placeholder local, real on device)
     let ridesTab = 'upcoming';
     function setRidesTab(t){
       ridesTab = t;
@@ -1823,9 +1777,7 @@
       try{
         const arr = JSON.parse(localStorage.getItem(LS.rides) || "[]");
         return Array.isArray(arr) ? arr : [];
-      }catch(e){
-        return [];
-      }
+      }catch(e){ return []; }
     }
 
     function refreshRidesUI(){
@@ -1860,7 +1812,6 @@
           ${filtered.map(r => `
             <div class="row" style="cursor:default">
               <div class="left">
-                <!-- ticket -->
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 9a2 2 0 0 1 2-2h14v4a2 2 0 0 0 0 4v4H6a2 2 0 0 1-2-2V9Z"></path>
                   <path d="M13 7v10"></path>
@@ -1876,14 +1827,9 @@
       `;
     }
 
-    // ===== Navigation actions
-    function goTaxi(){
-      // عدّل الرابط حسب مشروعك
-      openSheet('taxiSheet');
-    }
+    function goTaxi(){ openSheet('taxiSheet'); }
 
     function openWhatsAppSupport(){
-      // عدّل الرقم إذا تريد
       const whatsappNummer = "31633337184";
       const lang = getLang();
       const msg = (lang === 'ar')
@@ -1895,24 +1841,16 @@
     }
 
     function logout(){
-      // "حقيقي" على الجهاز: نمسح بيانات المستخدم المحلية (بدون حذف كل شيء إذا ما تريد)
       localStorage.removeItem(LS.profile);
       localStorage.removeItem(LS.pw);
-      // اختياري: favs/rides
-      // localStorage.removeItem(LS.favs);
-      // localStorage.removeItem(LS.rides);
-
       refreshProfileUI();
       showPage('home');
       alert(getLang() === 'ar' ? "تم تسجيل الخروج." : (getLang()==='en' ? "Logged out." : "Uitgelogd."));
     }
 
-    // ===== Utils
     function cryptoRandom(){
-      // simple id without libs
       return 'id_' + Math.random().toString(16).slice(2) + Date.now().toString(16);
     }
-
     function escapeHtml(s){
       return String(s || "")
         .replaceAll("&","&amp;")
@@ -1921,496 +1859,460 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
-
     function formatWhen(iso, lang){
       const d = new Date(iso);
       if(isNaN(d.getTime())) return iso;
       const opts = { weekday:'short', year:'numeric', month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit' };
-      try{
-        return d.toLocaleString(lang === 'ar' ? 'ar' : (lang === 'en' ? 'en-US' : 'nl-NL'), opts);
-      }catch(e){
-        return d.toLocaleString();
-      }
+      try{ return d.toLocaleString(lang === 'ar' ? 'ar' : (lang === 'en' ? 'en-US' : 'nl-NL'), opts); }
+      catch(e){ return d.toLocaleString(); }
     }
 
-    // ===== Init
     function ensureDefaults(){
-      // profile default
       const p = getProfile();
-      if(!localStorage.getItem(LS.profile)){
-        // لو عندك ايميل/اسم مخزن سابقاً من تسجيل المستخدم المحلي ضع هنا
-        saveProfileToLS(p);
-      }
-      // payment default
+      if(!localStorage.getItem(LS.profile)) saveProfileToLS(p);
       if(!localStorage.getItem(LS.payment)) localStorage.setItem(LS.payment, 'card');
-      // lang default
       if(!localStorage.getItem(LS.lang)) localStorage.setItem(LS.lang, 'nl');
-      // theme default
       if(!localStorage.getItem(LS.theme)) localStorage.setItem(LS.theme, 'auto');
-      // favs default empty
       if(!localStorage.getItem(LS.favs)) localStorage.setItem(LS.favs, '[]');
-      // rides default empty
       if(!localStorage.getItem(LS.rides)) localStorage.setItem(LS.rides, '[]');
     }
 
-    // Keyboard: ESC closes sheets
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Escape') closeAllSheets();
-    });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeAllSheets(); });
 
-    // watch system theme if auto
     if(window.matchMedia){
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if(getTheme() === 'auto') applyTheme();
       });
     }
 
-/* =========================
-   Taxi Embedded (namespaced)
-   ========================= */
+    /* =========================
+       Taxi Embedded (namespaced)
+       ========================= */
+    const tx = {
+      NOMINATIM: "https://nominatim.openstreetmap.org",
+      OSRM: "https://router.project-osrm.org",
+      WHATSAPP: "31633337184",
 
-const tx = {
-  NOMINATIM: "https://nominatim.openstreetmap.org",
-  OSRM: "https://router.project-osrm.org",
-  WHATSAPP: "31633337184",
+      START: 5.00,
+      PER_KM_STD: 2.00,
+      PER_KM_VAN: 2.50,
+      COMFORT: 7.00,
 
-  START: 5.00,
-  PER_KM_STD: 2.00,
-  PER_KM_VAN: 2.50,
-  COMFORT: 7.00,
+      map: null,
+      activeField: "txFrom",
+      updating: false,
+      autoTimer: null,
+      stops: [],
+      stopMax: 3
+    };
 
-  map: null,
-  activeField: "txFrom",
-  updating: false,
-  autoTimer: null,
-};
+    function tx_showAlert(msg, title="Melding"){
+      document.getElementById("txAlertTitle").textContent = title;
+      document.getElementById("txAlertMsg").textContent = msg;
+      document.getElementById("txAlert").classList.add("show");
+    }
+    function tx_hideAlert(){ document.getElementById("txAlert").classList.remove("show"); }
 
-function tx_showAlert(msg, title="Melding"){
-  document.getElementById("txAlertTitle").textContent = title;
-  document.getElementById("txAlertMsg").textContent = msg;
-  document.getElementById("txAlert").classList.add("show");
-}
-function tx_hideAlert(){ document.getElementById("txAlert").classList.remove("show"); }
+    function tx_pad2(n){ return String(n).padStart(2,'0'); }
+    function tx_toLocalValue(d){
+      return d.getFullYear()+"-"+tx_pad2(d.getMonth()+1)+"-"+tx_pad2(d.getDate())+"T"+tx_pad2(d.getHours())+":"+tx_pad2(d.getMinutes());
+    }
+    function tx_parseLocal(v){ if(!v) return null; const d = new Date(v); return isNaN(d.getTime()) ? null : d; }
+    function tx_isPastPickup(v, buffer=15){
+      const d = tx_parseLocal(v);
+      if(!d) return true;
+      const now = new Date();
+      now.setMinutes(now.getMinutes()+buffer);
+      return d.getTime() < now.getTime();
+    }
+    function tx_setMinTimes(){
+      const now = new Date();
+      now.setMinutes(now.getMinutes()+15);
+      const minv = tx_toLocalValue(now);
+      document.getElementById("txTime").min = minv;
+      document.getElementById("txRetourTime").min = minv;
+    }
 
-function tx_pad2(n){ return String(n).padStart(2,'0'); }
-function tx_toLocalValue(d){
-  return d.getFullYear()+"-"+tx_pad2(d.getMonth()+1)+"-"+tx_pad2(d.getDate())+"T"+tx_pad2(d.getHours())+":"+tx_pad2(d.getMinutes());
-}
-function tx_parseLocal(v){
-  if(!v) return null;
-  const d = new Date(v);
-  return isNaN(d.getTime()) ? null : d;
-}
-function tx_isPastPickup(v, buffer=15){
-  const d = tx_parseLocal(v);
-  if(!d) return true;
-  const now = new Date();
-  now.setMinutes(now.getMinutes()+buffer);
-  return d.getTime() < now.getTime();
-}
-function tx_setMinTimes(){
-  const now = new Date();
-  now.setMinutes(now.getMinutes()+15);
-  const minv = tx_toLocalValue(now);
-  document.getElementById("txTime").min = minv;
-  document.getElementById("txRetourTime").min = minv;
-}
+    function tx_fillFromProfile(){
+      try{
+        const p = JSON.parse(localStorage.getItem('ymaanygo_profile_v1') || "{}");
+        if(p?.name){
+          document.getElementById("txName").value = p.name;
+        }
+        if(p?.phone){
+          document.getElementById("txPhone").value = p.phone;
+        }
+      }catch(e){}
+    }
 
-/* Autofill from dashboard profile (ymaanygo_profile_v1) */
-function tx_fillFromProfile(){
-  try{
-    const p = JSON.parse(localStorage.getItem('ymaanygo_profile_v1') || "{}");
-    if(p?.name) document.getElementById("txName").value = p.name;
-    if(p?.phone) document.getElementById("txPhone").value = p.phone;
-  }catch(e){}
-}
-
-/* Toggle blocks */
-function tx_toggleRetour(){
-  const on = document.getElementById("txRetour").checked;
-  const b = document.getElementById("txRetourBlock");
-  const f = document.getElementById("txRetourTime");
-  if(on){ b.classList.remove("hidden"); f.required = true; }
-  else { b.classList.add("hidden"); f.required = false; f.value=""; }
-  tx_autoCalc();
-}
-function tx_toggleAirport(){
-  const on = document.getElementById("txAirport").checked;
-  const b = document.getElementById("txFlightBlock");
-  const f = document.getElementById("txFlight");
-  if(on){ b.classList.remove("hidden"); f.required = true; }
-  else { b.classList.add("hidden"); f.required = false; f.value=""; }
-  tx_autoCalc();
-}
-function tx_swap(){
-  const a = document.getElementById("txFrom");
-  const b = document.getElementById("txTo");
-  const t = a.value; a.value = b.value; b.value = t;
-  tx_autoCalc(true);
-}
-
-/* Geocode / reverse */
-async function tx_geocode(q){
-  const url = tx.NOMINATIM + "/search?format=json&limit=1&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
-  const res = await fetch(url, { headers: { "Accept":"application/json" }});
-  const data = await res.json();
-  if(!data?.[0]) return null;
-  return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-}
-async function tx_reverse(lat, lon){
-  const url = tx.NOMINATIM + `/reverse?format=json&zoom=18&lat=${lat}&lon=${lon}&addressdetails=1`;
-  const res = await fetch(url, { headers: { "Accept":"application/json" }});
-  const data = await res.json();
-  const a = data?.address || {};
-  const road = a.road || a.pedestrian || "";
-  const house = a.house_number || "";
-  const city = a.city || a.town || a.village || "";
-  const postcode = a.postcode || "";
-  if(!road || !city) return null;
-  const line = `${road} ${house}`.trim();
-  return `${line}, ${postcode ? postcode+" " : ""}${city}, Nederland`.replace(/\s+/g,' ').trim();
-}
-async function tx_routeKm(A,B){
-  const url = `${tx.OSRM}/route/v1/driving/${A.lon},${A.lat};${B.lon},${B.lat}?overview=false`;
-  const res = await fetch(url, { headers: { "Accept":"application/json" }});
-  const data = await res.json();
-  if(data?.code !== "Ok" || !data?.routes?.[0]) return null;
-  return { km: data.routes[0].distance/1000, min: data.routes[0].duration/60 };
-}
-
-/* Autocomplete */
-function tx_debounce(fn, ms){
-  let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
-}
-async function tx_suggest(q){
-  const url = tx.NOMINATIM + "/search?format=json&limit=6&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
-  const res = await fetch(url, { headers: { "Accept":"application/json" }});
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-}
-function tx_formatSug(it){
-  const a = it.address || {};
-  const road = a.road || a.pedestrian || a.footway || "";
-  const house = a.house_number || "";
-  const city = a.city || a.town || a.village || "";
-  const postcode = a.postcode || "";
-  const line1 = `${road} ${house}`.trim() || (it.display_name||"").split(",")[0];
-  const line2 = `${postcode ? postcode+" " : ""}${city}`.trim();
-  return { line1, line2 };
-}
-function tx_setInput(fieldId, it){
-  const a = it.address || {};
-  const road = a.road || a.pedestrian || a.footway || "";
-  const house = a.house_number || "";
-  const city = a.city || a.town || a.village || "";
-  const postcode = a.postcode || "";
-  const line = `${(road+" "+house).trim()}, ${postcode ? postcode+" " : ""}${city}, Nederland`.replace(/\s+/g," ").trim();
-  document.getElementById(fieldId).value = line || it.display_name || "";
-}
-function tx_hideSuggest(fieldId){
-  const box = document.getElementById(fieldId === "txFrom" ? "txFromSuggest" : "txToSuggest");
-  box.classList.add("hidden"); box.innerHTML="";
-}
-function tx_showSuggest(fieldId, items){
-  const box = document.getElementById(fieldId === "txFrom" ? "txFromSuggest" : "txToSuggest");
-  if(!items.length){ tx_hideSuggest(fieldId); return; }
-  box.innerHTML = items.map((it, i)=>{
-    const t = tx_formatSug(it);
-    const line2 = t.line2 ? `<div class="tx-muted">${t.line2}</div>` : "";
-    return `<div class="tx-item" data-i="${i}">
-      <div>${t.line1}</div>${line2}
-    </div>`;
-  }).join("");
-  box.classList.remove("hidden");
-  box.querySelectorAll(".tx-item").forEach(el=>{
-    el.addEventListener("mousedown",(e)=>e.preventDefault());
-    el.addEventListener("click", ()=>{
-      const it = items[Number(el.dataset.i)];
-      tx_setInput(fieldId, it);
-      tx_hideSuggest(fieldId);
+    function tx_toggleRetour(){
+      const on = document.getElementById("txRetour").checked;
+      const b = document.getElementById("txRetourBlock");
+      const f = document.getElementById("txRetourTime");
+      if(on){ b.classList.remove("hidden"); f.required = true; }
+      else { b.classList.add("hidden"); f.required = false; f.value=""; }
+      tx_autoCalc();
+    }
+    function tx_toggleAirport(){
+      const on = document.getElementById("txAirport").checked;
+      const b = document.getElementById("txFlightBlock");
+      const f = document.getElementById("txFlight");
+      if(on){ b.classList.remove("hidden"); f.required = true; }
+      else { b.classList.add("hidden"); f.required = false; f.value=""; }
+      tx_autoCalc();
+    }
+    function tx_swap(){
+      const a = document.getElementById("txFrom");
+      const b = document.getElementById("txTo");
+      const t = a.value; a.value = b.value; b.value = t;
       tx_autoCalc(true);
-    });
-  });
-}
-function tx_bind(fieldId){
-  const input = document.getElementById(fieldId);
-  const run = tx_debounce(async ()=>{
-    const q = input.value.trim();
-    if(q.length < 3){ tx_hideSuggest(fieldId); return; }
-    const items = await tx_suggest(q);
-    tx_showSuggest(fieldId, items);
-  }, 250);
-
-  input.addEventListener("input", ()=>{ run(); tx_autoCalc(); });
-  input.addEventListener("blur", ()=>setTimeout(()=>tx_hideSuggest(fieldId),150));
-  input.addEventListener("focus", ()=>{ if(input.value.trim().length>=3) run(); });
-  input.addEventListener("keydown",(e)=>{ if(e.key==="Escape") tx_hideSuggest(fieldId); });
-}
-
-/* Map picker */
-function tx_getPinLatLng(){
-  const mapEl = document.getElementById('txMap');
-  const pinEl = document.querySelector('.tx-pin');
-  const mr = mapEl.getBoundingClientRect();
-  const pr = pinEl.getBoundingClientRect();
-  const x = (pr.left + pr.width/2) - mr.left;
-  const y = (pr.top + pr.height) - mr.top;
-  return tx.map.containerPointToLatLng([x,y]);
-}
-async function tx_openPicker(fieldId){
-  tx.activeField = fieldId;
-  document.getElementById("txPicked").textContent = "—";
-  document.getElementById("txPickSearch").value = "";
-  document.getElementById("txConfirm").textContent = (fieldId==="txFrom") ? "Ophaallocatie bevestigen" : "Bestemming bevestigen";
-  document.getElementById("txModal").classList.add("open");
-
-  setTimeout(async ()=>{
-    if(!tx.map){
-      tx.map = L.map('txMap', { zoomControl:false });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap' }).addTo(tx.map);
-      tx.map.on('moveend', tx_onMoveEnd);
-    }
-    tx.map.invalidateSize(); setTimeout(()=>tx.map.invalidateSize(), 300);
-
-    const val = document.getElementById(tx.activeField).value.trim();
-    if(val){
-      const p = await tx_geocode(val);
-      if(p){ tx.map.setView([p.lat,p.lon], 17); await tx_onMoveEnd(); return; }
     }
 
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(async (pos)=>{
-        tx.map.setView([pos.coords.latitude,pos.coords.longitude], 17);
-        await tx_onMoveEnd();
-      }, async ()=>{
-        tx.map.setView([52.3702, 4.8952], 14);
-        await tx_onMoveEnd();
+    async function tx_geocode(q){
+      const url = tx.NOMINATIM + "/search?format=json&limit=1&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
+      const res = await fetch(url, { headers: { "Accept":"application/json" }});
+      const data = await res.json();
+      if(!data?.[0]) return null;
+      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+    }
+    async function tx_reverse(lat, lon){
+      const url = tx.NOMINATIM + `/reverse?format=json&zoom=18&lat=${lat}&lon=${lon}&addressdetails=1`;
+      const res = await fetch(url, { headers: { "Accept":"application/json" }});
+      const data = await res.json();
+      const a = data?.address || {};
+      const road = a.road || a.pedestrian || "";
+      const house = a.house_number || "";
+      const city = a.city || a.town || a.village || "";
+      const postcode = a.postcode || "";
+      if(!road || !city) return null;
+      const line = `${road} ${house}`.trim();
+      return `${line}, ${postcode ? postcode+" " : ""}${city}, Nederland`.replace(/\s+/g,' ').trim();
+    }
+    async function tx_routeKm(A,B){
+      const url = `${tx.OSRM}/route/v1/driving/${A.lon},${A.lat};${B.lon},${B.lat}?overview=false`;
+      const res = await fetch(url, { headers: { "Accept":"application/json" }});
+      const data = await res.json();
+      if(data?.code !== "Ok" || !data?.routes?.[0]) return null;
+      return { km: data.routes[0].distance/1000, min: data.routes[0].duration/60 };
+    }
+
+    function tx_debounce(fn, ms){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); }; }
+    async function tx_suggest(q){
+      const url = tx.NOMINATIM + "/search?format=json&limit=6&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
+      const res = await fetch(url, { headers: { "Accept":"application/json" }});
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    }
+    function tx_formatSug(it){
+      const a = it.address || {};
+      const road = a.road || a.pedestrian || a.footway || "";
+      const house = a.house_number || "";
+      const city = a.city || a.town || a.village || "";
+      const postcode = a.postcode || "";
+      const line1 = `${road} ${house}`.trim() || (it.display_name||"").split(",")[0];
+      const line2 = `${postcode ? postcode+" " : ""}${city}`.trim();
+      return { line1, line2 };
+    }
+    function tx_setInput(fieldId, it){
+      const a = it.address || {};
+      const road = a.road || a.pedestrian || a.footway || "";
+      const house = a.house_number || "";
+      const city = a.city || a.town || a.village || "";
+      const postcode = a.postcode || "";
+      const line = `${(road+" "+house).trim()}, ${postcode ? postcode+" " : ""}${city}, Nederland`.replace(/\s+/g," ").trim();
+      document.getElementById(fieldId).value = line || it.display_name || "";
+    }
+    function tx_hideSuggest(fieldId){
+      const box = document.getElementById(fieldId === "txFrom" ? "txFromSuggest" : "txToSuggest");
+      box.classList.add("hidden"); box.innerHTML="";
+    }
+    function tx_showSuggest(fieldId, items){
+      const box = document.getElementById(fieldId === "txFrom" ? "txFromSuggest" : "txToSuggest");
+      if(!items.length){ tx_hideSuggest(fieldId); return; }
+      box.innerHTML = items.map((it, i)=>{
+        const t = tx_formatSug(it);
+        const line2 = t.line2 ? `<div class="tx-muted">${t.line2}</div>` : "";
+        return `<div class="tx-item" data-i="${i}"><div>${t.line1}</div>${line2}</div>`;
+      }).join("");
+      box.classList.remove("hidden");
+      box.querySelectorAll(".tx-item").forEach(el=>{
+        el.addEventListener("mousedown",(e)=>e.preventDefault());
+        el.addEventListener("click", ()=>{
+          const it = items[Number(el.dataset.i)];
+          tx_setInput(fieldId, it);
+          tx_hideSuggest(fieldId);
+          tx_autoCalc(true);
+        });
       });
-    }else{
-      tx.map.setView([52.3702, 4.8952], 14);
+    }
+    function tx_bind(fieldId){
+      const input = document.getElementById(fieldId);
+      const run = tx_debounce(async ()=>{
+        const q = input.value.trim();
+        if(q.length < 3){ tx_hideSuggest(fieldId); return; }
+        const items = await tx_suggest(q);
+        tx_showSuggest(fieldId, items);
+      }, 250);
+
+      input.addEventListener("input", ()=>{ run(); tx_autoCalc(); });
+      input.addEventListener("blur", ()=>setTimeout(()=>tx_hideSuggest(fieldId),150));
+      input.addEventListener("focus", ()=>{ if(input.value.trim().length>=3) run(); });
+      input.addEventListener("keydown",(e)=>{ if(e.key==="Escape") tx_hideSuggest(fieldId); });
+    }
+
+    function tx_getPinLatLng(){
+      const mapEl = document.getElementById('txMap');
+      const pinEl = document.querySelector('.tx-pin');
+      const mr = mapEl.getBoundingClientRect();
+      const pr = pinEl.getBoundingClientRect();
+      const x = (pr.left + pr.width/2) - mr.left;
+      const y = (pr.top + pr.height) - mr.top;
+      return tx.map.containerPointToLatLng([x,y]);
+    }
+
+    async function tx_openPicker(fieldId){
+      tx.activeField = fieldId;
+      document.getElementById("txPicked").textContent = "—";
+      document.getElementById("txPickSearch").value = "";
+      document.getElementById("txConfirm").textContent = (fieldId==="txFrom") ? "Ophaallocatie bevestigen" : "Bestemming bevestigen";
+      document.getElementById("txModal").classList.add("open");
+
+      setTimeout(async ()=>{
+        if(!tx.map){
+          tx.map = L.map('txMap', { zoomControl:false });
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap' }).addTo(tx.map);
+          tx.map.on('moveend', tx_onMoveEnd);
+        }
+        tx.map.invalidateSize(); setTimeout(()=>tx.map.invalidateSize(), 300);
+
+        const val = document.getElementById(tx.activeField).value.trim();
+        if(val){
+          const p = await tx_geocode(val);
+          if(p){ tx.map.setView([p.lat,p.lon], 17); await tx_onMoveEnd(); return; }
+        }
+
+        if(navigator.geolocation){
+          navigator.geolocation.getCurrentPosition(async (pos)=>{
+            tx.map.setView([pos.coords.latitude,pos.coords.longitude], 17);
+            await tx_onMoveEnd();
+          }, async ()=>{
+            tx.map.setView([52.3702, 4.8952], 14);
+            await tx_onMoveEnd();
+          });
+        }else{
+          tx.map.setView([52.3702, 4.8952], 14);
+          await tx_onMoveEnd();
+        }
+      }, 60);
+    }
+
+    function tx_closePicker(){ document.getElementById("txModal").classList.remove("open"); }
+
+    async function tx_onMoveEnd(){
+      if(!tx.map || tx.updating) return;
+      tx.updating = true;
+      const p = tx_getPinLatLng();
+      const addr = await tx_reverse(p.lat, p.lng);
+      document.getElementById("txPicked").textContent = addr || "Adres niet exact — verplaats de kaart.";
+      tx.updating = false;
+    }
+
+    async function tx_pickerSearch(){
+      const q = document.getElementById("txPickSearch").value.trim();
+      if(!q) return;
+      const p = await tx_geocode(q);
+      if(!p){ tx_showAlert("Adres niet gevonden. Pas de invoer aan of verplaats de kaart.", "Adres probleem"); return; }
+      tx.map.setView([p.lat,p.lon], 17);
       await tx_onMoveEnd();
     }
-  }, 60);
-}
-function tx_closePicker(){ document.getElementById("txModal").classList.remove("open"); }
-async function tx_onMoveEnd(){
-  if(!tx.map || tx.updating) return;
-  tx.updating = true;
-  const p = tx_getPinLatLng();
-  const addr = await tx_reverse(p.lat, p.lng);
-  document.getElementById("txPicked").textContent = addr || "Adres niet exact — verplaats de kaart.";
-  tx.updating = false;
-}
-async function tx_pickerSearch(){
-  const q = document.getElementById("txPickSearch").value.trim();
-  if(!q) return;
-  const p = await tx_geocode(q);
-  if(!p){ tx_showAlert("Adres niet gevonden. Pas de invoer aan of verplaats de kaart.", "Adres probleem"); return; }
-  tx.map.setView([p.lat,p.lon], 17);
-  await tx_onMoveEnd();
-}
-async function tx_pickerConfirm(){
-  if(!tx.map){ tx_closePicker(); return; }
-  const p = tx_getPinLatLng();
-  const addr = await tx_reverse(p.lat, p.lng);
-  if(!addr){ tx_showAlert("Adres onvoldoende nauwkeurig. Verplaats de kaart en probeer opnieuw.", "Adres probleem"); return; }
-  document.getElementById(tx.activeField).value = addr;
-  tx_closePicker();
-  tx_autoCalc(true);
-}
 
-/* Current location -> from */
-async function tx_useCurrentAsFrom(){
-  if(!navigator.geolocation){ tx_showAlert("Uw browser ondersteunt geen locatievoorzieningen.", "Locatie"); return; }
-  navigator.geolocation.getCurrentPosition(async (pos)=>{
-    const addr = await tx_reverse(pos.coords.latitude, pos.coords.longitude);
-    if(!addr){ tx_showAlert("Het adres kon niet worden herkend.", "Adres probleem"); return; }
-    document.getElementById("txFrom").value = addr;
-    tx_autoCalc(true);
-  }, ()=> tx_showAlert("Locatietoegang is geweigerd.", "Locatie"));
-}
-
-/* Auto-calc trigger */
-function tx_autoCalc(force=false){
-  clearTimeout(tx.autoTimer);
-  tx.autoTimer = setTimeout(()=>tx_calc(force), force ? 50 : 450);
-}
-
-/* Main calc (auto) */
-async function tx_calc(force=false){
-  const van = document.getElementById("txFrom").value.trim();
-  const naar = document.getElementById("txTo").value.trim();
-  const voertuig = document.getElementById("txCar").value;
-  const retour = document.getElementById("txRetour").checked;
-
-  const tijd = document.getElementById("txTime").value;
-  const retourTijd = document.getElementById("txRetourTime").value;
-
-  // stops (non-empty only)
-  const stopValues = (tx.stops || [])
-    .map(id => (document.getElementById(id)?.value || "").trim())
-    .filter(v => v.length > 0);
-
-  if(!van || !naar || !tijd){
-    document.getElementById("txPrice").textContent = "";
-    document.getElementById("txMeta").textContent = "";
-    return;
-  }
-
-  if(tx_isPastPickup(tijd, 15)){
-    if(force) tx_showAlert("Kies een tijdstip minimaal 15 minuten vanaf nu.", "Ongeldige tijd");
-    document.getElementById("txPrice").textContent = "";
-    document.getElementById("txMeta").textContent = "";
-    return;
-  }
-
-  if(retour){
-    const td = tx_parseLocal(tijd);
-    const rtd = tx_parseLocal(retourTijd);
-    if(!rtd || rtd.getTime() <= td.getTime()){
-      if(force) tx_showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
-      return;
+    async function tx_pickerConfirm(){
+      if(!tx.map){ tx_closePicker(); return; }
+      const p = tx_getPinLatLng();
+      const addr = await tx_reverse(p.lat, p.lng);
+      if(!addr){ tx_showAlert("Adres onvoldoende nauwkeurig. Verplaats de kaart en probeer opnieuw.", "Adres probleem"); return; }
+      document.getElementById(tx.activeField).value = addr;
+      tx_closePicker();
+      tx_autoCalc(true);
     }
-  }
 
-  document.getElementById("txPrice").textContent = "Bezig...";
-  document.getElementById("txMeta").textContent = "";
-
-  // Build route: From -> stops -> To
-  const addresses = [van, ...stopValues, naar];
-
-  // Geocode all points
-  const points = [];
-  for(const addr of addresses){
-    const p = await tx_geocode(addr);
-    if(!p){
-      if(force) tx_showAlert("Het adres is onduidelijk. Plaats de pin 📍 handmatig op de kaart.", "Adres probleem");
-      document.getElementById("txPrice").textContent = "";
-      return;
+    async function tx_useCurrentAsFrom(){
+      if(!navigator.geolocation){ tx_showAlert("Uw browser ondersteunt geen locatievoorzieningen.", "Locatie"); return; }
+      navigator.geolocation.getCurrentPosition(async (pos)=>{
+        const addr = await tx_reverse(pos.coords.latitude, pos.coords.longitude);
+        if(!addr){ tx_showAlert("Het adres kon niet worden herkend.", "Adres probleem"); return; }
+        document.getElementById("txFrom").value = addr;
+        tx_autoCalc(true);
+      }, ()=> tx_showAlert("Locatietoegang is geweigerd.", "Locatie"));
     }
-    points.push(p);
-  }
 
-  // Route total (multi legs)
-  const r = await tx_routeMulti(points);
-  if(!r){
-    if(force) tx_showAlert("De afstand kon niet worden berekend. Probeer opnieuw.", "Route probleem");
-    document.getElementById("txPrice").textContent = "";
-    return;
-  }
+    function tx_autoCalc(force=false){
+      clearTimeout(tx.autoTimer);
+      tx.autoTimer = setTimeout(()=>tx_calc(force), force ? 50 : 450);
+    }
 
-  const perKm = (voertuig === "Busje") ? tx.PER_KM_VAN : tx.PER_KM_STD;
+    async function tx_routeMulti(points){
+      let totalKm = 0;
+      let totalMin = 0;
+      for(let i = 0; i < points.length - 1; i++){
+        const r = await tx_routeKm(points[i], points[i+1]);
+        if(!r) return null;
+        totalKm += r.km;
+        totalMin += r.min;
+      }
+      return { km: totalKm, min: totalMin };
+    }
 
-  let prijs = tx.START + (r.km * perKm);
-  if(voertuig === "Comfort") prijs += tx.COMFORT;
-  if(retour) prijs *= 2;
+    async function tx_calc(force=false){
+      const van = document.getElementById("txFrom").value.trim();
+      const naar = document.getElementById("txTo").value.trim();
+      const voertuig = document.getElementById("txCar").value;
+      const retour = document.getElementById("txRetour").checked;
 
-  document.getElementById("txPrice").textContent = "€ " + prijs.toFixed(2);
-  document.getElementById("txMeta").textContent =
-    `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
-}
+      const tijd = document.getElementById("txTime").value;
+      const retourTijd = document.getElementById("txRetourTime").value;
 
-/* Route open */
-async function tx_openRoute(){
-  const origin = document.getElementById("txFrom").value.trim();
-  const destination = document.getElementById("txTo").value.trim();
+      const stopValues = (tx.stops || [])
+        .map(id => (document.getElementById(id)?.value || "").trim())
+        .filter(v => v.length > 0);
 
-  const stopValues = (tx.stops || [])
-    .map(id => (document.getElementById(id)?.value || "").trim())
-    .filter(v => v.length > 0);
+      if(!van || !naar || !tijd){
+        document.getElementById("txPrice").textContent = "";
+        document.getElementById("txMeta").textContent = "";
+        return;
+      }
 
-  if(!origin || !destination){
-    tx_showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
-    return;
-  }
+      if(tx_isPastPickup(tijd, 15)){
+        if(force) tx_showAlert("Kies een tijdstip minimaal 15 minuten vanaf nu.", "Ongeldige tijd");
+        document.getElementById("txPrice").textContent = "";
+        document.getElementById("txMeta").textContent = "";
+        return;
+      }
 
-  const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+      if(retour){
+        const td = tx_parseLocal(tijd);
+        const rtd = tx_parseLocal(retourTijd);
+        if(!rtd || rtd.getTime() <= td.getTime()){
+          if(force) tx_showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
+          return;
+        }
+      }
 
-  if(isApple){
-    // Apple Maps: only origin+dest reliably. (Waypoints support is inconsistent)
-    window.open(
-      "https://maps.apple.com/?saddr="+encodeURIComponent(origin)+
-      "&daddr="+encodeURIComponent(destination)+
-      "&dirflg=d",
-      "_blank"
-    );
-  }else{
-    // Google Maps supports waypoints
-    const wp = stopValues.length
-      ? "&waypoints=" + encodeURIComponent(stopValues.join("|"))
-      : "";
-    window.open(
-      "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(origin)+
-      "&destination="+encodeURIComponent(destination)+
-      wp +
-      "&travelmode=driving",
-      "_blank"
-    );
-  }
-}
+      document.getElementById("txPrice").textContent = "Bezig...";
+      document.getElementById("txMeta").textContent = "";
 
-/* WhatsApp booking */
-function tx_isValidNLPhone(v){
-  const s = (v||"").replace(/\s+/g,'').trim();
-  return /^(0\d{9}|\+31\d{9})$/.test(s);
-}
-function tx_whatsapp(){
-  const p = getProfile();   // ← هذا السطر ناقص عندك
-  const naam = (p.name || "").trim();
-  const tel  = (p.phone || "").trim();
-  const tijd = document.getElementById("txTime").value;
-  const van = document.getElementById("txFrom").value.trim();
-  const naar = document.getElementById("txTo").value.trim();
-const stopValues = (tx.stops || [])
-  .map(id => (document.getElementById(id)?.value || "").trim())
-  .filter(v => v.length > 0);
-  const voertuig = document.getElementById("txCar").value;
-  const reizigers = document.getElementById("txPax").value;
-  const retour = document.getElementById("txRetour").checked;
-  const retourTijd = document.getElementById("txRetourTime").value;
+      const addresses = [van, ...stopValues, naar];
+      const points = [];
 
-  const luchthaven = document.getElementById("txAirport").checked;
-  const vluchtnummer = document.getElementById("txFlight").value.trim();
+      for(const addr of addresses){
+        const p = await tx_geocode(addr);
+        if(!p){
+          if(force) tx_showAlert("Het adres is onduidelijk. Plaats de pin 📍 handmatig op de kaart.", "Adres probleem");
+          document.getElementById("txPrice").textContent = "";
+          return;
+        }
+        points.push(p);
+      }
 
-  const prijs = document.getElementById("txPrice").textContent || "Nog niet berekend";
-  const meta = document.getElementById("txMeta").textContent || "";
+      const r = await tx_routeMulti(points);
+      if(!r){
+        if(force) tx_showAlert("De afstand kon niet worden berekend. Probeer opnieuw.", "Route probleem");
+        document.getElementById("txPrice").textContent = "";
+        return;
+      }
 
- // 1) Naam of telefoon ontbreekt
-if(!naam || !tel){
-  tx_showAlert(
-    "Om de boeking te voltooien moet je eerst inloggen.\nGa naar Account → Persoonlijke gegevens en vul je naam en telefoonnummer in.",
-    "Inloggen vereist"
-  );
+      const perKm = (voertuig === "Busje") ? tx.PER_KM_VAN : tx.PER_KM_STD;
 
-  closeSheet('taxiSheet');
-  showPage('account');
-  openSheet('profileSheet');
-  return;
-}
+      let prijs = tx.START + (r.km * perKm);
+      if(voertuig === "Comfort") prijs += tx.COMFORT;
+      if(retour) prijs *= 2;
 
-// 2) Tijd ontbreekt
-if(!tijd){
-  tx_showAlert(
-    "Kies een ophaalmoment voordat je verdergaat.",
-    "Tijd ontbreekt"
-  );
-  return;
-}
+      document.getElementById("txPrice").textContent = "€ " + prijs.toFixed(2);
+      document.getElementById("txMeta").textContent =
+        `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
+    }
 
-// 3) Adres ontbreekt
-if(!van || !naar){
-  tx_showAlert(
-    "Vul zowel de ophaallocatie als de bestemming in.",
-    "Adres ontbreekt"
-  );
-  return;
-}
-  if(tx_isPastPickup(tijd, 15)){ tx_showAlert("Kies een tijdstip minimaal 15 minuten vanaf nu.", "Ongeldige tijd"); return; }
-  if(!tx_isValidNLPhone(tel)){ tx_showAlert("Gebruik 06xxxxxxxx of +31xxxxxxxxx.", "Telefoonnummer"); return; }
-  if(retour && !retourTijd){ tx_showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens"); return; }
-  if(luchthaven && !vluchtnummer){ tx_showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens"); return; }
+    async function tx_openRoute(){
+      const origin = document.getElementById("txFrom").value.trim();
+      const destination = document.getElementById("txTo").value.trim();
 
- const bericht =
+      const stopValues = (tx.stops || [])
+        .map(id => (document.getElementById(id)?.value || "").trim())
+        .filter(v => v.length > 0);
+
+      if(!origin || !destination){
+        tx_showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
+        return;
+      }
+
+      const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+
+      if(isApple){
+        window.open(
+          "https://maps.apple.com/?saddr="+encodeURIComponent(origin)+
+          "&daddr="+encodeURIComponent(destination)+
+          "&dirflg=d",
+          "_blank"
+        );
+      }else{
+        const wp = stopValues.length ? "&waypoints=" + encodeURIComponent(stopValues.join("|")) : "";
+        window.open(
+          "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(origin)+
+          "&destination="+encodeURIComponent(destination)+
+          wp +
+          "&travelmode=driving",
+          "_blank"
+        );
+      }
+    }
+
+    function tx_isValidNLPhone(v){
+      const s = (v||"").replace(/\s+/g,'').trim();
+      return /^(0\d{9}|\+31\d{9})$/.test(s);
+    }
+
+    function tx_whatsapp(){
+      const p = getProfile();
+      const naam = (p.name || "").trim();
+      const tel  = (p.phone || "").trim();
+
+      const tijd = document.getElementById("txTime").value;
+      const van = document.getElementById("txFrom").value.trim();
+      const naar = document.getElementById("txTo").value.trim();
+
+      const stopValues = (tx.stops || [])
+        .map(id => (document.getElementById(id)?.value || "").trim())
+        .filter(v => v.length > 0);
+
+      const voertuig = document.getElementById("txCar").value;
+      const reizigers = document.getElementById("txPax").value;
+      const retour = document.getElementById("txRetour").checked;
+      const retourTijd = document.getElementById("txRetourTime").value;
+
+      const luchthaven = document.getElementById("txAirport").checked;
+      const vluchtnummer = document.getElementById("txFlight").value.trim();
+
+      const prijs = document.getElementById("txPrice").textContent || "Nog niet berekend";
+
+      if(!naam || !tel){
+        tx_showAlert(
+          "Om de boeking te voltooien moet je eerst inloggen.\nGa naar Account → Persoonlijke gegevens en vul je naam en telefoonnummer in.",
+          "Inloggen vereist"
+        );
+        closeSheet('taxiSheet');
+        showPage('account');
+        openSheet('profileSheet');
+        return;
+      }
+
+      if(!tijd){ tx_showAlert("Kies een ophaalmoment voordat je verdergaat.", "Tijd ontbreekt"); return; }
+      if(!van || !naar){ tx_showAlert("Vul zowel de ophaallocatie als de bestemming in.", "Adres ontbreekt"); return; }
+      if(tx_isPastPickup(tijd, 15)){ tx_showAlert("Kies een tijdstip minimaal 15 minuten vanaf nu.", "Ongeldige tijd"); return; }
+      if(!tx_isValidNLPhone(tel)){ tx_showAlert("Gebruik 06xxxxxxxx of +31xxxxxxxxx.", "Telefoonnummer"); return; }
+      if(retour && !retourTijd){ tx_showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens"); return; }
+      if(luchthaven && !vluchtnummer){ tx_showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens"); return; }
+
+      const bericht =
 `Nieuwe taxi boeking:
 Naam: ${naam}
 Telefoon: ${tel}
@@ -2423,196 +2325,236 @@ Passagiers: ${reizigers}
 Prijs: ${prijs}
 `;
 
-  window.open("https://wa.me/" + tx.WHATSAPP + "?text=" + encodeURIComponent(bericht), "_blank");
-}
+      window.open("https://wa.me/" + tx.WHATSAPP + "?text=" + encodeURIComponent(bericht), "_blank");
+    }
 
-/* Pax rule: lock Busje if >4 */
-function tx_bindPaxRule(){
-  const pax = document.getElementById("txPax");
-  const car = document.getElementById("txCar");
-  pax.addEventListener("change", ()=>{
-    const n = parseInt(pax.value,10);
-    if(n > 4){ car.value="Busje"; car.disabled=true; }
-    else { car.disabled=false; }
-    tx_autoCalc(true);
-  });
-}
-// ✅ Stops state (keep max = 3)
-tx.stops = [];      // array of stop input ids
-tx.stopMax = 3;     // max tussenstops
+    function tx_bindPaxRule(){
+      const pax = document.getElementById("txPax");
+      const car = document.getElementById("txCar");
+      pax.addEventListener("change", ()=>{
+        const n = parseInt(pax.value,10);
+        if(n > 4){ car.value="Busje"; car.disabled=true; }
+        else { car.disabled=false; }
+        tx_autoCalc(true);
+      });
+    }
 
-function tx_addStop(){
-  // ✅ limit stops
-  if(tx.stops.length >= tx.stopMax){
-    tx_showAlert(`Maximaal ${tx.stopMax} tussenstops toegestaan.`, "Tussenstop");
-    return;
-  }
+    function tx_addStop(){
+      if(tx.stops.length >= tx.stopMax){
+        tx_showAlert(`Maximaal ${tx.stopMax} tussenstops toegestaan.`, "Tussenstop");
+        return;
+      }
 
-  const idx = tx.stops.length + 1;
-  const id = "txStop" + idx;
-  tx.stops.push(id);
+      const idx = tx.stops.length + 1;
+      const id = "txStop" + idx;
+      tx.stops.push(id);
 
-  const wrap = document.getElementById("txStops");
-  if(!wrap){
-    tx_showAlert("Element #txStops ontbreekt in de HTML.", "Tussenstop");
-    return;
-  }
+      const wrap = document.getElementById("txStops");
+      const row = document.createElement("div");
+      row.className = "tx-stop-row";
+      row.id = id + "Row";
 
-  const row = document.createElement("div");
-  row.className = "tx-stop-row";
-  row.id = id + "Row";
-
-  row.innerHTML = `
-    <div class="tx-stop-tag"></div>
-    <div class="tx-field">
-      <span class="tx-glass"></span>
-      <div class="tx-suggest-wrap">
-        <input id="${id}" type="text" placeholder="Tussenstop ${idx}" autocomplete="off">
-        <div id="${id}Suggest" class="tx-suggest hidden"></div>
-      </div>
-      <button class="tx-icon" type="button" onclick="tx_openPicker('${id}')">📍</button>
-    </div>
-    <button class="tx-remove" type="button" title="Verwijderen" onclick="tx_removeStop('${id}')">✕</button>
-  `;
-  wrap.appendChild(row);
-
-  // ✅ bind autocomplete for this stop
-  tx_bindDynamicStop(id);
-
-  // ✅ auto calc after adding
-  tx_autoCalc(true);
-}
-
-function tx_removeStop(id){
-  const i = tx.stops.indexOf(id);
-  if(i >= 0) tx.stops.splice(i, 1);
-
-  // ✅ hide & clear suggestions dropdown for this stop (prevents orphan dropdown)
-  tx_hideSuggestDynamic(id + "Suggest");
-
-  const row = document.getElementById(id + "Row");
-  if(row) row.remove();
-
-  tx_autoCalc(true);
-}
-
-function tx_hideSuggestDynamic(suggestId){
-  const box = document.getElementById(suggestId);
-  if(!box) return;
-  box.classList.add("hidden");
-  box.innerHTML = "";
-}
-
-function tx_showSuggestDynamic(inputId, suggestId, items){
-  const box = document.getElementById(suggestId);
-  if(!box) return;
-
-  if(!items.length){
-    tx_hideSuggestDynamic(suggestId);
-    return;
-  }
-
-  box.innerHTML = items.map((it, i)=>{
-    const t = tx_formatSug(it);
-    const line2 = t.line2 ? `<div class="tx-muted">${t.line2}</div>` : "";
-    return `<div class="tx-item" data-i="${i}">
-      <div>${t.line1}</div>${line2}
-    </div>`;
-  }).join("");
-
-  box.classList.remove("hidden");
-
-  box.querySelectorAll(".tx-item").forEach(el=>{
-    el.addEventListener("mousedown", (e)=>e.preventDefault());
-    el.addEventListener("click", ()=>{
-      const it = items[Number(el.dataset.i)];
-      tx_setInput(inputId, it);
-      tx_hideSuggestDynamic(suggestId);
+      row.innerHTML = `
+        <div class="tx-stop-tag"></div>
+        <div class="tx-field">
+          <span class="tx-glass"></span>
+          <div class="tx-suggest-wrap">
+            <input id="${id}" type="text" placeholder="Tussenstop ${idx}" autocomplete="off">
+            <div id="${id}Suggest" class="tx-suggest hidden"></div>
+          </div>
+          <button class="tx-icon" type="button" onclick="tx_openPicker('${id}')">📍</button>
+        </div>
+        <button class="tx-remove" type="button" title="Verwijderen" onclick="tx_removeStop('${id}')">✕</button>
+      `;
+      wrap.appendChild(row);
+      tx_bindDynamicStop(id);
       tx_autoCalc(true);
-    });
-  });
-}
-
-function tx_bindDynamicStop(id){
-  const input = document.getElementById(id);
-  const suggestId = id + "Suggest";
-  if(!input) return;
-
-  const run = tx_debounce(async ()=>{
-    const q = input.value.trim();
-    if(q.length < 3){
-      tx_hideSuggestDynamic(suggestId);
-      return;
     }
-    const items = await tx_suggest(q);
-    tx_showSuggestDynamic(id, suggestId, items);
-  }, 250);
 
-  input.addEventListener("input", ()=>{ run(); tx_autoCalc(); });
-  input.addEventListener("blur", ()=>setTimeout(()=>tx_hideSuggestDynamic(suggestId), 150));
-  input.addEventListener("focus", ()=>{ if(input.value.trim().length >= 3) run(); });
-  input.addEventListener("keydown", (e)=>{ if(e.key === "Escape") tx_hideSuggestDynamic(suggestId); });
-}
-
-// route for multi points: From -> stops -> To
-async function tx_routeMulti(points){
-  let totalKm = 0;
-  let totalMin = 0;
-
-  for(let i = 0; i < points.length - 1; i++){
-    const r = await tx_routeKm(points[i], points[i+1]);
-    if(!r) return null;
-    totalKm += r.km;
-    totalMin += r.min;
-  }
-  return { km: totalKm, min: totalMin };
-}
-/* Init */
-function tx_init(){
-  tx_setMinTimes();
-  window.addEventListener("focus", tx_setMinTimes);
-
-  tx_fillFromProfile();
-
-  document.getElementById("txRetour").addEventListener("change", tx_toggleRetour);
-  document.getElementById("txAirport").addEventListener("change", tx_toggleAirport);
-
-  ["txTime","txRetourTime","txCar","txPax","txName","txPhone","txFlight"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.addEventListener("input", ()=>tx_autoCalc());
-    if(el) el.addEventListener("change", ()=>tx_autoCalc(true));
-  });
-
-  tx_bind("txFrom");
-  tx_bind("txTo");
-  tx_bindPaxRule();
-
-  // Enter key inside picker = search
-  document.addEventListener("keydown",(e)=>{
-    if(e.key==="Enter" && document.getElementById("txModal").classList.contains("open")){
-      e.preventDefault();
-      tx_pickerSearch();
+    function tx_removeStop(id){
+      const i = tx.stops.indexOf(id);
+      if(i >= 0) tx.stops.splice(i, 1);
+      const row = document.getElementById(id + "Row");
+      if(row) row.remove();
+      tx_autoCalc(true);
     }
-  });
 
-  // When taxi sheet opens: try auto calc
-  const oldOpenSheet = window.openSheet;
-  window.openSheet = function(id){
-    oldOpenSheet(id);
-    if(id === "taxiSheet"){
+    function tx_hideSuggestDynamic(suggestId){
+      const box = document.getElementById(suggestId);
+      if(!box) return;
+      box.classList.add("hidden");
+      box.innerHTML = "";
+    }
+
+    function tx_showSuggestDynamic(inputId, suggestId, items){
+      const box = document.getElementById(suggestId);
+      if(!box) return;
+
+      if(!items.length){
+        tx_hideSuggestDynamic(suggestId);
+        return;
+      }
+
+      box.innerHTML = items.map((it, i)=>{
+        const t = tx_formatSug(it);
+        const line2 = t.line2 ? `<div class="tx-muted">${t.line2}</div>` : "";
+        return `<div class="tx-item" data-i="${i}"><div>${t.line1}</div>${line2}</div>`;
+      }).join("");
+
+      box.classList.remove("hidden");
+
+      box.querySelectorAll(".tx-item").forEach(el=>{
+        el.addEventListener("mousedown", (e)=>e.preventDefault());
+        el.addEventListener("click", ()=>{
+          const it = items[Number(el.dataset.i)];
+          tx_setInput(inputId, it);
+          tx_hideSuggestDynamic(suggestId);
+          tx_autoCalc(true);
+        });
+      });
+    }
+
+    function tx_bindDynamicStop(id){
+      const input = document.getElementById(id);
+      const suggestId = id + "Suggest";
+      if(!input) return;
+
+      const run = tx_debounce(async ()=>{
+        const q = input.value.trim();
+        if(q.length < 3){ tx_hideSuggestDynamic(suggestId); return; }
+        const items = await tx_suggest(q);
+        tx_showSuggestDynamic(id, suggestId, items);
+      }, 250);
+
+      input.addEventListener("input", ()=>{ run(); tx_autoCalc(); });
+      input.addEventListener("blur", ()=>setTimeout(()=>tx_hideSuggestDynamic(suggestId), 150));
+      input.addEventListener("focus", ()=>{ if(input.value.trim().length >= 3) run(); });
+      input.addEventListener("keydown", (e)=>{ if(e.key === "Escape") tx_hideSuggestDynamic(suggestId); });
+    }
+
+    function tx_init(){
+      tx_setMinTimes();
+      window.addEventListener("focus", tx_setMinTimes);
+
       tx_fillFromProfile();
-      tx_autoCalc(true);
+
+      document.getElementById("txRetour").addEventListener("change", tx_toggleRetour);
+      document.getElementById("txAirport").addEventListener("change", tx_toggleAirport);
+
+      ["txTime","txRetourTime","txCar","txPax","txName","txPhone","txFlight"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.addEventListener("input", ()=>tx_autoCalc());
+        if(el) el.addEventListener("change", ()=>tx_autoCalc(true));
+      });
+
+      tx_bind("txFrom");
+      tx_bind("txTo");
+      tx_bindPaxRule();
+
+      document.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter" && document.getElementById("txModal").classList.contains("open")){
+          e.preventDefault();
+          tx_pickerSearch();
+        }
+      });
     }
-  };
-    }
-   tx_init();
-   // Run
+
+    /* ===== Draggable Bottom Sheet (Pointer Events) ===== */
+    (function(){
+      const sheetIds = ['langSheet','themeSheet','favSheet','profileSheet','securitySheet','paymentSheet','supportSheet','taxiSheet'];
+
+      const state = { sheet:null,startY:0,startT:0,currentT:0,dragging:false,pointerId:null };
+
+      function getCurrentTranslateY(el){
+        const tr = getComputedStyle(el).transform;
+        if(!tr || tr === 'none') return 0;
+        const m = new DOMMatrixReadOnly(tr);
+        return m.m42;
+      }
+      function setTranslateY(el, px){ el.style.transform = `translateY(${px}px)`; }
+      function maxDrag(){ return window.innerHeight * 0.9; }
+
+      function onDown(e){
+        const sheet = e.currentTarget.closest('.sheet');
+        if(!sheet || !sheet.classList.contains('open')) return;
+
+        state.sheet = sheet;
+        state.dragging = true;
+        state.pointerId = e.pointerId;
+
+        sheet.classList.add('dragging');
+
+        state.startY = e.clientY;
+        state.startT = getCurrentTranslateY(sheet);
+        state.currentT = state.startT;
+
+        sheet.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      }
+
+      function onMove(e){
+        if(!state.dragging || !state.sheet) return;
+        if(e.pointerId !== state.pointerId) return;
+
+        const dy = e.clientY - state.startY;
+        let next = state.startT + dy;
+
+        if(next < -20) next = -20;
+        const md = maxDrag();
+        if(next > md) next = md;
+
+        state.currentT = next;
+        setTranslateY(state.sheet, next);
+        e.preventDefault();
+      }
+
+      function onUp(e){
+        if(!state.dragging || !state.sheet) return;
+        if(e.pointerId !== state.pointerId) return;
+
+        const sheet = state.sheet;
+        sheet.classList.remove('dragging');
+
+        const threshold = window.innerHeight * 0.35;
+
+        sheet.style.transform = '';
+
+        if(state.currentT > threshold){
+          closeSheet(sheet.id);
+        }else{
+          sheet.classList.add('open');
+        }
+
+        state.dragging = false;
+        state.sheet = null;
+        state.pointerId = null;
+      }
+
+      function attach(sheetId){
+        const sheet = document.getElementById(sheetId);
+        if(!sheet) return;
+        const grip = sheet.querySelector('.sheet-grip');
+        const head = sheet.querySelector('.sheet-head');
+        [grip, head].forEach(h=>{
+          if(!h) return;
+          h.addEventListener('pointerdown', onDown, { passive:false });
+        });
+      }
+
+      sheetIds.forEach(attach);
+      window.addEventListener('pointermove', onMove, { passive:false });
+      window.addEventListener('pointerup', onUp, { passive:true });
+      window.addEventListener('pointercancel', onUp, { passive:true });
+    })();
+
+    // Init
     ensureDefaults();
     applyTheme();
     applyLang();
     refreshPaymentUI();
     setRidesTab('upcoming');
     showPage('home');
+    tx_init();
   </script>
 </body>
 </html>
