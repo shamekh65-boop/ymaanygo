@@ -38,6 +38,9 @@
     header{
       background:rgba(245,248,246,.95);
       border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      z-index:50;
     }
 
     .header-inner{
@@ -45,6 +48,7 @@
       justify-content:space-between;
       align-items:center;
       padding:14px 0;
+      gap:12px;
     }
 
     .brand{
@@ -54,6 +58,7 @@
       text-decoration:none;
       color:var(--text);
       font-weight:700;
+      flex:1;
     }
 
     .logo{
@@ -98,6 +103,7 @@
       color:#fff;
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       box-shadow:0 10px 22px rgba(46,204,113,.25);
+      white-space:nowrap;
     }
 
     .btn.secondary{
@@ -121,6 +127,83 @@
       border-top:1px solid var(--line);
       padding-top:12px;
     }
+
+    /* ================= */
+    /* ✅ MENU فقط */
+    /* ================= */
+
+    .icon-btn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+    }
+
+    .hamburger{width:18px;height:12px;position:relative;}
+    .hamburger::before,
+    .hamburger::after,
+    .hamburger div{
+      content:"";
+      position:absolute;left:0;right:0;
+      height:2px;background:#111;border-radius:2px;
+    }
+    .hamburger::before{top:0}
+    .hamburger div{top:5px}
+    .hamburger::after{bottom:0}
+
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.3);
+      z-index:60;
+      display:none;
+    }
+    .overlay.open{display:block}
+
+    .drawer{
+      position:fixed;top:0;left:0;height:100%;
+      width:320px;max-width:86vw;
+      background:#fff;
+      z-index:61;
+      transform:translateX(-110%);
+      transition:.22s ease;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+    .drawer.open{transform:translateX(0)}
+
+    .drawer-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .drawer-title{font-weight:800}
+
+    .close-x{
+      width:40px;height:40px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-size:18px;
+    }
+
+    .menu-item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      font-weight:700;
+      color:var(--text);
+      text-decoration:none;
+      background:#fff;
+    }
+
+    .small{font-size:12px;color:rgba(0,0,0,.65)}
   </style>
 </head>
 
@@ -128,16 +211,45 @@
 
 <header>
   <div class="wrap header-inner">
+
+    <!-- زر المنيو (إضافة فقط) -->
+    <button class="icon-btn" type="button" aria-label="Menu" onclick="openMenu()">
+      <span class="hamburger"><div></div></span>
+    </button>
+
     <a class="brand" href="/">
       <img class="logo"
            src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
            alt="ymaanyGo">
       ymaanyGo
     </a>
-    <!-- Taxi boeken is NU groen -->
+
+    <!-- زر Taxi boeken كما هو -->
     <a class="btn" href="/taxi.html">Taxi boeken</a>
+
   </div>
 </header>
+
+<!-- Drawer -->
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
+
+<aside id="drawer" class="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="drawer-title">Menu</div>
+    <button class="close-x" type="button" onclick="closeMenu()">×</button>
+  </div>
+
+  <a class="menu-item" href="/" onclick="closeMenu()">Home</a>
+  <a class="menu-item" href="/taxi.html" onclick="closeMenu()">Taxi boeken</a>
+  <a class="menu-item" href="/over-ons.html" onclick="closeMenu()">Over ons</a>
+  <a class="menu-item" href="/contact.html" onclick="closeMenu()">Contact</a>
+  <a class="menu-item" href="/voorwaarden-en-privacy.html" onclick="closeMenu()">Voorwaarden & Privacy</a>
+  <a class="menu-item" href="/driver-login.html" onclick="closeMenu()">Chauffeurs login</a>
+
+  <div class="small" style="margin-top:auto;">
+    Indicatieve prijs. Definitieve bevestiging via WhatsApp.
+  </div>
+</aside>
 
 <main class="wrap">
   <h1>Direct contact</h1>
@@ -149,19 +261,16 @@
   <section class="card">
     <div class="actions">
 
-      <!-- WhatsApp -->
       <a class="btn"
          href="https://wa.me/31633337184?text=Hallo%20ymaanyGo,%20ik%20wil%20een%20taxi%20boeken.%0A%0AOphaaladres:%20%0ABestemming:%20%0ADatum%20&%20tijd:%20%0AAantal%20personen:"
          target="_blank" rel="noopener">
         WhatsApp – direct chatten
       </a>
 
-      <!-- Call -->
       <a class="btn secondary" href="tel:0633337184">
         Bel direct: 0633337184
       </a>
 
-      <!-- Email -->
       <a class="btn secondary" href="mailto:Info@ymaanygo.nl">
         E-mail: Info@ymaanygo.nl
       </a>
@@ -183,6 +292,20 @@
     © ymaanyGo Taxi – Betrouwbaar vervoer • Gecertificeerde chauffeurs • Privacyvriendelijk
   </footer>
 </main>
+
+<script>
+  /* menu JS فقط */
+  function openMenu(){
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawer').setAttribute('aria-hidden','false');
+  }
+  function closeMenu(){
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawer').setAttribute('aria-hidden','true');
+  }
+</script>
 
 </body>
 </html>
