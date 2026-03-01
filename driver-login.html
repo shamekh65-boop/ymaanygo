@@ -62,6 +62,7 @@
       gap:12px;
       text-decoration:none;
       color:var(--text);
+      flex:1;
     }
 
     .logo{
@@ -281,6 +282,78 @@
     @media (max-width:480px){
       .login-container{ padding:22px 18px; }
     }
+
+    /* ================= */
+    /* ✅ MENU فقط */
+    /* ================= */
+    .icon-btn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+    .icon-btn:active{transform:translateY(1px)}
+
+    .hamburger{width:18px;height:12px;position:relative;}
+    .hamburger::before,.hamburger::after,.hamburger div{
+      content:"";
+      position:absolute;left:0;right:0;height:2px;
+      background:#111;border-radius:2px;
+    }
+    .hamburger::before{top:0}
+    .hamburger div{top:5px}
+    .hamburger::after{bottom:0}
+
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.30);
+      z-index:60;
+      display:none;
+    }
+    .overlay.open{display:block}
+
+    .drawer{
+      position:fixed;top:0;left:0;height:100%;
+      width:320px;max-width:86vw;
+      background:#fff;
+      z-index:61;
+      transform:translateX(-110%);
+      transition:transform .22s ease;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .drawer.open{transform:translateX(0)}
+
+    .drawer-head{display:flex;align-items:center;justify-content:space-between}
+    .drawer-title{font-weight:800;color:#111}
+    .close-x{
+      width:40px;height:40px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-size:18px;
+      line-height:1;
+    }
+
+    .menu-item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      font-weight:700;
+      background:#fff;
+      color:var(--text);
+      text-decoration:none;
+    }
+
+    .small{font-size:12px;color:rgba(0,0,0,.65)}
   </style>
 </head>
 
@@ -289,6 +362,12 @@
 <header>
   <div class="wrap">
     <div class="header-inner">
+
+      <!-- ✅ زر المنيو -->
+      <button class="icon-btn" type="button" aria-label="Menu" onclick="openMenu()">
+        <span class="hamburger"><div></div></span>
+      </button>
+
       <a class="brand" href="/">
         <img class="logo"
              src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
@@ -305,6 +384,26 @@
   </div>
 </header>
 
+<!-- ✅ Drawer + overlay -->
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
+
+<aside id="drawer" class="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="drawer-title">Menu</div>
+    <button class="close-x" type="button" onclick="closeMenu()">×</button>
+  </div>
+
+  <a class="menu-item" href="klant-login.html" onclick="closeMenu()">Inloggen</a>
+  <a class="menu-item" href="index.html" onclick="closeMenu()">Home</a>
+  <a class="menu-item" href="taxi.html" onclick="closeMenu()">Taxi boeken</a>
+  <a class="menu-item" href="over-ons.html" onclick="closeMenu()">Over ons</a>
+  <a class="menu-item" href="contact.html" onclick="closeMenu()">contact</a>
+  <a class="menu-item" href="voorwaarden-en-privacy.html" onclick="closeMenu()">Voorwaarden & Privacy</a>
+  <a class="menu-item" href="driver-login.html" onclick="closeMenu()">Chauffeurs login</a>
+
+  <div class="small" style="margin-top:auto;">Indicatieve prijs. Definitieve bevestiging via WhatsApp.</div>
+</aside>
+
 <main>
   <div class="wrap">
     <!-- ✅ واجهة جديدة -->
@@ -315,7 +414,7 @@
       <form id="loginForm" class="login-form" action="#" method="post" novalidate>
         <!-- نستخدم نفس أسماء الحقول للسكربت -->
         <input required class="login-input" type="text" name="username" id="username" placeholder="Gebruikersnaam of e-mail" autocomplete="username">
-        
+
         <div class="pw-row">
           <input required class="login-input" type="password" name="password" id="password" placeholder="Wachtwoord" autocomplete="current-password" minlength="4">
           <button class="toggle" type="button" id="togglePw" aria-label="Wachtwoord tonen/verbergen">TOON</button>
@@ -353,6 +452,18 @@
 </footer>
 
 <script>
+  /* ✅ menu JS فقط */
+  function openMenu(){
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawer').setAttribute('aria-hidden','false');
+  }
+  function closeMenu(){
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawer').setAttribute('aria-hidden','true');
+  }
+
   // ===== Demo login (tijdelijke gebruikers) =====
   const USERS = {
     "driver01": "1111",
