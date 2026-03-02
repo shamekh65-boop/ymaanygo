@@ -1,4 +1,4 @@
-وهذا الثاني <!doctype html>
+<!doctype html>
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
@@ -930,8 +930,8 @@
         <div class="card pad">
           <div class="section-title" id="infoHelpTitle"></div>
           <div class="list" style="border-top:1px solid rgba(0,0,0,.06)">
-            <!-- Klantenservice (existing) -->
-            <div class="row" onclick="openSheet('supportSheet')">
+            <!-- Klantenservice - opent contactpagina -->
+            <div class="row" onclick="window.location.href='https://ymaanygo.nl/contact.html'">
               <div class="left">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 12a8 8 0 0 1 16 0"></path>
@@ -1371,7 +1371,7 @@
     </div>
   </div>
 
-  <!-- Old sheets (lang, theme, profile, security, payment, support) -->
+  <!-- Old sheets (lang, theme, profile, security, payment) - support sheet removed -->
   <!-- Language Sheet -->
   <div id="langSheet" class="sheet" aria-hidden="true">
     <div class="sheet-card">
@@ -1519,28 +1519,7 @@
     </div>
   </div>
 
-  <!-- Support Sheet -->
-  <div id="supportSheet" class="sheet" aria-hidden="true">
-    <div class="sheet-card">
-      <div class="sheet-grip" aria-hidden="true"></div>
-      <div class="sheet-head">
-        <div class="sheet-title" id="supportTitle"></div>
-        <button class="sheet-x" type="button" onclick="closeSheet('supportSheet')">×</button>
-      </div>
-      <div class="sheet-body">
-        <div class="card pad" style="box-shadow:none">
-          <div class="section-title" style="margin:0 0 6px" id="supportHow"></div>
-          <div class="subtle" id="supportText"></div>
-          <div style="height:12px"></div>
-          <button class="primary" type="button" onclick="openWhatsAppSupport()" id="supportBtn"></button>
-          <div class="subtle" style="margin-top:10px" id="supportNote"></div>
-        </div>
-      </div>
-      <div class="sheet-actions">
-        <button class="btn-close" type="button" onclick="closeSheet('supportSheet')" id="closeSupLbl">Sluiten</button>
-      </div>
-    </div>
-  </div>
+  <!-- Support Sheet has been removed as per requirement -->
 
   <script>
     /* =========================
@@ -1585,7 +1564,7 @@
         miFav:"Favoriete locaties",
         miFavDesc:"Beheer je favorieten",
         miSupport:"Klantenservice",
-        miSupportDesc:"Hulp via WhatsApp",
+        miSupportDesc:"Neem contact op",
         // المفاتيح الجديدة
         miAbout:"Over ons",
         miAboutDesc:"Info over YmaanyGO",
@@ -1595,7 +1574,7 @@
         deelApp:"Deel app / Nodig uit",
         deelAppDesc:"Deel link, WhatsApp, QR",
         annulerenWijzigen:"Annuleren / Wijzigen",
-        annulerenWijzigenDesc:"Rit annuleren of wijzigen",
+        annulerenWijzigenDesc:"Verzoek tot annuleren/wijzigen",
         faq:"FAQ",
         faqDesc:"Veelgestelde vragen",
         zakelijkFactuur:"Zakelijk / Factuur",
@@ -1637,14 +1616,9 @@
         payDriverDesc:"Je betaalt direct aan de chauffeur bij aankomst of vertrek.",
         payCash:"Contant",
         payCard:"Pin / kaart",
-        supportTitle:"Klantenservice",
-        supportHow:"Contact",
-        supportText:"Stuur je vraag via WhatsApp. We reageren zo snel mogelijk.",
-        supportBtn:"WhatsApp klantenservice",
-        supportNote:"Let op: dit opent WhatsApp.",
 
         shTitle:"Boek eenvoudig je taxirit",
-        shSub:"Wat je bestemming ook is, wij brengen je ernaartoe.",
+        shSub:"Wat je bestemming ook is, wij brengen je ernaartoe",
         step1:"Adres",
         step2:"Details",
         where:"Waar wil je heen?",
@@ -1684,13 +1658,13 @@
         waNote:"Je bericht wordt klaargezet in WhatsApp."
       },
       en: {
-        // ... نفس الشيء مع إضافة المفاتيح الجديدة ...
+        // ... (similar additions) ...
         tabHome:"Home", tabRides:"Rides", tabAccount:"Account",
         homeSearch:"Where are you going?",
         homeHint:"Tap to open Taxi booking.",
         promoTitle:"Book fast",
         promoText:"Fill your ride and get a price. Confirmation via WhatsApp.",
-        promoBtn:"Easily book your taxi ride",
+        promoBtn:"Book a taxi",
         favTitle:"Favorite locations",
         favDesc:"Manage your favorites",
         quickBookTitle:"Book a ride now",
@@ -1707,8 +1681,8 @@
         miPaymentDesc:"Pay the driver",
         miFav:"Favorite locations",
         miFavDesc:"Manage favorites",
-        miSupport:"Support",
-        miSupportDesc:"Help via WhatsApp",
+        miSupport:"Customer service",
+        miSupportDesc:"Contact us",
         miAbout:"About us",
         miAboutDesc:"Info about YmaanyGO",
         miPrivacy:"Terms and privacy",
@@ -1759,21 +1733,16 @@
         payDriverDesc:"You pay the driver directly at pickup or drop-off.",
         payCash:"Cash",
         payCard:"Card / pin",
-        supportTitle:"Support",
-        supportHow:"Contact",
-        supportText:"Send your question via WhatsApp. We’ll reply ASAP.",
-        supportBtn:"WhatsApp support",
-        supportNote:"Note: this opens WhatsApp.",
 
         shTitle:"Easily book your taxi ride",
-        shSub:"No matter your destination, we’ll take you there",
+        shSub:"No matter your destination, we’ll take you there.",
         step1:"Address",
         step2:"Details",
         where:"Where are you going?",
         fromPh:"Pickup (default: current location)",
         toPh:"Destination",
-        locHint:"Tip: FROM auto-fills with your location (optional).",
-        quickFav:"Quick favorites (tap → goes to TO)",
+        locHint:"Your current location.",
+        quickFav:"Quick favorites",
         next:"Next",
         back:"Back",
         nextHelpDisabled:"Fill FROM + TO to continue.",
@@ -1806,7 +1775,7 @@
         waNote:"Your message will open in WhatsApp."
       },
       ar: {
-        // ... مع إضافة المفاتيح الجديدة ...
+        // ... (similar additions) ...
         tabHome:"الرئيسية", tabRides:"الرحلات", tabAccount:"الحساب",
         homeSearch:"إلى أين تريد الذهاب؟",
         homeHint:"اضغط للانتقال إلى صفحة حجز التاكسي.",
@@ -1830,7 +1799,7 @@
         miFav:"المواقع المفضلة",
         miFavDesc:"إدارة المفضلات",
         miSupport:"خدمة العملاء",
-        miSupportDesc:"مساعدة عبر واتساب",
+        miSupportDesc:"اتصل بنا",
         miAbout:"من نحن",
         miAboutDesc:"معلومات عن YmaanyGO",
         miPrivacy:"الشروط والخصوصية",
@@ -1881,11 +1850,6 @@
         payDriverDesc:"الدفع مباشرة للسائق عند الانطلاق أو الوصول.",
         payCash:"نقدًا",
         payCard:"بطاقة / جهاز PIN",
-        supportTitle:"خدمة العملاء",
-        supportHow:"تواصل",
-        supportText:"أرسل سؤالك عبر واتساب وسنرد بأسرع وقت.",
-        supportBtn:"واتساب خدمة العملاء",
-        supportNote:"ملاحظة: سيتم فتح واتساب.",
 
         shTitle:"احجز رحلة التاكسي بسهولة",
         shSub:"مهما كانت وجهتك، سنوصلك إليها",
@@ -1894,8 +1858,8 @@
         where:"إلى أين تريد الذهاب؟",
         fromPh:"موقع الالتقاط (افتراضيًا: موقعي الحالي)",
         toPh:"الوجهة",
-        locHint:"ملاحظة: FROM يتعبّى تلقائيًا بموقعك (اختياري).",
-        quickFav:"مفضلات سريعة",
+        locHint:"موقعك الحالي.",
+        quickFav:"أضف العناوين المفضلة عبر ⭐ لعرضها هنا",
         next:"التالي",
         back:"رجوع",
         nextHelpDisabled:"لازم FROM + TO للمتابعة.",
@@ -2055,12 +2019,6 @@
       document.getElementById('payCashLbl').textContent = T.payCash;
       document.getElementById('payCardLbl').textContent = T.payCard;
       document.getElementById('closePayLbl').textContent = T.close;
-      document.getElementById('supportTitle').textContent = T.supportTitle;
-      document.getElementById('supportHow').textContent = T.supportHow;
-      document.getElementById('supportText').textContent = T.supportText;
-      document.getElementById('supportBtn').textContent = T.supportBtn;
-      document.getElementById('supportNote').textContent = T.supportNote;
-      document.getElementById('closeSupLbl').textContent = T.close;
 
       document.getElementById('shTitle').textContent = T.shTitle;
       document.getElementById('shSub').textContent = T.shSub;
@@ -2272,7 +2230,7 @@
       `;
     }
 
-    // ===== Support =====
+    // ===== Support functions (keeping for compatibility, but not used in UI) =====
     function openWhatsAppSupport(){
       const whatsappNummer = "31633337184";
       const lang = getLang();
@@ -2397,7 +2355,7 @@
       if(!grid) return;
 
       if(!favs.length){
-        grid.innerHTML = `<div style="color:var(--muted);font-size:13px;">${lang==='ar'?'أضف العناوين المفضلة عبر ⭐ لعرضها هنا.':(lang==='en'?'Add favorite addresses via ⭐ to show them here.':'Voeg favorieten adressen toe via ⭐ om hier te tonen.')}</div>`;
+        grid.innerHTML = `<div style="color:var(--muted);font-size:13px;">${lang==='ar'?'أضف مفضلات من ⭐ لتظهر هنا.':(lang==='en'?'Add favorite addresses via ⭐ to show them here.':'Voeg favorieten adressen toe via ⭐ om hier te tonen.')}</div>`;
         return;
       }
 
@@ -3088,7 +3046,65 @@
           : `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
     }
 
-    // ===== WhatsApp booking =====
+    // ===== Save ride to history with duplicate prevention (NEW) =====
+    let lastSavedRideHash = null; // متغير عام لتخزين آخر هاش تم حفظه
+
+    function computeRideHash(ride) {
+      // نستخدم الحقول المهمة فقط لتحديد ما إذا كانت الرحلة متطابقة
+      const relevant = {
+        from: ride.from,
+        to: ride.to,
+        stops: ride.stops,
+        when: ride.when,
+        vehicle: ride.vehicle,
+        passengers: ride.passengers,
+        price: ride.price
+      };
+      return JSON.stringify(relevant); // JSON.stringify يعطي ترتيب ثابت للمفاتيح
+    }
+
+    function saveRideToHistory() {
+      const from = (document.getElementById('from').value || "").trim();
+      const to = (document.getElementById('to').value || "").trim();
+      const stopVals = stops.ids.map(id => (document.getElementById(id)?.value || "").trim()).filter(Boolean);
+      const when = document.getElementById('when').value;
+      const pax = document.getElementById('pax').value;
+      const car = document.getElementById('car').value;
+      const price = document.getElementById('price').textContent || "—";
+
+      if (!from || !to || !when) return false; // لا تحفظ إذا كانت البيانات ناقصة
+
+      const ride = {
+        id: cryptoId(),
+        from,
+        to,
+        stops: stopVals,
+        when,
+        vehicle: car,
+        passengers: pax,
+        price,
+        createdAt: new Date().toISOString()
+      };
+
+      const currentHash = computeRideHash(ride);
+
+      // إذا كان الهاش مطابقاً لآخر حفظ، لا نكرر الحفظ
+      if (lastSavedRideHash === currentHash) {
+        console.log("Duplicate ride not saved.");
+        return false;
+      }
+
+      const rides = getRides(); // من الدالة الموجودة
+      rides.push(ride);
+      localStorage.setItem(LS.rides, JSON.stringify(rides));
+      refreshRidesUI(); // تحديث واجهة الرحلات إذا كانت مفتوحة
+
+      // تحديث آخر هاش محفوظ
+      lastSavedRideHash = currentHash;
+      return true;
+    }
+
+    // ===== WhatsApp booking (modified) =====
     const WHATSAPP_NUMBER = "31633337184";
     function isValidNLPhone(v){
       const s = (v||"").replace(/\s+/g,'').trim();
@@ -3128,6 +3144,9 @@
             ? `Passenger: ${on} • ${op}\n`
             : `Passagier: ${on} • ${op}\n`;
       }
+
+      // Save ride to history before opening WhatsApp (مع منع التكرار)
+      saveRideToHistory();
 
       const msg =
 (lang==='ar'
