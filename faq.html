@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f7d32" />
+  <title>ymaanyGO – FAQ</title>
+
+  <style>
+    :root{
+      --bg:#f6f6f6;
+      --card:#ffffff;
+      --text:#111;
+      --muted:rgba(0,0,0,.60);
+      --border:rgba(0,0,0,.10);
+      --shadow:0 12px 26px rgba(0,0,0,.10);
+      --radius:18px;
+      --accent:#2f7d32;
+      --accent2:#3bbf6b;
+      --tap:52px;
+      --max:920px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+
+    .top{
+      position:sticky;top:0;z-index:10;
+      background:rgba(246,246,246,.90);
+      backdrop-filter:blur(12px) saturate(140%);
+      -webkit-backdrop-filter:blur(12px) saturate(140%);
+      border-bottom:1px solid var(--border);
+    }
+    .top-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:10px 14px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .back{
+      width:44px;height:44px;border-radius:16px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      display:grid;place-items:center;
+      font-size:18px;
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
+    }
+    .brand b{display:block;font-size:14px}
+    .brand span{display:block;font-size:12px;color:var(--muted)}
+
+    .wrap{max-width:var(--max);margin:0 auto;padding:14px}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+
+    .hero{
+      background:linear-gradient(180deg, rgba(59,191,107,.12), rgba(255,255,255,0));
+      border-radius:20px;
+      padding:14px;
+      border:1px solid rgba(47,125,50,.14);
+      margin-bottom:12px;
+    }
+    h1{margin:0 0 6px;font-size:20px}
+    .sub{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+
+    .search{
+      margin-top:12px;
+      display:flex;gap:10px;align-items:center;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:18px;
+      padding:0 12px;
+      height:52px;
+    }
+    .search input{
+      border:0;outline:0;background:transparent;
+      width:100%;
+      font-size:15px;
+      color:var(--text);
+    }
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .section-title{
+      margin:14px 0 10px;
+      font-weight:950;
+      font-size:14px;
+      color:rgba(0,0,0,.80);
+    }
+
+    .faq{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    details{
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:0 10px 18px rgba(0,0,0,.06);
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:14px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:950;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .q{
+      font-size:14px;
+      line-height:1.35;
+    }
+    .caret{
+      width:28px;height:28px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      display:grid;place-items:center;
+      opacity:.7;
+      flex:0 0 28px;
+    }
+    details[open] .caret{transform:rotate(180deg)}
+    .ans{
+      padding:0 14px 14px;
+      color:rgba(0,0,0,.76);
+      font-size:13px;
+      line-height:1.6;
+      border-top:1px solid rgba(0,0,0,.06);
+    }
+    .ans ul{margin:10px 0 0 18px}
+    .ans li{margin:6px 0}
+    .pill{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(47,125,50,.18);
+      background:rgba(59,191,107,.10);
+      color:rgba(17,17,17,.85);
+      font-weight:950;
+      font-size:12px;
+    }
+
+    .actions{
+      margin-top:14px;
+      display:grid;
+      gap:10px;
+    }
+    @media(min-width:780px){ .actions{grid-template-columns:1fr 1fr} }
+
+    .btn{
+      height:52px;
+      border-radius:18px;
+      border:0;
+      background:linear-gradient(180deg,var(--accent2),var(--accent));
+      color:#04110a;
+      font-weight:950;
+      cursor:pointer;
+      width:100%;
+      box-shadow:0 12px 28px rgba(0,0,0,.18);
+    }
+    .btn2{
+      height:52px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-weight:950;
+      cursor:pointer;
+      width:100%;
+    }
+    .btn:active,.btn2:active{transform:translateY(1px)}
+    .small{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      text-align:center;
+    }
+
+    .hidden{display:none !important}
+    .nores{
+      margin-top:10px;
+      border:1px dashed rgba(0,0,0,.18);
+      border-radius:18px;
+      background:rgba(0,0,0,.03);
+      padding:12px;
+      color:rgba(0,0,0,.70);
+      font-size:13px;
+      line-height:1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top">
+    <div class="top-inner">
+      <button class="back" type="button" onclick="history.back()">←</button>
+      <div class="brand">
+        <b>ymaanyGO</b>
+        <span>FAQ (Veelgestelde vragen)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="hero">
+        <h1>FAQ</h1>
+        <p class="sub">
+          Antwoorden op de meest gestelde vragen over boeken, wijzigen/annuleren, prijzen en facturen.
+        </p>
+
+        <div class="search" aria-label="Zoeken in FAQ">
+          <input id="q" type="text" placeholder="Zoek op onderwerp (bijv. annuleren, prijs, factuur, wachttijd)..." autocomplete="off" />
+        </div>
+        <div class="hint">
+          Tip: typ een woord om vragen te filteren. Klik op een vraag om het antwoord te openen.
+        </div>
+      </div>
+
+      <div class="section-title">Boeken & wijzigen</div>
+      <div class="faq" id="faqList">
+        <details data-tags="boeken reserveren hoe werkt het whatsapp bevestiging">
+          <summary>
+            <div class="q">Hoe boek ik een taxi via ymaanyGO?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Je vult ophaaladres, bestemming en tijd in. Daarna wordt er automatisch een WhatsApp-bericht klaargezet.
+            De chauffeur bevestigt de rit via WhatsApp.
+            <ul>
+              <li>Controleer altijd tijd en adressen vóór je verzendt.</li>
+              <li>Bij onduidelijk adres: gebruik de kaart-pin (📍) in het boekingsscherm.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details data-tags="annuleren wijzigen aanpassen tijd adres">
+          <summary>
+            <div class="q">Hoe kan ik mijn boeking wijzigen of annuleren?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Gebruik de pagina <span class="pill">Annuleren / Wijzigen</span> (in Account).
+            Daar kun je een bericht laten opstellen met alle details (naam, datum/tijd, ritgegevens).
+            Je wijziging/annulering wordt dan via WhatsApp verstuurd naar de klantenservice/dispatcher.
+          </div>
+        </details>
+
+        <details data-tags="wachttijd vertraging te laat ophalen">
+          <summary>
+            <div class="q">Wat als ik te laat ben of de chauffeur moet wachten?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Stuur zo snel mogelijk een WhatsApp-bericht. In veel gevallen kan de chauffeur even wachten,
+            maar extra wachttijd kan invloed hebben op de prijs (afhankelijk van situatie en locatie).
+          </div>
+        </details>
+
+        <details data-tags="tussenstop extra stop toevoegen route">
+          <summary>
+            <div class="q">Kan ik een tussenstop toevoegen?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Ja. In het boekingsscherm kun je een tussenstop toevoegen.
+            Vermeld alle stops duidelijk, zodat de route en prijs beter kunnen worden ingeschat.
+          </div>
+        </details>
+
+        <div class="section-title">Prijs & betaling</div>
+
+        <details data-tags="prijs berekening indicatie km duur">
+          <summary>
+            <div class="q">Is de prijs op de website definitief?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            De prijs is een <b>indicatie</b> op basis van afstand en voertuigtype.
+            De definitieve prijs wordt bevestigd via WhatsApp (bijvoorbeeld bij files, omleidingen of extra wachttijd).
+          </div>
+        </details>
+
+        <details data-tags="betaalmethoden contant pin kaart">
+          <summary>
+            <div class="q">Hoe kan ik betalen?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Meestal betaal je rechtstreeks bij de chauffeur. Beschikbare opties kunnen zijn:
+            <ul>
+              <li>Contant</li>
+              <li>Pin/kaart (als beschikbaar)</li>
+            </ul>
+            Kies je voorkeur in Account bij “Betaalmethoden”.
+          </div>
+        </details>
+
+        <details data-tags="busje 8 personen comfort voertuig keuze">
+          <summary>
+            <div class="q">Welke voertuigen kan ik kiezen?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Je kunt kiezen uit Standaard, Comfort of Busje (tot 8 personen).
+            Bij meer dan 4 passagiers kan automatisch Busje nodig zijn.
+          </div>
+        </details>
+
+        <div class="section-title">Zakelijk & factuur</div>
+
+        <details data-tags="factuur zakelijk btw kvk bedrijven">
+          <summary>
+            <div class="q">Kan ik een factuur krijgen voor een rit?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Ja. Gebruik de pagina <span class="pill">Zakelijk / Factuur</span>.
+            Vul je bedrijfsgegevens in en verstuur het verzoek via WhatsApp.
+            Vermeld bij voorkeur:
+            <ul>
+              <li>Datum/tijd van de rit</li>
+              <li>Van/naar adres</li>
+              <li>Bedrijfsnaam + e-mail</li>
+              <li>BTW-nummer (indien van toepassing)</li>
+            </ul>
+          </div>
+        </details>
+
+        <details data-tags="afspraak contract zakelijk samenwerking">
+          <summary>
+            <div class="q">Doen jullie zakelijke afspraken of vaste ritten?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Ja, in veel gevallen is een zakelijke afspraak mogelijk (bijv. vaste routes, luchthaventransfers, koeriers).
+            Stuur je aanvraag via <span class="pill">Zakelijk / Factuur</span> met gewenste tijden, frequentie en locaties.
+          </div>
+        </details>
+
+        <div class="section-title">Support & privacy</div>
+
+        <details data-tags="klantenservice contact whatsapp support">
+          <summary>
+            <div class="q">Hoe neem ik contact op met klantenservice?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Via Account → Klantenservice. Daar kun je direct een WhatsApp-chat openen.
+            Vermeld altijd je ritgegevens (datum/tijd, van/naar, naam/telefoon) zodat we sneller kunnen helpen.
+          </div>
+        </details>
+
+        <details data-tags="privacy gegevens opslaan lokaal">
+          <summary>
+            <div class="q">Worden mijn gegevens opgeslagen?</div>
+            <div class="caret">˅</div>
+          </summary>
+          <div class="ans">
+            Basisgegevens kunnen lokaal op je apparaat worden opgeslagen (bijv. naam, favorieten) om sneller te boeken.
+            Lees de pagina <span class="pill">Voorwaarden en privacy</span> voor details.
+          </div>
+        </details>
+      </div>
+
+      <div id="noResults" class="nores hidden">
+        Geen resultaten. Probeer een ander zoekwoord (bijv. “annuleren”, “factuur”, “prijs”, “wachttijd”).
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" onclick="openSupport()">Contact via WhatsApp</button>
+        <button class="btn2" type="button" onclick="window.location.href='https://ymaanygo.nl/voorwaarden-en-privacy.html'">Voorwaarden en privacy</button>
+      </div>
+
+      <div class="small">
+        Laatste update: 2026 • ymaanyGO
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // WhatsApp number (same as in your main app)
+    const WHATSAPP_NUMBER = "31633337184";
+
+    function openSupport(){
+      const msg = "Hallo, ik heb een vraag over ymaanyGO. (FAQ)";
+      window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg), "_blank");
+    }
+
+    // FAQ search filter
+    const input = document.getElementById('q');
+    const items = Array.from(document.querySelectorAll('#faqList details'));
+    const noResults = document.getElementById('noResults');
+
+    function normalize(s){
+      return (s || "")
+        .toLowerCase()
+        .replace(/\s+/g,' ')
+        .trim();
+    }
+
+    function applyFilter(){
+      const q = normalize(input.value);
+      let visible = 0;
+
+      items.forEach(d => {
+        const text = normalize(d.innerText);
+        const tags = normalize(d.getAttribute('data-tags') || '');
+        const ok = !q || text.includes(q) || tags.includes(q);
+        d.style.display = ok ? '' : 'none';
+        if(ok) visible++;
+        if(!ok) d.removeAttribute('open');
+      });
+
+      noResults.classList.toggle('hidden', visible !== 0);
+    }
+
+    input.addEventListener('input', applyFilter);
+    applyFilter();
+  </script>
+</body>
+</html>
