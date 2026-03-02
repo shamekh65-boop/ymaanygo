@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2f7d32" />
+  <title>ymaanyGO – Deel de app</title>
+  <style>
+    :root{
+      --bg:#f6f6f6;--card:#fff;--text:#111;--muted:rgba(0,0,0,.60);
+      --border:rgba(0,0,0,.10);--shadow:0 12px 26px rgba(0,0,0,.10);
+      --radius:18px;--accent:#2f7d32;--accent2:#3bbf6b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{text-decoration:none;color:inherit}
+
+    .top{
+      position:sticky;top:0;z-index:10;
+      background:rgba(246,246,246,.90);
+      backdrop-filter:blur(12px) saturate(140%);
+      border-bottom:1px solid var(--border)
+    }
+    .top-inner{
+      max-width:920px;margin:0 auto;padding:10px 14px;
+      display:flex;align-items:center;gap:10px
+    }
+    .back{
+      width:44px;height:44px;border-radius:16px;border:1px solid var(--border);
+      background:#fff;cursor:pointer;display:grid;place-items:center;font-size:18px;
+      box-shadow:0 10px 18px rgba(0,0,0,.08)
+    }
+    .brand b{display:block;font-size:14px}
+    .brand span{display:block;font-size:12px;color:var(--muted)}
+    .wrap{max-width:920px;margin:0 auto;padding:14px}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:16px
+    }
+
+    .hero{
+      background:linear-gradient(180deg, rgba(59,191,107,.12), rgba(255,255,255,0));
+      border-radius:20px;
+      padding:14px;
+      border:1px solid rgba(47,125,50,.14);
+    }
+
+    h1{margin:0 0 6px;font-size:20px}
+    .sub{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+
+    .box{
+      margin-top:12px;
+      border:1px dashed rgba(0,0,0,.18);
+      border-radius:18px;
+      background:rgba(0,0,0,.03);
+      padding:12px;
+      word-break:break-word;
+      font-weight:950;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .box code{
+      font-family:ui-monospace, monospace;
+      font-size:12px;
+      font-weight:800;
+      color:rgba(0,0,0,.72);
+    }
+    .mini{
+      height:40px;
+      padding:0 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      font-weight:950;
+    }
+
+    .grid{display:grid;gap:10px;margin-top:12px}
+    @media(min-width:780px){.grid{grid-template-columns:1fr 1fr}}
+
+    .btn{
+      height:52px;border-radius:18px;border:0;
+      background:linear-gradient(180deg,var(--accent2),var(--accent));
+      color:#04110a;font-weight:950;cursor:pointer;width:100%;
+      box-shadow:0 12px 28px rgba(0,0,0,.18)
+    }
+    .btn2{
+      height:52px;border-radius:18px;border:1px solid var(--border);
+      background:#fff;font-weight:950;cursor:pointer;width:100%
+    }
+    .btn:active,.btn2:active,.mini:active{transform:translateY(1px)}
+
+    .note{
+      margin-top:10px;color:var(--muted);font-size:12px;line-height:1.4;
+      display:flex;align-items:center;gap:8px
+    }
+    .toast{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(47,125,50,.18);
+      background:rgba(59,191,107,.10);
+      color:rgba(17,17,17,.80);
+      font-weight:950;
+    }
+
+    .qrwrap{
+      margin-top:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:20px;
+      padding:14px;
+      display:none;
+    }
+    .qrwrap.show{display:block}
+    .qrimg{
+      width:260px;height:260px;max-width:100%;
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.08);
+      display:block;margin:0 auto;
+      background:#fff;
+    }
+    .qrhint{
+      margin:10px 0 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="top-inner">
+      <button class="back" type="button" onclick="history.back()">←</button>
+      <div class="brand">
+        <b>ymaanyGO</b>
+        <span>Deel de app</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="hero">
+        <h1>Deel ymaanyGO</h1>
+        <p class="sub">Kopieer de link of deel direct.</p>
+      </div>
+
+      <div class="box">
+        <code id="linkText">https://ymaanygo.nl/</code>
+        <button class="mini" type="button" onclick="copyLink()">Kopieer</button>
+      </div>
+
+      <div class="grid">
+        <button class="btn" type="button" onclick="shareNative()">Delen (telefoon)</button>
+        <button class="btn2" type="button" onclick="shareWhatsApp()">Deel via WhatsApp</button>
+        <button class="btn2" type="button" onclick="toggleQr()">Toon / verberg QR</button>
+      </div>
+
+      <div id="qrWrap" class="qrwrap">
+        <img id="qrImg" class="qrimg" alt="QR code" />
+        <p class="qrhint">Scan om snel naar de website te gaan.</p>
+      </div>
+
+      <p class="note" id="status"><span class="toast">Info</span> Gebruik “Kopieer” voor social media.</p>
+    </div>
+  </div>
+
+  <script>
+    const APP_LINK = "https://ymaanygo.nl/";
+    const QR_URL = "https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=" + encodeURIComponent(APP_LINK);
+
+    function setStatus(t){
+      document.getElementById("status").innerHTML = '<span class="toast">Info</span> ' + t;
+    }
+
+    async function copyLink(){
+      try{
+        await navigator.clipboard.writeText(APP_LINK);
+        setStatus("Link gekopieerd.");
+      }catch(e){
+        setStatus("Kopiëren niet gelukt. Kopieer handmatig: " + APP_LINK);
+      }
+    }
+
+    async function shareNative(){
+      if(navigator.share){
+        try{
+          await navigator.share({ title:"ymaanyGO", text:"Boek een taxi via ymaanyGO:", url:APP_LINK });
+          setStatus("Link gedeeld.");
+        }catch(e){
+          setStatus("Delen geannuleerd.");
+        }
+      }else{
+        copyLink();
+      }
+    }
+
+    function shareWhatsApp(){
+      const msg = "Boek een taxi via ymaanyGO: " + APP_LINK;
+      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+    }
+
+    function toggleQr(){
+      const wrap = document.getElementById("qrWrap");
+      const img = document.getElementById("qrImg");
+      const show = !wrap.classList.contains("show");
+      if(show){
+        if(!img.src) img.src = QR_URL;
+        wrap.classList.add("show");
+        setStatus("QR zichtbaar.");
+      }else{
+        wrap.classList.remove("show");
+        setStatus("QR verborgen.");
+      }
+    }
+
+    document.getElementById("linkText").textContent = APP_LINK;
+  </script>
+</body>
+</html>
