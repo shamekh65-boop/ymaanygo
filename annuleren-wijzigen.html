@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <title>Annuleren / Wijzigen – ymaanyGO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+
+      --panel:#ffffffee;
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+
+      --radius:18px;
+      --max:900px;
+      --tap:54px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+      color:var(--text);
+    }
+
+    a{text-decoration:none;color:inherit}
+
+    /* ===== HEADER ===== */
+
+    .top{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(245,248,246,.95);
+      backdrop-filter:blur(12px) saturate(140%);
+      border-bottom:1px solid var(--line);
+    }
+
+    .top-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .back{
+      width:44px;height:44px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    }
+
+    .brand b{display:block;font-size:14px}
+    .brand span{display:block;font-size:12px;color:var(--muted)}
+
+    /* ===== CONTENT ===== */
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 18px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px;
+      margin-top:20px;
+      box-shadow:0 14px 30px rgba(0,0,0,.08);
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:22px;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .grid{
+      display:grid;
+      gap:16px;
+      margin-top:20px;
+    }
+
+    @media(min-width:780px){
+      .grid{grid-template-columns:1fr 1fr}
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    label{
+      font-size:13px;
+      font-weight:600;
+    }
+
+    input, select, textarea{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      font-size:14px;
+      font-family:inherit;
+      background:#fff;
+    }
+
+    textarea{
+      resize:vertical;
+      min-height:110px;
+    }
+
+    .actions{
+      display:grid;
+      gap:14px;
+      margin-top:24px;
+    }
+
+    @media(min-width:780px){
+      .actions{grid-template-columns:1fr 1fr}
+    }
+
+    .btn{
+      height:var(--tap);
+      border-radius:16px;
+      border:0;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+    }
+
+    .btn.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+
+    .note{
+      margin-top:16px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <button class="back" onclick="history.back()">←</button>
+    <div class="brand">
+      <b>ymaanyGO</b>
+      <span>Annuleren / Wijzigen</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h1>Rit annuleren of wijzigen</h1>
+    <p class="sub">
+      Vul onderstaande gegevens in. De aanvraag wordt direct via WhatsApp verwerkt.
+    </p>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Type aanvraag</label>
+        <select id="type">
+          <option>Annuleren</option>
+          <option>Wijzigen</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Naam</label>
+        <input type="text" id="name">
+      </div>
+
+      <div class="field">
+        <label>Datum & tijd van rit</label>
+        <input type="datetime-local" id="datetime">
+      </div>
+
+      <div class="field">
+        <label>Telefoonnummer</label>
+        <input type="tel" id="phone">
+      </div>
+
+      <div class="field">
+        <label>Ophaallocatie (Van)</label>
+        <input type="text" id="pickup" placeholder="Straat + plaats">
+      </div>
+
+      <div class="field">
+        <label>Bestemming (Naar)</label>
+        <input type="text" id="destination" placeholder="Straat + plaats">
+      </div>
+
+    </div>
+
+    <div class="field" style="margin-top:20px;">
+      <label>Toelichting</label>
+      <textarea id="message"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="sendRequest()">Verstuur via WhatsApp</button>
+      <button class="btn secondary" onclick="clearForm()">Leegmaken</button>
+    </div>
+
+    <div class="note">
+      Annuleer tijdig om eventuele kosten bij late annulering te voorkomen.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WHATSAPP = "31633337184";
+
+function sendRequest(){
+  const type = document.getElementById("type").value;
+  const name = document.getElementById("name").value;
+  const datetime = document.getElementById("datetime").value;
+  const phone = document.getElementById("phone").value;
+  const pickup = document.getElementById("pickup").value;
+  const destination = document.getElementById("destination").value;
+  const message = document.getElementById("message").value;
+
+  if(!name || !datetime){
+    alert("Vul minimaal naam en datum/tijd in.");
+    return;
+  }
+
+  const text =
+`${type} aanvraag via ymaanyGO:
+
+Naam: ${name}
+Telefoon: ${phone}
+Datum & tijd: ${datetime}
+Van: ${pickup}
+Naar: ${destination}
+Toelichting: ${message}`;
+
+  window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text), "_blank");
+}
+
+function clearForm(){
+  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+}
+</script>
+
+</body>
+</html>
