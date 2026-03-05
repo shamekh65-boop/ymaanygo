@@ -1,354 +1,289 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Over ons – ymaanyGO Taxi</title>
-  <meta name="description" content="Leer ymaanyGO kennen. Persoonlijke taxiservice met aandacht voor elke rit.">
-  <meta name="robots" content="index, follow">
+<title>Over ons – ymaanyGO Taxi</title>
+<meta name="description" content="Leer ymaanyGO kennen. Persoonlijke taxiservice met aandacht voor elke rit.">
+<meta name="robots" content="index, follow">
 
-  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+<link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
 
-  <style>
-    :root{
-      --bg-light:#f6fbf8;
-      --bg-mid:#e6f3ed;
-      --bg-dark:#d7ece2;
-      --panel:rgba(255,255,255,.92);
-      --text:#0b2e1f;
-      --muted:#4f7f68;
-      --line:rgba(0,0,0,.08);
-      --accent:#2ecc71;
-      --accent2:#27ae60;
-      --radius:18px;
-    }
+<style>
+:root{
+--bg-light:#f6fbf8;
+--bg-mid:#e6f3ed;
+--bg-dark:#d7ece2;
+--panel:rgba(255,255,255,.92);
+--text:#0b2e1f;
+--muted:#4f7f68;
+--line:rgba(0,0,0,.08);
+--accent:#2ecc71;
+--accent2:#27ae60;
+--radius:18px;
+--max:900px;
+}
 
-    *{ box-sizing:border-box; }
+*{box-sizing:border-box}
 
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
-      color:var(--text);
-      line-height:1.6;
-    }
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+background:linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+color:var(--text);
+line-height:1.6;
+}
 
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 18px;
-    }
+a{text-decoration:none;color:inherit}
 
-    /* ===== HEADER ===== */
-    header{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: linear-gradient(
-        to bottom,
-        rgba(245,248,246,.95),
-        rgba(210,232,220,.92)
-      );
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-    }
+/* ===== HEADER ===== */
 
-    .header-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 0;
-      gap:14px;
-    }
+.top{
+position:sticky;
+top:0;
+z-index:50;
+background:rgba(246,246,246,.90);
+backdrop-filter:blur(12px) saturate(140%);
+border-bottom:1px solid var(--line);
+}
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      text-decoration:none;
-      color:var(--text);
-      flex:1;
-    }
+.top-inner{
+max-width:var(--max);
+margin:0 auto;
+padding:10px 16px;
+display:flex;
+align-items:center;
+gap:12px;
+}
 
-    .logo{
-      width:46px;
-      height:46px;
-      border-radius:12px;
-      background:#fff;
-      padding:6px;
-      border:1px solid var(--line);
-      object-fit:contain;
-    }
+.back{
+width:44px;
+height:44px;
+border-radius:16px;
+border:1px solid var(--line);
+background:#fff;
+cursor:pointer;
+display:grid;
+place-items:center;
+font-size:18px;
+box-shadow:0 10px 18px rgba(0,0,0,.08);
+}
 
-    .brand-name{
-      display:flex;
-      flex-direction:column;
-      gap:1px;
-    }
-    .brand-name strong{ font-size:15px; }
-    .brand-name span{ font-size:12.5px; color:var(--muted); }
+.brand{
+display:flex;
+flex-direction:column;
+}
 
-    nav{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
+.brand b{
+font-size:14px;
+}
 
-    .btn{
-      padding:10px 16px;
-      border-radius:14px;
-      font-weight:700;
-      text-decoration:none;
-      color:#fff;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 10px 22px rgba(46,204,113,.25);
-      white-space:nowrap;
-      display:inline-block;
-    }
+.brand span{
+font-size:12px;
+color:var(--muted);
+}
 
-    /* ===== CONTENT ===== */
-    main{ padding:40px 0 70px; }
+/* ===== CONTENT ===== */
 
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow:0 14px 32px rgba(0,0,0,.08);
-      margin-bottom:18px;
-    }
+.wrap{
+max-width:1100px;
+margin:0 auto;
+padding:24px 18px;
+}
 
-    h1{
-      margin:0 0 10px;
-      font-size:clamp(28px,4vw,40px);
-    }
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:var(--radius);
+padding:22px;
+box-shadow:0 14px 32px rgba(0,0,0,.08);
+margin-bottom:18px;
+}
 
-    h2{
-      margin:0 0 8px;
-      font-size:20px;
-    }
+h1{
+margin:0 0 10px;
+font-size:clamp(28px,4vw,40px);
+}
 
-    p{ margin:0 0 14px; color:var(--muted); }
+h2{
+margin:0 0 8px;
+font-size:20px;
+}
 
-    .highlight{
-      background:rgba(46,204,113,.08);
-      border:1px solid rgba(46,204,113,.25);
-      border-radius:14px;
-      padding:14px;
-      margin-top:10px;
-    }
+p{margin:0 0 14px;color:var(--muted)}
 
-    .values{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px;
-      margin-top:14px;
-    }
+.highlight{
+background:rgba(46,204,113,.08);
+border:1px solid rgba(46,204,113,.25);
+border-radius:14px;
+padding:14px;
+margin-top:10px;
+}
 
-    .value{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-    }
+.values{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:14px;
+}
 
-    .chip{
-      display:inline-block;
-      background: rgba(46, 204, 113, .1);
-      border: 1px solid rgba(46, 204, 113, .3);
-      color: var(--text);
-      border-radius:999px;
-      padding:8px 12px;
-      margin:6px 8px 0 0;
-      font-size:14px;
-      font-weight:500;
-    }
+.value{
+background:#fff;
+border:1px solid var(--line);
+border-radius:14px;
+padding:14px;
+}
 
-    .cta{
-      margin-top:22px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
+.chip{
+display:inline-block;
+background:rgba(46,204,113,.1);
+border:1px solid rgba(46,204,113,.3);
+border-radius:999px;
+padding:8px 12px;
+margin:6px 8px 0 0;
+font-size:14px;
+}
 
-    @media (max-width:768px){
-      main{ padding:34px 0 60px; }
-    }
+.cta{
+margin-top:22px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+}
 
-    /* ================= */
-    /* MENU فقط */
-    /* ================= */
-    .icon-btn{
-      width:42px;height:42px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      cursor:pointer;
-      display:grid;
-      place-items:center;
-      flex:0 0 auto;
-    }
-    .hamburger{width:18px;height:12px;position:relative;}
-    .hamburger::before,.hamburger::after,.hamburger div{
-      content:"";position:absolute;left:0;right:0;height:2px;background:#111;border-radius:2px;
-    }
-    .hamburger::before{top:0}
-    .hamburger div{top:5px}
-    .hamburger::after{bottom:0}
+.btn{
+padding:10px 16px;
+border-radius:14px;
+font-weight:700;
+text-decoration:none;
+color:#fff;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+box-shadow:0 10px 22px rgba(46,204,113,.25);
+display:inline-block;
+}
 
-    .overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,.30);
-      z-index:60;display:none;
-    }
-    .overlay.open{display:block}
-
-    .drawer{
-      position:fixed;top:0;left:0;height:100%;
-      width:320px;max-width:86vw;
-      background:#fff;z-index:61;
-      transform:translateX(-110%);
-      transition:transform .22s ease;
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-      padding:16px;display:flex;flex-direction:column;gap:12px;
-    }
-    .drawer.open{transform:translateX(0)}
-    .drawer-head{display:flex;align-items:center;justify-content:space-between}
-    .drawer-title{font-weight:800}
-    .close-x{
-      width:40px;height:40px;border-radius:14px;border:1px solid var(--line);
-      background:#fff;cursor:pointer;font-size:18px;
-    }
-    .menu-item{
-      border:1px solid var(--line);
-      border-radius:14px;padding:12px;font-weight:700;
-      background:#fff;color:var(--text);text-decoration:none;
-    }
-    .small{font-size:12px;color:rgba(0,0,0,.65)}
-  </style>
+footer{
+margin-top:30px;
+font-size:12.5px;
+color:var(--muted);
+border-top:1px solid var(--line);
+padding-top:12px;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="header-inner">
-      <!-- زر المنيو -->
-      <button class="icon-btn" type="button" aria-label="Menu" onclick="openMenu()">
-        <span class="hamburger"><div></div></span>
-      </button>
+<!-- HEADER -->
+<div class="top">
+<div class="top-inner">
 
-      <a class="brand" href="/">
-        <img class="logo"
-             src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
-             alt="ymaanyGO">
-        <span class="brand-name">
-          <strong>ymaanyGO</strong>
-          <span>Taxi · Nederland · DE/BE luchthavens</span>
-        </span>
-      </a>
+<button class="back" onclick="history.back()">←</button>
 
-      <nav>
-        <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
-      </nav>
-    </div>
-  </div>
-</header>
+<div class="brand">
+<b>ymaanyGO</b>
+<span>Over ons</span>
+</div>
 
-<div id="overlay" class="overlay" onclick="closeMenu()"></div>
-<aside id="drawer" class="drawer" aria-hidden="true">
-  <div class="drawer-head">
-    <div class="drawer-title">Menu</div>
-    <button class="close-x" type="button" onclick="closeMenu()">×</button>
-  </div>
-  <a class="menu-item" href="index.html" onclick="closeMenu()">Home</a>
-  <a class="menu-item" href="taxi.html" onclick="closeMenu()">Taxi boeken</a>
-  <a class="menu-item" href="over-ons.html" onclick="closeMenu()">Over ons</a>
-  <a class="menu-item" href="contact.html" onclick="closeMenu()">Contact</a>
-  <a class="menu-item" href="voorwaarden-en-privacy.html" onclick="closeMenu()">Voorwaarden & Privacy</a>
-  <a class="menu-item" href="driver-login.html" onclick="closeMenu()">Chauffeurs login</a>
-  <div class="small" style="margin-top:auto;">Indicatieve prijs. Definitieve bevestiging via WhatsApp.</div>
-</aside>
+</div>
+</div>
 
-<main>
-  <div class="wrap">
+<main class="wrap">
 
-    <section class="card">
-      <h1>Over ymaanyGO</h1>
-      <p>
-        Bij <strong>ymaanyGO</strong> geloven wij dat goed vervoer verder gaat dan
-        alleen van A naar B. Elke rit draait om vertrouwen, aandacht en duidelijke
-        communicatie.
-      </p>
-      <div class="highlight">
-        <strong>Persoonlijke service met aandacht voor elke rit.</strong>
-      </div>
-    </section>
+<section class="card">
+<h1>Over ymaanyGO</h1>
+<p>
+Bij <strong>ymaanyGO</strong> geloven wij dat goed vervoer verder gaat dan
+alleen van A naar B. Elke rit draait om vertrouwen, aandacht en duidelijke
+communicatie.
+</p>
 
-    <section class="card">
-      <h2>Wie zijn wij</h2>
-      <p>
-        ymaanyGO is ontstaan vanuit de behoefte aan een taxiservice waar afspraken
-        worden nagekomen en klanten zich gehoord voelen.
-      </p>
-      <p>
-        Geen onduidelijkheid, maar menselijk contact en heldere afspraken.
-      </p>
-    </section>
+<div class="highlight">
+<strong>Persoonlijke service met aandacht voor elke rit.</strong>
+</div>
+</section>
 
-    <section class="card">
-      <h2>Onze werkwijze</h2>
-      <p>
-        Je boekt online. Daarna ontvang je een <strong>persoonlijke bevestiging via WhatsApp</strong>
-        met de vaste prijs en alle ritdetails. Pas na jouw akkoord is de boeking definitief.
-      </p>
-    </section>
+<section class="card">
+<h2>Wie zijn wij</h2>
+<p>
+ymaanyGO is ontstaan vanuit de behoefte aan een taxiservice waar afspraken
+worden nagekomen en klanten zich gehoord voelen.
+</p>
+<p>
+Geen onduidelijkheid, maar menselijk contact en heldere afspraken.
+</p>
+</section>
 
-    <section class="card">
-      <h2>Waar wij voor staan</h2>
-      <div class="values">
-        <div class="value"><strong>Betrouwbaarheid</strong><p>Afspraak is afspraak.</p></div>
-        <div class="value"><strong>Respect</strong><p>Voor elke klant en elke rit.</p></div>
-        <div class="value"><strong>Duidelijkheid</strong><p>Geen verrassingen.</p></div>
-        <div class="value"><strong>Comfort</strong><p>Rustig en verzorgd vervoer.</p></div>
-      </div>
-    </section>
+<section class="card">
+<h2>Onze werkwijze</h2>
+<p>
+Je boekt online. Daarna ontvang je een <strong>persoonlijke bevestiging via WhatsApp</strong>
+met de vaste prijs en alle ritdetails. Pas na jouw akkoord is de boeking definitief.
+</p>
+</section>
 
-    <section class="card">
-      <strong>Waarom klanten voor ons kiezen</strong><br><br>
-      <span class="chip">✔ Vaste prijs vooraf</span>
-      <span class="chip">✔ Privé vervoer</span>
-      <span class="chip">✔ Heldere afspraken</span>
-      <span class="chip">✔ Comfortabel & netjes</span>
-      <span class="chip">✔ NL + DE/BE luchthavens</span>
-    </section>
+<section class="card">
+<h2>Waar wij voor staan</h2>
 
-    <section class="card">
-      <h2>Onze belofte</h2>
-      <p>
-        Met ymaanyGO kies je voor een taxiservice die verder kijkt dan alleen vervoer.
-        Wij zorgen dat jij met een gerust gevoel onderweg bent.
-      </p>
-      <div class="cta">
-        <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
-      </div>
-    </section>
+<div class="values">
 
-  </div>
+<div class="value">
+<strong>Betrouwbaarheid</strong>
+<p>Afspraak is afspraak.</p>
+</div>
+
+<div class="value">
+<strong>Respect</strong>
+<p>Voor elke klant en elke rit.</p>
+</div>
+
+<div class="value">
+<strong>Duidelijkheid</strong>
+<p>Geen verrassingen.</p>
+</div>
+
+<div class="value">
+<strong>Comfort</strong>
+<p>Rustig en verzorgd vervoer.</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<strong>Waarom klanten voor ons kiezen</strong><br><br>
+
+<span class="chip">✔ Vaste prijs vooraf</span>
+<span class="chip">✔ Privé vervoer</span>
+<span class="chip">✔ Heldere afspraken</span>
+<span class="chip">✔ Comfortabel & netjes</span>
+<span class="chip">✔ NL + DE/BE luchthavens</span>
+
+</section>
+
+<section class="card">
+
+<h2>Onze belofte</h2>
+
+<p>
+Met ymaanyGO kies je voor een taxiservice die verder kijkt dan alleen vervoer.
+Wij zorgen dat jij met een gerust gevoel onderweg bent.
+</p>
+
+<div class="cta">
+<a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+</div>
+
+</section>
+
+<footer>
+© ymaanyGO Taxi – Betrouwbaar vervoer • Gecertificeerde chauffeurs
+</footer>
+
 </main>
-
-<script>
-  function openMenu(){
-    document.getElementById('overlay').classList.add('open');
-    document.getElementById('drawer').classList.add('open');
-    document.getElementById('drawer').setAttribute('aria-hidden','false');
-  }
-  function closeMenu(){
-    document.getElementById('overlay').classList.remove('open');
-    document.getElementById('drawer').classList.remove('open');
-    document.getElementById('drawer').setAttribute('aria-hidden','true');
-  }
-</script>
 
 </body>
 </html>
