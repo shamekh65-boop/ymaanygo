@@ -2,9 +2,9 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <title>ymaanyGO – Veiligheid & voorwaarden</title>
+  <title>ymaanyGO – Voorwaarden & Privacy</title>
   <meta name="description" content="Veiligheid, voorwaarden en privacy van ymaanyGO taxi in Nederland.">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
@@ -19,9 +19,13 @@
       --text:#0b2e1f;
       --muted:#4f7f68;
       --line:rgba(0,0,0,.08);
+
       --accent:#2ecc71;
       --accent2:#27ae60;
+
       --radius:18px;
+      --max:1100px;
+      --tap:54px;
     }
 
     *{ box-sizing:border-box; }
@@ -35,87 +39,45 @@
       line-height:1.55;
     }
 
-    .wrap{ max-width:1100px; margin:0 auto; padding:0 18px; }
+    a{ text-decoration:none; color:inherit; }
 
-    header{
-      position: sticky;
-      top: 0;
-      z-index: 50;
+    /* ===== Unified header (same as other pages) ===== */
+    .top{
+      position:sticky;
+      top:0;
+      z-index:50;
       background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px) saturate(140%);
       border-bottom: 1px solid var(--line);
     }
 
-    .header-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 0;
-      gap:14px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      text-decoration:none;
-      color:var(--text);
-    }
-
-    .logo{
-      width:46px;
-      height:46px;
-      border-radius:12px;
-      background:#fff;
-      padding:6px;
-      border:1px solid var(--line);
-      object-fit:contain;
-    }
-
-    .brand-name{ display:flex; flex-direction:column; gap:1px; }
-    .brand-name strong{ font-size:15px; }
-    .brand-name span{ font-size:12.5px; color:var(--muted); }
-
-    nav{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    nav a{
-      color:var(--muted);
-      text-decoration:none;
-      font-size:14px;
-      padding:8px 10px;
-      border-radius:12px;
-    }
-    nav a:hover{ background:rgba(46,204,113,.08); color:var(--text); }
-
-    .btn{
-      padding:10px 16px;
-      border-radius:14px;
-      font-weight:800;
-      text-decoration:none;
-      color:#fff;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 10px 22px rgba(46,204,113,.25);
-      white-space:nowrap;
-      display:inline-block;
-    }
-
-    .btn-ghost{
+    .top-inner{
+      max-width:var(--max);
+      margin:0 auto;
       padding:10px 14px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      text-decoration:none;
-      color:var(--text);
-      background:#fff;
-      display:inline-block;
-      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
-    main{ padding:34px 0 70px; }
+    .back{
+      width:44px;height:44px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    }
+
+    .brand b{display:block;font-size:14px}
+    .brand span{display:block;font-size:12px;color:var(--muted)}
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding:16px 18px; }
+
+    main{ padding:18px 0 70px; }
 
     .grid{
       display:grid;
@@ -132,31 +94,26 @@
       text-align:left;
     }
 
-    h1{ margin:0 0 8px; font-size:clamp(26px,3.6vw,38px); }
+    h1{ margin:0 0 8px; font-size:clamp(24px,3.2vw,36px); }
     .subtitle{ margin:0; color:var(--muted); }
 
     .section-title{
       margin:22px 0 10px;
-      font-size:22px;
+      font-size:20px;
       font-weight:900;
       letter-spacing:.2px;
     }
 
     .muted{ color:var(--muted); }
 
-    /* ✅ Fix 1: bullets start netjes (geen rare inspringing) */
+    /* bullets */
     ul{
       margin:10px 0 0;
-      padding-left:22px;           /* فقط مقدار بسيط */
-      list-style-position:outside; /* النقطة خارج النص */
+      padding-left:22px;
+      list-style-position:outside;
     }
-    li{
-      margin:8px 0;
-    }
-    li::marker{
-      color:rgba(20,90,60,.65);
-      font-size:1.05em;
-    }
+    li{ margin:8px 0; }
+    li::marker{ color:rgba(20,90,60,.65); font-size:1.05em; }
 
     .callout{
       margin-top:10px;
@@ -173,45 +130,85 @@
       border-top:1px solid rgba(0,0,0,.08);
     }
 
-    .cta-bottom{
-      margin-top:18px;
+    /* buttons same feel as your pages */
+    .btn{
+      height:var(--tap);
+      border-radius:16px;
+      border:0;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      padding:0 16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+    .btn-ghost{
+      height:var(--tap);
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:800;
+      cursor:pointer;
+      padding:0 16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+
+    .cta-row{
+      margin-top:14px;
       display:flex;
       gap:12px;
       flex-wrap:wrap;
     }
+
+    .quicklinks{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+    @media(min-width:780px){
+      .quicklinks{ grid-template-columns:1fr 1fr 1fr; }
+    }
+    .ql{
+      height:54px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--text);
+    }
+    .ql:hover{ background:rgba(46,204,113,.06); }
 
     .small{
       font-size:13.5px;
       color:var(--muted);
       margin-top:10px;
     }
-
-    @media (max-width:920px){
-      nav{ justify-content:flex-start; }
-    }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="wrap">
-      <div class="header-inner">
-        <a class="brand" href="https://ymaanygo.nl/">
-          <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico" alt="ymaanyGO">
-          <div class="brand-name">
-            <strong>ymaanyGO</strong>
-            <span>Taxi • Nederland • DE/BE luchthavens</span>
-          </div>
-        </a>
 
-        <nav>
-          <a href="#voorwaarden">Voorwaarden</a>
-          <a href="#privacy">Privacy</a>
-          <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
-        </nav>
+  <div class="top">
+    <div class="top-inner">
+      <button class="back" onclick="history.back()">←</button>
+      <div class="brand">
+        <b>ymaanyGO</b>
+        <span>Veiligheid & voorwaarden</span>
       </div>
     </div>
-  </header>
+  </div>
 
   <main>
     <div class="wrap">
@@ -220,6 +217,13 @@
         <section class="card" id="voorwaarden">
           <h1>Veiligheid & voorwaarden</h1>
           <p class="subtitle">Duidelijke afspraken die zowel passagier als chauffeur beschermen.</p>
+
+          <!-- Quick links بدل nav -->
+          <div class="quicklinks" aria-label="Snelle navigatie">
+            <button class="ql" type="button" onclick="document.getElementById('voorwaarden').scrollIntoView({behavior:'smooth'})">Voorwaarden</button>
+            <button class="ql" type="button" onclick="document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</button>
+            <button class="btn" type="button" onclick="window.location.href='https://ymaanygo.nl/taxi.html'">Taxi boeken</button>
+          </div>
 
           <div class="section-title">1) Definities</div>
           <ul>
@@ -244,7 +248,6 @@
           </div>
 
           <div class="section-title">4) Wanneer mag de prijs wél veranderen?</div>
-          <!-- ✅ Fix 2: stijl hetzelfde als #3 -->
           <div class="callout">
             Alleen bij wijzigingen door de klant of extra tijd/werk buiten de afspraak.
             In deze gevallen wordt een <strong>nieuwe prijs</strong> afgesproken via WhatsApp (of mondeling met directe bevestiging).
@@ -316,10 +319,9 @@
             <li>Je kunt verzoeken om correctie/verwijdering van gegevens voor zover dit wettelijk is toegestaan.</li>
           </ul>
 
-          <!-- ✅ Fix 3: knoppen onderaan de pagina (na privacy) -->
-          <div class="cta-bottom">
-            <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
-            <a class="btn-ghost" href="https://ymaanygo.nl/">Terug naar home</a>
+          <div class="cta-row">
+            <button class="btn" type="button" onclick="window.location.href='https://ymaanygo.nl/taxi.html'">Taxi boeken</button>
+            <button class="btn-ghost" type="button" onclick="window.location.href='https://ymaanygo.nl/'">Terug naar home</button>
           </div>
         </section>
 
@@ -328,10 +330,10 @@
   </main>
 
   <script>
-    // simple last updated date
     (function(){
       const el = document.getElementById("lastUpdated");
       if(!el) return;
+
       const d = new Date();
       const dd = String(d.getDate()).padStart(2,'0');
       const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -339,5 +341,6 @@
       el.textContent = dd + "-" + mm + "-" + yyyy;
     })();
   </script>
+
 </body>
 </html>
