@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <title>ymaanyGO – Voorwaarden & Privacy</title>
-  <meta name="description" content="Veiligheid, voorwaarden en privacy van ymaanyGO taxi in Nederland.">
+  <title>ymaanyGO – Voorwaarden, Privacy & Cookies</title>
+  <meta name="description" content="Voorwaarden, privacy en cookies van ymaanyGO taxi in Nederland.">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
 
@@ -14,18 +14,14 @@
       --bg-light:#f6fbf8;
       --bg-mid:#e6f3ed;
       --bg-dark:#d7ece2;
-
       --panel:rgba(255,255,255,.92);
       --text:#0b2e1f;
       --muted:#4f7f68;
       --line:rgba(0,0,0,.08);
-
       --accent:#2ecc71;
       --accent2:#27ae60;
-
       --radius:18px;
       --max:1100px;
-      --tap:54px;
     }
 
     *{ box-sizing:border-box; }
@@ -33,27 +29,26 @@
 
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(to bottom, var(--bg-light) 0%, var(--bg-mid) 60%, var(--bg-dark) 100%);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(to bottom,var(--bg-light) 0%,var(--bg-mid) 60%,var(--bg-dark) 100%);
       color:var(--text);
-      line-height:1.55;
+      line-height:1.6;
     }
 
-    a{ text-decoration:none; color:inherit; }
+    a{ color:inherit; text-decoration:none; }
 
-    /* ===== Unified header (same as other pages) ===== */
     .top{
       position:sticky;
       top:0;
       z-index:50;
-      background: linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
-      backdrop-filter: blur(10px) saturate(140%);
-      border-bottom: 1px solid var(--line);
+      background:linear-gradient(to bottom, rgba(245,248,246,.95), rgba(210,232,220,.92));
+      backdrop-filter:blur(10px) saturate(140%);
+      border-bottom:1px solid var(--line);
     }
 
     .top-inner{
       max-width:var(--max);
-      margin:0 auto;
+      margin:auto;
       padding:10px 14px;
       display:flex;
       align-items:center;
@@ -61,7 +56,8 @@
     }
 
     .back{
-      width:44px;height:44px;
+      width:44px;
+      height:44px;
       border-radius:16px;
       border:1px solid var(--line);
       background:#fff;
@@ -72,12 +68,26 @@
       box-shadow:0 8px 18px rgba(0,0,0,.08);
     }
 
-    .brand b{display:block;font-size:14px}
-    .brand span{display:block;font-size:12px;color:var(--muted)}
+    .brand b{
+      display:block;
+      font-size:14px;
+    }
 
-    .wrap{ max-width:var(--max); margin:0 auto; padding:16px 18px; }
+    .brand span{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+    }
 
-    main{ padding:18px 0 70px; }
+    .wrap{
+      max-width:var(--max);
+      margin:auto;
+      padding:18px;
+    }
+
+    main{
+      padding:18px 0 70px;
+    }
 
     .grid{
       display:grid;
@@ -89,40 +99,57 @@
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:var(--radius);
-      padding:20px;
+      padding:22px;
       box-shadow:0 14px 32px rgba(0,0,0,.08);
-      text-align:left;
     }
 
-    h1{ margin:0 0 8px; font-size:clamp(24px,3.2vw,36px); }
-    .subtitle{ margin:0; color:var(--muted); }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(24px,3.2vw,36px);
+    }
+
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+    }
 
     .section-title{
-      margin:22px 0 10px;
+      margin:24px 0 10px;
       font-size:20px;
       font-weight:900;
       letter-spacing:.2px;
     }
 
-    .muted{ color:var(--muted); }
+    .muted{
+      color:var(--muted);
+    }
 
-    /* bullets */
     ul{
       margin:10px 0 0;
       padding-left:22px;
       list-style-position:outside;
     }
-    li{ margin:8px 0; }
-    li::marker{ color:rgba(20,90,60,.65); font-size:1.05em; }
+
+    li{
+      margin:8px 0;
+    }
+
+    li::marker{
+      color:rgba(20,90,60,.65);
+      font-size:1.05em;
+    }
 
     .callout{
       margin-top:10px;
-      padding:16px 16px;
+      padding:16px;
       border-radius:16px;
       background:rgba(46,204,113,.08);
       border:1px solid rgba(46,204,113,.25);
     }
-    .callout strong{ font-weight:900; }
+
+    .callout strong{
+      font-weight:900;
+    }
 
     .divider{
       margin:18px 0;
@@ -130,55 +157,17 @@
       border-top:1px solid rgba(0,0,0,.08);
     }
 
-    /* buttons same feel as your pages */
-    .btn{
-      height:var(--tap);
-      border-radius:16px;
-      border:0;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-      box-shadow:0 10px 22px rgba(46,204,113,.25);
-      padding:0 16px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      white-space:nowrap;
-    }
-    .btn-ghost{
-      height:var(--tap);
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
-      font-weight:800;
-      cursor:pointer;
-      padding:0 16px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      white-space:nowrap;
-    }
-
-    .cta-row{
-      margin-top:14px;
+    .quicklinks{
+      margin-top:16px;
       display:flex;
       gap:12px;
       flex-wrap:wrap;
     }
 
-    .quicklinks{
-      margin-top:14px;
-      display:grid;
-      gap:12px;
-    }
-    @media(min-width:780px){
-      .quicklinks{ grid-template-columns:1fr 1fr 1fr; }
-    }
     .ql{
-      height:54px;
-      border-radius:16px;
+      height:44px;
+      padding:0 18px;
+      border-radius:14px;
       border:1px solid var(--line);
       background:#fff;
       font-weight:800;
@@ -187,13 +176,37 @@
       align-items:center;
       justify-content:center;
       color:var(--text);
+      transition:.2s;
+      box-shadow:0 4px 10px rgba(0,0,0,.04);
     }
-    .ql:hover{ background:rgba(46,204,113,.06); }
+
+    .ql:hover{
+      background:rgba(46,204,113,.08);
+      border-color:rgba(46,204,113,.35);
+    }
 
     .small{
       font-size:13.5px;
       color:var(--muted);
       margin-top:10px;
+    }
+
+    .footer-links{
+      margin-top:18px;
+      padding-top:14px;
+      border-top:1px solid rgba(0,0,0,.08);
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .footer-links a{
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .footer-links a:hover{
+      color:var(--text);
     }
   </style>
 </head>
@@ -205,7 +218,7 @@
       <button class="back" onclick="history.back()">←</button>
       <div class="brand">
         <b>ymaanyGO</b>
-        <span>Veiligheid & voorwaarden</span>
+        <span>Voorwaarden, privacy & cookies</span>
       </div>
     </div>
   </div>
@@ -215,92 +228,90 @@
       <div class="grid">
 
         <section class="card" id="voorwaarden">
-          <h1>Veiligheid & voorwaarden</h1>
-          <p class="subtitle">Duidelijke afspraken die zowel passagier als chauffeur beschermen.</p>
+          <h1>Voorwaarden, Privacy & Cookies</h1>
+          <p class="subtitle">Duidelijke en eerlijke afspraken voor een veilige taxidienst in Nederland.</p>
 
-          <!-- Quick links بدل nav -->
           <div class="quicklinks" aria-label="Snelle navigatie">
             <button class="ql" type="button" onclick="document.getElementById('voorwaarden').scrollIntoView({behavior:'smooth'})">Voorwaarden</button>
             <button class="ql" type="button" onclick="document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</button>
-            <button class="btn" type="button" onclick="window.location.href='https://ymaanygo.nl/taxi.html'">Taxi boeken</button>
+            <button class="ql" type="button" onclick="document.getElementById('cookies').scrollIntoView({behavior:'smooth'})">Cookies</button>
           </div>
 
           <div class="section-title">1) Definities</div>
           <ul>
-            <li><strong>Klant / passagier:</strong> de persoon die de rit boekt en/of meereist.</li>
-            <li><strong>Chauffeur:</strong> de uitvoerende bestuurder namens ymaanyGO.</li>
-            <li><strong>Rit:</strong> vervoer van ophaallocatie naar bestemming (eventuele stops alleen als vooraf afgesproken).</li>
+            <li><strong>Klant / passagier:</strong> de persoon die een rit boekt en/of meereist met ymaanyGO.</li>
+            <li><strong>Chauffeur:</strong> de bestuurder die de rit uitvoert namens ymaanyGO.</li>
+            <li><strong>Rit:</strong> vervoer van de afgesproken ophaallocatie naar de afgesproken bestemming.</li>
           </ul>
 
-          <div class="section-title">2) Boeking & bevestiging</div>
+          <div class="section-title">2) Toepasselijkheid</div>
           <ul>
-            <li>Een rit is definitief zodra de klant via WhatsApp (of schriftelijk) een bevestiging heeft ontvangen.</li>
-            <li>De klant is verantwoordelijk voor het aanleveren van correcte gegevens (naam, telefoon, ophaaltijd, adressen).</li>
-            <li>Bij onduidelijke adressen kan de chauffeur contact opnemen om het adres te verifiëren.</li>
+            <li>Deze voorwaarden zijn van toepassing op alle taxidiensten die door ymaanyGO worden aangeboden.</li>
+            <li>Door een rit te boeken of gebruik te maken van onze dienst gaat de klant akkoord met deze voorwaarden.</li>
           </ul>
 
-          <div class="section-title">3) Vaste prijzen (Vast tarief)</div>
-          <div class="callout">
-            <strong>Vast = vast.</strong>
-            De klant betaalt de prijs die via WhatsApp is bevestigd.
-            De prijs verandert <strong>niet</strong> door verkeer/drukte of door een andere route van de chauffeur,
-            zolang de rit inhoudelijk hetzelfde blijft.
-          </div>
+          <div class="section-title">3) Boeking en bevestiging</div>
+          <ul>
+            <li>Een rit kan worden aangevraagd via website, telefoon of WhatsApp.</li>
+            <li>Een rit is definitief zodra de klant een bevestiging van ymaanyGO heeft ontvangen.</li>
+            <li>De klant is verantwoordelijk voor het correct doorgeven van ophaaladres, bestemming, tijdstip en contactgegevens.</li>
+            <li>Bij onduidelijke of onjuiste gegevens mag de chauffeur of ymaanyGO contact opnemen om de informatie te controleren.</li>
+          </ul>
 
-          <div class="section-title">4) Wanneer mag de prijs wél veranderen?</div>
+          <div class="section-title">4) Vaste prijs en prijswijzigingen</div>
           <div class="callout">
-            Alleen bij wijzigingen door de klant of extra tijd/werk buiten de afspraak.
-            In deze gevallen wordt een <strong>nieuwe prijs</strong> afgesproken via WhatsApp (of mondeling met directe bevestiging).
-            <ul>
-              <li><strong>Te laat</strong> op de afgesproken ophaaltijd (wachttijd buiten redelijke gratis marge).</li>
-              <li><strong>Bestemming wijzigen</strong> na bevestiging.</li>
-              <li><strong>Extra stop(s)</strong> toevoegen die niet vooraf waren afgesproken.</li>
-              <li><strong>Extra diensten</strong> op verzoek (bijv. extra wachttijd, omwegen op verzoek, uitzonderlijk veel bagage).</li>
-            </ul>
+            <strong>Vast tarief blijft vast</strong> wanneer vooraf een prijs is bevestigd en de rit inhoudelijk gelijk blijft.
           </div>
+          <ul>
+            <li>Een vooraf bevestigde prijs blijft gelden zolang de bestemming niet verandert en er geen extra stops of aanvullende verzoeken worden toegevoegd.</li>
+            <li>De prijs kan alleen wijzigen wanneer de klant na bevestiging de rit wijzigt, extra wachttijd veroorzaakt of aanvullende diensten vraagt.</li>
+            <li>Wanneer mogelijk wordt een aangepaste prijs vooraf met de klant besproken.</li>
+          </ul>
 
           <div class="section-title">5) Wachttijd</div>
           <ul>
-            <li>Een korte, redelijke wachttijd is inbegrepen (situatie-afhankelijk).</li>
-            <li>Bij langere wachttijd kan een meerprijs gelden; dit wordt vooraf (zoveel mogelijk) gecommuniceerd en bevestigd.</li>
+            <li>Een korte redelijke wachttijd kan inbegrepen zijn, afhankelijk van de situatie en de gemaakte afspraak.</li>
+            <li>Bij aanzienlijke vertraging door de klant kan extra wachttijd in rekening worden gebracht.</li>
           </ul>
 
-          <div class="section-title">6) Annuleren & no-show</div>
+          <div class="section-title">6) Annulering en no-show</div>
           <ul>
-            <li>Annuleren kan tot <strong>3 uur</strong> voor vertrek kosteloos, tenzij anders afgesproken.</li>
-            <li>Bij late annulering of no-show kunnen gemaakte kosten (bijv. aanrij- en wachttijd) in rekening worden gebracht.</li>
+            <li>Annuleren kan kosteloos tot <strong>3 uur vóór</strong> het afgesproken ophaaltijdstip, tenzij anders overeengekomen.</li>
+            <li>Bij een late annulering of no-show mag ymaanyGO redelijke kosten in rekening brengen voor aanrijtijd, gereserveerde tijd of reeds gemaakte kosten.</li>
           </ul>
 
-          <div class="section-title">7) Gedrag & veiligheid</div>
+          <div class="section-title">7) Veiligheid en gedrag</div>
           <ul>
-            <li>Respectvol gedrag is verplicht. Discriminatie, agressie, vandalisme of gevaarlijk gedrag wordt niet geaccepteerd.</li>
-            <li>De chauffeur mag de rit weigeren/stoppen bij onveilige situaties. Redelijke kosten tot dat moment kunnen worden doorberekend.</li>
-            <li>Alcohol/drugs: bij overlast of gevaar kan de rit worden beëindigd.</li>
+            <li>Passagiers dienen zich respectvol en veilig te gedragen tegenover de chauffeur en andere weggebruikers.</li>
+            <li>Agressie, bedreiging, vandalisme, intimidatie of ander gevaarlijk gedrag wordt niet geaccepteerd.</li>
+            <li>De chauffeur heeft het recht om een rit te weigeren of te beëindigen wanneer de veiligheid in gevaar komt.</li>
+            <li>In dat geval kunnen redelijke kosten tot het moment van beëindiging in rekening worden gebracht.</li>
           </ul>
 
-          <div class="section-title">8) Kinderen, bagage en huisdieren</div>
+          <div class="section-title">8) Bagage, kinderen en huisdieren</div>
           <ul>
-            <li><strong>Kinderen:</strong> de klant zorgt voor een wettelijk vereist kinderzitje als dat nodig is.</li>
-            <li><strong>Bagage:</strong> normaal bagagevervoer is inbegrepen; uitzonderlijke hoeveelheden graag vooraf melden.</li>
-            <li><strong>Huisdieren:</strong> alleen in overleg (bij voorkeur in een reismand), tenzij het om een hulphond gaat (conform regels).</li>
+            <li><strong>Bagage:</strong> normale bagage is toegestaan. Grote, zware of uitzonderlijke bagage dient vooraf te worden gemeld.</li>
+            <li><strong>Kinderen:</strong> de klant is verantwoordelijk voor het gebruik van een wettelijk vereist kinderzitje indien dat nodig is.</li>
+            <li><strong>Huisdieren:</strong> huisdieren zijn alleen toegestaan na voorafgaand overleg, tenzij het gaat om een wettelijk toegestane hulphond.</li>
           </ul>
 
-          <div class="section-title">9) Overmacht & vertraging</div>
+          <div class="section-title">9) Overmacht</div>
           <ul>
-            <li>Vertraging door verkeer, weer, wegafsluitingen of incidenten kan voorkomen; we doen ons best om op tijd te rijden.</li>
-            <li>Bij overmacht kan er geen absolute garantie worden gegeven op aankomsttijd.</li>
+            <li>ymaanyGO is niet aansprakelijk voor vertragingen of gevolgen veroorzaakt door omstandigheden buiten redelijke controle, zoals files, ongevallen, extreme weersomstandigheden of wegafsluitingen.</li>
+            <li>Wij doen altijd ons best om ritten zo correct en efficiënt mogelijk uit te voeren.</li>
           </ul>
 
-          <div class="section-title">10) Betaling & schade</div>
+          <div class="section-title">10) Betaling en schade</div>
           <ul>
-            <li>Betaling volgens afspraak bij bevestiging.</li>
-            <li>Bij schade of vervuiling door de klant kunnen redelijke kosten worden doorberekend (met bewijs).</li>
+            <li>Betaling gebeurt volgens de vooraf gemaakte afspraak.</li>
+            <li>Bij schade, vervuiling of buitengewone overlast veroorzaakt door de klant, kunnen redelijke herstel- of schoonmaakkosten in rekening worden gebracht.</li>
           </ul>
 
           <hr class="divider">
 
           <div class="section-title">Bedrijfsgegevens</div>
           <ul>
+            <li><strong>Bedrijfsnaam:</strong> ymaanyGO</li>
             <li><strong>KVK-nummer:</strong> 92893724</li>
             <li><strong>BTW-identificatienummer:</strong> NL004984269B78</li>
           </ul>
@@ -311,17 +322,89 @@
         </section>
 
         <section class="card" id="privacy">
-          <div class="section-title" style="margin-top:0;">Privacy</div>
+          <div class="section-title" style="margin-top:0;">Privacybeleid</div>
+
+          <p class="muted">
+            ymaanyGO respecteert de privacy van klanten en verwerkt persoonsgegevens zorgvuldig en in overeenstemming met de geldende privacywetgeving.
+          </p>
+
+          <div class="section-title">1) Welke gegevens wij kunnen verwerken</div>
           <ul>
-            <li>We gebruiken gegevens alleen om jouw rit te plannen en contact op te nemen (naam, telefoon, locaties, tijd).</li>
-            <li>We verkopen jouw gegevens niet.</li>
-            <li>WhatsApp-contact valt onder normale communicatie voor de uitvoering van de dienst.</li>
-            <li>Je kunt verzoeken om correctie/verwijdering van gegevens voor zover dit wettelijk is toegestaan.</li>
+            <li>naam</li>
+            <li>telefoonnummer</li>
+            <li>ophaallocatie en bestemming</li>
+            <li>datum en tijd van de rit</li>
+            <li>communicatie via telefoon of WhatsApp</li>
+            <li>factuurgegevens wanneer zakelijke of administratieve verwerking nodig is</li>
           </ul>
 
-          <div class="cta-row">
-            <button class="btn" type="button" onclick="window.location.href='https://ymaanygo.nl/taxi.html'">Taxi boeken</button>
-            <button class="btn-ghost" type="button" onclick="window.location.href='https://ymaanygo.nl/'">Terug naar home</button>
+          <div class="section-title">2) Waarom wij deze gegevens gebruiken</div>
+          <ul>
+            <li>voor het plannen, bevestigen en uitvoeren van taxiritten</li>
+            <li>voor communicatie met klanten over hun rit</li>
+            <li>voor administratie, facturatie en klantenservice</li>
+            <li>voor het naleven van wettelijke verplichtingen</li>
+          </ul>
+
+          <div class="section-title">3) Hoe lang wij gegevens bewaren</div>
+          <ul>
+            <li>Wij bewaren persoonsgegevens niet langer dan noodzakelijk is voor het doel waarvoor ze zijn verzameld, tenzij een wettelijke bewaarplicht anders vereist.</li>
+          </ul>
+
+          <div class="section-title">4) Delen van gegevens</div>
+          <ul>
+            <li>Wij verkopen geen persoonsgegevens aan derden.</li>
+            <li>Wij delen gegevens alleen wanneer dit nodig is voor administratie, wettelijke verplichtingen of de uitvoering van onze dienstverlening.</li>
+          </ul>
+
+          <div class="section-title">5) Rechten van gebruikers</div>
+          <ul>
+            <li>U heeft het recht om inzage te vragen in uw persoonsgegevens.</li>
+            <li>U heeft het recht om onjuiste gegevens te laten corrigeren.</li>
+            <li>U heeft het recht om verwijdering van gegevens te verzoeken, voor zover dit wettelijk mogelijk is.</li>
+            <li>U kunt contact met ons opnemen voor privacyverzoeken of vragen over gegevensverwerking.</li>
+          </ul>
+
+          <div class="section-title">6) Beveiliging</div>
+          <ul>
+            <li>ymaanyGO neemt passende organisatorische en technische maatregelen om persoonsgegevens te beschermen tegen verlies, misbruik of onbevoegde toegang.</li>
+          </ul>
+        </section>
+
+        <section class="card" id="cookies">
+          <div class="section-title" style="margin-top:0;">Cookiebeleid</div>
+
+          <p class="muted">
+            Onze website gebruikt cookies en vergelijkbare technieken om de website goed te laten functioneren en, waar van toepassing, om de gebruikservaring te verbeteren.
+          </p>
+
+          <div class="section-title">1) Wat zijn cookies?</div>
+          <ul>
+            <li>Cookies zijn kleine tekstbestanden die door een website op uw apparaat kunnen worden opgeslagen.</li>
+          </ul>
+
+          <div class="section-title">2) Welke cookies wij kunnen gebruiken</div>
+          <ul>
+            <li><strong>Noodzakelijke cookies:</strong> cookies die nodig zijn om de website technisch goed te laten werken.</li>
+            <li><strong>Functionele cookies:</strong> cookies die voorkeuren of basisinstellingen kunnen onthouden.</li>
+            <li><strong>Analytische cookies:</strong> alleen wanneer deze op een privacyvriendelijke manier worden gebruikt om de website te verbeteren.</li>
+          </ul>
+
+          <div class="section-title">3) Tracking cookies</div>
+          <ul>
+            <li>Wanneer tracking cookies of vergelijkbare marketingcookies worden gebruikt, vragen wij hiervoor vooraf toestemming.</li>
+          </ul>
+
+          <div class="section-title">4) Cookies beheren</div>
+          <ul>
+            <li>U kunt cookies verwijderen of blokkeren via de instellingen van uw browser.</li>
+            <li>Houd er rekening mee dat delen van de website dan mogelijk minder goed functioneren.</li>
+          </ul>
+
+          <div class="footer-links">
+            <a href="#voorwaarden" onclick="document.getElementById('voorwaarden').scrollIntoView({behavior:'smooth'});return false;">Voorwaarden</a>
+            <a href="#privacy" onclick="document.getElementById('privacy').scrollIntoView({behavior:'smooth'});return false;">Privacy</a>
+            <a href="#cookies" onclick="document.getElementById('cookies').scrollIntoView({behavior:'smooth'});return false;">Cookies</a>
           </div>
         </section>
 
@@ -333,7 +416,6 @@
     (function(){
       const el = document.getElementById("lastUpdated");
       if(!el) return;
-
       const d = new Date();
       const dd = String(d.getDate()).padStart(2,'0');
       const mm = String(d.getMonth()+1).padStart(2,'0');
