@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <title>Taxi Bergen – ymaanyGO Taxi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="Taxi in Bergen nodig? ymaanyGO biedt betrouwbaar en comfortabel taxivervoer van en naar Bergen. Vaste prijs, duidelijke afspraken en ritten naar Schiphol en andere steden.">
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://ymaanygo.nl/taxi-bergen.html">
+  <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Taxi Bergen – ymaanyGO Taxi">
+  <meta property="og:description" content="Betrouwbare taxi in Bergen. Vaste prijs en comfortabele ritten naar Schiphol en andere steden.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ymaanygo.nl/taxi-bergen.html">
+  <meta property="og:image" content="https://ymaanygo.nl/logo.jpeg">
+  <meta property="og:site_name" content="ymaanyGO">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Taxi Bergen – ymaanyGO Taxi">
+  <meta name="twitter:description" content="Betrouwbare taxi in Bergen met vaste prijs en duidelijke afspraken.">
+  <meta name="twitter:image" content="https://ymaanygo.nl/logo.jpeg">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    "name": "ymaanyGO Taxi",
+    "url": "https://ymaanygo.nl/taxi-bergen.html",
+    "image": "https://ymaanygo.nl/logo.jpeg",
+    "telephone": "+31633337184",
+    "priceRange": "€€",
+    "areaServed": {
+      "@type": "City",
+      "name": "Bergen"
+    },
+    "serviceType": "Taxi service"
+  }
+  </script>
+
+  <style>
+    :root{
+      --bg-light:#f6fbf8;
+      --bg-mid:#e6f3ed;
+      --bg-dark:#d7ece2;
+      --panel:#ffffffee;
+      --text:#0b2e1f;
+      --muted:#4f7f68;
+      --line:rgba(0,0,0,.08);
+      --accent:#2ecc71;
+      --accent2:#27ae60;
+      --radius:18px;
+      --max:900px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    /* HEADER */
+    .top{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(246,246,246,.90);
+      backdrop-filter:blur(12px) saturate(140%);
+      border-bottom:1px solid var(--line);
+    }
+
+    .top-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .back{
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .brand b{
+      font-size:14px;
+    }
+
+    .brand span{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* CONTENT */
+    .wrap{
+      max-width:900px;
+      margin:0 auto;
+      padding:24px 18px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px;
+      margin-bottom:18px;
+      box-shadow:0 14px 30px rgba(0,0,0,.08);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,40px);
+      line-height:1.2;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:20px;
+      line-height:1.3;
+    }
+
+    p{
+      margin:0 0 14px;
+      color:var(--muted);
+    }
+
+    ul{
+      margin:0;
+      padding-left:20px;
+      color:var(--muted);
+    }
+
+    li{
+      margin:8px 0;
+    }
+
+    .highlight{
+      background:rgba(46,204,113,.08);
+      border:1px solid rgba(46,204,113,.25);
+      border-radius:14px;
+      padding:14px;
+      margin-top:10px;
+      color:var(--text);
+      font-weight:600;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:14px 18px;
+      border-radius:16px;
+      font-weight:700;
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 22px rgba(46,204,113,.25);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 28px rgba(46,204,113,.30);
+    }
+
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .mini-link{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:600;
+    }
+
+    footer{
+      margin-top:30px;
+      font-size:12.5px;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      padding-top:12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top">
+    <div class="top-inner">
+      <button class="back" onclick="history.back()">←</button>
+      <div class="brand">
+        <b>ymaanyGO</b>
+        <span>Taxi Bergen</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+
+    <section class="card">
+      <h1>Taxi Bergen</h1>
+
+      <p>
+        Een taxi in Bergen nodig? <strong>ymaanyGO Taxi</strong> biedt comfortabel
+        en betrouwbaar vervoer van en naar Bergen. Of het nu gaat om een rit
+        binnen de stad, naar een hotel, station, zakelijke afspraak of luchthaven,
+        wij zorgen voor duidelijke afspraken en een prettige rit.
+      </p>
+
+      <p>
+        Klanten kiezen vaak voor onze taxiservice in Bergen vanwege de combinatie
+        van comfort, duidelijke communicatie en een vooraf bevestigde prijs. Zo weet
+        je vooraf precies waar je aan toe bent.
+      </p>
+
+      <div class="highlight">
+        Betrouwbare taxi in Bergen met vaste prijs vooraf bevestigd.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Taxi van en naar Bergen</h2>
+
+      <p>
+        Wij verzorgen taxiritten tussen Bergen en verschillende steden in Noord-Holland
+        en daarbuiten. Denk aan ritten naar Den Helder, Alkmaar, Hoorn, Heerhugowaard,
+        Amsterdam en andere bestemmingen in Nederland.
+      </p>
+
+      <p>
+        Ook voor vervoer vanaf Bergen centrum, Bergen station of omliggende wijken
+        kun je gebruikmaken van ymaanyGO. Wij richten ons op comfortabele ritten,
+        nette service en heldere afspraken zonder gedoe.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Waarom kiezen voor ymaanyGO</h2>
+
+      <ul>
+        <li>Vaste prijs vooraf</li>
+        <li>Comfortabele voertuigen</li>
+        <li>Duidelijke communicatie</li>
+        <li>Persoonlijke service</li>
+        <li>Betrouwbare afspraken</li>
+        <li>Geschikt voor zakelijke en particuliere ritten</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Taxi Bergen naar Schiphol</h2>
+
+      <p>
+        Veel klanten boeken een taxi van Bergen naar Schiphol Airport. Dit is een
+        populaire rit voor zowel vakantiegangers als zakelijke reizigers. De rit
+        wordt vooraf bevestigd zodat je niet voor verrassingen komt te staan.
+      </p>
+
+      <p>
+        Onze chauffeur zorgt dat je comfortabel en op tijd aankomt voor je vlucht.
+        Ook voor een terugrit vanaf Schiphol naar Bergen kun je eenvoudig een taxi reserveren.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Lokale taxiservice in Bergen</h2>
+
+      <p>
+        Zoek je een taxi in Bergen centrum, bij het station of voor een rit in de avond
+        of vroege ochtend? ymaanyGO biedt een toegankelijke en professionele taxiservice
+        voor uiteenlopende ritten. Wij focussen op betrouwbaarheid, duidelijke planning
+        en klantgerichte service.
+      </p>
+
+      <p>
+        Door onze heldere aanpak is onze taxiservice geschikt voor luchthavenvervoer,
+        particuliere ritten, zakelijke ritten en vervoer tussen steden. Wie een taxi
+        in Bergen zoekt, wil vooral duidelijkheid, comfort en een betrouwbare chauffeur.
+        Dat is precies waar ymaanyGO op inzet.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Bekijk ook andere taxidiensten</h2>
+
+      <p>
+        Naast Taxi Bergen kun je ook onze andere diensten bekijken. Interne links helpen
+        bezoekers sneller navigeren en versterken tegelijk de structuur van de website.
+      </p>
+
+      <div class="links">
+        <a class="mini-link" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+        <a class="mini-link" href="https://ymaanygo.nl/contact.html">Contact</a>
+        <a class="mini-link" href="https://ymaanygo.nl/over-ons.html">Over ons</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Direct taxi boeken</h2>
+
+      <p>
+        Wil je direct een taxi reserveren vanuit Bergen? Boek eenvoudig online via ymaanyGO.
+      </p>
+
+      <a class="btn" href="https://ymaanygo.nl/taxi.html">Taxi boeken</a>
+    </section>
+
+    <footer>
+      © ymaanyGO – Taxi service Bergen
+    </footer>
+
+  </main>
+
+</body>
+</html>
