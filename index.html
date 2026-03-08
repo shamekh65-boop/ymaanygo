@@ -23,6 +23,75 @@
   <meta name="robots" content="index, follow">
 
   <style>
+    .site-footer{
+      margin-top:70px;
+      background:#f7faf8;
+      border-top:1px solid rgba(0,0,0,.06);
+      padding:56px 0 26px;
+    }
+
+    .footer-wrap{
+      max-width:1100px;
+    }
+
+    .footer-brand{
+      margin-bottom:26px;
+    }
+
+    .footer-logo{
+      width:200px;
+      height:auto;
+      display:block;
+    }
+
+    .footer-columns{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:42px;
+    }
+
+    .footer-col h3{
+      margin:0 0 18px;
+      font-size:18px;
+      font-weight:800;
+      color:#0b2e1f;
+    }
+
+    .footer-col ul{
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+
+    .footer-col li{
+      margin:0 0 12px;
+    }
+
+    .footer-col a{
+      text-decoration:none;
+      color:#5f7f71;
+      font-size:15px;
+    }
+
+    .footer-col a:hover{
+      color:#0b2e1f;
+    }
+
+    .footer-bottom{
+      margin-top:38px;
+      padding-top:16px;
+      border-top:1px solid rgba(0,0,0,.06);
+      font-size:13px;
+      color:#6d877b;
+    }
+
+    @media (max-width:820px){
+      .footer-columns{
+        grid-template-columns:1fr;
+        gap:34px;
+      }
+    }
+
     :root{
       --bg-light:#f6fbf8;
       --bg-mid:#e6f3ed;
@@ -103,6 +172,7 @@
       flex-direction:column;
       gap:1px;
     }
+
     .brand-name strong{ font-size:15px; }
     .brand-name span{ font-size:12.5px; color:var(--muted); }
 
@@ -198,12 +268,9 @@
       nav{ justify-content:flex-start; }
     }
 
-    /* ========================= */
-    /* ✅ MENU فقط (إضافة جديدة) */
-    /* ========================= */
-
     .icon-btn{
-      width:42px;height:42px;
+      width:42px;
+      height:42px;
       border-radius:14px;
       border:1px solid var(--line);
       background:#fff;
@@ -212,29 +279,44 @@
       place-items:center;
       flex:0 0 auto;
     }
+
     .icon-btn:active{ transform: translateY(1px); }
 
     .hamburger{ width:18px;height:12px; position:relative; }
-    .hamburger::before, .hamburger::after, .hamburger div{
+
+    .hamburger::before,
+    .hamburger::after,
+    .hamburger div{
       content:"";
-      position:absolute; left:0; right:0;
-      height:2px; background:#111; border-radius:2px;
+      position:absolute;
+      left:0;
+      right:0;
+      height:2px;
+      background:#111;
+      border-radius:2px;
     }
+
     .hamburger::before{ top:0; }
     .hamburger div{ top:5px; }
     .hamburger::after{ bottom:0; }
 
     .overlay{
-      position:fixed; inset:0;
+      position:fixed;
+      inset:0;
       background:rgba(0,0,0,.30);
       z-index:60;
       display:none;
     }
+
     .overlay.open{ display:block; }
 
     .drawer{
-      position:fixed; top:0; left:0; height:100%;
-      width:320px; max-width:86vw;
+      position:fixed;
+      top:0;
+      left:0;
+      height:100%;
+      width:320px;
+      max-width:86vw;
       background:#fff;
       z-index:61;
       transform:translateX(-110%);
@@ -245,6 +327,7 @@
       flex-direction:column;
       gap:12px;
     }
+
     .drawer.open{ transform:translateX(0); }
 
     .drawer-head{
@@ -253,10 +336,12 @@
       justify-content:space-between;
       gap:10px;
     }
+
     .drawer-title{ font-weight:800; color:#111; }
 
     .close-x{
-      width:40px;height:40px;
+      width:40px;
+      height:40px;
       border-radius:14px;
       border:1px solid var(--line);
       background:#fff;
@@ -284,7 +369,6 @@
     <div class="wrap">
       <div class="header-inner">
 
-        <!-- ✅ زر المنيو (إضافة فقط) -->
         <button class="icon-btn" type="button" aria-label="Menu" onclick="openMenu()">
           <span class="hamburger"><div></div></span>
         </button>
@@ -302,13 +386,12 @@
         <nav>
           <a href="#voordelen"></a>
           <a href="#info"></a>
-          <a class="btn" href="https://ymaanygo.nl/klant_dashboard.html">Taxi boeken</a>
+          <a class="btn" href="https://ymaanygo.nl/klant-dashboard.html">Taxi boeken</a>
         </nav>
       </div>
     </div>
   </header>
 
-  <!-- ✅ Drawer + overlay (إضافة فقط) -->
   <div id="overlay" class="overlay" onclick="closeMenu()"></div>
 
   <aside id="drawer" class="drawer" aria-hidden="true">
@@ -321,7 +404,7 @@
     <a class="menu-item" href="index.html" onclick="closeMenu()">Home</a>
     <a class="menu-item" href="taxi.html" onclick="closeMenu()">Taxi boeken</a>
     <a class="menu-item" href="over-ons.html" onclick="closeMenu()">Over ons</a>
-    <a class="menu-item" href="contact.html" onclick="closeMenu()">contact</a>
+    <a class="menu-item" href="contact.html" onclick="closeMenu()">Contact</a>
     <a class="menu-item" href="voorwaarden-en-privacy.html" onclick="closeMenu()">Voorwaarden & Privacy</a>
     <a class="menu-item" href="driver-login.html" onclick="closeMenu()">Chauffeurs login</a>
 
@@ -337,8 +420,11 @@
         <section class="card">
           <h1>Slim, Betrouwbaar en Voordelig Taxi Vervoer</h1>
           <p class="subtitle">
-            Met ymaanyGO reis je comfortabel van en naar iedere locatie in Nederland
-            en luchthavens in Duitsland en België.
+ymaanyGO biedt betrouwbaar taxivervoer in heel Noord-Holland. 
+Wij rijden dagelijks van en naar steden zoals Den Helder, Alkmaar, Hoorn, Heiloo en Schagen. 
+Ook voor langere ritten naar luchthavens zoals Schiphol, Düsseldorf en Brussel kun je bij ons terecht.
+</p>
+
           </p>
 
           <div id="voordelen">
@@ -348,8 +434,8 @@
             </div>
 
             <div class="usp-item">
-              <h3>Overal in Nederland</h3>
-              <p>Je reist van en naar iedere locatie in Nederland en vliegvelden in Duitsland en België.</p>
+              <h3>Taxi in heel Noord-Holland</h3>
+              <p>Wij rijden dagelijks in Den Helder, Alkmaar, Hoorn, Heiloo, Schagen en omgeving.</p>
             </div>
 
             <div class="usp-item">
@@ -360,26 +446,31 @@
 
           <p id="info" class="hero-text">
             Via het online boekingsplatform van ymaanyGO boek je eenvoudig een taxi naar onder andere
-            luchthavens, zorginstellingen, zakelijke afspraken, festivals, hotels of een dagje uit.
+            luchthavens, zorginstellingen, zakelijke afspraken, festivals, hotels en lange afstanden behoren tot onze diensten, of een dagje uit.
             Je hebt keuze uit standaard, luxe vervoer, elektrisch vervoer of een taxibus (t/m 8 personen). Je
-            reist altijd privé met een gecertificeerd taxibedrijf. Bagage is gratis, je kunt je rit wijzigen en tot 3 uur
-            voor vertrek kosteloos annuleren.
-          </p>
+            reist altijd privé met een gecertificeerd taxibedrijf. Bagage is gratis.
 
           <div class="cta-row">
-            <a class="btn" href="https://ymaanygo.nl/klant_dashboard.html">Taxi boeken</a>
+            <a class="btn" href="https://ymaanygo.nl/klant-dashboard.html">Taxi boeken</a>
             <a class="btn-ghost" href="https://ymaanygo.nl/taxi.html">Bekijk tarieven</a>
           </div>
         </section>
-
+  <aside class="card">
+          <p class="side-title"><strong>Zoek je een taxi in Noord-Holland?</strong></p>
+          <ul class="side-list">
+            <li> ymaanyGO verzorgt privé taxivervoer van Noord-Holland naar bestemmingen in heel Nederland. </li>
+<li>Onze taxi service in Noord-Holland staat voor duidelijke afspraken, vaste tarieven vooraf en comfortabele ritten met gecertificeerde chauffeurs. Of je nu een taxi vanuit Den Helder naar Schiphol nodig hebt, een taxi in Alkmaar wilt reserveren of vervoer zoekt vanuit Hoorn, met ymaanyGO boek je snel en eenvoudig online.  </li>
+          </ul>
+        </aside>
         <aside class="card">
           <p class="side-title"><strong>Snel boeken, zonder gedoe</strong></p>
           <ul class="side-list">
-            <li>Vaste prijs vooraf</li>
-            <li>Privé-taxi met gecertificeerde chauffeurs</li>
-            <li>Gratis bagage</li>
-            <li>Gratis annuleren tot 3 uur voor vertrek</li>
-            <li>Keuze: standaard / luxe / elektrisch / taxibus</li>
+<li>Vaste prijs vooraf</li>
+<li>Privé-taxi met gecertificeerde chauffeurs </li>
+<li>Gratis bagage</li>
+<li>Keuze: standaard / luxe / elektrisch / taxibus</li>
+<li>Actief in heel Noord-Holland </li>
+<li>Populair voor ritten naar Schiphol </li>
           </ul>
         </aside>
 
@@ -387,20 +478,70 @@
     </div>
   </main>
 
+  <footer class="site-footer">
+    <div class="wrap footer-wrap">
+
+      <div class="footer-brand">
+        <img src="logo.jpeg" alt="ymaanyGO Taxi" class="footer-logo">
+      </div>
+
+      <div class="footer-columns">
+
+        <div class="footer-col">
+          <h3>Diensten</h3>
+          <ul>
+            <li><a href="taxi.html">Taxi boeken</a></li>
+            <li><a href="taxi-zakelijk.html">Zakelijke taxi</a></li>
+            <li><a href="taxi-alkmaar.html">Taxi Alkmaar</a></li>
+            <li><a href="taxi-den-helder.html">Taxi Den Helder</a></li>
+            <li><a href="taxi-hoorn.html">Taxi Hoorn</a></li>
+            <li><a href="taxi-heiloo.html">Taxi Heiloo</a></li>
+            <li><a href="taxi-schagen.html">Taxi Schagen</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Klanten</h3>
+          <ul>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="annuleren-wijzigen.html">Annuleren / Wijzigen</a></li>
+            <li><a href="deel-app.html">Deel app</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Bedrijf</h3>
+          <ul>
+            <li><a href="over-ons.html">Over ons</a></li>
+            <li><a href="voorwaarden-en-privacy.html">Voorwaarden</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+            <li><a href="zakelijk-factuur.html">Zakelijk / Factuur</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        © ymaanyGO Taxi – Nederland
+      </div>
+
+    </div>
+  </footer>
+
   <script>
-    /* ✅ Menu functions (إضافة فقط) */
     function openMenu(){
       document.getElementById('overlay').classList.add('open');
       document.getElementById('drawer').classList.add('open');
       document.getElementById('drawer').setAttribute('aria-hidden','false');
     }
+
     function closeMenu(){
       document.getElementById('overlay').classList.remove('open');
       document.getElementById('drawer').classList.remove('open');
       document.getElementById('drawer').setAttribute('aria-hidden','true');
     }
 
-    /* service worker (موجود عندك كما هو) */
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("/sw.js");
@@ -409,4 +550,3 @@
   </script>
 </body>
 </html>
-
