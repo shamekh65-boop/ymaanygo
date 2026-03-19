@@ -2661,7 +2661,7 @@
     }
     function setMinTime(){
       const now = new Date();
-      now.setMinutes(now.getMinutes() + 15);
+      now.setMinutes(now.getMinutes() + 20);
       document.getElementById('when').min = toLocalValue(now);
       if(!document.getElementById('when').value){
         document.getElementById('when').value = toLocalValue(now);
