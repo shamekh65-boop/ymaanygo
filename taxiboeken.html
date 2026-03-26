@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="nl">
 <head>
@@ -8,7 +9,8 @@
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
 
   <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.csmap>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     /* ===== Root variables - نفس مقاسات الكود الثاني ===== */
@@ -58,37 +60,33 @@
       pointer-events:none;
     }
 
-    /* ===== Top bar ===== */
-  .top{
-  position:fixed;
-  left:0;
-  right:0;
-  top:0;
-  z-index:50;
-
-  height:calc(var(--header-h) + env(safe-area-inset-top));
-  padding-top:env(safe-area-inset-top);
-
-  background:transparent;
-  border-bottom:none;
-  box-shadow:none;
-}
-    body.dark .top{ background:rgba(15,17,17,.85); }
+    /* ===== Top bar (شـفاف) ===== */
+    .top{
+      position:fixed; left:0; right:0; top:0;
+      z-index:50;
+      background:transparent;      /* شفاف */
+      pointer-events:none;         /* للسماح بالتفاعل مع الخريطة */
+      border-bottom:1px solid transparent; /* إبقاء الهيكل */
+      height:var(--header-h);
+    }
     .top-inner{
       max-width:820px;margin:0 auto;
-      padding:4px 10px;
+      padding:calc(env(safe-area-inset-top) + 8px) 10px 0; /* مسافة آمنة من الأعلى */
       display:flex;align-items:center;gap:10px;
       height:100%;
+      pointer-events:auto;         /* الأزرار تعمل */
     }
     .logo{
       height:20px;
       width:auto;
       display:block;
       object-fit:contain;
+      pointer-events:auto;         /* الشعار قابل للنقر */
     }
     .pill{
       margin-left:auto;
       display:flex;align-items:center;gap:10px;
+      pointer-events:auto;         /* مجموعة الأزرار تعمل */
     }
     .icon-btn{
       width:28px;height:28px;
@@ -101,6 +99,7 @@
       cursor:pointer;
       display:grid;place-items:center;
       font-size:14px;
+      pointer-events:auto;         /* الأزرار تعمل */
     }
     .icon-btn:active{transform:translateY(1px)}
     body.dark .icon-btn{
@@ -108,18 +107,18 @@
       color:#fff;
     }
 
-    /* ===== Pages container ===== */
+    /* ===== Pages container (بدون مسافة علوية) ===== */
     .pages{
       position:relative;
       z-index:2;
-      padding-top:var(--header-h);
+      padding-top:0;               /* تمت إزالة الفراغ الأبيض */
       padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
       min-height:100vh;
     }
     .page{display:block}
     .page.hidden{display:none}
 
-    /* ===== Cards etc ===== */
+    /* ===== Cards etc (باقي الأنماط لم تتغير) ===== */
     .wrap{max-width:820px;margin:0 auto;padding:0 14px;}
     .card{
       background:var(--card);
@@ -840,7 +839,7 @@
   <!-- Map (always present but hidden on non-home pages) -->
   <div id="map" aria-label="map"></div>
 
-  <!-- Top bar -->
+  <!-- Top bar (شفاف) -->
   <div class="top">
     <div class="top-inner">
       <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/logo.png" alt="ymaanyGO"
@@ -865,7 +864,7 @@
     </div>
   </div>
 
-  <!-- Pages container -->
+  <!-- Pages container (بدون مسافة علوية) -->
   <div class="pages">
     <!-- HOME PAGE -->
     <section id="pageHome" class="page"></section>
