@@ -3076,7 +3076,15 @@ body:not(.home-visible) .pages{
     }
 
     // ===== دوال حساب السعر =====
-    const pricing = { START: 5.00, PER_KM_STD: 2.00, PER_KM_VAN: 2.50, COMFORT: 7.00 };
+const pricing = { START: 5.00, PER_KM_STD: 2.00, PER_KM_VAN: 2.50, COMFORT: 7.00 };
+
+function getPricePerKm(km){
+  if (km <= 10) return 2.30;
+  if (km <= 20) return 1.80;
+  if (km <= 30) return 1.60;
+  if (km <= 50) return 1.30;
+  return 1.30;
+}
     let calcTimer = null;
 
     function autoCalc(force){
@@ -3152,10 +3160,16 @@ body:not(.home-visible) .pages{
       }
 
       const car = document.getElementById('car').value;
-      const perKm = (car === "Busje") ? pricing.PER_KM_VAN : pricing.PER_KM_STD;
-      let price = pricing.START + (r.km * perKm);
-      if(car === "Comfort") price += pricing.COMFORT;
 
+let perKm;
+if (car === "Busje") {
+  perKm = pricing.PER_KM_VAN;
+} else {
+  perKm = getPricePerKm(r.km);
+}
+
+let price = pricing.START + (r.km * perKm);
+if(car === "Comfort") price += pricing.COMFORT;
       document.getElementById('price').textContent = "€ " + price.toFixed(2);
       document.getElementById('meta').textContent = (getLang()==='ar')
         ? `المسافة: ${r.km.toFixed(1)} كم • المدة: ${Math.round(r.min)} دقيقة`
