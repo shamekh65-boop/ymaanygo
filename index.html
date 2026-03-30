@@ -155,6 +155,8 @@
       gap:12px;
       text-decoration:none;
       color:var(--text);
+      min-width:0;
+      flex:1;
     }
 
     .logo{
@@ -165,12 +167,14 @@
       padding:6px;
       border:1px solid var(--line);
       object-fit:contain;
+      flex:0 0 auto;
     }
 
     .brand-name{
       display:flex;
       flex-direction:column;
       gap:1px;
+      min-width:0;
     }
 
     .brand-name strong{ font-size:15px; }
@@ -214,6 +218,7 @@
       display:grid;
       grid-template-columns:1.2fr .8fr;
       gap:18px;
+      align-items:start;
     }
 
     .card{
@@ -243,25 +248,43 @@
     .usp-item h3{ margin:0 0 6px; font-size:16px; }
     .usp-item p{ margin:0; font-size:14px; }
 
+    /* CTA aangepast */
     .cta-row{
-      margin-top:18px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
+      margin-top:24px;
+      display:grid;
+      gap:14px;
+    }
+
+    .cta-row .btn{
+      display:block;
+      width:100%;
+      text-align:center;
+      padding:14px;
+      border-radius:16px;
+      font-weight:700;
+      font-size:16px;
+      white-space:normal;
     }
 
     .btn-ghost{
-      padding:10px 14px;
-      border-radius:14px;
+      display:block;
+      width:100%;
+      text-align:center;
+      padding:14px;
+      border-radius:16px;
       border:1px solid var(--line);
       text-decoration:none;
       color:var(--text);
       background:#fff;
-      display:inline-block;
+      font-weight:700;
     }
 
     .side-title{ margin:0 0 10px; font-size:16px; }
-    .side-list{ padding-left:18px; color:var(--muted); }
+    .side-list{
+      padding-left:18px;
+      color:var(--muted);
+      margin:0;
+    }
 
     @media (max-width:920px){
       .hero-grid{ grid-template-columns:1fr; }
@@ -386,7 +409,6 @@
         <nav>
           <a href="#voordelen"></a>
           <a href="#info"></a>
-          <a class="btn" href="https://ymaanygo.nl/dashboard.html">Taxi boeken</a>
         </nav>
       </div>
     </div>
@@ -419,13 +441,16 @@
 
         <section class="card">
           <h1>Slim, Betrouwbaar en Voordelig Taxi Vervoer</h1>
-          <p class="subtitle">
-ymaanyGO biedt betrouwbaar taxivervoer in heel Noord-Holland. 
-Wij rijden dagelijks van en naar steden zoals Den Helder, Alkmaar, Hoorn, Heiloo en Schagen. 
-Ook voor langere ritten naar luchthavens zoals Schiphol, Düsseldorf en Brussel kun je bij ons terecht.
-</p>
 
+          <p class="subtitle">
+            ymaanyGO biedt betrouwbaar taxivervoer in heel Noord-Holland.
+            Wij rijden dagelijks van en naar steden zoals Den Helder, Alkmaar, Hoorn, Heiloo en Schagen.
+            Ook voor langere ritten naar luchthavens zoals Schiphol, Düsseldorf en Brussel kun je bij ons terecht.
           </p>
+
+          <div class="cta-row">
+            <a class="btn" href="https://ymaanygo.nl/taxii.html">Taxi boeken</a>
+<a class="btn-ghost" href="tel:+31633337184">Bel direct</a>          </div>
 
           <div id="voordelen">
             <div class="usp-item">
@@ -447,30 +472,28 @@ Ook voor langere ritten naar luchthavens zoals Schiphol, Düsseldorf en Brussel 
           <p id="info" class="hero-text">
             Via het online boekingsplatform van ymaanyGO boek je eenvoudig een taxi naar onder andere
             luchthavens, zorginstellingen, zakelijke afspraken, festivals, hotels en lange afstanden behoren tot onze diensten, of een dagje uit.
-            Je hebt keuze uit standaard, luxe vervoer, elektrisch vervoer of een taxibus (t/m 8 personen). Je
-            reist altijd privé met een gecertificeerd taxibedrijf. Bagage is gratis.
-
-          <div class="cta-row">
-            <a class="btn" href="https://ymaanygo.nl/dashboard.html">Taxi boeken</a>
-            <a class="btn-ghost" href="https://ymaanygo.nl/taxi.html">Bekijk tarieven</a>
-          </div>
+            Je hebt keuze uit standaard, luxe vervoer, elektrisch vervoer of een taxibus (t/m 8 personen).
+            Je reist altijd privé met een gecertificeerd taxibedrijf. Bagage is gratis.
+          </p>
         </section>
-  <aside class="card">
+
+        <aside class="card">
           <p class="side-title"><strong>Zoek je een taxi in Noord-Holland?</strong></p>
           <ul class="side-list">
-            <li> ymaanyGO verzorgt privé taxivervoer van Noord-Holland naar bestemmingen in heel Nederland. </li>
-<li>Onze taxi service in Noord-Holland staat voor duidelijke afspraken, vaste tarieven vooraf en comfortabele ritten met gecertificeerde chauffeurs. Of je nu een taxi vanuit Den Helder naar Schiphol nodig hebt, een taxi in Alkmaar wilt reserveren of vervoer zoekt vanuit Hoorn, met ymaanyGO boek je snel en eenvoudig online.  </li>
+            <li>ymaanyGO verzorgt privé taxivervoer van Noord-Holland naar bestemmingen in heel Nederland.</li>
+            <li>Onze taxi service in Noord-Holland staat voor duidelijke afspraken, vaste tarieven vooraf en comfortabele ritten met gecertificeerde chauffeurs. Of je nu een taxi vanuit Den Helder naar Schiphol nodig hebt, een taxi in Alkmaar wilt reserveren of vervoer zoekt vanuit Hoorn, met ymaanyGO boek je snel en eenvoudig online.</li>
           </ul>
         </aside>
+
         <aside class="card">
           <p class="side-title"><strong>Snel boeken, zonder gedoe</strong></p>
           <ul class="side-list">
-<li>Vaste prijs vooraf</li>
-<li>Privé-taxi met gecertificeerde chauffeurs </li>
-<li>Gratis bagage</li>
-<li>Keuze: standaard / luxe / elektrisch / taxibus</li>
-<li>Actief in heel Noord-Holland </li>
-<li>Populair voor ritten naar Schiphol </li>
+            <li>Vaste prijs vooraf</li>
+            <li>Privé-taxi met gecertificeerde chauffeurs</li>
+            <li>Gratis bagage</li>
+            <li>Keuze: standaard / luxe / elektrisch / taxibus</li>
+            <li>Actief in heel Noord-Holland</li>
+            <li>Populair voor ritten naar Schiphol</li>
           </ul>
         </aside>
 
@@ -550,4 +573,3 @@ Ook voor langere ritten naar luchthavens zoals Schiphol, Düsseldorf en Brussel 
   </script>
 </body>
 </html>
-
