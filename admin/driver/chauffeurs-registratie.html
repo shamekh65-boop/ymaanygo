@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chauffeurs Aanvragen | ymaanyGO Admin</title>
+<meta name="theme-color" content="#2ecc71">
+<link rel="icon" href="/favicon.ico">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --bg-light:#f6fbf8;
+  --bg-mid:#e6f3ed;
+  --bg-dark:#d7ece2;
+  --panel:rgba(255,255,255,.92);
+  --text:#0b2e1f;
+  --muted:#4f7f68;
+  --line:rgba(0,0,0,.08);
+  --accent:#2ecc71;
+  --accent2:#27ae60;
+  --danger:#e74c3c;
+  --warning:#f39c12;
+  --shadow:0 14px 32px rgba(0,0,0,.08);
+  --radius:18px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(to bottom,var(--bg-light),var(--bg-mid),var(--bg-dark));
+  color:var(--text);
+}
+
+.wrap{max-width:1250px;margin:0 auto;padding:0 18px}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:linear-gradient(to bottom,rgba(245,248,246,.96),rgba(210,232,220,.94));
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 0;
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:46px;height:46px;border-radius:12px;background:#fff;
+  padding:6px;border:1px solid var(--line);
+}
+.brand strong{display:block;font-size:16px}
+.brand span{font-size:12px;color:var(--muted)}
+
+.refresh{
+  border:0;
+  border-radius:14px;
+  padding:12px 16px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
+main{padding:34px 0 70px}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+h1{margin:0;font-size:clamp(26px,4vw,38px)}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.stat{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+
+.stat span{color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:30px;margin-top:4px}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.search{
+  width:320px;
+  max-width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:13px;
+  outline:none;
+}
+
+.table-wrap{overflow-x:auto}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1050px;
+}
+
+th,td{
+  text-align:left;
+  padding:13px 10px;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+  vertical-align:middle;
+}
+
+th{color:var(--muted);font-size:13px}
+
+.driver-img{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  object-fit:cover;
+  border:1px solid var(--line);
+  background:#fff;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.pending{background:rgba(243,156,18,.15);color:#9a5f00}
+.approved{background:rgba(46,204,113,.15);color:#168a45}
+.rejected{background:rgba(231,76,60,.15);color:#b83225}
+
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:9px 11px;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.view{background:#eef7f2;color:var(--text)}
+.approve{background:var(--accent);color:#fff}
+.reject{background:var(--danger);color:#fff}
+.delete{background:#111;color:#fff}
+
+.empty{
+  padding:26px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:18px;
+}
+
+.modal.open{display:flex}
+
+.modal-box{
+  background:#fff;
+  width:650px;
+  max-width:100%;
+  border-radius:22px;
+  padding:22px;
+  max-height:90vh;
+  overflow:auto;
+}
+
+.detail{display:grid;gap:10px;color:var(--muted)}
+.detail strong{color:var(--text)}
+
+.doc-link{
+  display:inline-block;
+  color:#168a45;
+  font-weight:900;
+  text-decoration:none;
+}
+
+.close{
+  width:100%;
+  margin-top:18px;
+  background:#0b2e1f;
+  color:#fff;
+}
+
+@media(max-width:800px){
+  .stats{grid-template-columns:1fr 1fr}
+  .card-head{flex-direction:column;align-items:flex-start}
+  .search{width:100%}
+}
+
+@media(max-width:520px){
+  .stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <div class="brand">
+        <img class="logo" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg" alt="ymaanyGO">
+        <div>
+          <strong>ymaanyGO Admin</strong>
+          <span>Chauffeurs aanvragen</span>
+        </div>
+      </div>
+
+      <button class="refresh" onclick="loadDrivers()">Verversen</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="top">
+      <h1>Nieuwe chauffeurs</h1>
+    </div>
+
+    <section class="stats">
+      <div class="stat">
+        <span>Nieuwe aanvragen</span>
+        <strong id="pendingCount">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Goedgekeurd</span>
+        <strong id="approvedCount">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Afgewezen</span>
+        <strong id="rejectedCount">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Totaal</span>
+        <strong id="totalCount">0</strong>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2 style="margin:0;">Alle registraties</h2>
+        <input class="search" id="searchInput" type="text" placeholder="Zoeken op naam, telefoon, stad...">
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Naam</th>
+              <th>Telefoon</th>
+              <th>Stad</th>
+              <th>Voertuig</th>
+              <th>Kenteken</th>
+              <th>Status</th>
+              <th>Actie</th>
+            </tr>
+          </thead>
+          <tbody id="driversTable">
+            <tr>
+              <td colspan="8" class="empty">Laden...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 style="margin-top:0;">Chauffeur details</h2>
+    <div id="details" class="detail"></div>
+    <button class="btn close" onclick="closeModal()">Sluiten</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let drivers = [];
+
+async function loadDrivers(){
+  const tbody = document.getElementById("driversTable");
+  tbody.innerHTML = `<tr><td colspan="8" class="empty">Laden...</td></tr>`;
+
+  const { data, error } = await db
+    .from("drivers")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(error){
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">Fout: ${error.message}</td></tr>`;
+    return;
+  }
+
+  drivers = data || [];
+  renderDrivers(drivers);
+}
+
+function renderDrivers(list){
+  const tbody = document.getElementById("driversTable");
+  tbody.innerHTML = "";
+
+  if(list.length === 0){
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">Geen chauffeurs gevonden</td></tr>`;
+    updateStats();
+    return;
+  }
+
+  list.forEach(driver => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>
+        ${driver.profile_photo ? `<img class="driver-img" src="${driver.profile_photo}">` : `<div class="driver-img"></div>`}
+      </td>
+
+      <td><strong>${driver.name || "-"}</strong><br><small>${driver.email || ""}</small></td>
+      <td>${driver.phone || "-"}</td>
+      <td>${driver.city || "-"}</td>
+      <td>${driver.vehicle_type || "-"}</td>
+      <td>${driver.license_plate || "-"}</td>
+
+      <td>
+        <span class="badge ${driver.status || "pending"}">
+          ${statusText(driver.status)}
+        </span>
+      </td>
+
+      <td>
+        <div class="actions">
+          <button class="btn view" onclick="viewDriver('${driver.id}')">Bekijken</button>
+          <button class="btn approve" onclick="updateStatus('${driver.id}','approved')">Goedkeuren</button>
+          <button class="btn reject" onclick="updateStatus('${driver.id}','rejected')">Afwijzen</button>
+          <button class="btn delete" onclick="deleteDriver('${driver.id}')">Verwijderen</button>
+        </div>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  updateStats();
+}
+
+function statusText(status){
+  if(status === "approved") return "Goedgekeurd";
+  if(status === "rejected") return "Afgewezen";
+  return "Nieuw";
+}
+
+async function updateStatus(id,status){
+  const { error } = await db
+    .from("drivers")
+    .update({ status: status })
+    .eq("id", id);
+
+  if(error){
+    alert("Fout: " + error.message);
+    return;
+  }
+
+  await loadDrivers();
+}
+
+async function deleteDriver(id){
+  const confirmDelete = confirm("Weet u zeker dat u deze chauffeur wilt verwijderen?");
+  if(!confirmDelete) return;
+
+  const { error } = await db
+    .from("drivers")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    alert("Fout: " + error.message);
+    return;
+  }
+
+  await loadDrivers();
+}
+
+function viewDriver(id){
+  const d = drivers.find(x => x.id === id);
+  if(!d) return;
+
+  document.getElementById("details").innerHTML = `
+    ${d.profile_photo ? `<img src="${d.profile_photo}" style="width:120px;height:120px;border-radius:18px;object-fit:cover;border:1px solid rgba(0,0,0,.08);">` : ""}
+
+    <div><strong>Naam:</strong> ${d.name || "-"}</div>
+    <div><strong>Telefoon:</strong> ${d.phone || "-"}</div>
+    <div><strong>E-mail:</strong> ${d.email || "-"}</div>
+    <div><strong>Woonplaats:</strong> ${d.city || "-"}</div>
+    <div><strong>Voertuig:</strong> ${d.vehicle_type || "-"}</div>
+    <div><strong>Kenteken:</strong> ${d.license_plate || "-"}</div>
+    <div><strong>KvK:</strong> ${d.kvk || "-"}</div>
+    <div><strong>BTW:</strong> ${d.btw || "-"}</div>
+    <div><strong>Status:</strong> ${statusText(d.status)}</div>
+    <div><strong>Extra informatie:</strong><br>${d.info || "-"}</div>
+
+    <hr>
+
+    <div><strong>Profielfoto:</strong> ${d.profile_photo ? `<a class="doc-link" href="${d.profile_photo}" target="_blank">Openen</a>` : "-"}</div>
+    <div><strong>Chauffeurskaart:</strong> ${d.driver_card ? `<a class="doc-link" href="${d.driver_card}" target="_blank">Openen</a>` : "-"}</div>
+    <div><strong>Rijbewijs:</strong> ${d.driving_license ? `<a class="doc-link" href="${d.driving_license}" target="_blank">Openen</a>` : "-"}</div>
+    <div><strong>Voertuig foto:</strong> ${d.vehicle_photo ? `<a class="doc-link" href="${d.vehicle_photo}" target="_blank">Openen</a>` : "-"}</div>
+  `;
+
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("open");
+}
+
+function updateStats(){
+  document.getElementById("pendingCount").textContent =
+    drivers.filter(d => !d.status || d.status === "pending").length;
+
+  document.getElementById("approvedCount").textContent =
+    drivers.filter(d => d.status === "approved").length;
+
+  document.getElementById("rejectedCount").textContent =
+    drivers.filter(d => d.status === "rejected").length;
+
+  document.getElementById("totalCount").textContent = drivers.length;
+}
+
+document.getElementById("searchInput").addEventListener("input", function(){
+  const q = this.value.toLowerCase();
+
+  const filtered = drivers.filter(d =>
+    String(d.name || "").toLowerCase().includes(q) ||
+    String(d.phone || "").toLowerCase().includes(q) ||
+    String(d.email || "").toLowerCase().includes(q) ||
+    String(d.city || "").toLowerCase().includes(q) ||
+    String(d.vehicle_type || "").toLowerCase().includes(q)
+  );
+
+  renderDrivers(filtered);
+});
+
+loadDrivers();
+</script>
+
+</body>
+</html>
