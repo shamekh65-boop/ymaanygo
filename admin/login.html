@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Admin Login – ymaanyGO</title>
+
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2ecc71">
+
+<link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root{
+  --bg-light:#f6fbf8;
+  --bg-mid:#e6f3ed;
+  --bg-dark:#d7ece2;
+  --panel:rgba(255,255,255,.92);
+  --text:#0b2e1f;
+  --muted:#4f7f68;
+  --line:rgba(0,0,0,.08);
+  --accent:#2ecc71;
+  --accent2:#27ae60;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:
+  linear-gradient(
+  to bottom,
+  var(--bg-light) 0%,
+  var(--bg-mid) 60%,
+  var(--bg-dark) 100%
+  );
+
+  font-family:
+  system-ui,
+  -apple-system,
+  Segoe UI,
+  Roboto,
+  Arial,
+  sans-serif;
+
+  color:var(--text);
+
+  min-height:100vh;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 18px;
+  width:100%;
+}
+
+header{
+  background:
+  linear-gradient(
+  to bottom,
+  rgba(245,248,246,.95),
+  rgba(210,232,220,.92)
+  );
+
+  backdrop-filter:blur(10px);
+
+  border-bottom:1px solid var(--line);
+
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 0;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:var(--text);
+}
+
+.logo{
+  width:46px;
+  height:46px;
+  border-radius:12px;
+  background:#fff;
+  padding:6px;
+  border:1px solid var(--line);
+}
+
+.brand-name{
+  display:flex;
+  flex-direction:column;
+}
+
+.brand-name strong{
+  font-size:15px;
+}
+
+.brand-name span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+main{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px 0;
+}
+
+.login-container{
+  width:100%;
+  max-width:390px;
+
+  background:
+  linear-gradient(
+  0deg,
+  rgba(255,255,255,1) 0%,
+  rgba(240,248,244,1) 100%
+  );
+
+  border-radius:28px;
+
+  padding:28px;
+
+  border:1px solid var(--line);
+
+  box-shadow:
+  0 22px 30px -18px rgba(11,46,31,.35);
+}
+
+.login-heading{
+  text-align:center;
+  font-weight:900;
+  font-size:28px;
+}
+
+.login-sub{
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  margin-top:6px;
+}
+
+.login-form{
+  margin-top:20px;
+}
+
+.login-input{
+  width:100%;
+  background:#fff;
+  border:none;
+  padding:15px 18px;
+  border-radius:16px;
+  margin-top:14px;
+  font-size:14px;
+  color:var(--text);
+
+  box-shadow:
+  0 10px 12px -8px rgba(46,204,113,.35);
+
+  border-inline:2px solid transparent;
+}
+
+.login-input:focus{
+  outline:none;
+  border-inline:2px solid var(--accent);
+}
+
+.pw-row{
+  position:relative;
+}
+
+.toggle{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+.login-button{
+  width:100%;
+  border:none;
+  cursor:pointer;
+
+  background:
+  linear-gradient(
+  90deg,
+  var(--accent),
+  var(--accent2)
+  );
+
+  color:#fff;
+
+  padding:15px;
+
+  border-radius:18px;
+
+  font-size:16px;
+  font-weight:800;
+
+  margin-top:18px;
+
+  box-shadow:
+  0 16px 22px -14px rgba(46,204,113,.6);
+}
+
+.login-button:disabled{
+  opacity:.7;
+}
+
+.msg{
+  display:none;
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:14px;
+  font-size:14px;
+}
+
+.msg.err{
+  background:rgba(231,76,60,.08);
+  color:#b42318;
+}
+
+.msg.ok{
+  background:rgba(46,204,113,.08);
+  color:#146c3c;
+}
+
+footer{
+  text-align:center;
+  padding:18px 0;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid var(--line);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="wrap">
+
+<div class="header-inner">
+
+<a class="brand" href="/">
+
+<img
+class="logo"
+src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico"
+alt="ymaanyGO">
+
+<div class="brand-name">
+<strong>ymaanyGO</strong>
+<span>Admin Dashboard</span>
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+</header>
+
+<main>
+
+<div class="login-container">
+
+<div class="login-heading">
+Admin Login
+</div>
+
+<div class="login-sub">
+Beveiligde toegang voor beheerders
+</div>
+
+<form id="loginForm" class="login-form">
+
+<input
+required
+class="login-input"
+type="email"
+id="email"
+placeholder="E-mailadres">
+
+<div class="pw-row">
+
+<input
+required
+class="login-input"
+type="password"
+id="password"
+placeholder="Wachtwoord">
+
+<button
+class="toggle"
+type="button"
+id="togglePw">
+TOON
+</button>
+
+</div>
+
+<button
+class="login-button"
+type="submit"
+id="loginBtn">
+Inloggen
+</button>
+
+<div id="msgErr" class="msg err"></div>
+
+<div id="msgOk" class="msg ok">
+Succesvol ingelogd...
+</div>
+
+</form>
+
+</div>
+
+</main>
+
+<footer>
+© 2026 ymaanyGO
+</footer>
+
+<script>
+
+const SUPABASE_URL =
+"https://lxbfobdczjgqnotwsnki.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+const form =
+document.getElementById("loginForm");
+
+const email =
+document.getElementById("email");
+
+const password =
+document.getElementById("password");
+
+const msgErr =
+document.getElementById("msgErr");
+
+const msgOk =
+document.getElementById("msgOk");
+
+const btn =
+document.getElementById("loginBtn");
+
+const togglePw =
+document.getElementById("togglePw");
+
+function show(el){
+  el.style.display = "block";
+}
+
+function hide(el){
+  el.style.display = "none";
+}
+
+togglePw.addEventListener("click",()=>{
+
+const isPw =
+password.type === "password";
+
+password.type =
+isPw ? "text" : "password";
+
+togglePw.textContent =
+isPw ? "VERBERG" : "TOON";
+
+});
+
+form.addEventListener(
+"submit",
+async(e)=>{
+
+e.preventDefault();
+
+hide(msgErr);
+hide(msgOk);
+
+btn.disabled = true;
+btn.textContent = "Bezig...";
+
+const userEmail =
+email.value.trim();
+
+const userPassword =
+password.value.trim();
+
+const { data,error } =
+await db.auth.signInWithPassword({
+email:userEmail,
+password:userPassword
+});
+
+if(error){
+
+btn.disabled = false;
+btn.textContent = "Inloggen";
+
+msgErr.textContent =
+"Onjuiste login gegevens.";
+
+show(msgErr);
+
+return;
+}
+
+const user =
+data.user;
+
+const { data:profile } =
+await db
+.from("profiles")
+.select("*")
+.eq("email",user.email)
+.single();
+
+if(!profile){
+
+await db.auth.signOut();
+
+btn.disabled = false;
+btn.textContent = "Inloggen";
+
+msgErr.textContent =
+"Geen profiel gevonden.";
+
+show(msgErr);
+
+return;
+}
+
+if(profile.role !== "admin"){
+
+await db.auth.signOut();
+
+btn.disabled = false;
+btn.textContent = "Inloggen";
+
+msgErr.textContent =
+"Geen admin toegang.";
+
+show(msgErr);
+
+return;
+}
+
+show(msgOk);
+
+window.location.href =
+"/admin/driver/chauffeurs-registratie.html";
+
+});
+
+</script>
+
+</body>
+</html>
