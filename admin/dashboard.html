@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ymaanyGO — Beheer Dashboard</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2ecc71">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --bg-light:#f6fbf8;
+  --bg-mid:#e6f3ed;
+  --bg-dark:#d7ece2;
+  --panel:rgba(255,255,255,.95);
+  --text:#0b2e1f;
+  --muted:#4f7f68;
+  --line:rgba(0,0,0,.08);
+  --accent:#2ecc71;
+  --accent2:#27ae60;
+  --accent-bg:rgba(46,204,113,.10);
+  --accent-bdr:rgba(46,204,113,.25);
+  --warn:#f39c12;
+  --danger:#e74c3c;
+  --info:#2980b9;
+  --radius:18px;
+  --radius-sm:12px;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.12);
+  --sidebar-w:260px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Outfit',system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg-light) 0%,var(--bg-mid) 55%,var(--bg-dark) 100%);
+  min-height:100vh;
+  color:var(--text);
+}
+
+.layout{display:flex;min-height:100vh}
+
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  display:flex;
+  flex-direction:column;
+  z-index:200;
+  box-shadow:var(--shadow);
+  transition:transform .25s ease;
+}
+
+.sb-logo{
+  padding:20px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.sb-logo img{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  padding:4px;
+  background:#fff;
+  object-fit:contain;
+}
+
+.sb-logo-text strong{
+  font-size:15px;
+  font-weight:800;
+  display:block;
+}
+
+.sb-logo-text span{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:.5px;
+}
+
+.sb-nav{
+  flex:1;
+  overflow-y:auto;
+  padding:14px 12px;
+}
+
+.sb-section{margin-bottom:22px}
+
+.sb-section-label{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:#9dbfb0;
+  padding:0 8px;
+  margin-bottom:6px;
+}
+
+.sb-item{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 12px;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:500;
+  text-decoration:none;
+  transition:.15s;
+  margin-bottom:2px;
+}
+
+.sb-item:hover{background:var(--accent-bg);color:var(--text)}
+
+.sb-item.active{
+  background:linear-gradient(90deg,rgba(46,204,113,.15),rgba(46,204,113,.05));
+  color:var(--accent2);
+  font-weight:600;
+  border-left:3px solid var(--accent);
+}
+
+.sb-badge{
+  margin-left:auto;
+  background:var(--accent);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:99px;
+}
+
+.sb-badge.warn{background:var(--warn)}
+.sb-badge.danger{background:var(--danger)}
+
+.sb-footer{
+  padding:14px 12px;
+  border-top:1px solid var(--line);
+}
+
+.sb-admin{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:var(--radius-sm);
+  background:var(--accent-bg);
+  border:1px solid var(--accent-bdr);
+}
+
+.sb-av{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:13px;
+  color:#fff;
+}
+
+.sb-av-name{font-size:13px;font-weight:700}
+.sb-av-role{font-size:11px;color:var(--muted)}
+
+.logout-btn{
+  margin-top:10px;
+  width:100%;
+  border:none;
+  cursor:pointer;
+  padding:11px;
+  border-radius:14px;
+  background:#0b2e1f;
+  color:#fff;
+  font-weight:800;
+}
+
+.main{
+  margin-left:var(--sidebar-w);
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(246,251,248,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  padding:0 24px;
+  height:62px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.topbar-hamburger{
+  display:none;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+}
+
+.topbar-title{
+  font-size:16px;
+  font-weight:700;
+  flex:1;
+}
+
+.search{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:8px 14px;
+  width:220px;
+}
+
+.search input{
+  background:none;
+  border:none;
+  outline:none;
+  font-family:inherit;
+  font-size:13px;
+  color:var(--text);
+  width:100%;
+}
+
+.top-icon-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  position:relative;
+}
+
+.notif-dot{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--danger);
+  border:1.5px solid #fff;
+}
+
+.content{
+  padding:28px 24px 40px;
+  flex:1;
+}
+
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:22px;font-weight:800}
+.page-header p{font-size:13px;color:var(--muted);margin-top:3px}
+
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:28px;
+}
+
+.kpi{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  position:relative;
+  overflow:hidden;
+}
+
+.kpi::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:3px;
+}
+
+.kpi.green::after{background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.kpi.blue::after{background:linear-gradient(90deg,#1565c0,#29b6f6)}
+.kpi.orange::after{background:linear-gradient(90deg,#c0550e,var(--warn))}
+.kpi.red::after{background:linear-gradient(90deg,#a71c1c,var(--danger))}
+
+.kpi-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.kpi-icon{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.kpi-icon.green{background:rgba(46,204,113,.12)}
+.kpi-icon.blue{background:rgba(41,128,185,.12)}
+.kpi-icon.orange{background:rgba(243,156,18,.12)}
+.kpi-icon.red{background:rgba(231,76,60,.12)}
+
+.kpi-delta{
+  font-size:11px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:99px;
+}
+
+.kpi-delta.up{background:rgba(46,204,113,.12);color:var(--accent2)}
+.kpi-delta.down{background:rgba(231,76,60,.10);color:var(--danger)}
+
+.kpi-val{
+  font-size:32px;
+  font-weight:800;
+  line-height:1;
+}
+
+.kpi-label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:500;
+}
+
+.module-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.module-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px 20px 20px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  transition:.2s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.module-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--accent-bdr);
+}
+
+.mc-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+
+.mc-icon{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--accent-bg);
+  border:1px solid var(--accent-bdr);
+}
+
+.mc-icon.blue{background:rgba(41,128,185,.10);border-color:rgba(41,128,185,.2)}
+.mc-icon.orange{background:rgba(243,156,18,.10);border-color:rgba(243,156,18,.2)}
+.mc-icon.red{background:rgba(231,76,60,.10);border-color:rgba(231,76,60,.2)}
+.mc-icon.purple{background:rgba(142,68,173,.10);border-color:rgba(142,68,173,.2)}
+.mc-icon.teal{background:rgba(22,160,133,.10);border-color:rgba(22,160,133,.2)}
+.mc-icon.navy{background:rgba(44,62,80,.10);border-color:rgba(44,62,80,.2)}
+
+.mc-badge-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px;
+}
+
+.mc-count{
+  font-size:22px;
+  font-weight:800;
+  line-height:1;
+}
+
+.mc-sub{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.mc-title{
+  font-size:15px;
+  font-weight:700;
+}
+
+.mc-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-top:2px;
+}
+
+.mc-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  margin-top:auto;
+}
+
+.mc-link{
+  font-size:12px;
+  font-weight:700;
+  color:var(--accent2);
+}
+
+.mc-status{
+  font-size:11px;
+  font-weight:600;
+  padding:3px 9px;
+  border-radius:99px;
+}
+
+.mc-status.ok{background:rgba(46,204,113,.12);color:var(--accent2)}
+.mc-status.warn{background:rgba(243,156,18,.12);color:var(--warn)}
+.mc-status.danger{background:rgba(231,76,60,.10);color:var(--danger)}
+.mc-status.info{background:rgba(41,128,185,.10);color:var(--info)}
+
+.bottom-row{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:16px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-head{
+  padding:16px 20px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.panel-title{
+  font-size:14px;
+  font-weight:700;
+}
+
+.panel-action{
+  font-size:12px;
+  font-weight:600;
+  color:var(--accent2);
+  background:var(--accent-bg);
+  border:1px solid var(--accent-bdr);
+  padding:4px 12px;
+  border-radius:99px;
+}
+
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+
+th{
+  text-align:left;
+  padding:10px 16px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:#9dbfb0;
+  background:var(--bg-light);
+  border-bottom:1px solid var(--line);
+}
+
+td{
+  padding:12px 16px;
+  font-size:13px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+
+.ride-id{
+  font-family:monospace;
+  font-weight:700;
+  font-size:12px;
+  color:var(--accent2);
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 10px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.badge.active{background:rgba(41,128,185,.10);color:var(--info)}
+.badge.done{background:rgba(46,204,113,.12);color:var(--accent2)}
+.badge.pending{background:rgba(243,156,18,.10);color:var(--warn)}
+.badge.cancel{background:rgba(231,76,60,.10);color:var(--danger)}
+
+.qa-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:16px;
+}
+
+.qa-btn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  padding:16px 10px;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--line);
+  background:var(--bg-light);
+  cursor:pointer;
+  text-align:center;
+  text-decoration:none;
+  color:inherit;
+}
+
+.qa-btn:hover{
+  border-color:var(--accent-bdr);
+  background:var(--accent-bg);
+}
+
+.qa-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--muted);
+}
+
+.live{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--accent2);
+}
+
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent);
+}
+
+#sb-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.25);
+  z-index:190;
+}
+
+#sb-overlay.open{display:block}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-110%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .topbar-hamburger{display:flex}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .module-grid{grid-template-columns:repeat(2,1fr)}
+  .bottom-row{grid-template-columns:1fr}
+}
+
+@media(max-width:520px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .module-grid{grid-template-columns:1fr 1fr}
+  .search{display:none}
+  .content{padding:20px 14px 40px}
+  .kpi-val{font-size:26px}
+  .mc-title{font-size:13px}
+}
+
+@media(max-width:380px){
+  .module-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div id="sb-overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <img src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg" alt="ymaanyGO">
+    <div class="sb-logo-text">
+      <strong>ymaanyGO</strong>
+      <span>Beheer Paneel</span>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">
+      <div class="sb-section-label">Overzicht</div>
+      <a class="sb-item active" href="/admin/dashboard.html">Dashboard</a>
+      <a class="sb-item" href="#">Live overzicht <span class="sb-badge">LIVE</span></a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-label">Ritten</div>
+      <a class="sb-item" href="#">Alle ritten <span class="sb-badge" id="sideAllRides">0</span></a>
+      <a class="sb-item" href="#">Niet geaccepteerd <span class="sb-badge warn" id="sidePendingRides">0</span></a>
+      <a class="sb-item" href="#">Ritten dichtbij</a>
+      <a class="sb-item" href="#">Ritten ver weg</a>
+      <a class="sb-item" href="#">Luchthaven ritten</a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-label">Gebruikers</div>
+      <a class="sb-item" href="/admin/driver/chauffeurs-registratie.html">Chauffeurs <span class="sb-badge" id="sideDrivers">0</span></a>
+      <a class="sb-item" href="#">Klanten</a>
+      <a class="sb-item" href="/admin/driver/chauffeurs-registratie.html">Nieuwe chauffeurs <span class="sb-badge" id="sideNewDrivers">0</span></a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-label">Systeem</div>
+      <a class="sb-item" href="#">Betalingen</a>
+      <a class="sb-item" href="#">Rapporten</a>
+      <a class="sb-item" href="#">Instellingen</a>
+    </div>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-admin">
+      <div class="sb-av">SA</div>
+      <div>
+        <div class="sb-av-name" id="adminName">Super Admin</div>
+        <div class="sb-av-role" id="adminEmail">ymaanyGO Beheer</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Uitloggen</button>
+  </div>
+</aside>
+
+<div class="main">
+
+<header class="topbar">
+  <button class="topbar-hamburger" onclick="toggleSidebar()">☰</button>
+  <div class="topbar-title">Dashboard</div>
+
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Zoeken...">
+  </div>
+
+  <button class="top-icon-btn">🔔<span class="notif-dot" id="notifDot"></span></button>
+  <button class="top-icon-btn">👤</button>
+</header>
+
+<div class="content">
+
+  <div class="page-header">
+    <h2>Goedemorgen, Admin 👋</h2>
+    <p><span id="todayText">Vandaag</span> · <span class="live"><span class="live-dot"></span> Live data</span></p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi green">
+      <div class="kpi-header"><div class="kpi-icon green">🚕</div><span class="kpi-delta up">Live</span></div>
+      <div class="kpi-val" id="todayRides">0</div>
+      <div class="kpi-label">Ritten vandaag</div>
+    </div>
+
+    <div class="kpi blue">
+      <div class="kpi-header"><div class="kpi-icon blue">💳</div><span class="kpi-delta up">Live</span></div>
+      <div class="kpi-val" id="todayRevenue">€0</div>
+      <div class="kpi-label">Omzet vandaag</div>
+    </div>
+
+    <div class="kpi orange">
+      <div class="kpi-header"><div class="kpi-icon orange">👥</div><span class="kpi-delta up">Live</span></div>
+      <div class="kpi-val" id="activeDrivers">0</div>
+      <div class="kpi-label">Actieve chauffeurs</div>
+    </div>
+
+    <div class="kpi red">
+      <div class="kpi-header"><div class="kpi-icon red">⏱</div><span class="kpi-delta up">Live</span></div>
+      <div class="kpi-val" id="pendingRides">0</div>
+      <div class="kpi-label">Niet geaccepteerd</div>
+    </div>
+  </div>
+
+  <div class="module-grid">
+
+    <a class="module-card" href="/admin/driver/chauffeurs-registratie.html">
+      <div class="mc-top"><div class="mc-icon">👨‍✈️</div><div class="mc-badge-wrap"><div class="mc-count" id="driversCount">0</div><div class="mc-sub">chauffeurs</div></div></div>
+      <div><div class="mc-title">Chauffeurs beheren</div><div class="mc-desc">Bekijk, voeg toe of bewerk chauffeursprofielen en documenten.</div></div>
+      <div class="mc-footer"><span class="mc-link">Beheren →</span><span class="mc-status ok" id="newDriversText">0 nieuw</span></div>
+    </a>
+
+    <a class="module-card" href="#">
+      <div class="mc-top"><div class="mc-icon blue">👤</div><div class="mc-badge-wrap"><div class="mc-count">0</div><div class="mc-sub">klanten</div></div></div>
+      <div><div class="mc-title">Klanten beheren</div><div class="mc-desc">Klantprofielen, ritgeschiedenis en contactinformatie.</div></div>
+      <div class="mc-footer"><span class="mc-link">Binnenkort →</span><span class="mc-status info">Later</span></div>
+    </a>
+
+    <a class="module-card" href="#">
+      <div class="mc-top"><div class="mc-icon red">⚠️</div><div class="mc-badge-wrap"><div class="mc-count" style="color:#e74c3c" id="notAcceptedCount">0</div><div class="mc-sub">wachtend</div></div></div>
+      <div><div class="mc-title">Niet geaccepteerd</div><div class="mc-desc">Ritten die door geen enkele chauffeur zijn geaccepteerd.</div></div>
+      <div class="mc-footer"><span class="mc-link">Behandelen →</span><span class="mc-status danger">Actie vereist</span></div>
+    </a>
+
+    <a class="module-card" href="#">
+      <div class="mc-top"><div class="mc-icon teal">📍</div><div class="mc-badge-wrap"><div class="mc-count" id="localRides">0</div><div class="mc-sub">ritten</div></div></div>
+      <div><div class="mc-title">Ritten dichtbij</div><div class="mc-desc">Lokale ritten in Noord-Holland en omgeving.</div></div>
+      <div class="mc-footer"><span class="mc-link">Bekijken →</span><span class="mc-status ok">Actief</span></div>
+    </a>
+
+    <a class="module-card" href="#">
+      <div class="mc-top"><div class="mc-icon purple">✈️</div><div class="mc-badge-wrap"><div class="mc-count" id="longRides">0</div><div class="mc-sub">ritten</div></div></div>
+      <div><div class="mc-title">Ritten ver weg</div><div class="mc-desc">Schiphol, Düsseldorf, Brussel en andere lange afstanden.</div></div>
+      <div class="mc-footer"><span class="mc-link">Bekijken →</span><span class="mc-status info">Luchthavens</span></div>
+    </a>
+
+    <a class="module-card" href="#">
+      <div class="mc-top"><div class="mc-icon">➕</div><div class="mc-badge-wrap"><div class="mc-count" style="font-size:18px;color:#27ae60">Nieuw</div><div class="mc-sub">&nbsp;</div></div></div>
+      <div><div class="mc-title">Rit toevoegen</div><div class="mc-desc">Maak een nieuwe rit aan. Chauffeurs ontvangen een melding.</div></div>
+      <div class="mc-footer"><span class="mc-link">Aanmaken →</span><span class="mc-status ok">Dispatch</span></div>
+    </a>
+
+  </div>
+
+  <div class="bottom-row">
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Recente ritten</div>
+        <span class="panel-action" onclick="loadDashboard()">Verversen</span>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Rit ID</th>
+              <th>Passagier</th>
+              <th>Route</th>
+              <th>Prijs</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="ridesTable">
+            <tr>
+              <td colspan="5">Laden...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Snelle acties</div>
+      </div>
+
+      <div class="qa-grid">
+        <a class="qa-btn" href="#"><span>➕</span><span class="qa-label">Rit toevoegen</span></a>
+        <a class="qa-btn" href="/admin/driver/chauffeurs-registratie.html"><span>👨‍✈️</span><span class="qa-label">Chauffeur beheren</span></a>
+        <a class="qa-btn" href="#"><span>💬</span><span class="qa-label">Bericht sturen</span></a>
+        <a class="qa-btn" href="#"><span>📤</span><span class="qa-label">Exporteren</span></a>
+        <a class="qa-btn" href="#"><span>🗺</span><span class="qa-label">Live kaart</span></a>
+        <a class="qa-btn" href="#"><span>⚙️</span><span class="qa-label">Instellingen</span></a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let allBookings = [];
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('open');
+}
+
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
+document.querySelectorAll('.sb-item').forEach(el=>{
+  el.addEventListener('click',()=>{
+    if(window.innerWidth < 900) closeSidebar();
+  });
+});
+
+function todayISO(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function euro(n){
+  return "€" + Number(n || 0).toFixed(2);
+}
+
+function statusBadge(status){
+  if(status === "accepted") return `<span class="badge active">Geaccepteerd</span>`;
+  if(status === "completed") return `<span class="badge done">Voltooid</span>`;
+  if(status === "cancelled") return `<span class="badge cancel">Geannuleerd</span>`;
+  return `<span class="badge pending">Wachtend</span>`;
+}
+
+function isLongRide(ride){
+  const text = `${ride.pickup_address || ""} ${ride.destination_address || ""}`.toLowerCase();
+
+  return text.includes("schiphol") ||
+         text.includes("airport") ||
+         text.includes("eindhoven") ||
+         text.includes("brussel") ||
+         text.includes("brussels") ||
+         text.includes("düsseldorf") ||
+         text.includes("dusseldorf") ||
+         Number(ride.price || 0) >= 80;
+}
+
+function renderBookings(bookings){
+  const tbody = document.getElementById("ridesTable");
+
+  if(!bookings.length){
+    tbody.innerHTML = `<tr><td colspan="5">Geen ritten gevonden.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = bookings.slice(0,8).map(ride=>{
+    return `
+      <tr>
+        <td><span class="ride-id">#${String(ride.id).slice(0,6)}</span></td>
+        <td>${ride.customer_name || "-"}</td>
+        <td>${ride.pickup_address || "-"} → ${ride.destination_address || "-"}</td>
+        <td><strong>${euro(ride.price)}</strong></td>
+        <td>${statusBadge(ride.status)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function protectAdmin(){
+  const { data: sessionData } = await db.auth.getSession();
+
+  if(!sessionData.session){
+    window.location.href = "/admin/login.html";
+    return;
+  }
+
+  const user = sessionData.session.user;
+  document.getElementById("adminEmail").textContent = user.email;
+
+  const { data: profile, error } = await db
+    .from("profiles")
+    .select("role,name,email")
+    .eq("email", user.email)
+    .single();
+
+  if(error || !profile || profile.role !== "admin"){
+    await db.auth.signOut();
+    window.location.href = "/admin/login.html";
+    return;
+  }
+
+  document.getElementById("adminName").textContent = profile.name || "Admin";
+  loadDashboard();
+}
+
+async function loadDashboard(){
+  const today = todayISO();
+
+  document.getElementById("todayText").textContent =
+    new Date().toLocaleDateString("nl-NL", {
+      weekday:"long",
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    });
+
+  const { data: bookings, error: bookingsError } = await db
+    .from("bookings")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(bookingsError){
+    console.error(bookingsError);
+    document.getElementById("ridesTable").innerHTML =
+      `<tr><td colspan="5">Fout bij laden: ${bookingsError.message}</td></tr>`;
+    return;
+  }
+
+  const { data: drivers } = await db
+    .from("drivers")
+    .select("*");
+
+  allBookings = bookings || [];
+
+  const todayBookings = allBookings.filter(r => r.ride_date === today);
+  const pending = allBookings.filter(r => !r.status || r.status === "pending");
+  const completedToday = todayBookings.filter(r => r.status === "completed");
+  const revenueToday = completedToday.reduce((sum,r)=>sum + Number(r.price || 0),0);
+  const longRides = allBookings.filter(isLongRide);
+  const localRides = allBookings.filter(r => !isLongRide(r));
+
+  const driverList = drivers || [];
+  const approvedDrivers = driverList.filter(d => d.status === "approved");
+  const newDrivers = driverList.filter(d => !d.status || d.status === "pending");
+
+  document.getElementById("todayRides").textContent = todayBookings.length;
+  document.getElementById("todayRevenue").textContent = euro(revenueToday);
+  document.getElementById("activeDrivers").textContent = approvedDrivers.length;
+  document.getElementById("pendingRides").textContent = pending.length;
+
+  document.getElementById("driversCount").textContent = driverList.length;
+  document.getElementById("newDriversText").textContent = newDrivers.length + " nieuw";
+  document.getElementById("notAcceptedCount").textContent = pending.length;
+  document.getElementById("localRides").textContent = localRides.length;
+  document.getElementById("longRides").textContent = longRides.length;
+
+  document.getElementById("sideAllRides").textContent = allBookings.length;
+  document.getElementById("sidePendingRides").textContent = pending.length;
+  document.getElementById("sideDrivers").textContent = driverList.length;
+  document.getElementById("sideNewDrivers").textContent = newDrivers.length;
+
+  if(pending.length === 0){
+    document.getElementById("notifDot").style.display = "none";
+  }
+
+  renderBookings(allBookings);
+}
+
+document.getElementById("searchInput").addEventListener("input", function(){
+  const q = this.value.toLowerCase().trim();
+
+  if(!q){
+    renderBookings(allBookings);
+    return;
+  }
+
+  const filtered = allBookings.filter(r=>{
+    return String(r.customer_name || "").toLowerCase().includes(q) ||
+           String(r.customer_phone || "").toLowerCase().includes(q) ||
+           String(r.pickup_address || "").toLowerCase().includes(q) ||
+           String(r.destination_address || "").toLowerCase().includes(q) ||
+           String(r.status || "").toLowerCase().includes(q);
+  });
+
+  renderBookings(filtered);
+});
+
+async function logout(){
+  await db.auth.signOut();
+  window.location.href = "/admin/login.html";
+}
+
+protectAdmin();
+</script>
+
+</body>
+</html>
