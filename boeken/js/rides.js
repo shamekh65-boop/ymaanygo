@@ -1,8 +1,9 @@
 /* =========================
-   RIDES
-   ========================= */
+   RIDES - SUPABASE
+========================= */
 let ridesTab = 'upcoming';
 let lastSavedRideHash = null;
+let cachedBookings = [];
 
 function setRidesTab(t){
   ridesTab = t;
@@ -13,18 +14,55 @@ function setRidesTab(t){
   refreshRidesUI();
 }
 
-function refreshRidesUI(){
+async function loadBookingsFromBackend(){
+  const profile = getProfile();
+
+  let query = db
+    .from("bookings")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(profile.email){
+    query = query.eq("customer_email", profile.email);
+  }else if(profile.phone){
+    query = query.eq("customer_phone", profile.phone);
+  }
+
+  const { data, error } = await query;
+
+  if(error){
+    console.error(error);
+    cachedBookings = [];
+    return [];
+  }
+
+  cachedBookings = data || [];
+  return cachedBookings;
+}
+
+async function refreshRidesUI(){
   const lang = getLang();
   const T = i18n[lang] || i18n.nl;
-  const rides = getRides();
+
+  const bookings = await loadBookingsFromBackend();
   const now = Date.now();
 
-  const filtered = rides
+  const filtered = bookings
     .filter(r => {
-      const ts = new Date(r.when).getTime();
-      return ridesTab === 'upcoming' ? (ts >= now) : (ts < now);
+      const when = `${r.ride_date || ""}T${r.ride_time || "00:00"}`;
+      const ts = new Date(when).getTime();
+
+      if(isNaN(ts)) return ridesTab === 'upcoming';
+
+      return ridesTab === 'upcoming'
+        ? ts >= now && r.status !== "completed" && r.status !== "cancelled"
+        : ts < now || r.status === "completed" || r.status === "cancelled";
     })
-    .sort((a, b) => new Date(a.when) - new Date(b.when));
+    .sort((a,b)=>{
+      const aTime = new Date(`${a.ride_date || ""}T${a.ride_time || "00:00"}`).getTime();
+      const bTime = new Date(`${b.ride_date || ""}T${b.ride_time || "00:00"}`).getTime();
+      return aTime - bTime;
+    });
 
   const empty = document.getElementById('ridesEmpty');
   const list = document.getElementById('ridesList');
@@ -46,20 +84,30 @@ function refreshRidesUI(){
 
   list.innerHTML = `
     <div class="list">
-      ${filtered.map(r => `
-        <div class="row" style="cursor:default">
-          <div class="left">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 9a2 2 0 0 1 2-2h14v4a2 2 0 0 0 0 4v4H6a2 2 0 0 1-2-2V9Z"></path>
-              <path d="M13 7v10"></path>
-            </svg>
+      ${filtered.map(r => {
+        const when = `${r.ride_date || ""}T${r.ride_time || "00:00"}`;
+
+        return `
+          <div class="row" style="cursor:default">
+            <div class="left">
+              🚕
+            </div>
+
+            <div class="mid">
+              <div class="t">
+                ${escapeHtml(r.pickup_address || "-")} → ${escapeHtml(r.destination_address || "-")}
+              </div>
+
+              <div class="d">
+                ${formatWhen(when, lang)}
+                • ${escapeHtml(r.vehicle_type || "")}
+                • €${Number(r.price || 0).toFixed(2)}
+                • ${escapeHtml(r.status || "pending")}
+              </div>
+            </div>
           </div>
-          <div class="mid">
-            <div class="t">${escapeHtml(r.from)} → ${escapeHtml(r.to)}</div>
-            <div class="d">${formatWhen(r.when, lang)} • ${escapeHtml(r.vehicle || "")}</div>
-          </div>
-        </div>
-      `).join("")}
+        `;
+      }).join("")}
     </div>
   `;
 }
@@ -78,9 +126,11 @@ function computeRideHash(ride){
   return JSON.stringify(relevant);
 }
 
+/* blijft lokaal backup, maar echte rit staat nu in Supabase */
 function saveRideToHistory(){
   const from = (document.getElementById('from').value || "").trim();
   const to = (document.getElementById('to').value || "").trim();
+
   const stopVals = stops.ids
     .map(id => (document.getElementById(id)?.value || "").trim())
     .filter(Boolean);
@@ -107,15 +157,13 @@ function saveRideToHistory(){
   const currentHash = computeRideHash(ride);
 
   if(lastSavedRideHash === currentHash){
-    console.log("Duplicate ride not saved.");
     return false;
   }
 
   const rides = getRides();
   rides.push(ride);
-  localStorage.setItem(LS.rides, JSON.stringify(rides));
 
-  refreshRidesUI();
+  localStorage.setItem(LS.rides, JSON.stringify(rides));
 
   lastSavedRideHash = currentHash;
   return true;
