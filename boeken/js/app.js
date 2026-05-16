@@ -12,25 +12,100 @@ const sheetState = {
 };
 
 /* =========================
-   PROFILE
+   PROFILE - SUPABASE
    ========================= */
-function refreshProfileUI(){
-  const p = getProfile();
-  document.getElementById('accName').textContent = p.name || "—";
-  document.getElementById('accEmail').textContent = p.email || "—";
-  document.getElementById('pName').value = p.name || "";
-  document.getElementById('pPhone').value = p.phone || "";
-  document.getElementById('pEmail').value = p.email || "";
+async function refreshProfileUI(){
+  const localProfile = getProfile();
+
+  try{
+    const { data:{ user } } = await db.auth.getUser();
+
+    if(user){
+      const { data: profile, error } = await db
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if(!error && profile){
+        const p = {
+          name: profile.name || "ymaanyGO klant",
+          phone: profile.phone || "",
+          email: profile.email || user.email || ""
+        };
+
+        saveProfileToLS(p);
+
+        document.getElementById('accName').textContent = p.name;
+        document.getElementById('accEmail').textContent = p.email;
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pPhone').value = p.phone;
+        document.getElementById('pEmail').value = p.email;
+
+        return;
+      }
+    }
+  }catch(e){
+    console.warn("Profile load error:", e);
+  }
+
+  document.getElementById('accName').textContent = localProfile.name || "—";
+  document.getElementById('accEmail').textContent = localProfile.email || "—";
+  document.getElementById('pName').value = localProfile.name || "";
+  document.getElementById('pPhone').value = localProfile.phone || "";
+  document.getElementById('pEmail').value = localProfile.email || "";
 }
 
-function saveProfile(){
-  const p = getProfile();
-  p.name = (document.getElementById('pName').value || "").trim();
-  p.phone = (document.getElementById('pPhone').value || "").trim();
-  p.email = (document.getElementById('pEmail').value || "").trim();
-  saveProfileToLS(p);
-  refreshProfileUI();
-  closeSheet('profileSheet');
+async function saveProfile(){
+  try{
+    const { data:{ user } } = await db.auth.getUser();
+
+    if(!user){
+      alert("Niet ingelogd.");
+      window.location.href = "/klant-login.html";
+      return;
+    }
+
+    const p = {
+      name: (document.getElementById('pName').value || "").trim(),
+      phone: (document.getElementById('pPhone').value || "").trim(),
+      email: (document.getElementById('pEmail').value || "").trim()
+    };
+
+    if(!p.name){
+      alert("Vul uw naam in.");
+      return;
+    }
+
+    if(!p.email){
+      p.email = user.email || "";
+    }
+
+    const { error } = await db
+      .from("profiles")
+      .upsert({
+        id: user.id,
+        email: p.email,
+        name: p.name,
+        phone: p.phone,
+        role: "klant"
+      }, { onConflict: "id" });
+
+    if(error){
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    saveProfileToLS(p);
+    await refreshProfileUI();
+    closeSheet('profileSheet');
+
+    alert("Profiel opgeslagen.");
+  }catch(e){
+    console.error(e);
+    alert("Profiel kon niet worden opgeslagen.");
+  }
 }
 
 function changePassword(){
@@ -87,16 +162,17 @@ function openWhatsAppSupport(){
   );
 }
 
-function logout(){
+async function logout(){
+  try{
+    await db.auth.signOut();
+  }catch(e){
+    console.warn("Logout error:", e);
+  }
+
   localStorage.removeItem(LS.profile);
   localStorage.removeItem(LS.pw);
-  refreshProfileUI();
-  showPage('home');
-  alert(
-    getLang() === 'ar'
-      ? "تم تسجيل الخروج."
-      : (getLang() === 'en' ? "Logged out." : "Uitgelogd.")
-  );
+
+  window.location.href = "/klant-login.html";
 }
 
 /* =========================
@@ -374,7 +450,7 @@ window.addStop = addStop;
 window.removeStop = removeStop;
 window.setRideFor = setRideFor;
 window.quickFavTo = quickFavTo;
-window.sendWhatsApp = sendWhatsApp;
+window.submitBooking = submitBooking;
 window.closeHomeSheet = closeHomeSheet;
 window.openHomeSheet = openHomeSheet;
 window.goBack = goBack;
