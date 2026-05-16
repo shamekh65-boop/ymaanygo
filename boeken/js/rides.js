@@ -3,7 +3,7 @@
 ========================= */
 let ridesTab = 'upcoming';
 let lastSavedRideHash = null;
-let cachedBookings = [];
+let cachedRides = [];
 
 function setRidesTab(t){
   ridesTab = t;
@@ -14,43 +14,40 @@ function setRidesTab(t){
   refreshRidesUI();
 }
 
-async function loadBookingsFromBackend(){
-  const profile = getProfile();
+async function loadRidesFromBackend(){
+  const { data:{ user } } = await db.auth.getUser();
 
-  let query = db
-    .from("bookings")
-    .select("*")
-    .order("created_at", { ascending:false });
-
-  if(profile.email){
-    query = query.eq("customer_email", profile.email);
-  }else if(profile.phone){
-    query = query.eq("customer_phone", profile.phone);
-  }
-
-  const { data, error } = await query;
-
-  if(error){
-    console.error(error);
-    cachedBookings = [];
+  if(!user){
+    cachedRides = [];
     return [];
   }
 
-  cachedBookings = data || [];
-  return cachedBookings;
+  const { data, error } = await db
+    .from("rides")
+    .select("*")
+    .eq("customer_id", user.id)
+    .order("pickup_time", { ascending:true });
+
+  if(error){
+    console.error(error);
+    cachedRides = [];
+    return [];
+  }
+
+  cachedRides = data || [];
+  return cachedRides;
 }
 
 async function refreshRidesUI(){
   const lang = getLang();
   const T = i18n[lang] || i18n.nl;
 
-  const bookings = await loadBookingsFromBackend();
+  const rides = await loadRidesFromBackend();
   const now = Date.now();
 
-  const filtered = bookings
+  const filtered = rides
     .filter(r => {
-      const when = `${r.ride_date || ""}T${r.ride_time || "00:00"}`;
-      const ts = new Date(when).getTime();
+      const ts = new Date(r.pickup_time).getTime();
 
       if(isNaN(ts)) return ridesTab === 'upcoming';
 
@@ -59,9 +56,7 @@ async function refreshRidesUI(){
         : ts < now || r.status === "completed" || r.status === "cancelled";
     })
     .sort((a,b)=>{
-      const aTime = new Date(`${a.ride_date || ""}T${a.ride_time || "00:00"}`).getTime();
-      const bTime = new Date(`${b.ride_date || ""}T${b.ride_time || "00:00"}`).getTime();
-      return aTime - bTime;
+      return new Date(a.pickup_time).getTime() - new Date(b.pickup_time).getTime();
     });
 
   const empty = document.getElementById('ridesEmpty');
@@ -84,30 +79,24 @@ async function refreshRidesUI(){
 
   list.innerHTML = `
     <div class="list">
-      ${filtered.map(r => {
-        const when = `${r.ride_date || ""}T${r.ride_time || "00:00"}`;
+      ${filtered.map(r => `
+        <div class="row" style="cursor:default">
+          <div class="left">🚕</div>
 
-        return `
-          <div class="row" style="cursor:default">
-            <div class="left">
-              🚕
+          <div class="mid">
+            <div class="t">
+              ${escapeHtml(r.from_address || "-")} → ${escapeHtml(r.to_address || "-")}
             </div>
 
-            <div class="mid">
-              <div class="t">
-                ${escapeHtml(r.pickup_address || "-")} → ${escapeHtml(r.destination_address || "-")}
-              </div>
-
-              <div class="d">
-                ${formatWhen(when, lang)}
-                • ${escapeHtml(r.vehicle_type || "")}
-                • €${Number(r.price || 0).toFixed(2)}
-                • ${escapeHtml(r.status || "pending")}
-              </div>
+            <div class="d">
+              ${formatWhen(r.pickup_time, lang)}
+              • ${escapeHtml(r.vehicle || "")}
+              • ${escapeHtml(r.price || "€0")}
+              • ${escapeHtml(r.status || "pending")}
             </div>
           </div>
-        `;
-      }).join("")}
+        </div>
+      `).join("")}
     </div>
   `;
 }
@@ -126,7 +115,7 @@ function computeRideHash(ride){
   return JSON.stringify(relevant);
 }
 
-/* blijft lokaal backup, maar echte rit staat nu in Supabase */
+/* lokale backup فقط */
 function saveRideToHistory(){
   const from = (document.getElementById('from').value || "").trim();
   const to = (document.getElementById('to').value || "").trim();
