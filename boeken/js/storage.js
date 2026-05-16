@@ -1,4 +1,16 @@
 /* =========================
+   SUPABASE
+   ========================= */
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* =========================
    STORAGE KEYS
    ========================= */
 const LS = {
@@ -40,14 +52,18 @@ function parseLocal(v){
 function isPastPickup(v, buffer = 15){
   const d = parseLocal(v);
   if(!d) return true;
+
   const now = new Date();
   now.setMinutes(now.getMinutes() + buffer);
+
   return d.getTime() < now.getTime();
 }
 
 function formatWhen(iso, lang){
   const d = new Date(iso);
+
   if(isNaN(d.getTime())) return iso;
+
   const opts = {
     weekday:'short',
     year:'numeric',
@@ -56,6 +72,7 @@ function formatWhen(iso, lang){
     hour:'2-digit',
     minute:'2-digit'
   };
+
   try{
     return d.toLocaleString(
       lang === 'ar' ? 'ar' : (lang === 'en' ? 'en-US' : 'nl-NL'),
@@ -68,6 +85,7 @@ function formatWhen(iso, lang){
 
 function debounce(fn, ms){
   let t;
+
   return (...args)=>{
     clearTimeout(t);
     t = setTimeout(()=>fn(...args), ms);
@@ -78,16 +96,27 @@ function debounce(fn, ms){
    PROFILE
    ========================= */
 function getProfile(){
-  const fallback = { name: "ymaanyGO klant", phone: "", email: "" };
+  const fallback = {
+    name: "ymaanyGO klant",
+    phone: "",
+    email: ""
+  };
+
   try{
-    return Object.assign(fallback, JSON.parse(localStorage.getItem(LS.profile) || "{}"));
+    return Object.assign(
+      fallback,
+      JSON.parse(localStorage.getItem(LS.profile) || "{}")
+    );
   }catch(e){
     return fallback;
   }
 }
 
 function saveProfileToLS(p){
-  localStorage.setItem(LS.profile, JSON.stringify(p));
+  localStorage.setItem(
+    LS.profile,
+    JSON.stringify(p)
+  );
 }
 
 /* =========================
@@ -110,7 +139,10 @@ function getPayment(){
    ========================= */
 function getFavs(){
   try{
-    const arr = JSON.parse(localStorage.getItem(LS.favs) || "[]");
+    const arr = JSON.parse(
+      localStorage.getItem(LS.favs) || "[]"
+    );
+
     return Array.isArray(arr) ? arr : [];
   }catch(e){
     return [];
@@ -118,7 +150,10 @@ function getFavs(){
 }
 
 function setFavs(a){
-  localStorage.setItem(LS.favs, JSON.stringify(a));
+  localStorage.setItem(
+    LS.favs,
+    JSON.stringify(a)
+  );
 }
 
 /* =========================
@@ -126,7 +161,10 @@ function setFavs(a){
    ========================= */
 function getRides(){
   try{
-    const arr = JSON.parse(localStorage.getItem(LS.rides) || "[]");
+    const arr = JSON.parse(
+      localStorage.getItem(LS.rides) || "[]"
+    );
+
     return Array.isArray(arr) ? arr : [];
   }catch(e){
     return [];
@@ -144,7 +182,10 @@ function isStrongPw(p){
 }
 
 function isValidNLPhone(v){
-  const s = (v || "").replace(/\s+/g,'').trim();
+  const s = (v || "")
+    .replace(/\s+/g,'')
+    .trim();
+
   return /^(0\d{9}|\+31\d{9})$/.test(s);
 }
 
@@ -154,10 +195,27 @@ function isValidNLPhone(v){
 function ensureDefaults(){
   const p = getProfile();
 
-  if(!localStorage.getItem(LS.profile)) saveProfileToLS(p);
-  if(!localStorage.getItem(LS.payment)) localStorage.setItem(LS.payment, 'card');
-  if(!localStorage.getItem(LS.lang)) localStorage.setItem(LS.lang, 'nl');
-  if(!localStorage.getItem(LS.theme)) localStorage.setItem(LS.theme, 'auto');
-  if(!localStorage.getItem(LS.favs)) localStorage.setItem(LS.favs, '[]');
-  if(!localStorage.getItem(LS.rides)) localStorage.setItem(LS.rides, '[]');
+  if(!localStorage.getItem(LS.profile)){
+    saveProfileToLS(p);
+  }
+
+  if(!localStorage.getItem(LS.payment)){
+    localStorage.setItem(LS.payment, 'card');
+  }
+
+  if(!localStorage.getItem(LS.lang)){
+    localStorage.setItem(LS.lang, 'nl');
+  }
+
+  if(!localStorage.getItem(LS.theme)){
+    localStorage.setItem(LS.theme, 'auto');
+  }
+
+  if(!localStorage.getItem(LS.favs)){
+    localStorage.setItem(LS.favs, '[]');
+  }
+
+  if(!localStorage.getItem(LS.rides)){
+    localStorage.setItem(LS.rides, '[]');
+  }
 }
