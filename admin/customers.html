@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klanten beheren – ymaanyGO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:system-ui;background:#eef7f1;margin:0;color:#0b2e1f}
+.wrap{max-width:1200px;margin:auto;padding:22px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+h1{margin:0;font-size:26px}
+.btn{background:#2ecc71;color:#fff;border:0;border-radius:14px;padding:12px 16px;font-weight:800;text-decoration:none;cursor:pointer}
+.card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 10px 28px rgba(0,0,0,.08)}
+.search{width:100%;padding:14px 16px;border:1px solid #dbe9e1;border-radius:14px;margin-bottom:14px;font-size:15px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #edf2ef;font-size:14px}
+th{color:#6b8c79;font-size:12px;text-transform:uppercase}
+.badge{padding:4px 10px;border-radius:99px;background:#e9f8ef;color:#27ae60;font-weight:800;font-size:12px}
+.small{color:#6b8c79;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Klanten beheren</h1>
+      <div class="small">Klantprofielen, ritgeschiedenis en contactinformatie</div>
+    </div>
+    <a class="btn" href="/admin/dashboard.html">Terug naar dashboard</a>
+  </div>
+
+  <div class="card">
+    <input id="search" class="search" placeholder="Zoek op naam, e-mail of telefoon...">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Klant</th>
+          <th>E-mail</th>
+          <th>Telefoon</th>
+          <th>Ritten</th>
+          <th>Betaald totaal</th>
+          <th>Laatste rit</th>
+        </tr>
+      </thead>
+      <tbody id="customersTable">
+        <tr><td colspan="6">Laden...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let customers = [];
+let rides = [];
+
+function moneyFromText(v){
+  return Number(String(v || "0").replace("€","").replace(",",".").trim()) || 0;
+}
+
+function fmtMoney(n){
+  return "€" + Number(n || 0).toFixed(2);
+}
+
+async function protectAdmin(){
+  const { data: sessionData } = await db.auth.getSession();
+  if(!sessionData.session){
+    window.location.href = "/admin/login.html";
+    return false;
+  }
+
+  const user = sessionData.session.user;
+
+  const { data: profile } = await db
+    .from("profiles")
+    .select("role")
+    .eq("email", user.email)
+    .maybeSingle();
+
+  if(!profile || profile.role !== "admin"){
+    await db.auth.signOut();
+    window.location.href = "/admin/login.html";
+    return false;
+  }
+
+  return true;
+}
+
+async function loadData(){
+  const ok = await protectAdmin();
+  if(!ok) return;
+
+  const { data: profiles, error: pErr } = await db
+    .from("profiles")
+    .select("*")
+    .eq("role","klant")
+    .order("created_at",{ascending:false});
+
+  const { data: rideData, error: rErr } = await db
+    .from("rides")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(pErr || rErr){
+    document.getElementById("customersTable").innerHTML =
+      `<tr><td colspan="6">Fout bij laden.</td></tr>`;
+    return;
+  }
+
+  customers = profiles || [];
+  rides = rideData || [];
+
+  render(customers);
+}
+
+function render(list){
+  const tbody = document.getElementById("customersTable");
+
+  if(!list.length){
+    tbody.innerHTML = `<tr><td colspan="6">Geen klanten gevonden.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(c=>{
+    const customerRides = rides.filter(r =>
+      r.customer_id === c.id || r.customer_email === c.email
+    );
+
+    const paid = customerRides
+      .filter(r => r.payment_status === "paid")
+      .reduce((sum,r)=>sum + moneyFromText(r.price),0);
+
+    const lastRide = customerRides[0];
+
+    return `
+      <tr>
+        <td><strong>${c.name || "-"}</strong><br><span class="small">${c.id || ""}</span></td>
+        <td>${c.email || "-"}</td>
+        <td>${c.phone || "-"}</td>
+        <td><span class="badge">${customerRides.length}</span></td>
+        <td><strong>${fmtMoney(paid)}</strong></td>
+        <td>${lastRide ? `${lastRide.from_address || "-"} → ${lastRide.to_address || "-"}` : "-"}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+document.getElementById("search").addEventListener("input", function(){
+  const q = this.value.toLowerCase().trim();
+
+  const filtered = customers.filter(c =>
+    String(c.name || "").toLowerCase().includes(q) ||
+    String(c.email || "").toLowerCase().includes(q) ||
+    String(c.phone || "").toLowerCase().includes(q)
+  );
+
+  render(filtered);
+});
+
+loadData();
+</script>
+
+</body>
+</html>
