@@ -345,7 +345,6 @@ body{
 }
 
 .kpi-delta.up{background:rgba(46,204,113,.12);color:var(--accent2)}
-.kpi-delta.down{background:rgba(231,76,60,.10);color:var(--danger)}
 
 .kpi-val{
   font-size:32px;
@@ -411,7 +410,6 @@ body{
 .mc-icon.red{background:rgba(231,76,60,.10);border-color:rgba(231,76,60,.2)}
 .mc-icon.purple{background:rgba(142,68,173,.10);border-color:rgba(142,68,173,.2)}
 .mc-icon.teal{background:rgba(22,160,133,.10);border-color:rgba(22,160,133,.2)}
-.mc-icon.navy{background:rgba(44,62,80,.10);border-color:rgba(44,62,80,.2)}
 
 .mc-badge-wrap{
   display:flex;
@@ -466,7 +464,6 @@ body{
 }
 
 .mc-status.ok{background:rgba(46,204,113,.12);color:var(--accent2)}
-.mc-status.warn{background:rgba(243,156,18,.12);color:var(--warn)}
 .mc-status.danger{background:rgba(231,76,60,.10);color:var(--danger)}
 .mc-status.info{background:rgba(41,128,185,.10);color:var(--info)}
 
@@ -505,6 +502,7 @@ body{
   border:1px solid var(--accent-bdr);
   padding:4px 12px;
   border-radius:99px;
+  cursor:pointer;
 }
 
 .table-scroll{overflow-x:auto}
@@ -572,11 +570,6 @@ td{
   text-align:center;
   text-decoration:none;
   color:inherit;
-}
-
-.qa-btn:hover{
-  border-color:var(--accent-bdr);
-  background:var(--accent-bg);
 }
 
 .qa-label{
@@ -725,7 +718,7 @@ td{
     <div class="kpi blue">
       <div class="kpi-header"><div class="kpi-icon blue">💳</div><span class="kpi-delta up">Live</span></div>
       <div class="kpi-val" id="todayRevenue">€0</div>
-      <div class="kpi-label">Omzet vandaag</div>
+      <div class="kpi-label">Betaald vandaag</div>
     </div>
 
     <div class="kpi orange">
@@ -742,7 +735,6 @@ td{
   </div>
 
   <div class="module-grid">
-
     <a class="module-card" href="/admin/driver/chauffeurs-registratie.html">
       <div class="mc-top"><div class="mc-icon">👨‍✈️</div><div class="mc-badge-wrap"><div class="mc-count" id="driversCount">0</div><div class="mc-sub">chauffeurs</div></div></div>
       <div><div class="mc-title">Chauffeurs beheren</div><div class="mc-desc">Bekijk, voeg toe of bewerk chauffeursprofielen en documenten.</div></div>
@@ -750,14 +742,14 @@ td{
     </a>
 
     <a class="module-card" href="#">
-      <div class="mc-top"><div class="mc-icon blue">👤</div><div class="mc-badge-wrap"><div class="mc-count">0</div><div class="mc-sub">klanten</div></div></div>
+      <div class="mc-top"><div class="mc-icon blue">👤</div><div class="mc-badge-wrap"><div class="mc-count" id="customersCount">0</div><div class="mc-sub">klanten</div></div></div>
       <div><div class="mc-title">Klanten beheren</div><div class="mc-desc">Klantprofielen, ritgeschiedenis en contactinformatie.</div></div>
       <div class="mc-footer"><span class="mc-link">Binnenkort →</span><span class="mc-status info">Later</span></div>
     </a>
 
     <a class="module-card" href="#">
       <div class="mc-top"><div class="mc-icon red">⚠️</div><div class="mc-badge-wrap"><div class="mc-count" style="color:#e74c3c" id="notAcceptedCount">0</div><div class="mc-sub">wachtend</div></div></div>
-      <div><div class="mc-title">Niet geaccepteerd</div><div class="mc-desc">Ritten die door geen enkele chauffeur zijn geaccepteerd.</div></div>
+      <div><div class="mc-title">Niet geaccepteerd</div><div class="mc-desc">Ritten die door geen chauffeur zijn geaccepteerd.</div></div>
       <div class="mc-footer"><span class="mc-link">Behandelen →</span><span class="mc-status danger">Actie vereist</span></div>
     </a>
 
@@ -775,14 +767,12 @@ td{
 
     <a class="module-card" href="#">
       <div class="mc-top"><div class="mc-icon">➕</div><div class="mc-badge-wrap"><div class="mc-count" style="font-size:18px;color:#27ae60">Nieuw</div><div class="mc-sub">&nbsp;</div></div></div>
-      <div><div class="mc-title">Rit toevoegen</div><div class="mc-desc">Maak een nieuwe rit aan. Chauffeurs ontvangen een melding.</div></div>
+      <div><div class="mc-title">Rit toevoegen</div><div class="mc-desc">Maak handmatig een nieuwe rit aan.</div></div>
       <div class="mc-footer"><span class="mc-link">Aanmaken →</span><span class="mc-status ok">Dispatch</span></div>
     </a>
-
   </div>
 
   <div class="bottom-row">
-
     <div class="panel">
       <div class="panel-head">
         <div class="panel-title">Recente ritten</div>
@@ -796,14 +786,12 @@ td{
               <th>Rit ID</th>
               <th>Passagier</th>
               <th>Route</th>
-              <th>Prijs</th>
+              <th>Prijs / betaling</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody id="ridesTable">
-            <tr>
-              <td colspan="5">Laden...</td>
-            </tr>
+            <tr><td colspan="5">Laden...</td></tr>
           </tbody>
         </table>
       </div>
@@ -823,9 +811,7 @@ td{
         <a class="qa-btn" href="#"><span>⚙️</span><span class="qa-label">Instellingen</span></a>
       </div>
     </div>
-
   </div>
-
 </div>
 </div>
 </div>
@@ -835,7 +821,7 @@ const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let allBookings = [];
+let allRides = [];
 
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
@@ -861,6 +847,10 @@ function euro(n){
   return "€" + Number(n || 0).toFixed(2);
 }
 
+function priceNumber(price){
+  return Number(String(price || "0").replace("€","").replace(",",".").trim()) || 0;
+}
+
 function statusBadge(status){
   if(status === "accepted") return `<span class="badge active">Geaccepteerd</span>`;
   if(status === "completed") return `<span class="badge done">Voltooid</span>`;
@@ -869,7 +859,8 @@ function statusBadge(status){
 }
 
 function isLongRide(ride){
-  const text = `${ride.pickup_address || ""} ${ride.destination_address || ""}`.toLowerCase();
+  const text = `${ride.from_address || ""} ${ride.to_address || ""}`.toLowerCase();
+  const p = priceNumber(ride.price);
 
   return text.includes("schiphol") ||
          text.includes("airport") ||
@@ -878,24 +869,27 @@ function isLongRide(ride){
          text.includes("brussels") ||
          text.includes("düsseldorf") ||
          text.includes("dusseldorf") ||
-         Number(ride.price || 0) >= 80;
+         p >= 80;
 }
 
-function renderBookings(bookings){
+function renderRides(rides){
   const tbody = document.getElementById("ridesTable");
 
-  if(!bookings.length){
+  if(!rides.length){
     tbody.innerHTML = `<tr><td colspan="5">Geen ritten gevonden.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = bookings.slice(0,8).map(ride=>{
+  tbody.innerHTML = rides.slice(0,8).map(ride=>{
     return `
       <tr>
         <td><span class="ride-id">#${String(ride.id).slice(0,6)}</span></td>
         <td>${ride.customer_name || "-"}</td>
-        <td>${ride.pickup_address || "-"} → ${ride.destination_address || "-"}</td>
-        <td><strong>${euro(ride.price)}</strong></td>
+        <td>${ride.from_address || "-"} → ${ride.to_address || "-"}</td>
+        <td>
+          <strong>${ride.price || "€0"}</strong><br>
+          <small>${ride.payment_status || "unpaid"}</small>
+        </td>
         <td>${statusBadge(ride.status)}</td>
       </tr>
     `;
@@ -926,6 +920,7 @@ async function protectAdmin(){
   }
 
   document.getElementById("adminName").textContent = profile.name || "Admin";
+
   loadDashboard();
 }
 
@@ -940,15 +935,15 @@ async function loadDashboard(){
       year:"numeric"
     });
 
-  const { data: bookings, error: bookingsError } = await db
-    .from("bookings")
+  const { data: rides, error: ridesError } = await db
+    .from("rides")
     .select("*")
     .order("created_at", { ascending:false });
 
-  if(bookingsError){
-    console.error(bookingsError);
+  if(ridesError){
+    console.error(ridesError);
     document.getElementById("ridesTable").innerHTML =
-      `<tr><td colspan="5">Fout bij laden: ${bookingsError.message}</td></tr>`;
+      `<tr><td colspan="5">Fout bij laden: ${ridesError.message}</td></tr>`;
     return;
   }
 
@@ -956,20 +951,35 @@ async function loadDashboard(){
     .from("drivers")
     .select("*");
 
-  allBookings = bookings || [];
+  const { data: customers } = await db
+    .from("profiles")
+    .select("*")
+    .eq("role","klant");
 
-  const todayBookings = allBookings.filter(r => r.ride_date === today);
-  const pending = allBookings.filter(r => !r.status || r.status === "pending");
-  const completedToday = todayBookings.filter(r => r.status === "completed");
-  const revenueToday = completedToday.reduce((sum,r)=>sum + Number(r.price || 0),0);
-  const longRides = allBookings.filter(isLongRide);
-  const localRides = allBookings.filter(r => !isLongRide(r));
+  allRides = rides || [];
+
+  const todayRides = allRides.filter(r =>
+    String(r.pickup_time || "").slice(0,10) === today
+  );
+
+  const pending = allRides.filter(r =>
+    !r.status || r.status === "pending"
+  );
+
+  const paidToday = todayRides.filter(r =>
+    r.payment_status === "paid"
+  );
+
+  const revenueToday = paidToday.reduce((sum,r)=>sum + priceNumber(r.price),0);
+
+  const longRides = allRides.filter(isLongRide);
+  const localRides = allRides.filter(r => !isLongRide(r));
 
   const driverList = drivers || [];
   const approvedDrivers = driverList.filter(d => d.status === "approved");
   const newDrivers = driverList.filter(d => !d.status || d.status === "pending");
 
-  document.getElementById("todayRides").textContent = todayBookings.length;
+  document.getElementById("todayRides").textContent = todayRides.length;
   document.getElementById("todayRevenue").textContent = euro(revenueToday);
   document.getElementById("activeDrivers").textContent = approvedDrivers.length;
   document.getElementById("pendingRides").textContent = pending.length;
@@ -979,36 +989,38 @@ async function loadDashboard(){
   document.getElementById("notAcceptedCount").textContent = pending.length;
   document.getElementById("localRides").textContent = localRides.length;
   document.getElementById("longRides").textContent = longRides.length;
+  document.getElementById("customersCount").textContent = (customers || []).length;
 
-  document.getElementById("sideAllRides").textContent = allBookings.length;
+  document.getElementById("sideAllRides").textContent = allRides.length;
   document.getElementById("sidePendingRides").textContent = pending.length;
   document.getElementById("sideDrivers").textContent = driverList.length;
   document.getElementById("sideNewDrivers").textContent = newDrivers.length;
 
-  if(pending.length === 0){
-    document.getElementById("notifDot").style.display = "none";
-  }
+  document.getElementById("notifDot").style.display =
+    pending.length ? "block" : "none";
 
-  renderBookings(allBookings);
+  renderRides(allRides);
 }
 
 document.getElementById("searchInput").addEventListener("input", function(){
   const q = this.value.toLowerCase().trim();
 
   if(!q){
-    renderBookings(allBookings);
+    renderRides(allRides);
     return;
   }
 
-  const filtered = allBookings.filter(r=>{
+  const filtered = allRides.filter(r=>{
     return String(r.customer_name || "").toLowerCase().includes(q) ||
            String(r.customer_phone || "").toLowerCase().includes(q) ||
-           String(r.pickup_address || "").toLowerCase().includes(q) ||
-           String(r.destination_address || "").toLowerCase().includes(q) ||
-           String(r.status || "").toLowerCase().includes(q);
+           String(r.customer_email || "").toLowerCase().includes(q) ||
+           String(r.from_address || "").toLowerCase().includes(q) ||
+           String(r.to_address || "").toLowerCase().includes(q) ||
+           String(r.status || "").toLowerCase().includes(q) ||
+           String(r.payment_status || "").toLowerCase().includes(q);
   });
 
-  renderBookings(filtered);
+  renderRides(filtered);
 });
 
 async function logout(){
