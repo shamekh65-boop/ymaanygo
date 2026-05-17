@@ -5,30 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Klanten beheren – ymaanyGO</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{font-family:system-ui;background:#eef7f1;margin:0;color:#0b2e1f}
-.wrap{max-width:1200px;margin:auto;padding:22px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.wrap{max-width:1250px;margin:auto;padding:22px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
 h1{margin:0;font-size:26px}
-.btn{background:#2ecc71;color:#fff;border:0;border-radius:14px;padding:12px 16px;font-weight:800;text-decoration:none;cursor:pointer}
+.btn{background:#2ecc71;color:#fff;border:0;border-radius:14px;padding:10px 14px;font-weight:800;text-decoration:none;cursor:pointer}
+.btn.dark{background:#0b2e1f}
+.btn.red{background:#e74c3c}
+.btn.gray{background:#eef3ef;color:#0b2e1f}
 .card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 10px 28px rgba(0,0,0,.08)}
 .search{width:100%;padding:14px 16px;border:1px solid #dbe9e1;border-radius:14px;margin-bottom:14px;font-size:15px}
 table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:12px;border-bottom:1px solid #edf2ef;font-size:14px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #edf2ef;font-size:14px;vertical-align:top}
 th{color:#6b8c79;font-size:12px;text-transform:uppercase}
-.badge{padding:4px 10px;border-radius:99px;background:#e9f8ef;color:#27ae60;font-weight:800;font-size:12px}
+.badge{padding:4px 10px;border-radius:99px;background:#e9f8ef;color:#27ae60;font-weight:800;font-size:12px;display:inline-block}
+.badge.pending{background:#fff3d9;color:#b87500}
+.badge.paid{background:#e9f8ef;color:#27ae60}
+.badge.unpaid{background:#ffecec;color:#d63031}
 .small{color:#6b8c79;font-size:12px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.open{display:flex}
+.sheet{background:#fff;width:min(980px,100%);max-height:88vh;overflow:auto;border-radius:26px 26px 0 0;padding:20px}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.input,select,textarea{width:100%;padding:11px;border:1px solid #dbe9e1;border-radius:12px;font:inherit}
+label{font-size:12px;font-weight:800;color:#5d7f6c}
+.rowbox{background:#f8fcf9;border:1px solid #e1eee6;border-radius:16px;padding:12px;margin-bottom:10px}
+.ride-title{font-weight:900}
+.ride-meta{font-size:12px;color:#5d7f6c;margin-top:4px}
+.hr{height:1px;background:#edf2ef;margin:14px 0}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
+
 <body>
 
 <div class="wrap">
   <div class="top">
     <div>
       <h1>Klanten beheren</h1>
-      <div class="small">Klantprofielen, ritgeschiedenis en contactinformatie</div>
+      <div class="small">Klanten, ritgeschiedenis, betalingen en volledige ritcontrole</div>
     </div>
-    <a class="btn" href="/admin/dashboard.html">Terug naar dashboard</a>
+    <a class="btn dark" href="/admin/dashboard.html">Terug naar dashboard</a>
   </div>
 
   <div class="card">
@@ -42,13 +63,53 @@ th{color:#6b8c79;font-size:12px;text-transform:uppercase}
           <th>Telefoon</th>
           <th>Ritten</th>
           <th>Betaald totaal</th>
-          <th>Laatste rit</th>
+          <th>Acties</th>
         </tr>
       </thead>
       <tbody id="customersTable">
         <tr><td colspan="6">Laden...</td></tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<div id="customerModal" class="modal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <h2 id="modalTitle">Klant</h2>
+        <div class="small" id="modalSub"></div>
+      </div>
+      <button class="btn gray" onclick="closeModal()">Sluiten</button>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Naam</label>
+        <input id="editName" class="input">
+      </div>
+      <div>
+        <label>Telefoon</label>
+        <input id="editPhone" class="input">
+      </div>
+      <div>
+        <label>E-mail</label>
+        <input id="editEmail" class="input" disabled>
+      </div>
+      <div>
+        <label>Rol</label>
+        <input id="editRole" class="input" disabled>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn" onclick="saveCustomer()">Klant opslaan</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <h3>Ritten van deze klant</h3>
+    <div id="customerRides"></div>
   </div>
 </div>
 
@@ -59,6 +120,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let customers = [];
 let rides = [];
+let selectedCustomer = null;
 
 function moneyFromText(v){
   return Number(String(v || "0").replace("€","").replace(",",".").trim()) || 0;
@@ -68,8 +130,23 @@ function fmtMoney(n){
   return "€" + Number(n || 0).toFixed(2);
 }
 
+function fmtDate(v){
+  if(!v) return "-";
+  const d = new Date(v);
+  if(isNaN(d)) return "-";
+  return d.toLocaleString("nl-NL",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+
+function badgeStatus(v){
+  if(v === "paid") return `<span class="badge paid">paid</span>`;
+  if(v === "unpaid") return `<span class="badge unpaid">unpaid</span>`;
+  if(v === "pending") return `<span class="badge pending">pending</span>`;
+  return `<span class="badge">${v || "-"}</span>`;
+}
+
 async function protectAdmin(){
   const { data: sessionData } = await db.auth.getSession();
+
   if(!sessionData.session){
     window.location.href = "/admin/login.html";
     return false;
@@ -110,16 +187,20 @@ async function loadData(){
   if(pErr || rErr){
     document.getElementById("customersTable").innerHTML =
       `<tr><td colspan="6">Fout bij laden.</td></tr>`;
+    console.error(pErr || rErr);
     return;
   }
 
   customers = profiles || [];
   rides = rideData || [];
-
-  render(customers);
+  renderCustomers(customers);
 }
 
-function render(list){
+function customerRides(c){
+  return rides.filter(r => r.customer_id === c.id || r.customer_email === c.email);
+}
+
+function renderCustomers(list){
   const tbody = document.getElementById("customersTable");
 
   if(!list.length){
@@ -128,27 +209,163 @@ function render(list){
   }
 
   tbody.innerHTML = list.map(c=>{
-    const customerRides = rides.filter(r =>
-      r.customer_id === c.id || r.customer_email === c.email
-    );
+    const cr = customerRides(c);
 
-    const paid = customerRides
+    const paid = cr
       .filter(r => r.payment_status === "paid")
       .reduce((sum,r)=>sum + moneyFromText(r.price),0);
-
-    const lastRide = customerRides[0];
 
     return `
       <tr>
         <td><strong>${c.name || "-"}</strong><br><span class="small">${c.id || ""}</span></td>
         <td>${c.email || "-"}</td>
         <td>${c.phone || "-"}</td>
-        <td><span class="badge">${customerRides.length}</span></td>
+        <td><span class="badge">${cr.length}</span></td>
         <td><strong>${fmtMoney(paid)}</strong></td>
-        <td>${lastRide ? `${lastRide.from_address || "-"} → ${lastRide.to_address || "-"}` : "-"}</td>
+        <td>
+          <div class="actions">
+            <button class="btn" onclick='openCustomer("${c.id}")'>Beheren</button>
+          </div>
+        </td>
       </tr>
     `;
   }).join("");
+}
+
+function openCustomer(id){
+  selectedCustomer = customers.find(c => c.id === id);
+  if(!selectedCustomer) return;
+
+  document.getElementById("modalTitle").textContent = selectedCustomer.name || "Klant";
+  document.getElementById("modalSub").textContent = selectedCustomer.email || "";
+  document.getElementById("editName").value = selectedCustomer.name || "";
+  document.getElementById("editPhone").value = selectedCustomer.phone || "";
+  document.getElementById("editEmail").value = selectedCustomer.email || "";
+  document.getElementById("editRole").value = selectedCustomer.role || "klant";
+
+  renderCustomerRides();
+  document.getElementById("customerModal").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("customerModal").classList.remove("open");
+}
+
+async function saveCustomer(){
+  if(!selectedCustomer) return;
+
+  const name = document.getElementById("editName").value.trim();
+  const phone = document.getElementById("editPhone").value.trim();
+
+  const { error } = await db
+    .from("profiles")
+    .update({ name, phone })
+    .eq("id", selectedCustomer.id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  selectedCustomer.name = name;
+  selectedCustomer.phone = phone;
+
+  alert("Klant opgeslagen.");
+  renderCustomers(customers);
+}
+
+function renderCustomerRides(){
+  const box = document.getElementById("customerRides");
+  const cr = customerRides(selectedCustomer);
+
+  if(!cr.length){
+    box.innerHTML = `<div class="small">Deze klant heeft nog geen ritten.</div>`;
+    return;
+  }
+
+  box.innerHTML = cr.map(r=>`
+    <div class="rowbox" id="ride-${r.id}">
+      <div class="ride-title">${r.from_address || "-"} → ${r.to_address || "-"}</div>
+      <div class="ride-meta">
+        ${fmtDate(r.pickup_time)} · ${r.vehicle || "-"} · ${r.passengers || 1} pers. · ${r.price || "€0"}
+      </div>
+
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <label>Rit status</label>
+          <select id="status-${r.id}">
+            <option value="pending" ${r.status==="pending"?"selected":""}>pending</option>
+            <option value="accepted" ${r.status==="accepted"?"selected":""}>accepted</option>
+            <option value="on_the_way" ${r.status==="on_the_way"?"selected":""}>on_the_way</option>
+            <option value="completed" ${r.status==="completed"?"selected":""}>completed</option>
+            <option value="cancelled" ${r.status==="cancelled"?"selected":""}>cancelled</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Betaling</label>
+          <select id="payment-${r.id}">
+            <option value="unpaid" ${r.payment_status==="unpaid"?"selected":""}>unpaid</option>
+            <option value="paid" ${r.payment_status==="paid"?"selected":""}>paid</option>
+            <option value="failed" ${r.payment_status==="failed"?"selected":""}>failed</option>
+            <option value="refunded" ${r.payment_status==="refunded"?"selected":""}>refunded</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Chauffeur naam</label>
+          <input id="driver-${r.id}" class="input" value="${r.driver_name || ""}" placeholder="Bijv. Ahmed">
+        </div>
+
+        <div>
+          <label>Admin notitie</label>
+          <input id="note-${r.id}" class="input" value="${r.admin_note || ""}" placeholder="Interne notitie">
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:10px">
+        <button class="btn" onclick='saveRide("${r.id}")'>Rit opslaan</button>
+        <button class="btn dark" onclick='quickStatus("${r.id}","accepted")'>Chauffeur akkoord</button>
+        <button class="btn dark" onclick='quickStatus("${r.id}","on_the_way")'>Onderweg</button>
+        <button class="btn" onclick='quickStatus("${r.id}","completed")'>Voltooid</button>
+        <button class="btn red" onclick='quickStatus("${r.id}","cancelled")'>Annuleren</button>
+      </div>
+
+      <div style="margin-top:8px">
+        Status: ${badgeStatus(r.status)} Betaling: ${badgeStatus(r.payment_status || "unpaid")}
+      </div>
+    </div>
+  `).join("");
+}
+
+async function saveRide(id){
+  const payload = {
+    status: document.getElementById(`status-${id}`).value,
+    payment_status: document.getElementById(`payment-${id}`).value,
+    driver_name: document.getElementById(`driver-${id}`).value.trim(),
+    admin_note: document.getElementById(`note-${id}`).value.trim()
+  };
+
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id", id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const r = rides.find(x=>x.id===id);
+  if(r) Object.assign(r,payload);
+
+  renderCustomerRides();
+  renderCustomers(customers);
+}
+
+async function quickStatus(id,status){
+  document.getElementById(`status-${id}`).value = status;
+  await saveRide(id);
 }
 
 document.getElementById("search").addEventListener("input", function(){
@@ -160,7 +377,7 @@ document.getElementById("search").addEventListener("input", function(){
     String(c.phone || "").toLowerCase().includes(q)
   );
 
-  render(filtered);
+  renderCustomers(filtered);
 });
 
 loadData();
