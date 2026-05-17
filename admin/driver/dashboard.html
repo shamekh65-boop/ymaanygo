@@ -1,1 +1,830 @@
-yggy
+<!DOCTYPE html>
+
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ymaanyGO – Veiling</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #1b5e20;
+    --green-mid:   #2e7d32;
+    --green-rich:  #388e3c;
+    --green-light: #e8f5e9;
+    --green-pill:  #c8e6c9;
+    --white:       #ffffff;
+    --off-white:   #f4f7f4;
+    --border:      #dce8dc;
+    --text:        #1a2e1a;
+    --text-mid:    #4a6b4a;
+    --text-soft:   #7a9e7a;
+    --red:         #c62828;
+    --red-light:   #ffebee;
+    --tab-h:       68px;
+    --radius:      14px;
+  }
+
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+font-family: ‘Outfit’, sans-serif;
+background: var(–off-white);
+color: var(–text);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* TOPBAR */
+.topbar {
+background: var(–green-dark);
+padding: 14px 18px 12px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: 0 2px 12px rgba(27,94,32,0.3);
+}
+
+.topbar-logo {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 24px;
+letter-spacing: 2px;
+color: #ffffff;
+}
+.topbar-logo span { color: #a5d6a7; }
+
+.online-badge {
+display: flex;
+align-items: center;
+gap: 6px;
+background: rgba(255,255,255,0.12);
+border: 1px solid rgba(255,255,255,0.25);
+border-radius: 50px;
+padding: 5px 13px;
+font-size: 12px;
+font-weight: 700;
+color: #ffffff;
+letter-spacing: .4px;
+}
+
+.online-badge .dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+background: #69f0ae;
+box-shadow: 0 0 6px #69f0ae;
+animation: blink 2s infinite;
+}
+
+@keyframes blink {
+0%,100% { opacity:1; }
+50% { opacity:.3; }
+}
+
+.topbar-clock {
+font-size: 13px;
+font-weight: 600;
+color: rgba(255,255,255,0.7);
+letter-spacing: .5px;
+}
+
+/* SUBHEADER */
+.subheader {
+background: var(–white);
+padding: 10px 18px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid var(–border);
+}
+
+.subheader-title {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 1.4px;
+text-transform: uppercase;
+color: var(–text-soft);
+}
+
+.badge-count {
+background: var(–green-mid);
+color: white;
+font-size: 11px;
+font-weight: 700;
+padding: 2px 9px;
+border-radius: 50px;
+min-width: 22px;
+text-align: center;
+}
+
+/* FEED */
+.feed {
+padding: 14px 14px calc(var(–tab-h) + 20px);
+display: flex;
+flex-direction: column;
+gap: 11px;
+}
+
+/* CARD */
+.card {
+background: var(–white);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+overflow: hidden;
+box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+animation: riseUp .35s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+.card:nth-child(2) { animation-delay:.07s; }
+.card:nth-child(3) { animation-delay:.14s; }
+
+@keyframes riseUp {
+from { opacity:0; transform:translateY(12px) scale(.99); }
+to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.card::before {
+content:’’;
+display:block;
+height: 4px;
+background: linear-gradient(90deg, var(–green-dark), var(–green-rich));
+}
+
+/* CARD HEAD */
+.card-head {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+padding: 11px 14px 9px;
+border-bottom: 1px solid var(–border);
+background: var(–green-light);
+}
+
+.card-date {
+font-size: 12px;
+font-weight: 700;
+color: var(–green-dark);
+letter-spacing: .2px;
+}
+
+.card-id {
+font-size: 10px;
+color: var(–text-soft);
+margin-top: 2px;
+font-family: monospace;
+letter-spacing: .5px;
+}
+
+.card-close {
+width: 24px; height: 24px;
+border-radius: 50%;
+background: transparent;
+border: 1.5px solid #ccc;
+color: #aaa;
+font-size: 12px;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: all .18s;
+flex-shrink: 0;
+}
+.card-close:hover { background: var(–red-light); border-color: var(–red); color: var(–red); }
+
+/* ROUTE */
+.route { padding: 13px 14px 10px; }
+
+.route-row {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+}
+.route-row + .route-row { margin-top: 2px; }
+
+.route-icon-col {
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 18px;
+flex-shrink: 0;
+padding-top: 3px;
+}
+
+.dot-origin {
+width: 11px; height: 11px;
+border-radius: 50%;
+background: var(–green-dark);
+flex-shrink: 0;
+}
+
+.dot-dest {
+width: 11px; height: 11px;
+border-radius: 3px;
+border: 2.5px solid var(–green-mid);
+flex-shrink: 0;
+background: white;
+}
+
+.route-vert-line {
+width: 2px;
+flex: 1;
+min-height: 22px;
+background: repeating-linear-gradient(
+to bottom,
+var(–green-mid) 0px, var(–green-mid) 4px,
+transparent 4px, transparent 8px
+);
+margin: 3px 0;
+opacity: .45;
+}
+
+.route-text { flex: 1; padding-bottom: 10px; }
+.route-row:last-child .route-text { padding-bottom: 0; }
+
+.route-time {
+font-size: 11px;
+font-weight: 600;
+color: var(–text-soft);
+margin-bottom: 1px;
+}
+
+.route-name {
+font-size: 13.5px;
+font-weight: 700;
+color: var(–text);
+line-height: 1.3;
+}
+
+.route-city {
+font-size: 11.5px;
+color: var(–text-mid);
+margin-top: 1px;
+}
+
+.nav-btn {
+width: 30px; height: 30px;
+border-radius: 8px;
+background: var(–green-light);
+border: 1px solid var(–green-pill);
+color: var(–green-dark);
+display: flex; align-items: center; justify-content: center;
+cursor: pointer;
+align-self: center;
+flex-shrink: 0;
+transition: background .18s;
+}
+.nav-btn:hover { background: var(–green-pill); }
+
+/* META */
+.meta {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+padding: 9px 14px;
+border-top: 1px solid var(–border);
+background: #fafcfa;
+}
+
+.meta-chip {
+display: flex;
+align-items: center;
+gap: 5px;
+font-size: 12px;
+font-weight: 500;
+color: var(–text-mid);
+background: var(–white);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 3px 10px;
+}
+.meta-chip svg { opacity:.65; flex-shrink:0; }
+
+/* TAGS */
+.tags {
+display: flex;
+gap: 7px;
+padding: 0 14px 11px;
+flex-wrap: wrap;
+}
+
+.tag {
+font-size: 10.5px;
+font-weight: 700;
+padding: 3px 11px;
+border-radius: 50px;
+letter-spacing: .4px;
+text-transform: uppercase;
+}
+
+.tag-taxibus   { background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9; }
+.tag-standaard { background:#e3f2fd; color:#1565c0; border:1px solid #bbdefb; }
+.tag-txkeur    { background:#fff8e1; color:#e65100; border:1px solid #ffe0b2; }
+
+/* CARD FOOTER */
+.card-footer {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 11px 14px 13px;
+border-top: 1px solid var(–border);
+gap: 10px;
+}
+
+.price-label {
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: .8px;
+color: var(–text-soft);
+}
+
+.price-value {
+font-size: 24px;
+font-weight: 800;
+color: var(–green-dark);
+letter-spacing: -.5px;
+line-height: 1.1;
+}
+
+.price-note {
+font-size: 10px;
+color: var(–green-rich);
+font-weight: 600;
+margin-top: 1px;
+}
+
+.btn-view {
+padding: 10px 20px;
+background: var(–green-dark);
+color: white;
+border: none;
+border-radius: 10px;
+font-family: ‘Outfit’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+transition: background .18s, transform .12s;
+white-space: nowrap;
+}
+.btn-view:hover { background: var(–green-mid); }
+.btn-view:active { transform: scale(.96); }
+
+/* EMPTY */
+.empty {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 10px;
+padding: 70px 30px;
+text-align: center;
+color: var(–text-soft);
+}
+.empty svg { opacity:.2; }
+.empty-title { font-size: 16px; font-weight: 700; color: var(–text-mid); }
+.empty-sub { font-size: 13px; }
+
+/* TABS */
+.tabs {
+position: fixed;
+bottom: 0; left: 0; right: 0;
+height: var(–tab-h);
+background: var(–white);
+border-top: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-around;
+padding-bottom: env(safe-area-inset-bottom,0);
+z-index: 200;
+box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+}
+
+.tab {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 3px;
+padding: 7px 0;
+border: none;
+background: none;
+color: var(–text-soft);
+font-family: ‘Outfit’, sans-serif;
+font-size: 10px;
+font-weight: 600;
+letter-spacing: .2px;
+cursor: pointer;
+transition: color .18s;
+position: relative;
+}
+
+.tab.active { color: var(–green-dark); }
+
+.tab.active::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 50%;
+transform: translateX(-50%);
+width: 28px; height: 3px;
+border-radius: 0 0 4px 4px;
+background: var(–green-dark);
+}
+
+.tab svg { transition: transform .18s; }
+.tab.active svg { transform: scale(1.12); }
+
+/* MODAL SHEET */
+.overlay {
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.35);
+z-index: 400;
+display: flex;
+align-items: flex-end;
+opacity: 0;
+pointer-events: none;
+transition: opacity .22s;
+}
+.overlay.open { opacity:1; pointer-events:all; }
+
+.sheet {
+width: 100%;
+background: var(–white);
+border-radius: 20px 20px 0 0;
+padding: 16px 18px calc(env(safe-area-inset-bottom,0px) + 22px);
+transform: translateY(100%);
+transition: transform .28s cubic-bezier(.32,.72,0,1);
+max-height: 92vh;
+overflow-y: auto;
+}
+.overlay.open .sheet { transform: translateY(0); }
+
+.sheet-handle {
+width: 36px; height: 4px;
+border-radius: 2px;
+background: #ddd;
+margin: 0 auto 18px;
+}
+
+.sheet-title {
+font-size: 20px;
+font-weight: 800;
+color: var(–text);
+}
+
+.sheet-sub {
+font-size: 12px;
+color: var(–text-soft);
+margin-top: 3px;
+margin-bottom: 16px;
+}
+
+.detail-row {
+display: flex;
+align-items: flex-start;
+gap: 12px;
+padding: 11px 0;
+border-bottom: 1px solid var(–border);
+}
+
+.detail-icon {
+width: 36px; height: 36px;
+border-radius: 10px;
+background: var(–green-light);
+display: flex; align-items: center; justify-content: center;
+font-size: 16px;
+flex-shrink: 0;
+}
+
+.detail-label { font-size: 11px; color: var(–text-soft); font-weight: 600; }
+.detail-val   { font-size: 14px; font-weight: 700; color: var(–text); margin-top: 1px; }
+
+.price-sheet-box {
+margin: 16px 0 14px;
+background: var(–green-light);
+border: 1.5px solid var(–green-pill);
+border-radius: 12px;
+padding: 14px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.price-sheet-label { font-size: 12px; color: var(–text-mid); font-weight: 600; }
+.price-sheet-val   { font-size: 32px; font-weight: 800; color: var(–green-dark); letter-spacing: -1px; }
+.price-sheet-note  { font-size: 11px; color: var(–green-rich); font-weight: 600; margin-top: 3px; }
+
+.btn-accept {
+width: 100%;
+padding: 15px;
+background: var(–green-dark);
+color: white;
+border: none;
+border-radius: 12px;
+font-family: ‘Outfit’, sans-serif;
+font-size: 16px;
+font-weight: 800;
+cursor: pointer;
+letter-spacing: .3px;
+transition: background .18s, transform .12s;
+}
+.btn-accept:hover { background: var(–green-mid); }
+.btn-accept:active { transform: scale(.97); }
+
+/* TOAST */
+.toast {
+position: fixed;
+bottom: calc(var(–tab-h) + 16px);
+left: 50%;
+transform: translateX(-50%) translateY(10px);
+background: var(–green-dark);
+color: white;
+padding: 10px 22px;
+border-radius: 50px;
+font-size: 13px;
+font-weight: 700;
+opacity: 0;
+pointer-events: none;
+transition: all .28s;
+z-index: 999;
+white-space: nowrap;
+box-shadow: 0 4px 16px rgba(27,94,32,.35);
+}
+.toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+</style>
+
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">ymaany<span>GO</span></div>
+  <div class="online-badge"><span class="dot"></span>Online</div>
+  <div class="topbar-clock" id="clock">--:--</div>
+</div>
+
+<div class="subheader">
+  <span class="subheader-title">Beschikbare ritten</span>
+  <span class="badge-count" id="tripCount">0</span>
+</div>
+
+<div class="feed" id="feed"></div>
+
+<nav class="tabs">
+  <button class="tab active" onclick="switchTab(this,'veiling')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/>
+    </svg>
+    Veiling
+  </button>
+  <button class="tab" onclick="switchTab(this,'ritten')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/>
+    </svg>
+    Overige ritten
+  </button>
+  <button class="tab" onclick="switchTab(this,'agenda')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+    </svg>
+    Agenda
+  </button>
+  <button class="tab" onclick="switchTab(this,'wijzigingen')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+    Wijzigingen
+  </button>
+  <button class="tab" onclick="switchTab(this,'account')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    Account
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" onclick="closeSheet(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const trips = [
+  {
+    id: 'ARRARNRY-1',
+    date: 'zondag 17 mei 2026', time: '18:45',
+    origin: { time:'18:45', name:'Schiphol (AMS) – Evert van de Beekstraat', city:'Schiphol' },
+    dest:   { time:'19:22', name:'Inntel Hotels Amsterdam Centre – Nieuwezijds Kolk', city:'Amsterdam' },
+    km: 27.6, duration: 38, pax: 4,
+    luggage: '3 grote, 4 kleine ruimbagage',
+    tags: ['taxibus'], price: 37.14, commission: true
+  },
+  {
+    id: 'YZA84YKH-2',
+    date: 'maandag 1 juni 2026', time: '10:45',
+    origin: { time:'10:45', name:'Schiphol (AMS) – Evert van de Beekstraat', city:'Schiphol' },
+    dest:   { time:'11:33', name:'Ketensezoom', city:'Capelle aan den IJssel' },
+    km: 71.1, duration: 49, pax: 1, luggage: null,
+    tags: ['standaard','tx-keur'], price: 66.12, commission: false
+  },
+  {
+    id: 'DEN48HLR-3',
+    date: 'maandag 1 juni 2026', time: '14:00',
+    origin: { time:'14:00', name:'Den Helder Centraal', city:'Den Helder' },
+    dest:   { time:'15:15', name:'Schiphol (AMS) – Terminal 3', city:'Schiphol' },
+    km: 89.3, duration: 75, pax: 2,
+    luggage: '2 grote ruimbagage',
+    tags: ['taxibus'], price: 94.50, commission: true
+  }
+];
+
+const fmt = n => n.toFixed(2).replace('.',',');
+
+function renderFeed(list) {
+  const feed = document.getElementById('feed');
+  document.getElementById('tripCount').textContent = list.length;
+
+  if (!list.length) {
+    feed.innerHTML = `
+      <div class="empty">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 15s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+        <div class="empty-title">Geen ritten beschikbaar</div>
+        <div class="empty-sub">Er zijn momenteel geen veilingen</div>
+      </div>`;
+    return;
+  }
+
+  feed.innerHTML = list.map((t,i) => `
+    <div class="card" style="animation-delay:${i*.08}s">
+      <div class="card-head">
+        <div>
+          <div class="card-date">
+            <svg style="vertical-align:-2px;margin-right:4px" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            ${t.date} · ${t.time}
+          </div>
+          <div class="card-id">${t.id}</div>
+        </div>
+        <button class="card-close" onclick="removeTrip('${t.id}')">✕</button>
+      </div>
+
+      <div class="route">
+        <div class="route-row">
+          <div class="route-icon-col">
+            <div class="dot-origin"></div>
+            <div class="route-vert-line"></div>
+          </div>
+          <div class="route-text">
+            <div class="route-time">${t.origin.time}</div>
+            <div class="route-name">${t.origin.name}</div>
+            <div class="route-city">${t.origin.city}</div>
+          </div>
+          <button class="nav-btn" title="Navigeer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </button>
+        </div>
+        <div class="route-row">
+          <div class="route-icon-col"><div class="dot-dest"></div></div>
+          <div class="route-text">
+            <div class="route-time">${t.dest.time}</div>
+            <div class="route-name">${t.dest.name}</div>
+            <div class="route-city">${t.dest.city}</div>
+          </div>
+          <button class="nav-btn" title="Navigeer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="meta-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${t.km} km · ${t.duration} min
+        </div>
+        <div class="meta-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          ${t.pax} passagier${t.pax>1?'s':''}
+        </div>
+        ${t.luggage ? `<div class="meta-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          ${t.luggage}
+        </div>` : ''}
+      </div>
+
+      <div class="tags">
+        ${t.tags.map(tag=>`<span class="tag tag-${tag.replace('-','')}">${tag==='tx-keur'?'TX-Keur':tag.charAt(0).toUpperCase()+tag.slice(1)}</span>`).join('')}
+      </div>
+
+      <div class="card-footer">
+        <div>
+          <div class="price-label">Prijs</div>
+          <div class="price-value">€ ${fmt(t.price)}</div>
+          ${t.commission?'<div class="price-note">✓ Geen commissie</div>':''}
+        </div>
+        <button class="btn-view" onclick="openSheet('${t.id}')">Bekijken →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openSheet(id) {
+  const t = trips.find(x=>x.id===id);
+  if (!t) return;
+  document.getElementById('sheetBody').innerHTML = `
+    <div class="sheet-title">${t.origin.city} → ${t.dest.city}</div>
+    <div class="sheet-sub">${t.date} · ${t.id}</div>
+
+    <div class="detail-row">
+      <div class="detail-icon">📍</div>
+      <div><div class="detail-label">Ophaallocatie</div><div class="detail-val">${t.origin.name}</div></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-icon">🏁</div>
+      <div><div class="detail-label">Bestemming</div><div class="detail-val">${t.dest.name}</div></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-icon">⏱</div>
+      <div><div class="detail-label">Afstand & Reistijd</div><div class="detail-val">${t.km} km · ${t.duration} min</div></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-icon">👥</div>
+      <div><div class="detail-label">Passagiers</div><div class="detail-val">${t.pax} passagier${t.pax>1?'s':''}</div></div>
+    </div>
+    ${t.luggage?`<div class="detail-row">
+      <div class="detail-icon">🧳</div>
+      <div><div class="detail-label">Bagage</div><div class="detail-val">${t.luggage}</div></div>
+    </div>`:''}
+
+    <div class="price-sheet-box">
+      <div>
+        <div class="price-sheet-label">Jouw uitbetaling</div>
+        ${t.commission?'<div class="price-sheet-note">✓ Geen commissie meer af</div>':''}
+      </div>
+      <div class="price-sheet-val">€ ${fmt(t.price)}</div>
+    </div>
+
+    <button class="btn-accept" onclick="acceptTrip('${t.id}')">✓ Accepteren</button>
+  `;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeSheet(e) {
+  if (e.target===document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+}
+
+function acceptTrip(id) {
+  document.getElementById('overlay').classList.remove('open');
+  removeTrip(id);
+  showToast('✓ Rit succesvol geaccepteerd!');
+}
+
+function removeTrip(id) {
+  const idx = trips.findIndex(t=>t.id===id);
+  if (idx>-1) trips.splice(idx,1);
+  renderFeed(trips);
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+function switchTab(el, name) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if (name==='veiling') {
+    renderFeed(trips);
+  } else {
+    document.getElementById('tripCount').textContent = '0';
+    document.getElementById('feed').innerHTML = `
+      <div class="empty">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+        <div class="empty-title">Geen ritten</div>
+        <div class="empty-sub">Geen ritten gepland</div>
+      </div>`;
+  }
+}
+
+function updateClock() {
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+renderFeed(trips);
+</script>
+
+</body>
+</html>
