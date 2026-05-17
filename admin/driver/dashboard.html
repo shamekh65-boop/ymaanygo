@@ -3,397 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ymaanyGO Driver – Ritten</title>
+<title>ymaanyGO Driver</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-  :root {
-    --primary: #4a154b; /* بنفسجي أنيق ومريح */
-    --primary-light: #f5eff6;
-    --text-main: #1e1e24;
-    --text-sub: #757580;
-    --bg-main: #ffffff;
-    --border-color: #f0f0f5;
-    --success: #10b981;
-    --danger: #ef4444;
-  }
-
-  * { box-sizing: border-box; }
-  
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg-main);
-    color: var(--text-main);
-    padding-bottom: 80px;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* الشريط العلوي الناعم */
-  .topbar {
-    background: var(--bg-main);
-    color: var(--text-main);
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .logo {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-  
-  .logo span { color: var(--primary); }
-  
-  .online {
-    background: #e6f7ed;
-    color: var(--success);
-    border-radius: 99px;
-    padding: 5px 12px;
-    font-weight: 600;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .online::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    background: var(--success);
-    border-radius: 50%;
-  }
-
-  .wrap { padding: 16px; }
-
-  /* العناوين الفرعية */
-  .sub {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  
-  .sub h2 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-  
-  .count {
-    background: var(--primary-light);
-    color: var(--primary);
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-weight: 700;
-    font-size: 11px;
-  }
-
-  /* كروت الرحلات المرتبة وبدون زحمة */
-  .card {
-    background: var(--bg-main);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  
-  .card-head {
-    background: #fafafa;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .date {
-    font-weight: 700;
-    color: var(--text-main);
-    font-size: 12px;
-  }
-  
-  .id {
-    font-family: monospace;
-    color: var(--text-sub);
-    font-size: 11px;
-  }
-
-  /* خط السير */
-  .route { padding: 14px; }
-  
-  .point {
-    position: relative;
-    padding-left: 18px;
-    margin-bottom: 12px;
-  }
-  
-  .point::before {
-    content: "";
-    position: absolute;
-    left: 2px;
-    top: 5px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--text-sub);
-  }
-  
-  .point.pickup::before { background: var(--primary); }
-  
-  .label {
-    font-size: 10px;
-    color: var(--text-sub);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .addr {
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 1px;
-    color: var(--text-main);
-  }
-
-  /* الرقاقات الحجم الصغير الخفيف */
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0 14px 12px;
-  }
-  
-  .chip {
-    background: #f8f8fa;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 11px;
-    color: var(--text-sub);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .chip svg {
-    width: 12px;
-    height: 12px;
-    fill: var(--text-sub);
-  }
-
-  /* تذييل الكرت المالي زر متناسق */
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    border-top: 1px solid var(--border-color);
-    background: #fafafa;
-  }
-  
-  .price {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text-main);
-  }
-  
-  .note {
-    font-size: 10px;
-    color: var(--text-sub);
-    margin-top: 2px;
-  }
-
-  /* الأزرار العصرية النظيفة */
-  .btn {
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  
-  .btn.dark { background: var(--primary); color: white; }
-  .btn.green { background: var(--success); color: white; }
-  .btn.red { background: var(--danger); color: white; }
-  .btn.gray { background: #f0f0f5; color: var(--text-main); border-color: #e2e2e9; }
-  
-  .actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  .empty {
-    text-align: center;
-    color: var(--text-sub);
-    padding: 80px 20px;
-    font-size: 13px;
-  }
-
-  /* شريط التنقل السفلي المودرن الصافي */
-  .tabs {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 64px;
-    background: var(--bg-main);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    z-index: 30;
-  }
-  
-  .tab {
-    flex: 1;
-    border: 0;
-    background: transparent;
-    color: var(--text-sub);
-    font-weight: 600;
-    font-size: 11px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-  }
-  
-  .tab svg {
-    width: 20px;
-    height: 20px;
-    fill: var(--text-sub);
-    transition: fill 0.2s;
-  }
-  
-  .tab.active { color: var(--primary); }
-  .tab.active svg { fill: var(--primary); }
-  
-  .hidden { display: none; }
-
-  /* نوافذ التفاصيل المنبثقة الأسفل */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.2);
-    backdrop-filter: blur(2px);
-    display: none;
-    align-items: flex-end;
-    z-index: 50;
-  }
-  
-  .overlay.open { display: flex; }
-  
-  .sheet {
-    background: var(--bg-main);
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    padding: 20px;
-    max-height: 85vh;
-    overflow: auto;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-  }
-  
-  .sheet h2 {
-    margin: 0 0 16px;
-    font-size: 16px;
-    font-weight: 700;
-  }
-  
-  .info {
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 0;
-    font-size: 13px;
-  }
-  
-  .info small {
-    display: block;
-    color: var(--text-sub);
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .account-card {
-    background: var(--bg-main);
-    border-radius: 12px;
-  }
+:root{
+  --purple:#5f249f;
+  --purple2:#6f2dbd;
+  --green:#1f9d55;
+  --text:#30343b;
+  --muted:#8b939c;
+  --line:#edf0f2;
+  --bg:#fff;
+  --soft:#f5f5f6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:#fff;
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:74px;
+}
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+.top{
+  height:88px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.top h1{font-size:22px;font-weight:750}
+.icon-btn{
+  position:absolute;
+  width:52px;height:52px;border:0;border-radius:50%;
+  background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.08);
+  display:grid;place-items:center;color:var(--text)
+}
+.left{left:22px}
+.right{right:22px}
+.clock{
+  position:absolute;right:22px;
+  padding:13px 22px;border-radius:24px;background:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.07);
+  font-weight:800;font-size:18px;
+}
+.content{padding:22px 24px}
+.route-date{font-size:18px;margin-bottom:18px}
+.route-line{display:grid;grid-template-columns:48px 1fr 34px;gap:0;align-items:start}
+.time{font-size:20px;line-height:1.1}
+.path{display:flex;flex-direction:column;align-items:center}
+.dot{width:18px;height:18px;border-radius:50%;border:6px solid var(--purple)}
+.vline{width:4px;height:64px;background:#c6b0dc}
+.pin{width:24px;height:24px;color:var(--purple)}
+.addr{padding-left:8px;padding-bottom:22px}
+.addr b{display:block;font-size:18px;line-height:1.15}
+.addr span{display:block;font-size:17px;color:#4b4f56;margin-top:6px}
+.navico{color:#555;margin-top:8px}
+.hr{height:1px;background:var(--line);margin:8px 0 20px}
+.section-title{font-size:20px;font-weight:800;margin-bottom:14px}
+.detail{display:flex;gap:14px;align-items:flex-start;margin:13px 0;color:#3f444b;font-size:18px;line-height:1.45}
+.detail svg{flex:0 0 24px;color:#555;margin-top:2px}
+.tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.tag{
+  padding:10px 16px;border-radius:6px;color:#fff;font-size:16px;
+  background:#64ad58
+}
+.tag.light{background:#9de027;color:#fff}
+.price-bar{
+  position:fixed;left:0;right:0;bottom:74px;background:#fafafa;
+  border-top:1px solid var(--line);padding:16px 24px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px
+}
+.price-label{font-size:16px;color:#777}
+.price-val{font-size:22px;font-weight:900;margin-top:4px}
+.accept{
+  background:var(--purple);color:#fff;border:0;border-radius:14px;
+  padding:18px 28px;font-size:20px;font-weight:850;min-width:190px
+}
+.commission{
+  position:fixed;left:0;right:0;bottom:18px;text-align:center;
+  color:#8c9399;font-size:15px;line-height:1.55;pointer-events:none
+}
+.bottom{
+  position:fixed;bottom:0;left:0;right:0;height:74px;background:#fff;
+  border-top:1px solid var(--line);display:flex;z-index:20
+}
+.nav{
+  flex:1;border:0;background:#fff;color:#a0a7ad;font-size:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px
+}
+.nav svg{width:25px;height:25px}
+.nav.active{color:var(--purple)}
+.calendar-head{padding:26px 24px 8px;background:#fff}
+.month-title{font-size:20px;font-weight:800;margin-bottom:22px}
+.week,.days{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}
+.week div{color:#a9b0b6;font-size:16px;margin-bottom:16px}
+.day{
+  height:54px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;border-radius:50%;position:relative;margin:auto;width:54px
+}
+.day.active{background:var(--purple);color:#fff}
+.day.today{background:#eef0f2}
+.day.has::after{
+  content:"";position:absolute;bottom:5px;width:7px;height:7px;border-radius:50%;
+  background:var(--purple)
+}
+.agenda-body{background:#f2f2f2;min-height:calc(100vh - 300px);padding:28px 24px}
+.agenda-title{font-size:21px;font-weight:850;margin-bottom:18px}
+.agenda-card{
+  background:#fff;border-radius:18px;padding:18px 20px;margin-bottom:14px
+}
+.agenda-status{color:var(--green);font-weight:850;font-size:18px}
+.agenda-price{
+  float:right;background:#eef0f3;border-radius:8px;padding:8px 14px;
+  font-weight:850;font-size:17px
+}
+.agenda-route{font-size:20px;margin-top:22px}
+.agenda-sub{font-size:17px;color:#757b82;margin-top:5px}
+.agenda-time{font-size:19px;margin-top:22px}
+.empty{text-align:center;color:#8b939c;padding:80px 20px;font-size:18px}
+.account{padding:24px}
+.account-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.row{padding:14px 0;border-bottom:1px solid var(--line)}
+.row small{display:block;color:#8b939c;font-size:13px;margin-bottom:5px}
+.row div{font-size:17px;font-weight:700}
+.logout{
+  margin-top:18px;width:100%;border:0;background:#c62828;color:#fff;
+  padding:15px;border-radius:14px;font-weight:850;font-size:16px
+}
+.confirm{
+  position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;
+  align-items:center;justify-content:center;z-index:50;padding:24px
+}
+.confirm.open{display:flex}
+.dialog{
+  width:100%;max-width:330px;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);border-radius:28px;padding:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.18)
+}
+.dialog h3{font-size:21px;margin-bottom:12px}
+.dialog p{font-size:17px;color:#666;line-height:1.45}
+.dialog-actions{display:flex;gap:12px;margin-top:22px}
+.dialog-actions button{
+  flex:1;border:0;border-radius:22px;padding:14px;font-size:18px;font-weight:800;
+  background:#e3e3e3
+}
+@media(max-width:390px){
+  .content{padding:18px}
+  .accept{min-width:155px}
+  .price-bar{padding-left:18px;padding-right:18px}
+}
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <div class="logo">ymaany<span>GO</span></div>
-  <div class="online" id="onlineBadge">Online</div>
-</div>
+<section id="pageRitten" class="page active">
+  <div class="top">
+    <button class="icon-btn left" onclick="loadRides()">
+      <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1>Ritten</h1>
+    <div class="clock" id="clock">--:--</div>
+  </div>
 
-<div class="wrap">
+  <div id="ridesView"></div>
+</section>
 
-  <section id="tabRitten">
-    <div class="sub">
-      <h2>Beschikbare Veilingen</h2>
-      <span class="count" id="tripCount">0</span>
-    </div>
-    <div id="ridesList"></div>
-  </section>
-
-  <section id="tabAgenda" class="hidden">
-    <div class="sub">
-      <h2>Mijn Agenda</h2>
-      <span class="count" id="agendaCount">0</span>
-    </div>
+<section id="pageAgenda" class="page">
+  <div class="calendar-head">
+    <div class="month-title" id="monthTitle">Mei 2026</div>
+    <div class="week"><div>Ma</div><div>Di</div><div>Wo</div><div>Do</div><div>Vr</div><div>Za</div><div>Zo</div></div>
+    <div class="days" id="calendarDays"></div>
+  </div>
+  <div class="agenda-body">
+    <div class="agenda-title" id="agendaDateTitle">Vandaag</div>
     <div id="agendaList"></div>
-  </section>
+  </div>
+</section>
 
-  <section id="tabAccount" class="hidden">
+<section id="pageAccount" class="page">
+  <div class="top"><h1>Account</h1></div>
+  <div class="account">
     <div class="account-card">
-      <div class="info"><small>Naam</small><div id="accName">-</div></div>
-      <div class="info"><small>E-mail</small><div id="accEmail">-</div></div>
-      <div class="info"><small>Telefoon</small><div id="accPhone">-</div></div>
-      <div class="info"><small>Status</small><div id="accRole">driver</div></div>
-      <div style="margin-top: 20px;">
-        <button class="btn red" onclick="logout()">Uitloggen</button>
-      </div>
+      <div class="row"><small>Naam</small><div id="accName">-</div></div>
+      <div class="row"><small>E-mail</small><div id="accEmail">-</div></div>
+      <div class="row"><small>Telefoon</small><div id="accPhone">-</div></div>
+      <div class="row"><small>Status</small><div id="accRole">driver</div></div>
+      <button class="logout" onclick="logout()">Uitloggen</button>
     </div>
-  </section>
+  </div>
+</section>
 
-</div>
-
-<nav class="tabs">
-  <button id="navRitten" class="tab active" onclick="showTab('ritten')">
-    <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
-    Veiling
+<nav class="bottom">
+  <button id="navRitten" class="nav active" onclick="showPage('ritten')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17h10l2-6H5l2 6z"/><path d="M6 17v2M18 17v2M8 11l1-4h6l1 4"/></svg>
+    Ritten
   </button>
-  <button id="navAgenda" class="tab" onclick="showTab('agenda')">
-    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+  <button id="navAgenda" class="nav" onclick="showPage('agenda')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     Agenda
   </button>
-  <button id="navAccount" class="tab" onclick="showTab('account')">
-    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  <button id="navAccount" class="nav" onclick="showPage('account')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
     Account
   </button>
 </nav>
 
-<div id="overlay" class="overlay" onclick="closeSheet(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <div id="sheetBody"></div>
+<div id="confirmBox" class="confirm">
+  <div class="dialog">
+    <h3>Weet je het zeker?</h3>
+    <p>Weet je zeker dat je deze rit wilt accepteren?</p>
+    <div class="dialog-actions">
+      <button onclick="closeConfirm()">Nee</button>
+      <button onclick="doAccept()">Ja</button>
+    </div>
   </div>
 </div>
 
@@ -402,247 +230,161 @@ const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let user = null;
-let profile = null;
-let rides = [];
-let selectedRide = null;
+let user=null, profile={}, rides=[], selectedRide=null, selectedDate=new Date();
 
-function money(v){
-  return "€ " + parseFloat(v || 0).toFixed(2);
+function price(v){return String(v||"€0")}
+function cleanPhone(v){return String(v||"").replace(/\D/g,"")}
+function dateKey(d){return d.toISOString().slice(0,10)}
+function fmtTime(v){const d=new Date(v);return isNaN(d)?"--:--":d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"})}
+function fmtDateLong(v){const d=new Date(v);return d.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+
+function updateClock(){
+  const d=new Date();
+  clock.textContent=d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+}
+setInterval(updateClock,1000);updateClock();
+
+function showPage(p){
+  pageRitten.classList.remove("active");pageAgenda.classList.remove("active");pageAccount.classList.remove("active");
+  navRitten.classList.remove("active");navAgenda.classList.remove("active");navAccount.classList.remove("active");
+  if(p==="ritten"){pageRitten.classList.add("active");navRitten.classList.add("active")}
+  if(p==="agenda"){pageAgenda.classList.add("active");navAgenda.classList.add("active");renderAgenda()}
+  if(p==="account"){pageAccount.classList.add("active");navAccount.classList.add("active")}
 }
 
-function fmtDate(v){
-  if(!v) return "-";
-  const d = new Date(v);
-  if(isNaN(d)) return "-";
-  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-}
-
-function showTab(tab){
-  tabRitten.classList.add("hidden");
-  tabAgenda.classList.add("hidden");
-  tabAccount.classList.add("hidden");
-
-  navRitten.classList.remove("active");
-  navAgenda.classList.remove("active");
-  navAccount.classList.remove("active");
-
-  if(tab === "ritten"){
-    tabRitten.classList.remove("hidden");
-    navRitten.classList.add("active");
-    renderRides();
-  }
-  if(tab === "agenda"){
-    tabAgenda.classList.remove("hidden");
-    navAgenda.classList.add("active");
-    renderAgenda();
-  }
-  if(tab === "account"){
-    tabAccount.classList.remove("hidden");
-    navAccount.classList.add("active");
-  }
-}
-
-async function protectDriver(){
-  const { data:sessionData } = await db.auth.getSession();
-  if(!sessionData.session){
-    window.location.href = "/driver/login.html";
-    return false;
-  }
-  user = sessionData.session.user;
-
-  const { data:p } = await db
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  profile = p || {};
-  accName.textContent = profile.name || "-";
-  accEmail.textContent = user.email || "-";
-  accPhone.textContent = profile.phone || "-";
-  accRole.textContent = profile.role || "driver";
+async function protect(){
+  const {data:s}=await db.auth.getSession();
+  if(!s.session){location.href="/driver/login.html";return false}
+  user=s.session.user;
+  const {data:p}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
+  profile=p||{};
+  accName.textContent=profile.name||"-";
+  accEmail.textContent=user.email||"-";
+  accPhone.textContent=profile.phone||"-";
+  accRole.textContent=profile.role||"driver";
   return true;
 }
 
 async function loadRides(){
-  const ok = await protectDriver();
-  if(!ok) return;
-
-  const { data,error } = await db
-    .from("rides")
-    .select("*")
+  if(!await protect())return;
+  const {data,error}=await db.from("rides").select("*")
     .or(`status.eq.pending,driver_id.eq.${user.id}`)
     .order("pickup_time",{ascending:true});
-
-  if(error){
-    ridesList.innerHTML = `<div class="empty">${error.message}</div>`;
-    return;
-  }
-
-  rides = data || [];
-  renderRides();
+  if(error){ridesView.innerHTML=`<div class="empty">${error.message}</div>`;return}
+  rides=data||[];
+  renderRitten();
   renderAgenda();
 }
 
-function renderRides(){
-  const list = rides.filter(r => r.status === "pending");
-  tripCount.textContent = list.length;
-  if(!list.length){
-    ridesList.innerHTML = `<div class="empty">Geen ritten beschikbaar op dit moment.</div>`;
-    return;
-  }
-  ridesList.innerHTML = list.map(rideCard).join("");
+function renderRitten(){
+  const list=rides.filter(r=>r.status==="pending");
+  if(!list.length){ridesView.innerHTML=`<div class="empty">Geen ritten beschikbaar</div>`;return}
+  const r=list[0];
+  ridesView.innerHTML=rideDetail(r,true);
+}
+
+function rideDetail(r,canAccept){
+  const dt=new Date(r.pickup_time);
+  const pickupTime=fmtTime(r.pickup_time);
+  const endTime="--:--";
+  return `
+  <div class="content">
+    <div class="route-date">${fmtDateLong(r.pickup_time)}</div>
+
+    <div class="route-line">
+      <div class="time">${pickupTime}</div>
+      <div class="path"><div class="dot"></div><div class="vline"></div></div>
+      <div class="navico">${navSvg()}</div>
+      <div></div><div class="addr"><b>${r.from_address||"-"}</b><span>${cityFrom(r.from_address)}</span></div><div></div>
+    </div>
+
+    <div class="route-line">
+      <div class="time">${endTime}</div>
+      <div class="path">${pinSvg()}</div>
+      <div class="navico">${navSvg()}</div>
+      <div></div><div class="addr"><b>${r.to_address||"-"}</b><span>${cityFrom(r.to_address)}</span></div><div></div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="section-title">Details</div>
+    <div class="detail">${routeSvg()}<div>${r.distance_km||"-"} km • ${r.duration_min||"-"} min</div></div>
+    <div class="detail">${personSvg()}<div>${r.passengers||1} passagier${Number(r.passengers||1)>1?"s":""}</div></div>
+    ${r.notes?`<div class="detail">${msgSvg()}<div>${r.notes}</div></div>`:""}
+
+    <div class="tags">
+      <div class="tag light">${r.vehicle||"Standaard taxi"}</div>
+      <div class="tag">Standaard taxi</div>
+    </div>
+  </div>
+
+  <div class="price-bar">
+    <div>
+      <div class="price-label">Prijs</div>
+      <div class="price-val">${price(r.price)}</div>
+    </div>
+    ${canAccept?`<button class="accept" onclick="askAccept('${r.id}')">Accepteren</button>`:""}
+  </div>
+  <div class="commission">Bovenstaand bedrag maken wij aan je over.<br>Er gaat geen commissie meer af.</div>
+  `;
 }
 
 function renderAgenda(){
-  const list = rides.filter(r => r.driver_id === user.id && !["completed","cancelled"].includes(r.status));
-  agendaCount.textContent = list.length;
-  if(!list.length){
-    agendaList.innerHTML = `<div class="empty">Jouw agenda is leeg.</div>`;
-    return;
-  }
-  agendaList.innerHTML = list.map(rideCard).join("");
-}
-
-function rideCard(r){
-  const mine = r.driver_id === user.id;
-
-  // هيكل SVGs النظيف للأيقونات الداخلية
-  const userIcon = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
-  const carIcon = `<svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
-
-  return `
-    <div class="card">
-      <div class="card-head">
-        <div class="date">${fmtDate(r.pickup_time)}</div>
-        <div class="id">#${String(r.id).slice(0,8)}</div>
-      </div>
-
-      <div class="route">
-        <div class="point pickup">
-          <div class="label">Van</div>
-          <div class="addr">${r.from_address || "-"}</div>
-        </div>
-        <div class="point">
-          <div class="label">Naar</div>
-          <div class="addr">${r.to_address || "-"}</div>
-        </div>
-
-        ${mine ? `
-        <div class="actions">
-          <button class="btn gray" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
-          <button class="btn gray" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
-          <button class="btn green" onclick="quickStatus('${r.id}','completed')">Voltooien</button>
-        </div>` : ""}
-      </div>
-
-      <div class="meta">
-        <div class="chip">${carIcon} ${r.vehicle || "Standaard"}</div>
-        <div class="chip">${userIcon} ${r.passengers || 1} Passagier</div>
-        <div class="chip">📌 ${r.status || "Open"}</div>
-      </div>
-
-      <div class="footer">
-        <div>
-          <div class="price">${money(r.price)}</div>
-          <div class="note">Exclusief commissie</div>
-        </div>
-        <button class="btn dark" onclick="openRide('${r.id}')">Bekijken</button>
-      </div>
+  renderCalendar();
+  const key=dateKey(selectedDate);
+  const list=rides.filter(r=>r.driver_id===user.id && String(r.pickup_time||"").slice(0,10)===key);
+  agendaDateTitle.textContent=fmtDateLong(selectedDate);
+  if(!list.length){agendaList.innerHTML=`<div class="empty">Geen ritten gepland</div>`;return}
+  agendaList.innerHTML=list.map(r=>`
+    <div class="agenda-card">
+      <div><span class="agenda-status">${statusText(r.status)}</span><span class="agenda-price">${price(r.price)}</span></div>
+      <div class="agenda-route">${cityFrom(r.from_address)}</div>
+      <div class="agenda-sub">Richting ${cityFrom(r.to_address)}</div>
+      <div class="agenda-time">${fmtTime(r.pickup_time)}</div>
     </div>
-  `;
+  `).join("");
 }
 
-function openRide(id){
-  selectedRide = rides.find(r => r.id === id);
-  if(!selectedRide) return;
-
-  const r = selectedRide;
-  const mine = r.driver_id === user.id;
-
-  sheetBody.innerHTML = `
-    <h2>Details van rit</h2>
-    <div class="info"><small>Ophaallocatie</small><b>${r.from_address || "-"}</b></div>
-    <div class="info"><small>Bestemming</small><b>${r.to_address || "-"}</b></div>
-    <div class="info"><small>Tijdstip</small>${fmtDate(r.pickup_time)}</div>
-    <div class="info"><small>Klant Info</small>${r.customer_name || "-"}<br>${r.customer_phone || "-"}</div>
-    <div class="info"><small>Tarief</small><b>${money(r.price)}</b> (100% Chauffeur)</div>
-
-    <div class="actions" style="margin-top:20px;">
-      <a class="btn gray" target="_blank" href="https://maps.google.com/?q=${encodeURIComponent(r.from_address || "")}">Navigeer</a>
-      ${r.customer_phone ? `<a class="btn gray" href="tel:${r.customer_phone}">Bellen</a>` : ""}
-    </div>
-
-    <div class="actions" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border-color)">
-      ${!mine && r.status === "pending" ? `<button class="btn dark" style="width:100%; justify-content:center;" onclick="acceptRide('${r.id}')">Accepteer Rit</button>` : ""}
-      ${mine ? `
-        <button class="btn gray" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
-        <button class="btn gray" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
-        <button class="btn green" onclick="quickStatus('${r.id}','completed')">Rit Voltooien</button>
-      ` : ""}
-    </div>
-  `;
-
-  overlay.classList.add("open");
-}
-
-function closeSheet(e){
-  if(!e || e.target === overlay){
-    overlay.classList.remove("open");
+function renderCalendar(){
+  const d=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);
+  monthTitle.textContent=d.toLocaleDateString("nl-NL",{month:"long",year:"numeric"});
+  const first=(d.getDay()+6)%7;
+  const days=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  let html="";
+  for(let i=0;i<first;i++)html+="<div></div>";
+  for(let day=1;day<=days;day++){
+    const cur=new Date(d.getFullYear(),d.getMonth(),day);
+    const key=dateKey(cur);
+    const has=rides.some(r=>r.driver_id===user.id && String(r.pickup_time||"").slice(0,10)===key);
+    const active=key===dateKey(selectedDate);
+    const today=key===dateKey(new Date());
+    html+=`<div class="day ${active?"active":""} ${today&&!active?"today":""} ${has?"has":""}" onclick="selectedDate=new Date(${cur.getTime()});renderAgenda()">${day}</div>`;
   }
+  calendarDays.innerHTML=html;
 }
 
-async function acceptRide(id){
-  const payload = {
-    driver_id: user.id,
-    driver_name: profile.name || user.email,
-    driver_phone: profile.phone || "",
-    status: "accepted",
-    accepted_at: new Date().toISOString()
-  };
-
-  const { error } = await db
-    .from("rides")
-    .update(payload)
-    .eq("id", id)
-    .eq("status", "pending");
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  closeSheet();
-  await loadRides();
-  showTab("agenda");
+function askAccept(id){selectedRide=rides.find(r=>r.id===id);confirmBox.classList.add("open")}
+function closeConfirm(){confirmBox.classList.remove("open")}
+async function doAccept(){
+  if(!selectedRide)return;
+  const {error}=await db.from("rides").update({
+    driver_id:user.id,
+    driver_name:profile.name||user.email,
+    driver_phone:profile.phone||"",
+    status:"accepted",
+    accepted_at:new Date().toISOString()
+  }).eq("id",selectedRide.id).eq("status","pending");
+  if(error){alert(error.message);return}
+  closeConfirm();await loadRides();showPage("agenda");
 }
+async function logout(){await db.auth.signOut();location.href="/driver/login.html"}
 
-async function quickStatus(id,status){
-  const payload = { status };
-  if(status === "completed"){
-    payload.completed_at = new Date().toISOString();
-  }
-
-  const { error } = await db
-    .from("rides")
-    .update(payload)
-    .eq("id", id)
-    .eq("driver_id", user.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  closeSheet();
-  await loadRides();
-}
-
-async function logout(){
-  await db.auth.signOut();
-  window.location.href = "/driver/login.html";
-}
+function cityFrom(v){return String(v||"").split(",").slice(-2,-1)[0]?.trim()||String(v||"-").split(" ").slice(-1)[0]}
+function statusText(s){if(s==="completed")return"Rit afgerond";if(s==="accepted")return"Geaccepteerd";return s||"Rit"}
+function navSvg(){return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>`}
+function pinSvg(){return `<svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.2"/></svg>`}
+function routeSvg(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 19c3 0 3-4 6-4s3-4 6-4"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="11" r="2"/></svg>`}
+function personSvg(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>`}
+function msgSvg(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 20l1.2-4A8.5 8.5 0 1 1 21 11.5z"/></svg>`}
 
 loadRides();
 setInterval(loadRides,12000);
