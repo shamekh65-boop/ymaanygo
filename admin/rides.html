@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ritten beheren – ymaanyGO</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#eef7f1;
+  color:#0b2e1f;
+}
+
+.wrap{
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+h1{
+  margin:0;
+  font-size:28px;
+}
+
+.card{
+  background:#fff;
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 10px 28px rgba(0,0,0,.08);
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:1fr 220px 180px;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+input,select,textarea{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #dbe9e1;
+  font:inherit;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #edf2ef;
+  text-align:left;
+  vertical-align:top;
+  font-size:14px;
+}
+
+th{
+  font-size:12px;
+  color:#6b8c79;
+  text-transform:uppercase;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.pending{background:#fff3d9;color:#a66b00}
+.accepted{background:#e7f5ff;color:#1565c0}
+.on_the_way{background:#eef2ff;color:#4338ca}
+.arrived{background:#e0f2fe;color:#0369a1}
+.completed{background:#e9f8ef;color:#27ae60}
+.cancelled{background:#ffecec;color:#d63031}
+.paid{background:#e9f8ef;color:#27ae60}
+.unpaid{background:#ffecec;color:#d63031}
+.failed{background:#fff3d9;color:#a66b00}
+.refunded{background:#eef2ff;color:#4338ca}
+
+.btn{
+  border:0;
+  cursor:pointer;
+  border-radius:12px;
+  padding:9px 12px;
+  font-weight:800;
+  font-size:12px;
+}
+
+.btn.green{
+  background:#2ecc71;
+  color:#fff;
+}
+
+.btn.red{
+  background:#e74c3c;
+  color:#fff;
+}
+
+.btn.dark{
+  background:#0b2e1f;
+  color:#fff;
+}
+
+.btn.gray{
+  background:#edf4ef;
+  color:#0b2e1f;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.small{
+  font-size:12px;
+  color:#6b8c79;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:50;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.sheet{
+  width:min(980px,100%);
+  background:#fff;
+  border-radius:26px 26px 0 0;
+  max-height:90vh;
+  overflow:auto;
+  padding:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+@media(max-width:900px){
+
+  .wrap{
+    padding:12px;
+  }
+
+  .top{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:22px;
+  }
+
+  .filters{
+    grid-template-columns:1fr;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    padding:12px;
+    border-radius:18px;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr{
+    display:block;
+    width:100%;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tbody{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  tr{
+    background:#fff;
+    border:1px solid #e3efe8;
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 6px 20px rgba(0,0,0,.05);
+  }
+
+  td{
+    border:none;
+    padding:6px 0;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+
+  td::before{
+    font-size:11px;
+    font-weight:800;
+    color:#6b8c79;
+    text-transform:uppercase;
+  }
+
+  td:nth-child(1)::before{content:"Klant"}
+  td:nth-child(2)::before{content:"Route"}
+  td:nth-child(3)::before{content:"Tijd"}
+  td:nth-child(4)::before{content:"Status"}
+  td:nth-child(5)::before{content:"Betaling"}
+  td:nth-child(6)::before{content:"Chauffeur"}
+  td:nth-child(7)::before{content:"Acties"}
+
+  .actions{
+    margin-top:4px;
+  }
+
+  .btn{
+    flex:1;
+    min-height:42px;
+    font-size:12px;
+  }
+
+  .sheet{
+    border-radius:24px 24px 0 0;
+    padding:16px;
+  }
+
+  input,
+  select,
+  textarea{
+    font-size:16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <h1>Ritten beheren</h1>
+      <div class="small">Volledige controle over alle ritten</div>
+    </div>
+
+    <a href="/admin/dashboard.html">
+      <button class="btn dark">Dashboard</button>
+    </a>
+  </div>
+
+  <div class="card">
+
+    <div class="filters">
+      <input id="search" placeholder="Zoek klant, telefoon, adres...">
+
+      <select id="statusFilter">
+        <option value="">Alle statussen</option>
+        <option value="pending">pending</option>
+        <option value="accepted">accepted</option>
+        <option value="on_the_way">on_the_way</option>
+        <option value="arrived">arrived</option>
+        <option value="completed">completed</option>
+        <option value="cancelled">cancelled</option>
+      </select>
+
+      <select id="paymentFilter">
+        <option value="">Alle betalingen</option>
+        <option value="paid">paid</option>
+        <option value="unpaid">unpaid</option>
+        <option value="failed">failed</option>
+        <option value="refunded">refunded</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Klant</th>
+          <th>Route</th>
+          <th>Tijd</th>
+          <th>Status</th>
+          <th>Betaling</th>
+          <th>Chauffeur</th>
+          <th>Acties</th>
+        </tr>
+      </thead>
+
+      <tbody id="ridesTable">
+        <tr>
+          <td colspan="7">Laden...</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+<div id="rideModal" class="modal">
+  <div class="sheet">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2>Rit beheren</h2>
+
+      <button class="btn gray" onclick="closeModal()">
+        Sluiten
+      </button>
+    </div>
+
+    <div class="grid">
+
+      <div>
+        <div class="small">Klant naam</div>
+        <input id="mCustomerName">
+      </div>
+
+      <div>
+        <div class="small">Klant telefoon</div>
+        <input id="mCustomerPhone">
+      </div>
+
+      <div>
+        <div class="small">Van</div>
+        <input id="mFrom">
+      </div>
+
+      <div>
+        <div class="small">Naar</div>
+        <input id="mTo">
+      </div>
+
+      <div>
+        <div class="small">Status</div>
+
+        <select id="mStatus">
+          <option value="pending">pending</option>
+          <option value="accepted">accepted</option>
+          <option value="on_the_way">on_the_way</option>
+          <option value="arrived">arrived</option>
+          <option value="completed">completed</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="small">Betaling</div>
+
+        <select id="mPayment">
+          <option value="unpaid">unpaid</option>
+          <option value="paid">paid</option>
+          <option value="failed">failed</option>
+          <option value="refunded">refunded</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="small">Chauffeur naam</div>
+        <input id="mDriverName">
+      </div>
+
+      <div>
+        <div class="small">Chauffeur telefoon</div>
+        <input id="mDriverPhone">
+      </div>
+
+      <div>
+        <div class="small">Voertuig</div>
+        <input id="mDriverCar">
+      </div>
+
+      <div>
+        <div class="small">Prijs</div>
+        <input id="mPrice">
+      </div>
+
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="small">Admin notitie</div>
+      <textarea id="mNote" style="width:100%;height:100px;padding:14px;border-radius:14px;border:1px solid #dbe9e1"></textarea>
+    </div>
+
+    <div class="actions" style="margin-top:18px">
+
+      <button class="btn green" onclick="saveRide()">
+        Opslaan
+      </button>
+
+      <button class="btn dark" onclick="quickStatus('accepted')">
+        Accepteren
+      </button>
+
+      <button class="btn dark" onclick="quickStatus('on_the_way')">
+        Onderweg
+      </button>
+
+      <button class="btn dark" onclick="quickStatus('arrived')">
+        Aangekomen
+      </button>
+
+      <button class="btn green" onclick="quickStatus('completed')">
+        Voltooien
+      </button>
+
+      <button class="btn red" onclick="quickStatus('cancelled')">
+        Annuleren
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let rides = [];
+let selectedRide = null;
+
+function badge(v){
+  return `<span class="badge ${v}">${v}</span>`;
+}
+
+function fmt(v){
+  if(!v) return "-";
+
+  const d = new Date(v);
+
+  if(isNaN(d)) return "-";
+
+  return d.toLocaleString("nl-NL");
+}
+
+async function protectAdmin(){
+  const { data: sessionData } = await db.auth.getSession();
+
+  if(!sessionData.session){
+    window.location.href = "/admin/login.html";
+    return false;
+  }
+
+  const user = sessionData.session.user;
+
+  const { data: profile } = await db
+    .from("profiles")
+    .select("role")
+    .eq("email", user.email)
+    .maybeSingle();
+
+  if(!profile || profile.role !== "admin"){
+    await db.auth.signOut();
+    window.location.href = "/admin/login.html";
+    return false;
+  }
+
+  return true;
+}
+
+async function loadRides(){
+  const ok = await protectAdmin();
+  if(!ok) return;
+
+  const { data, error } = await db
+    .from("rides")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    document.getElementById("ridesTable").innerHTML =
+      `<tr><td colspan="7">Fout bij laden: ${error.message}</td></tr>`;
+    return;
+  }
+
+  rides = data || [];
+
+  render();
+}
+
+function render(){
+
+  const q =
+    document.getElementById("search").value.toLowerCase().trim();
+
+  const sf =
+    document.getElementById("statusFilter").value;
+
+  const pf =
+    document.getElementById("paymentFilter").value;
+
+  let filtered = rides.filter(r=>{
+
+    const matchSearch =
+      String(r.customer_name || "").toLowerCase().includes(q) ||
+      String(r.customer_phone || "").toLowerCase().includes(q) ||
+      String(r.customer_email || "").toLowerCase().includes(q) ||
+      String(r.from_address || "").toLowerCase().includes(q) ||
+      String(r.to_address || "").toLowerCase().includes(q);
+
+    const matchStatus =
+      !sf || r.status === sf;
+
+    const matchPayment =
+      !pf || r.payment_status === pf;
+
+    return matchSearch && matchStatus && matchPayment;
+  });
+
+  const tbody =
+    document.getElementById("ridesTable");
+
+  if(!filtered.length){
+
+    tbody.innerHTML =
+      `<tr><td colspan="7">Geen ritten.</td></tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r=>`
+
+    <tr>
+
+      <td>
+        <strong>${r.customer_name || "-"}</strong>
+        <div class="small">${r.customer_phone || "-"}</div>
+        <div class="small">${r.customer_email || "-"}</div>
+      </td>
+
+      <td>
+        ${r.from_address || "-"}
+        <br>
+        →
+        <br>
+        ${r.to_address || "-"}
+      </td>
+
+      <td>
+        ${fmt(r.pickup_time)}
+      </td>
+
+      <td>
+        ${badge(r.status || "pending")}
+      </td>
+
+      <td>
+        ${badge(r.payment_status || "unpaid")}
+        <div class="small">${r.price || "€0"}</div>
+      </td>
+
+      <td>
+        ${r.driver_name || "-"}
+        <div class="small">${r.driver_phone || ""}</div>
+        <div class="small">${r.driver_car || ""}</div>
+      </td>
+
+      <td>
+
+        <div class="actions">
+
+          <button class="btn gray"
+            onclick="openRide('${r.id}')">
+            Open
+          </button>
+
+          <button class="btn dark"
+            onclick="fastUpdate('${r.id}','accepted')">
+            Accept
+          </button>
+
+          <button class="btn green"
+            onclick="fastUpdate('${r.id}','completed')">
+            Done
+          </button>
+
+          <button class="btn red"
+            onclick="fastUpdate('${r.id}','cancelled')">
+            Cancel
+          </button>
+
+        </div>
+
+      </td>
+
+    </tr>
+
+  `).join("");
+}
+
+function openRide(id){
+
+  selectedRide =
+    rides.find(r=>r.id === id);
+
+  if(!selectedRide) return;
+
+  mCustomerName.value =
+    selectedRide.customer_name || "";
+
+  mCustomerPhone.value =
+    selectedRide.customer_phone || "";
+
+  mFrom.value =
+    selectedRide.from_address || "";
+
+  mTo.value =
+    selectedRide.to_address || "";
+
+  mStatus.value =
+    selectedRide.status || "pending";
+
+  mPayment.value =
+    selectedRide.payment_status || "unpaid";
+
+  mDriverName.value =
+    selectedRide.driver_name || "";
+
+  mDriverPhone.value =
+    selectedRide.driver_phone || "";
+
+  mDriverCar.value =
+    selectedRide.driver_car || "";
+
+  mPrice.value =
+    selectedRide.price || "";
+
+  mNote.value =
+    selectedRide.admin_note || "";
+
+  document.getElementById("rideModal")
+    .classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("rideModal")
+    .classList.remove("open");
+}
+
+async function saveRide(){
+
+  if(!selectedRide) return;
+
+  const payload = {
+
+    customer_name:mCustomerName.value,
+    customer_phone:mCustomerPhone.value,
+
+    from_address:mFrom.value,
+    to_address:mTo.value,
+
+    status:mStatus.value,
+    payment_status:mPayment.value,
+
+    driver_name:mDriverName.value,
+    driver_phone:mDriverPhone.value,
+    driver_car:mDriverCar.value,
+
+    price:mPrice.value,
+    admin_note:mNote.value
+  };
+
+  if(payload.status === "accepted"){
+    payload.accepted_at = new Date().toISOString();
+  }
+
+  if(payload.status === "completed"){
+    payload.completed_at = new Date().toISOString();
+  }
+
+  if(payload.status === "cancelled"){
+    payload.cancelled_at = new Date().toISOString();
+  }
+
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id", selectedRide.id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadRides();
+
+  alert("Rit opgeslagen");
+
+  closeModal();
+}
+
+async function fastUpdate(id,status){
+
+  const payload = {
+    status
+  };
+
+  if(status === "accepted"){
+    payload.accepted_at = new Date().toISOString();
+  }
+
+  if(status === "completed"){
+    payload.completed_at = new Date().toISOString();
+  }
+
+  if(status === "cancelled"){
+    payload.cancelled_at = new Date().toISOString();
+  }
+
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  loadRides();
+}
+
+function quickStatus(v){
+  mStatus.value = v;
+}
+
+search.oninput = render;
+statusFilter.onchange = render;
+paymentFilter.onchange = render;
+
+loadRides();
+
+setInterval(loadRides,10000);
+</script>
+
+</body>
+</html>
