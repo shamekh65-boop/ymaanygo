@@ -153,7 +153,7 @@ async function protectDriver(){
   const { data:sessionData } = await db.auth.getSession();
 
   if(!sessionData.session){
-    window.location.href = "/driver/login.html";
+    window.location.href = "/chauffeur/login.html";
     return false;
   }
 
@@ -363,7 +363,7 @@ async function quickStatus(id,status){
 
 async function logout(){
   await db.auth.signOut();
-  window.location.href = "/driver/login.html";
+  window.location.href = "/chauffeur/login.html";
 }
 
 loadRides();
