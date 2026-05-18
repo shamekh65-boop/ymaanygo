@@ -397,7 +397,16 @@ async function submitBooking(){
     alert("Fout: " + rideError.message);
     return;
   }
-
+await fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    title: "Nieuwe rit beschikbaar",
+    body: `${from} → ${to} • ${priceText}`
+  })
+});
   saveRideToHistory();
 
   mainBtn.innerHTML = "Betaling openen...";
