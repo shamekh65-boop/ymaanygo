@@ -247,19 +247,6 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 .notif-b{font-size:12px;color:rgba(255,255,255,.65);line-height:1.4}
 .notif-tm{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
 
-/* DIALOG */
-.dlgbg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s}
-.dlgbg.open{opacity:1;pointer-events:all}
-.dlg{background:var(--W);border-radius:20px;padding:24px 20px 16px;width:100%;max-width:310px;text-align:center;transform:scale(.88);transition:transform .22s}
-.dlgbg.open .dlg{transform:scale(1)}
-.dlgt{font-size:19px;font-weight:800;color:var(--INK);margin-bottom:8px}
-.dlgm{font-size:14px;color:var(--INK3);line-height:1.5;margin-bottom:20px}
-.dlgbtns{display:flex;gap:9px}
-.dbtn{flex:1;padding:13px;border-radius:11px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .15s}
-.dbtn:active{transform:scale(.95)}
-.dbtn.nee{background:#f0f0f0;color:var(--INK)}.dbtn.nee:hover{background:#e0e0e0}
-.dbtn.ja{background:var(--G);color:#fff}.dbtn.ja:hover{background:var(--G2)}
-
 /* TOAST OK */
 .tok{position:fixed;bottom:calc(var(--TH)+12px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--G);color:#fff;padding:10px 20px;border-radius:50px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .26s;z-index:800;white-space:nowrap;box-shadow:0 4px 18px rgba(27,94,32,.35)}
 .tok.s{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -276,8 +263,24 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 <header class="top">
   <div class="top-l">
     <img class="logo" src="https://ymaanygo.nl/Photoroom_20260518_062850.png" alt="ymaanyGO"
-      onerror="this.style.display='none';document.getElementById('lf').style.display='block'">
-    <div id="lf" class="logo-fb" style="display:none">Ymaany<b>GO</b></div>
+      onerror="this.style.display='none';document.getElementById('lf').style.display='flex'">
+    <div id="lf" class="logo-fb" style="display:none;align-items:center;gap:4px">
+      <svg height="36" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- YmaanY text -->
+        <text x="0" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#ffffff" letter-spacing="1">Ymaany</text>
+        <!-- G letter green -->
+        <text x="148" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#a5d6a7">G</text>
+        <!-- Steering wheel -->
+        <g transform="translate(170,4)">
+          <circle cx="22" cy="22" r="19" stroke="#d0d0d0" stroke-width="4" fill="none"/>
+          <circle cx="22" cy="22" r="12" stroke="#d0d0d0" stroke-width="2.5" fill="none"/>
+          <line x1="22" y1="10" x2="22" y2="16" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="12" y1="28" x2="17" y2="25" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="32" y1="28" x2="27" y2="25" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="22" cy="22" r="3.5" fill="#f5d020"/>
+        </g>
+      </svg>
+    </div>
     <div class="dname" id="dname">Chauffeur</div>
   </div>
   <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
@@ -433,18 +436,6 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
   </div>
 </div>
 
-<!-- DIALOG -->
-<div class="dlgbg" id="dlgbg">
-  <div class="dlg">
-    <div class="dlgt">Weet je het zeker?</div>
-    <div class="dlgm">Weet je zeker dat je deze veiling wilt accepteren?</div>
-    <div class="dlgbtns">
-      <button class="dbtn nee" onclick="closeDlg()">Nee</button>
-      <button class="dbtn ja" onclick="confirmAccept()">Ja</button>
-    </div>
-  </div>
-</div>
-
 <!-- TOASTS -->
 <div class="tok" id="tok"></div>
 <div class="terr" id="terr"></div>
@@ -462,7 +453,7 @@ const SB = supabase.createClient(
    STATE
 ═══════════════════════════════ */
 let U=null, P=null, rides=[], online=true, curPg=0;
-let pendingId=null, notifRid=null;
+let notifRid=null;
 let navApp = localStorage.getItem("nav")||"google";
 let calY=new Date().getFullYear(), calM=new Date().getMonth();
 let calExp=false, selDate=new Date().toISOString().slice(0,10);
@@ -747,35 +738,47 @@ function openDetail(id){
 }
 
 /* ═══════════════════════════════
-   CONFIRM DIALOG
+   ACCEPT DIRECTLY (no dialog)
 ═══════════════════════════════ */
-function askAccept(id){pendingId=id;$("dlgbg").classList.add("open")}
-function closeDlg(){$("dlgbg").classList.remove("open");pendingId=null}
-async function confirmAccept(){closeDlg();if(pendingId)await acceptRide(pendingId)}
+async function askAccept(id){
+  await acceptRide(id);
+}
 
 /* ═══════════════════════════════
    ACCEPT RIDE (race-safe)
 ═══════════════════════════════ */
 async function acceptRide(id){
-  // Check current status first
-  const {data:chk,error:ce}=await SB.from("rides").select("status,driver_id").eq("id",id).maybeSingle();
-  if(ce||!chk||chk.status!=="pending"){
-    tErr("⚠️ Deze rit is al geaccepteerd door een andere chauffeur.");
-    rides=rides.filter(r=>r.id!==id);renderHome();updateBadge();return;
-  }
-  // Atomic update: only if still pending
+  // Disable button to prevent double-tap
+  document.querySelectorAll(`[onclick*="${id}"]`).forEach(b=>b.disabled=true);
+
   const {data:upd,error}=await SB.from("rides")
-    .update({driver_id:U.id,driver_name:P.name||U.email,driver_phone:P.phone||"",status:"accepted",accepted_at:new Date().toISOString()})
-    .eq("id",id).eq("status","pending")
-    .select().maybeSingle();
+    .update({
+      driver_id:U.id,
+      driver_name:P.name||U.email,
+      driver_phone:P.phone||"",
+      status:"accepted",
+      accepted_at:new Date().toISOString()
+    })
+    .eq("id",id)
+    .eq("status","pending")
+    .select()
+    .maybeSingle();
 
   if(error||!upd){
     tErr("⚠️ Deze rit is al geaccepteerd door een andere chauffeur.");
-    rides=rides.filter(r=>r.id!==id);renderHome();updateBadge();return;
+    rides=rides.filter(r=>r.id!==id);
+    renderHome();updateBadge();
+    closeSP("spDetail");
+    return;
+  }
+  // Update local state immediately
+  const idx=rides.findIndex(r=>r.id===id);
+  if(idx>-1){
+    rides[idx]={...rides[idx],driver_id:U.id,status:"accepted"};
   }
   closeSP("spDetail");
   tOk("✓ Rit geaccepteerd!");
-  // Realtime will update automatically
+  renderHome();updateBadge();
 }
 
 /* ═══════════════════════════════
