@@ -390,23 +390,25 @@ async function submitBooking(){
     .select()
     .single();
 
-  if(rideError){
+   if(rideError){
     console.error(rideError);
     mainBtn.disabled = false;
     mainBtn.innerHTML = "Boeken & betalen ›";
     alert("Fout: " + rideError.message);
     return;
   }
-await fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    title: "Nieuwe rit beschikbaar",
-    body: `${from} → ${to} • ${priceText}`
-  })
-});
+
+  fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      title: "Nieuwe rit beschikbaar",
+      body: `${from} → ${to} • ${priceText}`
+    })
+  }).catch(err => console.log("Push fout:", err));
+
   saveRideToHistory();
 
   mainBtn.innerHTML = "Betaling openen...";
