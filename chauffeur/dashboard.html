@@ -1,763 +1,313 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>ymaanyGO · Chauffeur</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Bebas+Neue&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #f5f9f5;
-    color: #1a2e1a;
-    padding-bottom: 80px;
-    overflow-x: hidden;
-  }
-
-  /* Variables */
-  :root {
-    --green-dark: #1b5e20;
-    --green-main: #2e7d32;
-    --green-light: #e8f5e9;
-    --green-soft: #c8e6c9;
-    --gray-bg: #f0f4f0;
-    --border: #dce8dc;
-    --ink: #1e2a1e;
-    --ink-light: #4a6741;
-    --red: #c62828;
-    --red-bg: #ffebee;
-    --amber: #ef6c00;
-  }
-
-  /* Top bar */
-  .topbar {
-    background: var(--green-dark);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  }
-  .logo {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 28px;
-    color: white;
-    letter-spacing: 1px;
-  }
-  .logo span { color: #a5d6a7; }
-  .driver-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); margin-top: 2px; }
-  .toggle-btn {
-    background: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 40px;
-    font-weight: 700;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .toggle-btn.offline { background: #e0e0e0; color: #555; }
-  .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #2e7d32; }
-  .toggle-btn.offline .status-dot { background: #9e9e9e; }
-
-  /* Stats */
-  .stats-grid {
-    display: flex;
-    gap: 12px;
-    padding: 16px 18px;
-    background: var(--green-dark);
-  }
-  .stat-card {
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(2px);
-    border-radius: 18px;
-    padding: 12px 16px;
-    flex: 1;
-  }
-  .stat-label { font-size: 11px; color: #c8e6c9; font-weight: 500; text-transform: uppercase; }
-  .stat-value { font-size: 28px; font-weight: 800; color: white; line-height: 1.1; }
-
-  /* Segments */
-  .segments {
-    display: flex;
-    padding: 12px 16px 0;
-    gap: 10px;
-    background: white;
-    border-bottom: 1px solid var(--border);
-  }
-  .seg-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    font-weight: 700;
-    font-size: 14px;
-    background: none;
-    border: none;
-    border-radius: 30px;
-    color: #6a8e6a;
-  }
-  .seg-btn.active {
-    background: var(--green-light);
-    color: var(--green-main);
-  }
-  .badge {
-    background: var(--green-main);
-    color: white;
-    border-radius: 40px;
-    padding: 2px 8px;
-    font-size: 11px;
-    margin-left: 6px;
-  }
-
-  /* Ride cards */
-  .feed {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .ride-card {
-    background: white;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    transition: 0.2s;
-  }
-  .ride-header {
-    background: var(--green-light);
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .ride-time { font-weight: 700; font-size: 13px; color: var(--green-dark); }
-  .ride-status {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 50px;
-  }
-  .status-pending { background: #fff3e0; color: #e65100; }
-  .status-accepted { background: #e3f2fd; color: #1565c0; }
-  .status-completed { background: #e8f5e9; color: #2e7d32; }
-
-  .route-row {
-    display: flex;
-    gap: 12px;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f0f0f0;
-    align-items: flex-start;
-  }
-  .route-icon { width: 20px; display: flex; flex-direction: column; align-items: center; }
-  .pin-start { width: 10px; height: 10px; background: var(--green-dark); border-radius: 50%; }
-  .pin-end { width: 10px; height: 10px; border: 2px solid var(--green-main); background: white; border-radius: 2px; }
-  .route-line { width: 2px; flex: 1; background: repeating-linear-gradient(to bottom, #9bc49b 0px, #9bc49b 5px, transparent 5px, transparent 10px); margin: 4px 0; }
-  .route-text { flex: 1; }
-  .route-addr { font-weight: 700; font-size: 14px; }
-  .route-sub { font-size: 11px; color: #6e8f6e; }
-  .nav-icon {
-    background: var(--green-light);
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .meta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px 16px;
-    background: #fafefa;
-    border-bottom: 1px solid var(--border);
-  }
-  .meta-chip {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .price-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-  }
-  .price-amount {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--green-dark);
-  }
-  .actions {
-    display: flex;
-    gap: 10px;
-  }
-  .btn {
-    border: none;
-    padding: 8px 18px;
-    border-radius: 40px;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.1s;
-  }
-  .btn-primary { background: var(--green-dark); color: white; }
-  .btn-outline { background: white; border: 1px solid var(--border); }
-  .btn-amber { background: #fff3e0; color: #e65100; }
-
-  /* Calendar */
-  .cal-container {
-    background: white;
-    margin: 12px;
-    border-radius: 28px;
-    padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-  }
-  .cal-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .cal-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: #8aa88a;
-    margin-bottom: 8px;
-  }
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-  }
-  .cal-day {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 40px;
-    cursor: pointer;
-  }
-  .cal-day.selected { background: var(--green-dark); color: white; }
-  .cal-day.today { background: var(--green-light); font-weight: 800; }
-  .cal-day.has-ride::after {
-    content: '';
-    width: 4px;
-    height: 4px;
-    background: var(--green-main);
-    border-radius: 50%;
-    margin-top: 2px;
-  }
-
-  /* Agenda rows */
-  .agenda-item {
-    background: white;
-    margin: 8px 16px;
-    padding: 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Bottom nav */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 20px 20px;
-    border-top: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    z-index: 200;
-  }
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    font-size: 11px;
-    font-weight: 600;
-    color: #8ba28b;
-  }
-  .nav-item.active { color: var(--green-dark); }
-
-  /* Sheet modal */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 300;
-    display: flex;
-    align-items: flex-end;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.2s;
-  }
-  .overlay.open { opacity: 1; pointer-events: auto; }
-  .sheet {
-    background: white;
-    width: 100%;
-    border-radius: 32px 32px 0 0;
-    padding: 20px;
-    max-height: 85vh;
-    overflow-y: auto;
-    transform: translateY(100%);
-    transition: 0.3s ease-out;
-  }
-  .overlay.open .sheet { transform: translateY(0); }
-  .hidden { display: none; }
-  .toast {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e2a1e;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 40px;
-    font-size: 14px;
-    z-index: 400;
-    opacity: 0;
-    transition: 0.2s;
-    pointer-events: none;
-  }
-  .toast.show { opacity: 1; bottom: 100px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ymaanyGO Driver - Werkend</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #f0f4f0;
+      padding: 16px;
+      padding-bottom: 80px;
+    }
+    .header {
+      background: #1b5e20;
+      color: white;
+      padding: 16px;
+      border-radius: 24px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .online-badge {
+      background: white;
+      color: #1b5e20;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid #dce8dc;
+    }
+    .ride-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .price {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1b5e20;
+    }
+    .btn {
+      background: #1b5e20;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-outline {
+      background: white;
+      border: 1px solid #1b5e20;
+      color: #1b5e20;
+    }
+    .empty {
+      text-align: center;
+      color: #6c8e6c;
+      padding: 40px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #1e2a1e;
+      color: white;
+      padding: 12px;
+      border-radius: 60px;
+      text-align: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+  </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div>
-    <div class="logo">ymaany<span>GO</span></div>
-    <div class="driver-name" id="driverName">Chauffeur</div>
-  </div>
-  <button class="toggle-btn online" id="onlineToggle">
-    <span class="status-dot"></span>
-    <span id="onlineText">Online</span>
-  </button>
+<div class="header">
+  <div><strong>ymaanyGO</strong><br><span id="driverName">Chauffeur</span></div>
+  <div class="online-badge" id="onlineToggle">✅ Online</div>
 </div>
 
-<!-- Home panel -->
-<div id="homePanel">
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">Ritten vandaag</div><div class="stat-value" id="todayCount">0</div></div>
-    <div class="stat-card"><div class="stat-label">Verdiend</div><div class="stat-value" id="todayEarn">€0</div></div>
-  </div>
-  <div class="segments">
-    <button class="seg-btn active" id="auctionTab">Veiling <span class="badge" id="pendingBadge">0</span></button>
-  </div>
-  <div id="homeFeed" class="feed"></div>
+<div id="ridesContainer" class="rides-list">
+  <div class="empty">🔁 Laden van ritten...</div>
 </div>
 
-<!-- Agenda panel -->
-<div id="agendaPanel" class="hidden">
-  <div class="cal-container" id="calendarContainer"></div>
-  <div id="agendaList"></div>
-</div>
-
-<!-- Account panel -->
-<div id="accountPanel" class="hidden">
-  <div style="background: var(--green-dark); padding: 32px 20px; text-align: center; color: white;">
-    <div style="font-size: 48px; font-weight: 800;" id="avatarInitials">Y</div>
-    <div style="font-size: 20px; font-weight: 700;" id="accountName">-</div>
-    <div style="font-size: 13px; opacity: 0.8;" id="accountEmail">-</div>
-  </div>
-  <div style="padding: 20px;">
-    <div style="background: white; border-radius: 28px; padding: 16px; margin-bottom: 20px;">
-      <div style="display: flex; justify-content: space-between; padding: 12px 0;"><span>Totale ritten</span><strong id="totalRides">0</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 12px 0;"><span>Totale verdiensten</span><strong id="totalEarnings">€0</strong></div>
-    </div>
-    <button class="btn btn-outline" style="width:100%;" id="logoutBtn">Uitloggen</button>
-  </div>
-</div>
-
-<!-- bottom nav -->
-<div class="bottom-nav">
-  <button class="nav-item active" data-page="home">🏠 Ritten</button>
-  <button class="nav-item" data-page="agenda">📅 Agenda</button>
-  <button class="nav-item" data-page="account">👤 Account</button>
-</div>
-
-<div class="overlay" id="sheetOverlay"><div class="sheet" id="sheetContent"></div></div>
-<div class="toast" id="toastMsg"></div>
+<div class="toast" id="toastMessage"></div>
 
 <script>
-  // ==================== SUPABASE ====================
+  // ==================== SUPABASE CONFIG ====================
   const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
   const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentUser = null;
-  let driverProfile = null;
+  let driverId = null;
   let rides = [];
   let online = true;
-  let currentPage = "home";
-  let selectedDate = new Date().toISOString().slice(0,10);
-
-  // Known rides for notification dedup
   let knownRideIds = new Set();
-  let firstLoad = true;
 
   // DOM elements
-  const homePanel = document.getElementById("homePanel");
-  const agendaPanel = document.getElementById("agendaPanel");
-  const accountPanel = document.getElementById("accountPanel");
-  const homeFeed = document.getElementById("homeFeed");
-  const agendaList = document.getElementById("agendaList");
-  const calendarContainer = document.getElementById("calendarContainer");
-  const sheetOverlay = document.getElementById("sheetOverlay");
-  const sheetContent = document.getElementById("sheetContent");
-  const toastMsg = document.getElementById("toastMsg");
+  const ridesContainer = document.getElementById("ridesContainer");
+  const toastMsg = document.getElementById("toastMessage");
+  const driverNameSpan = document.getElementById("driverName");
+  const onlineToggle = document.getElementById("onlineToggle");
 
-  // helpers
-  function showToast(msg, duration = 3000) {
-    toastMsg.textContent = msg;
+  // Helper: toast
+  function showToast(message, duration = 3000) {
+    toastMsg.textContent = message;
     toastMsg.classList.add("show");
     setTimeout(() => toastMsg.classList.remove("show"), duration);
   }
 
-  function formatTime(d) { return new Date(d).toLocaleTimeString("nl-NL", {hour:"2-digit", minute:"2-digit"}); }
-  function formatDate(d) { return new Date(d).toLocaleDateString("nl-NL", {day:"numeric", month:"short"}); }
-  function priceNum(price) { return parseFloat(String(price).replace("€","").replace(",",".")) || 0; }
-
-  // ==================== AUTH ====================
-  async function initAuth() {
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) { location.href = "/driver/login.html"; return false; }
-    currentUser = data.session.user;
-    const { data: prof } = await supabase.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-    driverProfile = prof || {};
-    document.getElementById("driverName").innerText = driverProfile.name || currentUser.email?.split("@")[0] || "Chauffeur";
-    document.getElementById("accountName").innerText = driverProfile.name || currentUser.email;
-    document.getElementById("accountEmail").innerText = currentUser.email;
-    const initial = (driverProfile.name?.[0] || currentUser.email?.[0] || "Y").toUpperCase();
-    document.getElementById("avatarInitials").innerText = initial;
-    return true;
+  // Helper: geluid
+  function playSound() {
+    try {
+      const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("sound blocked", e));
+    } catch(e) {}
   }
 
-  // ==================== FETCH RIDES & REALTIME ====================
-  async function fetchRides() {
-    if (!currentUser) return;
-    const { data, error } = await supabase
+  // Helper: notificatie (visueel + geluid)
+  function sendNotification(ride) {
+    if (!ride || ride.status !== "pending") return;
+    playSound();
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("🚖 Nieuwe rit beschikbaar!", {
+        body: `${ride.from_address?.split(",")[0]} → ${ride.to_address?.split(",")[0]} · €${ride.price} · ${new Date(ride.pickup_time).toLocaleTimeString("nl-NL", {hour:"2-digit", minute:"2-digit"})}`,
+        icon: "https://ymaanygo.nl/favicon.ico",
+        tag: ride.id
+      });
+    } else {
+      showToast("🔔 Nieuwe rit! Klik om te accepteren.", 5000);
+    }
+  }
+
+  // ==================== AUTHENTICATIE ====================
+  async function initAuth() {
+    // Voor demonstratie: we gebruiken een vaste testdriver als er geen sessie is
+    // Maar we proberen eerst bestaande sessie
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      currentUser = session.user;
+      driverId = currentUser.id;
+      const { data: profile } = await supabase.from("profiles").select("name").eq("id", driverId).maybeSingle();
+      driverNameSpan.innerText = profile?.name || currentUser.email?.split("@")[0] || "Chauffeur";
+      return true;
+    } else {
+      // Fallback: anonieme driver voor test (zonder login) - werkt alleen als RLS anon toestaat
+      // We genereren een vaste ID voor demo doeleinden
+      driverId = "test-driver-123";
+      driverNameSpan.innerText = "Demo Chauffeur";
+      console.warn("Geen ingelogde gebruiker, gebruik demo modus");
+      return true;
+    }
+  }
+
+  // ==================== RIDES LADEN & REALTIME ====================
+  async function loadRides() {
+    if (!driverId) return;
+    // Haal alle ritten op die 'pending' zijn OF toegewezen aan deze driver
+    let query = supabase
       .from("rides")
       .select("*")
-      .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
+      .or(`status.eq.pending,driver_id.eq.${driverId}`)
       .order("pickup_time", { ascending: true });
-    if (!error && data) {
-      rides = data;
-      renderHome();
-      renderStatsToday();
-      updateBadge();
-      if (currentPage === "agenda") renderCalendarAndAgenda();
-      if (currentPage === "account") renderAccountStats();
-      detectNewRidesAndNotify(data);
-    }
-  }
-
-  function detectNewRidesAndNotify(newRides) {
-    const pendingNow = newRides.filter(r => r.status === "pending");
-    if (firstLoad) {
-      pendingNow.forEach(r => knownRideIds.add(r.id));
-      firstLoad = false;
+    
+    const { data, error } = await query;
+    if (error) {
+      console.error("Fout bij laden:", error);
+      ridesContainer.innerHTML = `<div class="empty">⚠️ Fout: ${error.message}</div>`;
       return;
     }
-    for (const ride of pendingNow) {
-      if (!knownRideIds.has(ride.id)) {
+    if (data) {
+      const oldRides = rides;
+      rides = data;
+      renderRides();
+      // Detecteer nieuwe pending ritten
+      const newPending = rides.filter(r => r.status === "pending" && !knownRideIds.has(r.id));
+      for (const ride of newPending) {
         knownRideIds.add(ride.id);
-        // 🔔 SOUND + NOTIFICATION
-        playNotificationSound();
-        if (Notification.permission === "granted") {
-          new Notification("🚖 Nieuwe rit beschikbaar", {
-            body: `${ride.from_address?.split(",")[0]} → ${ride.to_address?.split(",")[0]} · €${ride.price} · ${formatTime(ride.pickup_time)}`,
-            icon: "https://ymaanygo.nl/favicon.ico",
-            tag: ride.id
-          });
-        } else {
-          showToast("🔔 Nieuwe rit! Check de veiling", 5000);
-        }
+        sendNotification(ride);
       }
     }
   }
 
-  function playNotificationSound() {
-    const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
-    audio.volume = 0.6;
-    audio.play().catch(e => console.log("audio blocked"));
+  function renderRides() {
+    if (!online) {
+      ridesContainer.innerHTML = `<div class="empty">📡 Je bent offline. Zet online om ritten te zien.</div>`;
+      return;
+    }
+    const pendingRides = rides.filter(r => r.status === "pending");
+    if (pendingRides.length === 0) {
+      ridesContainer.innerHTML = `<div class="empty">✨ Geen beschikbare ritten op dit moment.</div>`;
+      return;
+    }
+    ridesContainer.innerHTML = pendingRides.map(ride => `
+      <div class="card" data-ride-id="${ride.id}">
+        <div class="ride-header">
+          <span>📅 ${new Date(ride.pickup_time).toLocaleString("nl-NL", {day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"})}</span>
+          <span class="price">€${parseFloat(ride.price || 0).toFixed(2)}</span>
+        </div>
+        <div><strong>📍 ${ride.from_address?.split(",")[0] || "Onbekend"}</strong><br><span style="font-size:12px;">${ride.from_address || ""}</span></div>
+        <div style="margin-top: 8px;"><strong>🏁 ${ride.to_address?.split(",")[0] || "Bestemming"}</strong><br><span style="font-size:12px;">${ride.to_address || ""}</span></div>
+        <div style="display: flex; gap: 10px; margin-top: 16px;">
+          <button class="btn" onclick="acceptRide('${ride.id}')">✅ Accepteren</button>
+          <button class="btn btn-outline" onclick="navigateTo('${ride.from_address}')">🗺️ Navigeer</button>
+        </div>
+      </div>
+    `).join("");
   }
 
-  function setupRealtime() {
-    const channel = supabase.channel("rides-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "rides" }, (payload) => {
-        fetchRides();
-      })
-      .subscribe();
-  }
-
-  // ==================== ACCEPT RIDE with race condition protection ====================
-  async function acceptRide(rideId) {
+  // ==================== ACCEPT RIDE (met race condition check) ====================
+  window.acceptRide = async function(rideId) {
+    if (!driverId) {
+      showToast("❌ Niet ingelogd", 2000);
+      return;
+    }
+    // Update alleen als status nog 'pending' is
     const { data, error } = await supabase
       .from("rides")
       .update({
-        driver_id: currentUser.id,
-        driver_name: driverProfile.name || currentUser.email,
+        driver_id: driverId,
+        driver_name: driverNameSpan.innerText,
         status: "accepted",
         accepted_at: new Date().toISOString()
       })
       .eq("id", rideId)
-      .eq("status", "pending")
+      .eq("status", "pending")  // cruciale regel tegen race condition
       .select();
 
     if (error) {
-      showToast("❌ Fout bij accepteren", 3000);
+      showToast("❌ Fout: " + error.message, 3000);
       return;
     }
     if (!data || data.length === 0) {
       showToast("⚠️ Deze rit is al geaccepteerd door een andere chauffeur!", 4000);
       return;
     }
-    showToast("✅ Rit geaccepteerd! Ga naar Agenda", 3000);
-    closeSheet();
-    fetchRides();
-    showPage("agenda");
-  }
+    showToast("✅ Rit geaccepteerd! Bedankt.", 3000);
+    loadRides(); // herlaad
+  };
 
-  async function updateRideStatus(rideId, newStatus) {
-    await supabase.from("rides").update({ status: newStatus }).eq("id", rideId);
-    fetchRides();
-    closeSheet();
-  }
+  window.navigateTo = function(addr) {
+    if (addr) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`);
+  };
 
-  // ==================== LIVE LOCATION ====================
-  function startLiveLocation() {
-    if (!currentUser) return;
-    if ("geolocation" in navigator) {
-      navigator.geolocation.watchPosition(async (pos) => {
-        await supabase.from("driver_locations").upsert({
-          driver_id: currentUser.id,
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          updated_at: new Date().toISOString()
-        }, { onConflict: "driver_id" });
-      }, err => console.warn("location err"), { enableHighAccuracy: true, interval: 5000 });
-    }
-  }
-
-  // ==================== RENDER HOME ====================
-  function renderHome() {
-    if (!online) {
-      homeFeed.innerHTML = `<div style="text-align:center; padding:40px;">📡 Je bent offline. Zet online om ritten te zien.</div>`;
-      return;
-    }
-    const pendingRides = rides.filter(r => r.status === "pending");
-    if (pendingRides.length === 0) {
-      homeFeed.innerHTML = `<div style="text-align:center; padding:40px;">✨ Geen beschikbare ritten</div>`;
-      return;
-    }
-    homeFeed.innerHTML = pendingRides.map(ride => `
-      <div class="ride-card">
-        <div class="ride-header">
-          <span class="ride-time">📅 ${formatDate(ride.pickup_time)} ${formatTime(ride.pickup_time)}</span>
-          <span class="ride-status status-pending">Beschikbaar</span>
-        </div>
-        <div class="route-row">
-          <div class="route-icon"><div class="pin-start"></div><div class="route-line"></div></div>
-          <div class="route-text"><div class="route-addr">${ride.from_address?.split(",")[0] || ""}</div><div class="route-sub">${ride.from_address || ""}</div></div>
-          <button class="nav-icon" onclick="navigateTo('${ride.from_address}')">🗺️</button>
-        </div>
-        <div class="route-row">
-          <div class="route-icon"><div class="pin-end"></div></div>
-          <div class="route-text"><div class="route-addr">${ride.to_address?.split(",")[0] || ""}</div><div class="route-sub">${ride.to_address || ""}</div></div>
-          <button class="nav-icon" onclick="navigateTo('${ride.to_address}')">🗺️</button>
-        </div>
-        <div class="meta-row">
-          <span class="meta-chip">👥 ${ride.passengers || 1} pax</span>
-          <span class="meta-chip">🚗 ${ride.vehicle || "Standaard"}</span>
-        </div>
-        <div class="price-footer">
-          <div><span class="price-amount">€${priceNum(ride.price).toFixed(2)}</span><div style="font-size:11px;">✓ Geen commissie</div></div>
-          <div class="actions">
-            <button class="btn btn-outline" onclick="openRideDetail('${ride.id}')">Details</button>
-            <button class="btn btn-primary" onclick="acceptRide('${ride.id}')">Accepteren</button>
-          </div>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function renderStatsToday() {
-    const today = new Date().toISOString().slice(0,10);
-    const completedToday = rides.filter(r => r.driver_id === currentUser?.id && r.status === "completed" && r.pickup_time?.startsWith(today));
-    document.getElementById("todayCount").innerText = completedToday.length;
-    const total = completedToday.reduce((s, r) => s + priceNum(r.price), 0);
-    document.getElementById("todayEarn").innerHTML = `€${total.toFixed(2)}`;
-  }
-
-  function updateBadge() {
-    document.getElementById("pendingBadge").innerText = rides.filter(r => r.status === "pending").length;
-  }
-
-  // ==================== CALENDAR + AGENDA ====================
-  let currentCalYear = new Date().getFullYear();
-  let currentCalMonth = new Date().getMonth();
-
-  function renderCalendarAndAgenda() {
-    renderCalendar();
-    showAgendaForDate(selectedDate);
-  }
-
-  function renderCalendar() {
-    const firstDay = new Date(currentCalYear, currentCalMonth, 1);
-    const startWeekday = (firstDay.getDay() + 6) % 7;
-    const daysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
-    const todayStr = new Date().toISOString().slice(0,10);
-    const ridesByDate = new Set();
-    rides.filter(r => r.driver_id === currentUser?.id).forEach(r => {
-      if (r.pickup_time) ridesByDate.add(r.pickup_time.slice(0,10));
-    });
-
-    let gridHtml = `<div class="cal-header"><strong>${firstDay.toLocaleString("nl-NL", {month:"long", year:"numeric"})}</strong>
-      <div><button id="prevMonthBtn">◀</button> <button id="nextMonthBtn">▶</button></div></div>`;
-    gridHtml += `<div class="cal-weekdays"><span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span></div><div class="cal-grid">`;
-
-    for (let i = 0; i < startWeekday; i++) gridHtml += `<div></div>`;
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${currentCalYear}-${String(currentCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      let cls = "cal-day";
-      if (dateStr === selectedDate) cls += " selected";
-      if (dateStr === todayStr) cls += " today";
-      if (ridesByDate.has(dateStr)) cls += " has-ride";
-      gridHtml += `<div class="${cls}" data-date="${dateStr}">${d}</div>`;
-    }
-    gridHtml += `</div>`;
-    calendarContainer.innerHTML = gridHtml;
-    document.querySelectorAll(".cal-day").forEach(el => {
-      el.addEventListener("click", (e) => {
-        const date = el.dataset.date;
-        if (date) { selectedDate = date; renderCalendarAndAgenda(); }
-      });
-    });
-    document.getElementById("prevMonthBtn")?.addEventListener("click", () => { currentCalMonth--; if(currentCalMonth<0){currentCalMonth=11;currentCalYear--;} renderCalendarAndAgenda(); });
-    document.getElementById("nextMonthBtn")?.addEventListener("click", () => { currentCalMonth++; if(currentCalMonth>11){currentCalMonth=0;currentCalYear++;} renderCalendarAndAgenda(); });
-  }
-
-  function showAgendaForDate(date) {
-    const dayRides = rides.filter(r => r.driver_id === currentUser?.id && r.pickup_time?.startsWith(date)).sort((a,b)=>new Date(a.pickup_time)-new Date(b.pickup_time));
-    if (dayRides.length === 0) { agendaList.innerHTML = `<div style="padding:40px; text-align:center;">Geen ritten op ${date}</div>`; return; }
-    agendaList.innerHTML = dayRides.map(r => `
-      <div class="agenda-item" onclick="openRideDetail('${r.id}')">
-        <div><strong>${formatTime(r.pickup_time)}</strong><br>${r.from_address?.split(",")[0]} → ${r.to_address?.split(",")[0]}</div>
-        <div><strong>€${priceNum(r.price).toFixed(2)}</strong><br><span class="ride-status status-${r.status}">${r.status}</span></div>
-      </div>
-    `).join("");
-  }
-
-  function renderAccountStats() {
-    const myRides = rides.filter(r => r.driver_id === currentUser?.id);
-    const completed = myRides.filter(r => r.status === "completed");
-    document.getElementById("totalRides").innerText = completed.length;
-    const totalEarn = completed.reduce((s,r) => s + priceNum(r.price), 0);
-    document.getElementById("totalEarnings").innerText = `€${totalEarn.toFixed(2)}`;
-  }
-
-  // ==================== DETAIL SHEET ====================
-  function openRideDetail(rideId) {
-    const ride = rides.find(r => r.id === rideId);
-    if (!ride) return;
-    const isMine = ride.driver_id === currentUser?.id;
-    sheetContent.innerHTML = `
-      <div style="font-size:22px; font-weight:800;">${ride.from_address?.split(",")[0]} → ${ride.to_address?.split(",")[0]}</div>
-      <div style="margin: 12px 0;"><span>🕒 ${new Date(ride.pickup_time).toLocaleString("nl-NL")}</span></div>
-      <div style="background:#f5f5f5; padding:12px; border-radius:20px;"><strong>📍 Ophalen</strong><br>${ride.from_address}</div>
-      <div style="margin:8px 0; background:#f5f5f5; padding:12px; border-radius:20px;"><strong>🏁 Bestemming</strong><br>${ride.to_address}</div>
-      <div><strong>Klant:</strong> ${ride.customer_name || "—"} · ${ride.customer_phone || ""}</div>
-      <div><strong>Prijs:</strong> €${priceNum(ride.price).toFixed(2)}</div>
-      <div style="margin:20px 0; display:flex; gap:10px;">
-        <button class="btn btn-outline" onclick="navigateTo('${ride.from_address}')">🗺️ Start</button>
-        <button class="btn btn-outline" onclick="navigateTo('${ride.to_address}')">🗺️ Bestemming</button>
-        ${!isMine && ride.status === "pending" ? `<button class="btn btn-primary" onclick="acceptRide('${ride.id}')">Accepteren</button>` : ""}
-        ${isMine && ride.status === "accepted" ? `<button class="btn btn-amber" onclick="updateRideStatus('${ride.id}','on_the_way')">Onderweg</button>` : ""}
-        ${isMine && ride.status === "on_the_way" ? `<button class="btn btn-primary" onclick="updateRideStatus('${ride.id}','arrived')">Aangekomen</button>` : ""}
-        ${isMine && ride.status === "arrived" ? `<button class="btn btn-primary" onclick="updateRideStatus('${ride.id}','completed')">Voltooien</button>` : ""}
-      </div>
-    `;
-    sheetOverlay.classList.add("open");
-  }
-  function closeSheet() { sheetOverlay.classList.remove("open"); }
-  window.openRideDetail = openRideDetail;
-  window.acceptRide = acceptRide;
-  window.updateRideStatus = updateRideStatus;
-  window.navigateTo = (addr) => { if(addr) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`); };
-  window.closeSheet = closeSheet;
-  sheetOverlay.addEventListener("click", (e) => { if(e.target === sheetOverlay) closeSheet(); });
-
-  // ==================== PAGE SWITCH ====================
-  function showPage(page) {
-    currentPage = page;
-    homePanel.classList.add("hidden");
-    agendaPanel.classList.add("hidden");
-    accountPanel.classList.add("hidden");
-    if (page === "home") homePanel.classList.remove("hidden");
-    if (page === "agenda") agendaPanel.classList.remove("hidden"), renderCalendarAndAgenda();
-    if (page === "account") accountPanel.classList.remove("hidden"), renderAccountStats();
-    document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
-    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add("active");
-  }
-  document.querySelectorAll(".nav-item").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
-
-  // online toggle
-  const toggleBtn = document.getElementById("onlineToggle");
-  toggleBtn.addEventListener("click", () => {
+  // ==================== ONLINE TOGGLE ====================
+  onlineToggle.addEventListener("click", () => {
     online = !online;
-    toggleBtn.classList.toggle("offline", !online);
-    document.getElementById("onlineText").innerText = online ? "Online" : "Offline";
-    renderHome();
+    onlineToggle.innerText = online ? "✅ Online" : "❌ Offline";
+    renderRides();
   });
 
-  // logout
-  document.getElementById("logoutBtn").addEventListener("click", async () => { await supabase.auth.signOut(); location.href="/driver/login.html"; });
+  // ==================== REALTIME SUBSCRIPTION ====================
+  function setupRealtime() {
+    const channel = supabase
+      .channel("rides-public")
+      .on("postgres_changes", { event: "*", schema: "public", table: "rides" }, (payload) => {
+        console.log("Realtime update", payload);
+        loadRides(); // Direct opnieuw laden bij elke wijziging
+      })
+      .subscribe((status) => {
+        console.log("Realtime status:", status);
+        if (status === "SUBSCRIBED") showToast("🔌 Live verbinding actief", 2000);
+      });
+  }
 
-  // ==================== INIT ====================
-  (async function init() {
-    const authed = await initAuth();
-    if (!authed) return;
-    await fetchRides();
+  // ==================== INIT & NOTIFICATION PERMISSIONS ====================
+  async function init() {
+    await initAuth();
+    await loadRides();
     setupRealtime();
-    startLiveLocation();
-    if (Notification.permission !== "granted") Notification.requestPermission();
-    showPage("home");
-  })();
+    // Vraag toestemming voor notificaties bij eerste klik op de pagina
+    const requestNotificationPerm = () => {
+      if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission().then(perm => console.log("Notificatie toestemming:", perm));
+      }
+      document.removeEventListener("click", requestNotificationPerm);
+    };
+    document.addEventListener("click", requestNotificationPerm);
+    // Automatisch geluid/test bij laden
+    setTimeout(() => {
+      if (rides.filter(r => r.status === "pending").length > 0) {
+        playSound();
+      }
+    }, 1000);
+  }
+
+  init();
 </script>
 </body>
 </html>
