@@ -2,1024 +2,980 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>ymaanyGO Driver</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --g900:#1b5e20; --g800:#2e7d32; --g700:#388e3c; --g600:#43a047;
-  --g100:#e8f5e9; --g50:#f1f8f2;
-  --white:#ffffff; --bg:#f2f6f2; --border:#dce8dc;
-  --ink:#0f2211; --ink2:#3d5c40; --ink3:#7a9e7a;
-  --red:#c62828; --red-bg:#ffebee;
-  --amber:#e65100; --amber-bg:#fff3e0;
-  --blue:#1565c0; --blue-bg:#e3f2fd;
-  --tab-h:70px; --r:16px;
+:root{
+  --g900:#1b5e20;--g800:#2e7d32;--g700:#388e3c;--g600:#43a047;
+  --g100:#e8f5e9;--g50:#f1f8f2;
+  --w:#fff;--bg:#f0f4f1;--border:#dce8dc;
+  --ink:#0f2211;--ink2:#3d5c40;--ink3:#7a9e7a;
+  --red:#c62828;--red-bg:#ffebee;
+  --amber:#e65100;--amber-bg:#fff3e0;
+  --blue:#1565c0;--blue-bg:#e3f2fd;
+  --tab-h:68px;--r:16px;
 }
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;user-select:none}
 
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:calc(var(--tab-h)+12px);overflow-x:hidden}
+/* ══ TOPBAR ══ */
+.topbar{background:var(--g900);padding:13px 18px 11px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 3px 20px rgba(27,94,32,.4);z-index:80;position:relative}
+.topbar-left{display:flex;flex-direction:column;gap:1px}
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+.logo-fallback{font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1}
+.logo-fallback span{color:#a5d6a7}
+.driver-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-top:1px}
+.toggle-btn{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:50px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
+.toggle-btn.on{background:#fff;color:var(--g800)}
+.toggle-btn.off{background:rgba(255,255,255,.12);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.2)}
+.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toggle-btn.on .tdot{background:var(--g600);box-shadow:0 0 7px var(--g600);animation:blink 2s infinite}
+.toggle-btn.off .tdot{background:#ef5350}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--g900);padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90;box-shadow:0 2px 16px rgba(27,94,32,.35)}
-.topbar-left{display:flex;flex-direction:column;gap:2px}
+/* ══ PAGES ══ */
+.pages-outer{flex:1;overflow:hidden;position:relative}
+.pages-track{display:flex;height:100%;width:300%;will-change:transform;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.pages-track.notrans{transition:none}
+.page{width:33.333%;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.page-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 
-/* Logo SVG-based */
-.logo-wrap{display:flex;align-items:center;gap:0}
-.logo-text{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1}
-.logo-text em{font-style:normal;color:#a5d6a7}
-.logo-icon{width:28px;height:28px;margin-left:2px;flex-shrink:0}
-
-.driver-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.3px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-
-.toggle-btn{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:50px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-.toggle-btn.online{background:#fff;color:var(--g800)}
-.toggle-btn.offline{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
-.toggle-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.toggle-btn.online .toggle-dot{background:var(--g700);box-shadow:0 0 6px var(--g600);animation:blink 2s infinite}
-.toggle-btn.offline .toggle-dot{background:#f44336}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── HERO STATS ── */
-.hero{background:var(--g900);padding:0 18px 18px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px}
-.stat-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px}
-.stat-value{font-size:28px;font-weight:800;color:#fff;line-height:1.1;margin-top:4px;letter-spacing:-.5px}
-
-/* ── SECTION HEAD ── */
-.section-head{background:var(--white);padding:0 18px;border-bottom:1px solid var(--border);display:flex;align-items:center}
-.seg-btn{flex:1;padding:13px 8px;border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--ink3);cursor:pointer;position:relative;letter-spacing:.2px;transition:color .18s}
-.seg-btn.active{color:var(--g800)}
-.seg-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:3px;border-radius:3px 3px 0 0;background:var(--g800)}
-.seg-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--g800);color:#fff;font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;margin-left:5px;vertical-align:middle}
-
-/* ── FEED ── */
-.feed{padding:14px 14px 4px;display:flex;flex-direction:column;gap:12px}
-
-/* ── RIDE CARD ── */
-.rcard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06);animation:rise .32s cubic-bezier(.22,.68,0,1.2) both}
-.rcard::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
-@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
-
-.rcard-head{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 14px 9px;background:var(--g100);border-bottom:1px solid var(--border)}
-.rcard-date{font-size:12px;font-weight:700;color:var(--g900)}
-.rcard-id{font-size:10px;font-family:monospace;color:var(--ink3);margin-top:2px;letter-spacing:.4px}
-
-.rcard-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-.s-pending{background:#fff8e1;color:#e65100;border:1px solid #ffe0b2}
-.s-accepted{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
-.s-on_the_way{background:#e8eaf6;color:#283593;border:1px solid #c5cae9}
-.s-arrived{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
-.s-completed{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
-.s-cancelled{background:#ffebee;color:#c62828;border:1px solid #ffcdd2}
-
-.rroute{padding:12px 14px 10px}
-.rroute-row{display:flex;align-items:flex-start;gap:10px}
-.rroute-row+.rroute-row{margin-top:2px}
-.rroute-icon{display:flex;flex-direction:column;align-items:center;width:16px;flex-shrink:0;padding-top:3px}
-.rdot-a{width:10px;height:10px;border-radius:50%;background:var(--g900);flex-shrink:0}
-.rdot-b{width:10px;height:10px;border-radius:3px;border:2px solid var(--g700);background:var(--white);flex-shrink:0}
-.rline{width:2px;flex:1;min-height:20px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.4;margin:3px 0}
-.rroute-text{flex:1;padding-bottom:8px}
-.rroute-row:last-child .rroute-text{padding-bottom:0}
-.rroute-time{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:1px}
-.rroute-name{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3}
-.rroute-city{font-size:11.5px;color:var(--ink2);margin-top:1px}
-
-.rnav-btn{width:30px;height:30px;border-radius:8px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
-.rnav-btn:hover{background:#c8e6c9}
-
-.rmeta{display:flex;flex-wrap:wrap;gap:7px;padding:8px 14px;border-top:1px solid var(--border);background:#fafcfa}
-.rchip{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--ink2);background:var(--white);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
-.rchip svg{opacity:.6;flex-shrink:0}
-
-.rfoot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;border-top:1px solid var(--border);gap:10px}
-.rprice-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3)}
-.rprice-val{font-size:26px;font-weight:800;color:var(--g900);letter-spacing:-.5px;line-height:1}
-.rprice-note{font-size:10px;color:var(--g700);font-weight:600;margin-top:2px}
-.ractions{display:flex;gap:7px;flex-shrink:0}
-
-/* ── BUTTONS ── */
-.btn{border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:9px 16px;transition:all .15s;white-space:nowrap}
-.btn:active{transform:scale(.95)}
-.btn-primary{background:var(--g900);color:#fff}
-.btn-primary:hover{background:var(--g800)}
-.btn-success{background:#e8f5e9;color:var(--g800);border:1px solid #c8e6c9}
-.btn-outline{background:transparent;color:var(--ink2);border:1px solid var(--border)}
-.btn-outline:hover{background:var(--g100)}
-.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid #ffcdd2}
-.btn-amber{background:var(--amber-bg);color:var(--amber);border:1px solid #ffe0b2}
-.btn-blue{background:var(--blue-bg);color:var(--blue);border:1px solid #bbdefb}
-.btn-wide{width:100%;padding:14px;border-radius:12px;font-size:15px;text-align:center}
-a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-
-/* ── EMPTY ── */
-.empty{text-align:center;padding:60px 24px;color:var(--ink3)}
-.empty-icon{margin-bottom:10px;opacity:.3;display:flex;justify-content:center}
-.empty-title{font-size:16px;font-weight:700;color:var(--ink2)}
-.empty-sub{font-size:13px;margin-top:4px}
-
-/* ══════════════════════════════════════
-   AGENDA – COLLAPSIBLE CALENDAR
-══════════════════════════════════════ */
-.cal-header{background:var(--white);border-bottom:1px solid var(--border);overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
-.cal-header.expanded{max-height:420px}
-.cal-header.collapsed{max-height:60px}
-
-.cal-top-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none}
-.cal-month-label{font-size:17px;font-weight:800;color:var(--ink)}
-.cal-top-right{display:flex;align-items:center;gap:8px}
-.cal-nav{display:flex;gap:6px}
-.cal-nav-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--white);color:var(--ink2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.cal-nav-btn:hover{background:var(--g100)}
-.cal-chevron{width:20px;height:20px;color:var(--ink3);transition:transform .3s}
-.cal-chevron.open{transform:rotate(180deg)}
-
-/* strip (collapsed) */
-.cal-strip-row{display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:none}
-.cal-strip-row::-webkit-scrollbar{display:none}
-.strip-day{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:40px;padding:6px 4px;border-radius:10px;cursor:pointer;transition:background .15s;flex-shrink:0}
-.strip-day:hover{background:var(--g100)}
-.strip-day.today{background:var(--g900)}
-.strip-day.selected:not(.today){background:var(--g700)}
-.strip-dname{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
-.strip-dnum{font-size:15px;font-weight:800;color:var(--ink)}
-.strip-day.today .strip-dname,.strip-day.today .strip-dnum{color:#fff}
-.strip-day.selected:not(.today) .strip-dname,.strip-day.selected:not(.today) .strip-dnum{color:#fff}
-.strip-dot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
-.strip-day.today .strip-dot,.strip-day.selected .strip-dot{background:#a5d6a7}
-
-/* full grid (expanded) */
-.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 10px}
-.cal-wday{text-align:center;font-size:10px;font-weight:700;color:var(--ink3);padding:4px 0;text-transform:uppercase;letter-spacing:.4px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 10px 12px}
-.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:10px;cursor:pointer;transition:background .15s;font-size:14px;font-weight:600;color:var(--ink)}
-.cal-cell:hover{background:var(--g100)}
-.cal-cell.empty,.cal-cell.other-month{color:#ccc;cursor:default}
-.cal-cell.other-month:hover,.cal-cell.empty:hover{background:transparent}
-.cal-num{line-height:1}
-.cal-cell.today .cal-num{background:var(--g900);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
-.cal-cell.selected:not(.today) .cal-num{background:var(--g700);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
-.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
-.cal-cell.today .cal-dot{background:#a5d6a7}
-
-/* day rides */
-.agenda-day-label{font-size:15px;font-weight:800;color:var(--ink);padding:14px 16px 8px}
-.agenda-row{background:var(--white);border-radius:12px;padding:12px 14px;margin:0 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);border:1px solid var(--border);cursor:pointer;transition:background .15s;animation:rise .25s ease both}
-.agenda-row:hover{background:var(--g100)}
-.agenda-row-left{flex:1;min-width:0}
-.agenda-row-status{font-size:11px;font-weight:800;color:var(--g800);margin-bottom:2px}
-.agenda-row-route{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agenda-row-dir{font-size:11px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agenda-row-time{font-size:11px;color:var(--ink2);margin-top:3px;font-weight:500}
-.agenda-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.agenda-price{font-size:15px;font-weight:800;color:var(--g900);background:var(--g100);padding:3px 10px;border-radius:8px;border:1px solid var(--border)}
-
-/* ══════════════════════════════════════
-   RIDE DETAIL PAGE (full screen)
-══════════════════════════════════════ */
-#pgDetail{position:fixed;inset:0;background:var(--bg);z-index:150;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-#pgDetail.open{transform:translateX(0)}
-
-.detail-navbar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.detail-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:background .15s;flex-shrink:0}
-.detail-back:hover{background:var(--g100)}
-.detail-navbar-title{font-size:15px;font-weight:800;color:var(--ink)}
-
-.detail-body{padding:16px}
-
-.detail-route-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
-.detail-route-card::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
-
-.detail-route-inner{padding:14px}
-.detail-stop{display:flex;align-items:flex-start;gap:10px}
-.detail-stop+.detail-stop{margin-top:2px}
-.detail-stop-icon{display:flex;flex-direction:column;align-items:center;width:16px;flex-shrink:0;padding-top:3px}
-.detail-stop-line{width:2px;flex:1;min-height:24px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.4;margin:3px 0}
-.detail-stop-info{flex:1;padding-bottom:10px}
-.detail-stop:last-child .detail-stop-info{padding-bottom:0}
-.detail-stop-label{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.detail-stop-addr{font-size:14px;font-weight:700;color:var(--ink);line-height:1.3}
-.detail-stop-time{font-size:11px;color:var(--ink3);margin-top:2px}
-.detail-nav-btn{width:36px;height:36px;border-radius:10px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
-.detail-nav-btn:hover{background:#c8e6c9}
-
-.detail-info-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
-.detail-info-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border)}
-.detail-info-row:last-child{border-bottom:none}
-.detail-info-icon{width:34px;height:34px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
-.detail-info-label{font-size:11px;color:var(--ink3);font-weight:600}
-.detail-info-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px}
-
-.detail-price-box{background:var(--g100);border:1.5px solid #c8e6c9;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.detail-price-label{font-size:12px;color:var(--ink2);font-weight:600}
-.detail-price-note{font-size:11px;color:var(--g700);font-weight:600;margin-top:3px}
-.detail-price-val{font-size:34px;font-weight:800;color:var(--g900);letter-spacing:-1px}
-
-.detail-contact-row{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
-.detail-status-row{display:flex;flex-direction:column;gap:9px}
-
-/* client info reveal */
-.detail-client-hint{font-size:12px;color:var(--ink3);font-style:italic;padding:4px 0}
-
-/* ══════════════════════════════════════
-   ACCOUNT PAGE
-══════════════════════════════════════ */
-.acc-hero{background:var(--g900);padding:28px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.acc-avatar-wrap{position:relative;cursor:pointer}
-.acc-avatar{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;overflow:hidden}
-.acc-avatar img{width:100%;height:100%;object-fit:cover}
-.acc-avatar-edit{position:absolute;bottom:2px;right:2px;width:24px;height:24px;border-radius:50%;background:var(--g600);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:#fff}
-.acc-name{font-size:20px;font-weight:800;color:#fff}
-.acc-email{font-size:13px;color:rgba(255,255,255,.6)}
-.acc-body{padding:16px 14px;display:flex;flex-direction:column;gap:10px}
-
-.info-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.info-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.info-row:last-child{border-bottom:none}
-.info-row:hover{background:var(--g100)}
-.info-icon{width:34px;height:34px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
-.info-label{font-size:11px;color:var(--ink3);font-weight:600}
-.info-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px}
-.info-arrow{margin-left:auto;color:var(--ink3)}
-
-/* sub-pages inside account */
-#pgAccDetail,#pgAccSettings{position:fixed;inset:0;background:var(--bg);z-index:160;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-#pgAccDetail.open,#pgAccSettings.open{transform:translateX(0)}
-
-.subpage-navbar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.subpage-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:background .15s;flex-shrink:0}
-.subpage-back:hover{background:var(--g100)}
-.subpage-title{font-size:16px;font-weight:800;color:var(--ink)}
-.subpage-body{padding:16px 14px;display:flex;flex-direction:column;gap:12px}
-
-/* form fields */
-.field-label{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-.field-input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
-.field-input:focus{border-color:var(--g700)}
-
-/* nav app selector */
-.nav-option{display:flex;align-items:center;gap:14px;padding:14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.nav-option:last-child{border-bottom:none}
-.nav-option:hover{background:var(--g100)}
-.nav-option-icon{width:36px;height:36px;border-radius:10px;background:var(--g100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-option-label{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
-.nav-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.nav-radio.checked{border-color:var(--g800);background:var(--g800)}
-.nav-radio.checked::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
-
-/* ── BOTTOM TABS ── */
-.tabs{position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);background:var(--white);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom,0);z-index:100;box-shadow:0 -2px 20px rgba(0,0,0,.07)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border:none;background:none;color:var(--ink3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.2px;position:relative;transition:color .15s}
+/* ══ BOTTOM TABS ══ */
+.tabs{height:var(--tab-h);background:var(--w);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom,0);flex-shrink:0;box-shadow:0 -2px 18px rgba(0,0,0,.07);z-index:80}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border:none;background:none;color:var(--ink3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;position:relative;transition:color .15s}
 .tab.active{color:var(--g900)}
 .tab.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:0 0 4px 4px;background:var(--g900)}
 .tab svg{transition:transform .18s}
 .tab.active svg{transform:scale(1.12)}
 
-/* ── OVERLAY SHEET (kept for edge cases) ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s}
-.overlay.open{opacity:1;pointer-events:all}
-.sheet{width:100%;background:var(--white);border-radius:22px 22px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom,0px)+24px);transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto}
-.overlay.open .sheet{transform:translateY(0)}
-.sheet-handle{width:36px;height:4px;border-radius:2px;background:#ddd;margin:0 auto 20px}
+/* ══ RITTEN PAGE ══ */
+.section-bar{background:var(--w);padding:0 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;flex-shrink:0}
+.seg{flex:1;padding:13px 6px;border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--ink3);cursor:pointer;position:relative;transition:color .18s}
+.seg.active{color:var(--g800)}
+.seg.active::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:3px;border-radius:3px 3px 0 0;background:var(--g800)}
+.seg-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--g800);color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;padding:0 5px;margin-left:5px;vertical-align:middle}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:calc(var(--tab-h)+14px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--g900);color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .26s;z-index:999;white-space:nowrap;box-shadow:0 4px 18px rgba(27,94,32,.35)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.feed{padding:14px 13px 10px;display:flex;flex-direction:column;gap:11px}
+
+/* ══ RIDE CARD ══ */
+.rcard{background:var(--w);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);animation:rise .3s cubic-bezier(.22,.68,0,1.2) both}
+.rcard::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.rcard-head{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 13px 9px;background:var(--g100);border-bottom:1px solid var(--border)}
+.rcard-date{font-size:12px;font-weight:700;color:var(--g900)}
+.rcard-id{font-size:10px;font-family:monospace;color:var(--ink3);margin-top:1px}
+.rcard-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:50px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;flex-shrink:0}
+.sb-pending{background:#fff8e1;color:#e65100;border:1px solid #ffe0b2}
+.sb-accepted{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
+.sb-on_the_way{background:#e8eaf6;color:#283593;border:1px solid #c5cae9}
+.sb-arrived{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
+.sb-completed{background:var(--g100);color:var(--g800);border:1px solid #c8e6c9}
+.sb-cancelled{background:var(--red-bg);color:var(--red);border:1px solid #ffcdd2}
+
+.rroute{padding:12px 13px 9px}
+.rr{display:flex;align-items:flex-start;gap:9px}
+.rr+.rr{margin-top:2px}
+.rr-icon{display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0;padding-top:3px}
+.dot-a{width:10px;height:10px;border-radius:50%;background:var(--g900);flex-shrink:0}
+.dot-b{width:10px;height:10px;border-radius:3px;border:2.5px solid var(--g700);background:var(--w);flex-shrink:0}
+.vline{width:2px;flex:1;min-height:18px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.35;margin:3px 0}
+.rr-text{flex:1;padding-bottom:7px}
+.rr:last-child .rr-text{padding-bottom:0}
+.rr-name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+.rr-city{font-size:11px;color:var(--ink2);margin-top:1px}
+.navbtn{width:29px;height:29px;border-radius:8px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
+.navbtn:hover{background:#c8e6c9}
+
+.rmeta{display:flex;flex-wrap:wrap;gap:6px;padding:7px 13px;border-top:1px solid var(--border);background:#fafcfa}
+.chip{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;color:var(--ink2);background:var(--w);border:1px solid var(--border);border-radius:20px;padding:3px 9px}
+.chip svg{opacity:.6;flex-shrink:0}
+
+.rfoot{display:flex;align-items:center;justify-content:space-between;padding:9px 13px 11px;border-top:1px solid var(--border);gap:8px}
+.rprice-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3)}
+.rprice-val{font-size:25px;font-weight:800;color:var(--g900);letter-spacing:-.5px;line-height:1}
+.rprice-note{font-size:10px;color:var(--g700);font-weight:600;margin-top:1px}
+.rbtns{display:flex;gap:6px;flex-shrink:0}
+
+/* ══ BUTTONS ══ */
+.btn{border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:9px 14px;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn:active{transform:scale(.95)}
+.btn-g{background:var(--g900);color:#fff}
+.btn-g:hover{background:var(--g800)}
+.btn-ok{background:var(--g100);color:var(--g800);border:1px solid #c8e6c9}
+.btn-out{background:transparent;color:var(--ink2);border:1px solid var(--border)}
+.btn-out:hover{background:var(--g100)}
+.btn-red{background:var(--red-bg);color:var(--red);border:1px solid #ffcdd2}
+.btn-amber{background:var(--amber-bg);color:var(--amber);border:1px solid #ffe0b2}
+.btn-blue{background:var(--blue-bg);color:var(--blue);border:1px solid #bbdefb}
+.btn-w{width:100%;padding:14px;border-radius:12px;font-size:15px;justify-content:center}
+
+/* ══ EMPTY ══ */
+.empty{text-align:center;padding:56px 24px;color:var(--ink3)}
+.empty svg{opacity:.2;margin-bottom:10px}
+.empty-t{font-size:16px;font-weight:700;color:var(--ink2);margin-bottom:4px}
+.empty-s{font-size:13px}
+
+/* ══ AGENDA ══ */
+.cal-wrap{background:var(--w);border-bottom:1px solid var(--border);flex-shrink:0;overflow:hidden}
+.cal-toprow{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 8px}
+.cal-month{font-size:17px;font-weight:800;color:var(--ink)}
+.cal-ctrls{display:flex;align-items:center;gap:5px}
+.cal-nbtn{width:31px;height:31px;border-radius:50%;border:1px solid var(--border);background:var(--w);color:var(--ink2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.cal-nbtn:hover{background:var(--g100)}
+.cal-tbtn{width:31px;height:31px;border-radius:50%;border:1px solid var(--border);background:var(--w);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);transition:all .2s}
+.cal-tbtn svg{transition:transform .3s}
+.cal-tbtn.exp svg{transform:rotate(180deg)}
+
+/* Strip */
+.cal-strip{display:flex;gap:5px;padding:0 13px 11px;overflow-x:auto;scrollbar-width:none}
+.cal-strip::-webkit-scrollbar{display:none}
+.sday{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:41px;padding:6px 3px;border-radius:10px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.sday:hover{background:var(--g100)}
+.sday.today{background:var(--g900)}
+.sday.sel:not(.today){background:var(--g700)}
+.sday-n{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.3px}
+.sday-d{font-size:15px;font-weight:800;color:var(--ink)}
+.sday.today .sday-n,.sday.today .sday-d,.sday.sel .sday-n,.sday.sel .sday-d{color:#fff}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
+.sday.today .sdot,.sday.sel .sdot{background:rgba(255,255,255,.6)}
+
+/* Full grid */
+.cal-grid-wrap{padding:0 10px 10px}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px}
+.cal-wd{text-align:center;font-size:10px;font-weight:700;color:var(--ink3);padding:3px 0;text-transform:uppercase;letter-spacing:.3px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.ccell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:9px;cursor:pointer;transition:background .15s;font-size:14px;font-weight:600;color:var(--ink)}
+.ccell:hover:not(.dim){background:var(--g100)}
+.ccell.dim{color:#ccc;cursor:default}
+.cnum{line-height:1}
+.ccell.today .cnum{background:var(--g900);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.ccell.sel:not(.today) .cnum{background:var(--g700);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
+.ccell.today .cdot{background:#a5d6a7}
+
+.agenda-day-lbl{font-size:15px;font-weight:800;color:var(--ink);padding:13px 15px 7px}
+.arow{background:var(--w);border-radius:12px;padding:11px 13px;margin:0 13px 8px;display:flex;align-items:center;justify-content:space-between;gap:9px;box-shadow:0 1px 6px rgba(0,0,0,.06);border:1px solid var(--border);cursor:pointer;transition:background .15s;animation:rise .25s ease both}
+.arow:hover{background:var(--g50)}
+.arow-l{flex:1;min-width:0}
+.arow-status{font-size:11px;font-weight:800;color:var(--g800);margin-bottom:1px}
+.arow-route{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arow-dir{font-size:11px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arow-time{font-size:11px;color:var(--ink2);margin-top:2px;font-weight:500}
+.aprice{font-size:14px;font-weight:800;color:var(--g900);background:var(--g100);padding:4px 10px;border-radius:8px;border:1px solid var(--border);white-space:nowrap}
+
+/* ══ ACCOUNT ══ */
+.acc-hero{background:var(--g900);padding:28px 20px 22px;display:flex;flex-direction:column;align-items:center;gap:9px;flex-shrink:0}
+.acc-av-wrap{position:relative;cursor:pointer}
+.acc-av{width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#fff;overflow:hidden}
+.acc-av img{width:100%;height:100%;object-fit:cover}
+.acc-av-edit{position:absolute;bottom:1px;right:1px;width:24px;height:24px;border-radius:50%;background:var(--g600);border:2.5px solid var(--w);display:flex;align-items:center;justify-content:center;color:#fff}
+.acc-name{font-size:19px;font-weight:800;color:#fff}
+.acc-email{font-size:12px;color:rgba(255,255,255,.55)}
+.acc-body{padding:15px 13px;display:flex;flex-direction:column;gap:10px}
+.icard{background:var(--w);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.irow{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.irow:last-child{border-bottom:none}
+.irow:hover{background:var(--g100)}
+.iicon{width:33px;height:33px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
+.ilbl{font-size:11px;color:var(--ink3);font-weight:600}
+.ival{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px}
+.iarrow{margin-left:auto;color:var(--ink3);flex-shrink:0}
+
+/* ══ SUB PAGES ══ */
+.subpage{position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.subpage.open{transform:translateX(0)}
+.sp-nav{display:flex;align-items:center;gap:11px;padding:13px 15px;background:var(--w);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+.sp-back{width:35px;height:35px;border-radius:50%;border:1px solid var(--border);background:var(--w);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:background .15s;flex-shrink:0}
+.sp-back:hover{background:var(--g100)}
+.sp-title{font-size:16px;font-weight:800;color:var(--ink)}
+.sp-body{padding:15px 13px;display:flex;flex-direction:column;gap:12px}
+
+/* detail */
+.det-route{background:var(--w);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:13px}
+.det-route::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
+.det-route-inner{padding:13px}
+.det-stop{display:flex;align-items:flex-start;gap:9px}
+.det-stop+.det-stop{margin-top:2px}
+.det-stop-icon{display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0;padding-top:3px}
+.det-stop-line{width:2px;flex:1;min-height:22px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.35;margin:3px 0}
+.det-stop-info{flex:1;padding-bottom:9px}
+.det-stop:last-child .det-stop-info{padding-bottom:0}
+.det-stop-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.det-stop-addr{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3}
+.det-stop-time{font-size:11px;color:var(--ink3);margin-top:1px}
+.det-navbtn{width:34px;height:34px;border-radius:9px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
+.det-navbtn:hover{background:#c8e6c9}
+
+.det-info{background:var(--w);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:13px}
+.det-info-row{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--border)}
+.det-info-row:last-child{border-bottom:none}
+.det-iicon{width:33px;height:33px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
+.det-ilbl{font-size:11px;color:var(--ink3);font-weight:600}
+.det-ival{font-size:13.5px;font-weight:700;color:var(--ink);margin-top:1px}
+
+.det-price{background:var(--g100);border:1.5px solid #c8e6c9;border-radius:13px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.det-price-lbl{font-size:12px;color:var(--ink2);font-weight:600}
+.det-price-note{font-size:10.5px;color:var(--g700);font-weight:600;margin-top:2px}
+.det-price-val{font-size:32px;font-weight:800;color:var(--g900);letter-spacing:-1px}
+
+.det-contacts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
+.det-actions{display:flex;flex-direction:column;gap:8px}
+
+/* form */
+.flbl{font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.finput{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:11px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--w);outline:none;transition:border-color .15s}
+.finput:focus{border-color:var(--g700)}
+.finput:disabled{opacity:.45}
+
+/* nav app */
+.nav-opt{display:flex;align-items:center;gap:13px;padding:13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.nav-opt:last-child{border-bottom:none}
+.nav-opt:hover{background:var(--g100)}
+.nav-opt-icon{width:35px;height:35px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-opt-lbl{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
+.nav-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.nav-radio.on{border-color:var(--g800);background:var(--g800)}
+.nav-radio.on::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+
+/* ══ NOTIFICATION ══ */
+.notif{position:fixed;top:0;left:0;right:0;z-index:999;transform:translateY(-110%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
+.notif.show{transform:translateY(0)}
+.notif-inner{background:rgba(15,34,17,.96);backdrop-filter:blur(20px);border-radius:0 0 18px 18px;padding:max(env(safe-area-inset-top,14px),14px) 16px 14px;display:flex;align-items:flex-start;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.4);cursor:pointer;border-bottom:1px solid rgba(59,191,107,.2)}
+.notif-icon{width:40px;height:40px;border-radius:12px;background:var(--g700);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.notif-app{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.notif-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
+.notif-body{font-size:12px;color:rgba(255,255,255,.65);line-height:1.4}
+.notif-time{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px}
+
+/* ══ CONFIRM DIALOG ══ */
+.dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s}
+.dialog-bg.open{opacity:1;pointer-events:all}
+.dialog{background:var(--w);border-radius:20px;padding:26px 20px 18px;width:100%;max-width:310px;text-align:center;transform:scale(.88);transition:transform .22s}
+.dialog-bg.open .dialog{transform:scale(1)}
+.dialog-title{font-size:19px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.dialog-msg{font-size:14px;color:var(--ink3);line-height:1.5;margin-bottom:22px}
+.dialog-btns{display:flex;gap:10px}
+.dbtn{flex:1;padding:13px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .15s}
+.dbtn:active{transform:scale(.95)}
+.dbtn.nee{background:#f0f0f0;color:var(--ink)}
+.dbtn.nee:hover{background:#e0e0e0}
+.dbtn.ja{background:var(--g900);color:#fff}
+.dbtn.ja:hover{background:var(--g800)}
+
+/* ══ TOAST OK ══ */
+.toast-ok{position:fixed;bottom:calc(var(--tab-h)+12px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--g900);color:#fff;padding:10px 20px;border-radius:50px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .26s;z-index:997;white-space:nowrap;box-shadow:0 4px 18px rgba(27,94,32,.35)}
+.toast-ok.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══ TOAST ERR ══ */
+.toast-err{position:fixed;bottom:calc(var(--tab-h)+12px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--red);color:#fff;padding:11px 20px;border-radius:50px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .26s;z-index:997;max-width:88vw;text-align:center;box-shadow:0 4px 18px rgba(198,40,40,.4)}
+.toast-err.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<!-- ══ TOPBAR ══ -->
+<!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-left">
-    <div class="logo-wrap">
-      <!-- YmaanY text + steering wheel SVG logo -->
-      <div class="logo-text">Ymaany<em>G</em></div>
-      <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Steering wheel -->
-        <circle cx="50" cy="50" r="44" stroke="#d0d0d0" stroke-width="10" fill="none"/>
-        <circle cx="50" cy="50" r="28" stroke="#d0d0d0" stroke-width="6" fill="none"/>
-        <!-- spokes -->
-        <line x1="50" y1="22" x2="50" y2="38" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
-        <line x1="26" y1="64" x2="38" y2="57" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
-        <line x1="74" y1="64" x2="62" y2="57" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
-        <!-- center button -->
-        <circle cx="50" cy="50" r="8" fill="#f5d020"/>
-        <circle cx="50" cy="50" r="5" fill="#f0a500"/>
-      </svg>
+    <div>
+      <img class="logo-img" src="https://ymaanygo.nl/Photoroom_20260518_062850.png" alt="ymaanyGO"
+        onerror="this.style.display='none';document.getElementById('lf').style.display='block'">
+      <div id="lf" class="logo-fallback" style="display:none">Ymaany<span>GO</span></div>
     </div>
     <div class="driver-name" id="driverName">Chauffeur</div>
   </div>
-  <div class="topbar-right">
-    <button class="toggle-btn online" id="onlineBtn" onclick="toggleOnline()">
-      <span class="toggle-dot"></span>
-      <span id="onlineTxt">Online</span>
-    </button>
-  </div>
+  <button class="toggle-btn on" id="onlineBtn" onclick="toggleOnline()">
+    <span class="tdot"></span><span id="onlineTxt">Online</span>
+  </button>
 </header>
 
-<!-- ══ HOME PAGE ══ -->
-<div id="pgHome">
-  <div class="hero">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">Ritten vandaag</div><div class="stat-value" id="todayCount">0</div></div>
-      <div class="stat-card"><div class="stat-label">Verdiensten</div><div class="stat-value" id="todayMoney">€0</div></div>
+<!-- PAGES -->
+<div class="pages-outer" id="pagesOuter">
+  <div class="pages-track" id="pagesTrack">
+
+    <!-- PAGE 0: RITTEN -->
+    <div class="page">
+      <div class="section-bar">
+        <button class="seg active">Ritten <span class="seg-badge" id="badge0">0</span></button>
+      </div>
+      <div class="page-scroll"><div class="feed" id="homeFeed"></div></div>
     </div>
-  </div>
-  <div class="section-head">
-    <button class="seg-btn active" id="segRitten">
-      Ritten <span class="seg-badge" id="auctionBadge">0</span>
-    </button>
-  </div>
-  <div class="feed" id="homeFeed"></div>
-</div>
 
-<!-- ══ AGENDA PAGE ══ -->
-<div id="pgAgenda" class="hidden">
-
-  <!-- Collapsible calendar -->
-  <div class="cal-header expanded" id="calHeader">
-    <div class="cal-top-row" onclick="toggleCal()">
-      <div class="cal-month-label" id="calMonthLabel">Mei 2026</div>
-      <div class="cal-top-right">
-        <div class="cal-nav" onclick="event.stopPropagation()">
-          <button class="cal-nav-btn" onclick="calPrev()">‹</button>
-          <button class="cal-nav-btn" onclick="calNext()">›</button>
+    <!-- PAGE 1: AGENDA -->
+    <div class="page">
+      <div class="cal-wrap" id="calWrap">
+        <div class="cal-toprow">
+          <div class="cal-month" id="calMonth">Mei 2026</div>
+          <div class="cal-ctrls">
+            <button class="cal-nbtn" onclick="calNav(-1)">‹</button>
+            <button class="cal-nbtn" onclick="calNav(1)">›</button>
+            <button class="cal-tbtn exp" id="calTbtn" onclick="toggleCal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+          </div>
         </div>
-        <svg class="cal-chevron open" id="calChevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-      </div>
-    </div>
-    <!-- Full grid (expanded) -->
-    <div id="calFull">
-      <div class="cal-weekdays">
-        <div class="cal-wday">Ma</div><div class="cal-wday">Di</div><div class="cal-wday">Wo</div>
-        <div class="cal-wday">Do</div><div class="cal-wday">Vr</div><div class="cal-wday">Za</div><div class="cal-wday">Zo</div>
-      </div>
-      <div class="cal-grid" id="calGrid"></div>
-    </div>
-    <!-- Strip (collapsed) -->
-    <div id="calStrip" class="cal-strip-row hidden"></div>
-  </div>
-
-  <div id="agendaDayLabel" class="agenda-day-label" style="display:none"></div>
-  <div id="agendaFeed" style="padding-bottom:8px"></div>
-</div>
-
-<!-- ══ ACCOUNT PAGE ══ -->
-<div id="pgAccount" class="hidden">
-  <div class="acc-hero">
-    <div class="acc-avatar-wrap" onclick="triggerAvatarUpload()">
-      <div class="acc-avatar" id="accAvatar">?</div>
-      <div class="acc-avatar-edit">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </div>
-    </div>
-    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatar(event)">
-    <div class="acc-name" id="accName">-</div>
-    <div class="acc-email" id="accEmail">-</div>
-  </div>
-
-  <div class="acc-body">
-    <!-- Stats -->
-    <div class="info-card">
-      <div class="info-row" style="cursor:default">
-        <div class="info-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <div id="calFullWrap" class="cal-grid-wrap">
+          <div class="cal-wdays">
+            <div class="cal-wd">Ma</div><div class="cal-wd">Di</div><div class="cal-wd">Wo</div>
+            <div class="cal-wd">Do</div><div class="cal-wd">Vr</div><div class="cal-wd">Za</div><div class="cal-wd">Zo</div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
         </div>
-        <div><div class="info-label">Rol</div><div class="info-val" id="accRole">driver</div></div>
+        <div id="calStripEl" class="cal-strip hidden"></div>
       </div>
-      <div class="info-row" style="cursor:default">
-        <div class="info-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div><div class="info-label">Totale ritten</div><div class="info-val" id="accTotal">0</div></div>
-      </div>
-      <div class="info-row" style="cursor:default">
-        <div class="info-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        </div>
-        <div><div class="info-label">Totale verdiensten</div><div class="info-val" id="accEarnings">€0</div></div>
+      <div class="page-scroll">
+        <div id="agendaDayLbl" class="agenda-day-lbl" style="display:none"></div>
+        <div id="agendaFeed" style="padding-bottom:10px"></div>
       </div>
     </div>
 
-    <!-- Links -->
-    <div class="info-card">
-      <div class="info-row" onclick="showAccDetail()">
-        <div class="info-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <!-- PAGE 2: ACCOUNT -->
+    <div class="page">
+      <div class="page-scroll">
+        <div class="acc-hero">
+          <div class="acc-av-wrap" onclick="triggerAvatar()">
+            <div class="acc-av" id="accAv">?</div>
+            <div class="acc-av-edit">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+          </div>
+          <input type="file" id="avInput" accept="image/*" style="display:none" onchange="handleAvatar(event)">
+          <div class="acc-name" id="accName">-</div>
+          <div class="acc-email" id="accEmail">-</div>
         </div>
-        <div><div class="info-label">Profiel</div><div class="info-val">Accountgegevens</div></div>
-        <svg class="info-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="info-row" onclick="showAccSettings()">
-        <div class="info-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <div class="acc-body">
+          <div class="icard">
+            <div class="irow" style="cursor:default">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+              <div><div class="ilbl">Rol</div><div class="ival" id="accRole">driver</div></div>
+            </div>
+            <div class="irow" style="cursor:default">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div><div class="ilbl">Ritten deze week</div><div class="ival" id="accWRitten">0</div></div>
+            </div>
+            <div class="irow" style="cursor:default">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+              <div><div class="ilbl">Verdiensten deze week</div><div class="ival" id="accWEarn">€0</div></div>
+            </div>
+          </div>
+          <div class="icard">
+            <div class="irow" onclick="openAccDetail()">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+              <div><div class="ilbl">Profiel</div><div class="ival">Accountgegevens</div></div>
+              <svg class="iarrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="irow" onclick="openSP('pgSettings')">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+              <div><div class="ilbl">Navigatie & Voorkeuren</div><div class="ival">App instellingen</div></div>
+              <svg class="iarrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="irow" onclick="window.open('https://ymaanygo.nl/contact.html','_blank')">
+              <div class="iicon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div><div class="ilbl">Hulp nodig?</div><div class="ival">Support</div></div>
+              <svg class="iarrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <button class="btn btn-red btn-w" onclick="logout()">Uitloggen</button>
         </div>
-        <div><div class="info-label">Navigatie &amp; Voorkeuren</div><div class="info-val">App instellingen</div></div>
-        <svg class="info-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
     </div>
 
-    <button class="btn btn-danger btn-wide" onclick="logout()">Uitloggen</button>
   </div>
 </div>
 
-<!-- ══ BOTTOM TABS ══ -->
+<!-- TABS -->
 <nav class="tabs">
-  <button class="tab active" id="tabHome" onclick="showPage('home')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/></svg>
+  <button class="tab active" id="tab0" onclick="goPage(0)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/></svg>
     Ritten
   </button>
-  <button class="tab" id="tabAgenda" onclick="showPage('agenda')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+  <button class="tab" id="tab1" onclick="goPage(1)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     Agenda
   </button>
-  <button class="tab" id="tabAccount" onclick="showPage('account')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  <button class="tab" id="tab2" onclick="goPage(2)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     Account
   </button>
 </nav>
 
-<!-- ══ RIDE DETAIL PAGE (full screen) ══ -->
-<div id="pgDetail">
-  <div class="detail-navbar">
-    <button class="detail-back" onclick="closeDetail()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="detail-navbar-title">Ritdetails</div>
+<!-- SUB: Ride Detail -->
+<div class="subpage" id="pgDetail">
+  <div class="sp-nav">
+    <button class="sp-back" onclick="closeSP('pgDetail')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sp-title">Ritdetails</div>
   </div>
-  <div class="detail-body" id="detailBody"></div>
+  <div class="sp-body" id="detailBody"></div>
 </div>
 
-<!-- ══ ACCOUNT DETAIL SUB-PAGE ══ -->
-<div id="pgAccDetail">
-  <div class="subpage-navbar">
-    <button class="subpage-back" onclick="closeAccDetail()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="subpage-title">Accountgegevens</div>
+<!-- SUB: Account Detail -->
+<div class="subpage" id="pgAccDetail">
+  <div class="sp-nav">
+    <button class="sp-back" onclick="closeSP('pgAccDetail')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sp-title">Accountgegevens</div>
   </div>
-  <div class="subpage-body">
-    <div class="info-card" style="padding:16px;display:flex;flex-direction:column;gap:14px">
-      <div>
-        <div class="field-label">Voornaam</div>
-        <input class="field-input" id="fieldFirst" placeholder="Voornaam">
-      </div>
-      <div>
-        <div class="field-label">Achternaam</div>
-        <input class="field-input" id="fieldLast" placeholder="Achternaam">
-      </div>
-      <div>
-        <div class="field-label">Telefoonnummer</div>
-        <input class="field-input" id="fieldPhone" placeholder="+31 6 ...">
-      </div>
-      <div>
-        <div class="field-label">E-mail</div>
-        <input class="field-input" id="fieldEmail" placeholder="email@..." disabled style="opacity:.6">
-      </div>
+  <div class="sp-body">
+    <div class="icard" style="padding:15px;display:flex;flex-direction:column;gap:13px">
+      <div><div class="flbl">Voornaam</div><input class="finput" id="fFirst" placeholder="Voornaam"></div>
+      <div><div class="flbl">Achternaam</div><input class="finput" id="fLast" placeholder="Achternaam"></div>
+      <div><div class="flbl">Telefoonnummer</div><input class="finput" id="fPhone" placeholder="+31 6 ..."></div>
+      <div><div class="flbl">E-mail</div><input class="finput" id="fEmail" placeholder="email@..." disabled></div>
     </div>
-    <button class="btn btn-primary btn-wide" onclick="saveProfile()">
-      <svg style="vertical-align:-2px;margin-right:6px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      Opslaan
-    </button>
+    <button class="btn btn-g btn-w" onclick="saveProfile()">Opslaan</button>
   </div>
 </div>
 
-<!-- ══ APP SETTINGS SUB-PAGE ══ -->
-<div id="pgAccSettings">
-  <div class="subpage-navbar">
-    <button class="subpage-back" onclick="closeAccSettings()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="subpage-title">App instellingen</div>
+<!-- SUB: App Settings -->
+<div class="subpage" id="pgSettings">
+  <div class="sp-nav">
+    <button class="sp-back" onclick="closeSP('pgSettings')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="sp-title">App instellingen</div>
   </div>
-  <div class="subpage-body">
-    <div style="font-size:13px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px">Standaard navigatie App</div>
-    <div class="info-card">
-      <!-- Waze -->
-      <div class="nav-option" onclick="setNavApp('waze')">
-        <div class="nav-option-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g800)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="10" r="6"/><circle cx="10" cy="9" r="1" fill="var(--g800)" stroke="none"/><circle cx="14" cy="9" r="1" fill="var(--g800)" stroke="none"/><path d="M9 12 q3 3 6 0"/><path d="M12 16 v4"/><circle cx="9" cy="21" r="1" fill="var(--g800)" stroke="none"/><circle cx="15" cy="21" r="1" fill="var(--g800)" stroke="none"/></svg>
-        </div>
-        <div class="nav-option-label">Waze</div>
-        <div class="nav-radio" id="radio-waze"></div>
+  <div class="sp-body">
+    <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px">Standaard navigatie App</div>
+    <div class="icard">
+      <div class="nav-opt" onclick="setNavApp('waze')">
+        <div class="nav-opt-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--g800)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="10" r="6"/><circle cx="10" cy="9" r="1" fill="var(--g800)" stroke="none"/><circle cx="14" cy="9" r="1" fill="var(--g800)" stroke="none"/><path d="M9 12q3 3 6 0"/><path d="M12 16v4"/><circle cx="9" cy="21" r="1" fill="var(--g800)" stroke="none"/><circle cx="15" cy="21" r="1" fill="var(--g800)" stroke="none"/></svg></div>
+        <div class="nav-opt-lbl">Waze</div>
+        <div class="nav-radio" id="r-waze"></div>
       </div>
-      <!-- Google Maps -->
-      <div class="nav-option" onclick="setNavApp('google')">
-        <div class="nav-option-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4" stroke="none"/>
-            <circle cx="12" cy="9" r="2.5" fill="white" stroke="none"/>
-          </svg>
-        </div>
-        <div class="nav-option-label">Google Maps</div>
-        <div class="nav-radio" id="radio-google"></div>
+      <div class="nav-opt" onclick="setNavApp('google')">
+        <div class="nav-opt-icon"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/><circle cx="12" cy="9" r="2.5" fill="white"/></svg></div>
+        <div class="nav-opt-lbl">Google Maps</div>
+        <div class="nav-radio" id="r-google"></div>
       </div>
-      <!-- Apple Maps -->
-      <div class="nav-option" onclick="setNavApp('apple')">
-        <div class="nav-option-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round">
-            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#555" stroke="none"/>
-          </svg>
-        </div>
-        <div class="nav-option-label">Apple Maps</div>
-        <div class="nav-radio" id="radio-apple"></div>
+      <div class="nav-opt" onclick="setNavApp('apple')">
+        <div class="nav-opt-icon"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#555"/></svg></div>
+        <div class="nav-opt-lbl">Apple Maps</div>
+        <div class="nav-radio" id="r-apple"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ TOAST ══ -->
-<div class="toast" id="toast"></div>
+<!-- NOTIFICATION BANNER -->
+<div class="notif" id="notifEl" onclick="notifTap()">
+  <div class="notif-inner">
+    <div class="notif-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/></svg>
+    </div>
+    <div style="flex:1">
+      <div class="notif-app">ymaanyGO Driver</div>
+      <div class="notif-title" id="notifTitle">Nieuwe rit!</div>
+      <div class="notif-body" id="notifBody"></div>
+      <div class="notif-time">nu</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="dialog-bg" id="dialogBg">
+  <div class="dialog">
+    <div class="dialog-title">Weet je het zeker?</div>
+    <div class="dialog-msg">Weet je zeker dat je deze veiling wilt accepteren?</div>
+    <div class="dialog-btns">
+      <button class="dbtn nee" onclick="closeDialog()">Nee</button>
+      <button class="dbtn ja" onclick="confirmAccept()">Ja</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-ok" id="toastOk"></div>
+<div class="toast-err" id="toastErr"></div>
 
 <script>
-/* ── SUPABASE ── */
-const SUPABASE_URL      = "https://lxbfobdczjgqnotwsnki.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/* ══════════════════════════════
+   SUPABASE
+══════════════════════════════ */
+const SB_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SB_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SB_URL, SB_KEY);
 
-/* ── STATE ── */
-let currentUser   = null;
-let driverProfile = null;
-let rides         = [];
-let online        = true;
-let currentPage   = "home";
-let navApp        = localStorage.getItem("navApp") || "google";
-
-let calYear    = new Date().getFullYear();
-let calMonth   = new Date().getMonth();
-let calExpanded = true;
-let selectedDate = new Date().toISOString().slice(0,10);
-
-const MONTHS_NL = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
-
-/* ── HELPERS ── */
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let user = null, profile = null, rides = [], online = true;
+let curPage = 0, pendingId = null, notifRideId = null;
+let navApp = localStorage.getItem("navApp") || "google";
+let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
+let calExp = true, selDate = new Date().toISOString().slice(0,10);
+const MONTHS = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
 const $ = id => document.getElementById(id);
-const priceNum = v => Number(String(v||"0").replace("€","").replace(",",".").trim())||0;
+const priceN = v => Number(String(v||"0").replace("€","").replace(",",".").trim())||0;
+const fmtT = v => { if(!v) return "--:--"; const d=new Date(v); return isNaN(d)?"--:--":d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}); };
+const fmtD = v => { if(!v) return "-"; const d=new Date(v); return isNaN(d)?"-":d.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}); };
+const inits = n => n?n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase():"?";
+const sLabel = s => ({pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"}[s]||s||"?");
+const sCls = s => ({pending:"sb-pending",accepted:"sb-accepted",on_the_way:"sb-on_the_way",arrived:"sb-arrived",completed:"sb-completed",cancelled:"sb-cancelled"}[s]||"sb-pending");
 
-function fmtDT(v){
-  if(!v) return "-";
-  const d=new Date(v); if(isNaN(d)) return v;
-  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
-}
-function initials(n){ return n?n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase():"?" }
+/* ══════════════════════════════
+   TOASTS
+══════════════════════════════ */
+function tOk(m){const e=$("toastOk");e.textContent=m;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2800)}
+function tErr(m){const e=$("toastErr");e.textContent=m;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),3500)}
 
-function statusClass(s){
-  return {pending:"s-pending",accepted:"s-accepted",on_the_way:"s-on_the_way",arrived:"s-arrived",completed:"s-completed",cancelled:"s-cancelled"}[s]||"s-pending";
-}
-function statusLabel(s){
-  return {pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"}[s]||s||"?";
-}
-
-/* ── TOAST ── */
-function toast(msg,dur=2800){
-  const el=$("toast"); el.textContent=msg; el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"),dur);
-}
-
-/* ── PAGE NAV ── */
-function showPage(p){
-  ["home","agenda","account"].forEach(n=>{
-    $(`pg${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.add("hidden");
-    $(`tab${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.remove("active");
-  });
-  $(`pg${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.remove("hidden");
-  $(`tab${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.add("active");
-  currentPage=p;
-  if(p==="agenda") renderAgenda();
-  if(p==="account") renderAccount();
+/* ══════════════════════════════
+   PAGE NAVIGATION
+══════════════════════════════ */
+function goPage(i,anim=true){
+  curPage=i;
+  const t=$("pagesTrack");
+  if(!anim){t.classList.add("notrans");setTimeout(()=>t.classList.remove("notrans"),10)}
+  t.style.transform=`translateX(${-i*33.333}%)`;
+  [0,1,2].forEach(n=>$(`tab${n}`).classList.toggle("active",n===i));
+  if(i===1) renderAgenda();
+  if(i===2) renderAccount();
 }
 
-/* ── ONLINE TOGGLE ── */
+/* Page swipe */
+(()=>{
+  const o=$("pagesOuter"); let sx=0,sy=0;
+  o.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  o.addEventListener("touchend",e=>{
+    const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>Math.abs(dy)*1.3&&Math.abs(dx)>45){
+      if(dx<0&&curPage<2) goPage(curPage+1);
+      else if(dx>0&&curPage>0) goPage(curPage-1);
+    }
+  },{passive:true});
+})();
+
+/* ══════════════════════════════
+   ONLINE TOGGLE
+══════════════════════════════ */
 function toggleOnline(){
   online=!online;
-  const btn=$("onlineBtn");
-  btn.className="toggle-btn "+(online?"online":"offline");
+  const b=$("onlineBtn"); b.className="toggle-btn "+(online?"on":"off");
   $("onlineTxt").textContent=online?"Online":"Offline";
   renderHome();
+  online?startLoc():stopLoc();
 }
 
-/* ── AUTH ── */
-async function protect(){
+/* ══════════════════════════════
+   AUTH
+══════════════════════════════ */
+async function auth(){
   const {data}=await db.auth.getSession();
   if(!data.session){location.href="/driver/login.html";return false;}
-  currentUser=data.session.user;
-  const {data:prof}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
-  driverProfile=prof||{};
-  const name=driverProfile.name||currentUser.email||"Chauffeur";
-  $("driverName").textContent=name;
+  user=data.session.user;
+  const {data:p}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
+  profile=p||{};
+  $("driverName").textContent=profile.name||user.email||"Chauffeur";
   return true;
 }
 
-/* ── LOAD ── */
+/* ══════════════════════════════
+   REALTIME
+══════════════════════════════ */
+let knownPending=new Set();
+
+async function init(){
+  const ok=await auth(); if(!ok) return;
+  await loadRides();
+  startLoc();
+
+  // Subscribe realtime
+  db.channel("rides-live")
+    .on("postgres_changes",{event:"*",schema:"public",table:"rides"},({eventType,new:nr,old:or})=>{
+      if(eventType==="INSERT"){
+        if(nr.status==="pending"){
+          if(!knownPending.has(nr.id)){knownPending.add(nr.id);showNotif(nr);}
+          if(!rides.find(r=>r.id===nr.id)) rides.push(nr);
+        }
+      } else if(eventType==="UPDATE"){
+        const i=rides.findIndex(r=>r.id===nr.id);
+        if(i>-1) rides[i]=nr; else if(nr.status==="pending"||nr.driver_id===user.id) rides.push(nr);
+        if(nr.status!=="pending") knownPending.delete(nr.id);
+      } else if(eventType==="DELETE"){
+        rides=rides.filter(r=>r.id!==or.id); knownPending.delete(or.id);
+      }
+      rides=rides.filter(r=>r.status==="pending"||r.driver_id===user.id);
+      renderHome(); updateBadge();
+      if(curPage===1) renderAgenda();
+      if(curPage===2) renderAccount();
+    })
+    .subscribe();
+}
+
 async function loadRides(){
-  const ok=await protect(); if(!ok) return;
   const {data,error}=await db.from("rides").select("*")
-    .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
+    .or(`status.eq.pending,driver_id.eq.${user.id}`)
     .order("pickup_time",{ascending:true});
-  if(error){$("homeFeed").innerHTML=errState(error.message);return;}
+  if(error) return;
   rides=data||[];
-  renderHome(); renderStats(); updateBadges();
-  if(currentPage==="agenda") renderAgenda();
+  // init known pending (no notif on first load)
+  rides.filter(r=>r.status==="pending").forEach(r=>knownPending.add(r.id));
+  renderHome(); updateBadge();
+  if(curPage===1) renderAgenda();
+  if(curPage===2) renderAccount();
 }
 
-/* ── STATS ── */
-function renderStats(){
-  const today=new Date().toISOString().slice(0,10);
-  const done=rides.filter(r=>r.driver_id===currentUser.id&&String(r.pickup_time||"").slice(0,10)===today&&r.status==="completed");
-  $("todayCount").textContent=done.length;
-  $("todayMoney").textContent="€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
+function updateBadge(){$("badge0").textContent=rides.filter(r=>r.status==="pending").length}
+
+/* ══════════════════════════════
+   NOTIFICATION
+══════════════════════════════ */
+let notifTimer=null;
+function showNotif(r){
+  const from=(r.from_address||"-").split(",")[0].trim();
+  const to=(r.to_address||"-").split(",")[0].trim();
+  const dt=r.pickup_time?new Date(r.pickup_time):null;
+  const dateStr=dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"}):"";
+  const timeStr=fmtT(r.pickup_time);
+  const km=r.distance_km?`${r.distance_km}km · `:"";
+  $("notifTitle").textContent=`${from} → ${to}`;
+  $("notifBody").textContent=[dateStr,timeStr,km?km.slice(0,-3):"",r.price?`Veiling eindigt op ${r.price}`:"",r.passengers?`${r.passengers} Passagiers`:""].filter(Boolean).join(". ");
+  notifRideId=r.id;
+  playBeep();
+  $("notifEl").classList.add("show");
+  clearTimeout(notifTimer);
+  notifTimer=setTimeout(()=>$("notifEl").classList.remove("show"),6500);
 }
-function updateBadges(){
-  $("auctionBadge").textContent=rides.filter(r=>r.status==="pending").length;
+function notifTap(){
+  $("notifEl").classList.remove("show");
+  if(notifRideId){goPage(0);setTimeout(()=>openDetail(notifRideId),300);}
+}
+function playBeep(){
+  try{
+    const c=new(window.AudioContext||window.webkitAudioContext)();
+    [[523,.0,.15],[659,.18,.15],[784,.36,.15],[1047,.54,.2]].forEach(([f,t,d])=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);
+      o.frequency.value=f;o.type="sine";
+      const st=c.currentTime+t;
+      g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.28,st+.04);g.gain.exponentialRampToValueAtTime(.001,st+d);
+      o.start(st);o.stop(st+d);
+    });
+  }catch(e){}
 }
 
-/* ── HOME ── */
+/* ══════════════════════════════
+   HOME
+══════════════════════════════ */
 function renderHome(){
   if(!online){
-    $("homeFeed").innerHTML=`<div class="empty"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="empty-title">Je bent offline</div><div class="empty-sub">Zet jezelf online om ritten te zien</div></div>`;
+    $("homeFeed").innerHTML=`<div class="empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg><div class="empty-t">Je bent offline</div><div class="empty-s">Zet jezelf online om ritten te zien</div></div>`;
     return;
   }
   const list=rides.filter(r=>r.status==="pending");
   if(!list.length){
-    $("homeFeed").innerHTML=`<div class="empty"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/></svg></div><div class="empty-title">Geen ritten</div><div class="empty-sub">Geen beschikbare ritten</div></div>`;
+    $("homeFeed").innerHTML=`<div class="empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/></svg><div class="empty-t">Geen ritten</div><div class="empty-s">Geen beschikbare ritten op dit moment</div></div>`;
     return;
   }
   $("homeFeed").innerHTML=list.map((r,i)=>rideCard(r,i)).join("");
 }
 
-/* ── RIDE CARD ── */
+/* ══════════════════════════════
+   RIDE CARD
+══════════════════════════════ */
 function rideCard(r,i=0){
-  const mine=r.driver_id===currentUser?.id;
-  const pend=r.status==="pending";
-  const from=(r.from_address||"-").split(",");
-  const to=(r.to_address||"-").split(",");
-  const fromMain=from[0].trim(), fromCity=from.slice(1).join(",").trim();
-  const toMain=to[0].trim(), toCity=to.slice(1).join(",").trim();
-  const dt=r.pickup_time?new Date(r.pickup_time):null;
-  const dateStr=dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}):"-";
-  const timeStr=dt?dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
-
-  return `
-  <div class="rcard" style="animation-delay:${i*.07}s">
+  const mine=r.driver_id===user?.id, pend=r.status==="pending";
+  const from=(r.from_address||"-").split(","), to=(r.to_address||"-").split(",");
+  const fM=from[0].trim(), fC=from.slice(1).join(",").trim();
+  const tM=to[0].trim(), tC=to.slice(1).join(",").trim();
+  return `<div class="rcard" style="animation-delay:${i*.07}s">
     <div class="rcard-head">
-      <div>
-        <div class="rcard-date">
-          <svg style="vertical-align:-2px;margin-right:3px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          ${dateStr} · ${timeStr}
-        </div>
-        <div class="rcard-id">${r.id?.slice(0,12)||"—"}</div>
-      </div>
-      <span class="rcard-status ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+      <div><div class="rcard-date">${fmtD(r.pickup_time)} · ${fmtT(r.pickup_time)}</div><div class="rcard-id">${r.id?.slice(0,12)||"—"}</div></div>
+      <span class="rcard-badge ${sCls(r.status)}">${sLabel(r.status)}</span>
     </div>
     <div class="rroute">
-      <div class="rroute-row">
-        <div class="rroute-icon"><div class="rdot-a"></div><div class="rline"></div></div>
-        <div class="rroute-text">
-          <div class="rroute-time">${timeStr}</div>
-          <div class="rroute-name">${fromMain}</div>
-          ${fromCity?`<div class="rroute-city">${fromCity}</div>`:""}
-        </div>
-        <button class="rnav-btn" onclick="openNav('${encodeURIComponent(r.from_address||'')}')" title="Navigeer naar ophaallocatie">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        </button>
+      <div class="rr"><div class="rr-icon"><div class="dot-a"></div><div class="vline"></div></div>
+        <div class="rr-text"><div class="rr-name">${fM}</div>${fC?`<div class="rr-city">${fC}</div>`:""}</div>
+        <button class="navbtn" onclick="nav(event,'${encodeURIComponent(r.from_address||'')}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
       </div>
-      <div class="rroute-row">
-        <div class="rroute-icon"><div class="rdot-b"></div></div>
-        <div class="rroute-text">
-          <div class="rroute-name">${toMain}</div>
-          ${toCity?`<div class="rroute-city">${toCity}</div>`:""}
-        </div>
-        <button class="rnav-btn" onclick="openNav('${encodeURIComponent(r.to_address||'')}')" title="Navigeer naar bestemming">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        </button>
+      <div class="rr"><div class="rr-icon"><div class="dot-b"></div></div>
+        <div class="rr-text"><div class="rr-name">${tM}</div>${tC?`<div class="rr-city">${tC}</div>`:""}</div>
+        <button class="navbtn" onclick="nav(event,'${encodeURIComponent(r.to_address||'')}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
       </div>
     </div>
     <div class="rmeta">
-      <div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.passengers||1} passagier${r.passengers>1?"s":""}</div>
-      <div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>${r.vehicle||"Standaard"}</div>
-      ${r.payment_status?`<div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>${r.payment_status}</div>`:""}
+      <div class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.passengers||1} pax</div>
+      <div class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>${r.vehicle||"Standaard"}</div>
+      ${r.payment_status?`<div class="chip">${r.payment_status}</div>`:""}
     </div>
     <div class="rfoot">
-      <div>
-        <div class="rprice-label">Prijs</div>
-        <div class="rprice-val">${r.price||"€0"}</div>
-        <div class="rprice-note">✓ Geen commissie</div>
-      </div>
-      <div class="ractions">
-        <button class="btn btn-outline" onclick="openDetail('${r.id}')">Details</button>
-        ${pend&&!mine?`<button class="btn btn-primary" onclick="acceptRide('${r.id}')">Accepteren</button>`:""}
-        ${mine&&r.status==="accepted"?`<button class="btn btn-amber" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
-        ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>`:""}
-        ${mine&&r.status==="arrived"?`<button class="btn btn-success" onclick="quickStatus('${r.id}','completed')">✓ Voltooien</button>`:""}
+      <div><div class="rprice-lbl">Prijs</div><div class="rprice-val">${r.price||"€0"}</div><div class="rprice-note">✓ Geen commissie</div></div>
+      <div class="rbtns">
+        <button class="btn btn-out" onclick="openDetail('${r.id}')">Details</button>
+        ${pend&&!mine?`<button class="btn btn-g" onclick="askAccept('${r.id}')">Accepteren</button>`:""}
+        ${mine&&r.status==="accepted"?`<button class="btn btn-amber" onclick="qStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
+        ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue" onclick="qStatus('${r.id}','arrived')">Aangekomen</button>`:""}
+        ${mine&&r.status==="arrived"?`<button class="btn btn-ok" onclick="qStatus('${r.id}','completed')">✓ Voltooien</button>`:""}
       </div>
     </div>
   </div>`;
 }
 
-/* ── NAVIGATE ── */
-function openNav(encodedAddr){
-  const addr=decodeURIComponent(encodedAddr);
-  let url;
-  if(navApp==="waze")        url=`https://waze.com/ul?q=${encodeURIComponent(addr)}&navigate=yes`;
-  else if(navApp==="apple")  url=`maps://maps.apple.com/?q=${encodeURIComponent(addr)}`;
-  else                       url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+/* ══════════════════════════════
+   NAV
+══════════════════════════════ */
+function nav(e,enc){
+  if(e) e.stopPropagation();
+  const a=decodeURIComponent(enc);
+  const url=navApp==="waze"?`https://waze.com/ul?q=${encodeURIComponent(a)}&navigate=yes`:navApp==="apple"?`maps://maps.apple.com/?q=${encodeURIComponent(a)}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a)}`;
   window.open(url,"_blank");
 }
 
-/* ── DETAIL PAGE ── */
+/* ══════════════════════════════
+   DETAIL PAGE
+══════════════════════════════ */
 function openDetail(id){
   const r=rides.find(x=>x.id===id); if(!r) return;
-  const mine=r.driver_id===currentUser?.id;
+  const mine=r.driver_id===user?.id;
   const phone=(r.customer_phone||"").replace(/\D/g,"");
-  const dt=r.pickup_time?new Date(r.pickup_time):null;
-  const timeStr=dt?dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
-  const from=(r.from_address||"-");
-  const to=(r.to_address||"-");
-
+  const from=r.from_address||"-", to=r.to_address||"-";
   $("detailBody").innerHTML=`
-    <!-- Route card -->
-    <div class="detail-route-card">
-      <div class="detail-route-inner">
-        <div class="detail-stop">
-          <div class="detail-stop-icon"><div class="rdot-a"></div><div class="detail-stop-line"></div></div>
-          <div class="detail-stop-info">
-            <div class="detail-stop-label">Ophaallocatie</div>
-            <div class="detail-stop-addr">${from}</div>
-            <div class="detail-stop-time">${timeStr}</div>
-          </div>
-          <button class="detail-nav-btn" onclick="openNav('${encodeURIComponent(from)}')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          </button>
+    <div class="det-route">
+      <div class="det-route-inner">
+        <div class="det-stop">
+          <div class="det-stop-icon"><div class="dot-a"></div><div class="det-stop-line"></div></div>
+          <div class="det-stop-info"><div class="det-stop-lbl">Ophaallocatie</div><div class="det-stop-addr">${from}</div><div class="det-stop-time">${fmtT(r.pickup_time)}</div></div>
+          <button class="det-navbtn" onclick="nav(event,'${encodeURIComponent(from)}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
         </div>
-        <div class="detail-stop">
-          <div class="detail-stop-icon"><div class="rdot-b"></div></div>
-          <div class="detail-stop-info">
-            <div class="detail-stop-label">Bestemming</div>
-            <div class="detail-stop-addr">${to}</div>
-          </div>
-          <button class="detail-nav-btn" onclick="openNav('${encodeURIComponent(to)}')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          </button>
+        <div class="det-stop">
+          <div class="det-stop-icon"><div class="dot-b"></div></div>
+          <div class="det-stop-info"><div class="det-stop-lbl">Bestemming</div><div class="det-stop-addr">${to}</div></div>
+          <button class="det-navbtn" onclick="nav(event,'${encodeURIComponent(to)}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
         </div>
       </div>
     </div>
-
-    <!-- Info -->
-    <div class="detail-info-card">
-      <div class="detail-info-row">
-        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-        <div>
-          <div class="detail-info-label">Klant</div>
-          <div class="detail-info-val">${r.customer_name||"—"}</div>
-          ${r.customer_phone?`<div class="detail-client-hint">${r.customer_phone}</div>`:`<div class="detail-client-hint">12 uur voor aanvang beschikbaar</div>`}
-        </div>
-      </div>
-      <div class="detail-info-row">
-        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
-        <div><div class="detail-info-label">Voertuig · Passagiers</div><div class="detail-info-val">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div>
-      </div>
-      <div class="detail-info-row">
-        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-        <div><div class="detail-info-label">Betaling</div><div class="detail-info-val">${r.payment_status||"unpaid"}</div></div>
-      </div>
+    <div class="det-info">
+      <div class="det-info-row"><div class="det-iicon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="det-ilbl">Klant</div><div class="det-ival">${r.customer_name||"—"}${r.customer_phone?`<br><span style="font-size:11px;color:var(--ink3)">${r.customer_phone}</span>`:""}</div></div></div>
+      <div class="det-info-row"><div class="det-iicon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div><div><div class="det-ilbl">Voertuig · Passagiers</div><div class="det-ival">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div></div>
+      <div class="det-info-row"><div class="det-iicon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div><div class="det-ilbl">Betaling</div><div class="det-ival">${r.payment_status||"unpaid"}</div></div></div>
     </div>
-
-    <!-- Price -->
-    <div class="detail-price-box">
-      <div>
-        <div class="detail-price-label">Jouw uitbetaling</div>
-        <div class="detail-price-note">✓ Geen commissie meer af</div>
-      </div>
-      <div class="detail-price-val">${r.price||"€0"}</div>
+    <div class="det-price">
+      <div><div class="det-price-lbl">Jouw uitbetaling</div><div class="det-price-note">✓ Geen commissie meer af</div></div>
+      <div class="det-price-val">${r.price||"€0"}</div>
     </div>
-
-    <!-- Contact -->
-    <div class="detail-contact-row">
-      ${phone?`<a class="btn btn-success" href="https://wa.me/${phone}" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>WhatsApp</a>`:""}
-      ${phone?`<a class="btn btn-outline" href="tel:${r.customer_phone}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.83a16 16 0 0 0 6 6l.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Bellen</a>`:""}
+    <div class="det-contacts">
+      ${phone?`<a class="btn btn-ok" href="https://wa.me/${phone}" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>WhatsApp</a>`:""}
+      ${phone?`<a class="btn btn-out" href="tel:${r.customer_phone}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.83a16 16 0 0 0 6 6l.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Bellen</a>`:""}
     </div>
-
-    <!-- Status actions -->
-    <div class="detail-status-row">
-      ${r.status==="pending"&&!mine?`<button class="btn btn-primary btn-wide" onclick="acceptRide('${r.id}')">✓ Accepteren</button>`:""}
-      ${mine&&r.status==="accepted"?`<button class="btn btn-amber btn-wide" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
-      ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue btn-wide" onclick="quickStatus('${r.id}','arrived')">Aangekomen ✓</button>`:""}
-      ${mine&&r.status==="arrived"?`<button class="btn btn-success btn-wide" onclick="quickStatus('${r.id}','completed')">✓ Rit voltooien</button>`:""}
-      ${mine&&!["completed","cancelled"].includes(r.status)?`<button class="btn btn-danger btn-wide" onclick="quickStatus('${r.id}','cancelled')">Annuleren</button>`:""}
-    </div>
-  `;
-
-  $("pgDetail").classList.add("open");
+    <div class="det-actions">
+      ${r.status==="pending"&&!mine?`<button class="btn btn-g btn-w" onclick="askAccept('${r.id}')">✓ Accepteren</button>`:""}
+      ${mine&&r.status==="accepted"?`<button class="btn btn-amber btn-w" onclick="qStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
+      ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue btn-w" onclick="qStatus('${r.id}','arrived')">Aangekomen ✓</button>`:""}
+      ${mine&&r.status==="arrived"?`<button class="btn btn-ok btn-w" onclick="qStatus('${r.id}','completed')">✓ Rit voltooien</button>`:""}
+      ${mine&&!["completed","cancelled"].includes(r.status)?`<button class="btn btn-red btn-w" onclick="qStatus('${r.id}','cancelled')">Annuleren</button>`:""}
+    </div>`;
+  openSP("pgDetail");
 }
 
-function closeDetail(){
-  $("pgDetail").classList.remove("open");
+/* ══════════════════════════════
+   CONFIRM DIALOG
+══════════════════════════════ */
+function askAccept(id){pendingId=id;$("dialogBg").classList.add("open")}
+function closeDialog(){$("dialogBg").classList.remove("open");pendingId=null}
+async function confirmAccept(){closeDialog();if(pendingId)await acceptRide(pendingId)}
+
+/* ══════════════════════════════
+   ACCEPT (race-safe)
+══════════════════════════════ */
+async function acceptRide(id){
+  const {data:chk}=await db.from("rides").select("status,driver_id").eq("id",id).maybeSingle();
+  if(!chk||chk.status!=="pending"){
+    tErr("⚠️ Deze rit is al geaccepteerd door een andere chauffeur.");
+    rides=rides.filter(r=>r.id!==id); renderHome(); updateBadge(); return;
+  }
+  const {error}=await db.from("rides").update({
+    driver_id:user.id,driver_name:profile.name||user.email,
+    driver_phone:profile.phone||"",status:"accepted",
+    accepted_at:new Date().toISOString()
+  }).eq("id",id).eq("status","pending");
+
+  if(error){
+    tErr("⚠️ Deze rit is al geaccepteerd door een andere chauffeur.");
+    rides=rides.filter(r=>r.id!==id); renderHome(); updateBadge(); return;
+  }
+  closeSP("pgDetail"); tOk("✓ Rit geaccepteerd!");
 }
 
-/* ── AGENDA ── */
-function renderAgenda(){
-  drawCalendar();
-  showDayRides(selectedDate);
+/* ══════════════════════════════
+   QUICK STATUS
+══════════════════════════════ */
+async function qStatus(id,s){
+  const p={status:s};if(s==="completed")p.completed_at=new Date().toISOString();
+  const {error}=await db.from("rides").update(p).eq("id",id);
+  if(error){tErr("❌ "+error.message);return;}
+  closeSP("pgDetail");
+  tOk(s==="completed"?"✓ Rit voltooid!":s==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
 }
 
-function drawCalendar(){
-  $("calMonthLabel").textContent=MONTHS_NL[calMonth]+" "+calYear;
-  const rideDates=new Set(rides.filter(r=>r.driver_id===currentUser?.id).map(r=>r.pickup_time?r.pickup_time.slice(0,10):null).filter(Boolean));
+/* ══════════════════════════════
+   AGENDA
+══════════════════════════════ */
+function renderAgenda(){drawCal();showDay(selDate)}
+
+function drawCal(){
+  $("calMonth").textContent=MONTHS[calMonth]+" "+calYear;
   const today=new Date().toISOString().slice(0,10);
+  const rdates=new Set(rides.filter(r=>r.driver_id===user?.id).map(r=>r.pickup_time?r.pickup_time.slice(0,10):null).filter(Boolean));
 
-  if(calExpanded){
-    // full grid
-    const firstDay=new Date(calYear,calMonth,1);
-    let startCol=(firstDay.getDay()+6)%7;
-    const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
-    const prevDays=new Date(calYear,calMonth,0).getDate();
-    let cells="";
-    for(let i=0;i<startCol;i++){
-      const d=prevDays-startCol+1+i;
-      cells+=`<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-    }
-    for(let d=1;d<=daysInMonth;d++){
+  if(calExp){
+    $("calFullWrap").classList.remove("hidden");
+    $("calStripEl").classList.add("hidden");
+    const first=new Date(calYear,calMonth,1);
+    const sc=(first.getDay()+6)%7;
+    const dim=new Date(calYear,calMonth+1,0).getDate();
+    const prev=new Date(calYear,calMonth,0).getDate();
+    let c="";
+    for(let i=0;i<sc;i++) c+=`<div class="ccell dim"><div class="cnum">${prev-sc+1+i}</div></div>`;
+    for(let d=1;d<=dim;d++){
       const ds=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-      const iT=ds===today, iS=ds===selectedDate&&!iT;
-      cells+=`<div class="cal-cell${iT?" today":""}${iS?" selected":""}" onclick="selectDate('${ds}')">
-        <div class="cal-num">${d}</div>
-        ${rideDates.has(ds)?'<div class="cal-dot"></div>':""}
-      </div>`;
+      const iT=ds===today,iS=ds===selDate&&!iT;
+      c+=`<div class="ccell${iT?" today":""}${iS?" sel":""}" onclick="selDay('${ds}')"><div class="cnum">${d}</div>${rdates.has(ds)?'<div class="cdot"></div>':""}</div>`;
     }
-    const total=startCol+daysInMonth;
-    const tr=total%7===0?0:7-(total%7);
-    for(let d=1;d<=tr;d++) cells+=`<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-    $("calGrid").innerHTML=cells;
-    $("calFull").classList.remove("hidden");
-    $("calStrip").classList.add("hidden");
+    const tr=(sc+dim)%7; if(tr) for(let d=1;d<=7-tr;d++) c+=`<div class="ccell dim"><div class="cnum">${d}</div></div>`;
+    $("calGrid").innerHTML=c;
   } else {
-    // horizontal strip: show 14 days around today
-    const now=new Date(); const days=[];
-    for(let i=-2;i<=11;i++){const d=new Date(now);d.setDate(now.getDate()+i);days.push(d);}
-    const dnames=["Zo","Ma","Di","Wo","Do","Vr","Za"];
-    $("calStrip").innerHTML=days.map(d=>{
+    $("calFullWrap").classList.add("hidden");
+    $("calStripEl").classList.remove("hidden");
+    const now=new Date(),days=[];
+    for(let i=-3;i<=14;i++){const d=new Date(now);d.setDate(now.getDate()+i);days.push(d);}
+    const dn=["Zo","Ma","Di","Wo","Do","Vr","Za"];
+    $("calStripEl").innerHTML=days.map(d=>{
       const ds=d.toISOString().slice(0,10);
-      const iT=ds===today,iS=ds===selectedDate&&!iT;
-      return `<div class="strip-day${iT?" today":""}${iS?" selected":""}" onclick="selectDate('${ds}')">
-        <div class="strip-dname">${dnames[d.getDay()]}</div>
-        <div class="strip-dnum">${d.getDate()}</div>
-        ${rideDates.has(ds)?'<div class="strip-dot"></div>':""}
-      </div>`;
+      const iT=ds===today,iS=ds===selDate&&!iT;
+      return `<div class="sday${iT?" today":""}${iS?" sel":""}" onclick="selDay('${ds}')"><div class="sday-n">${dn[d.getDay()]}</div><div class="sday-d">${d.getDate()}</div>${rdates.has(ds)?'<div class="sdot"></div>':""}</div>`;
     }).join("");
-    $("calFull").classList.add("hidden");
-    $("calStrip").classList.remove("hidden");
+    // Scroll to today
+    setTimeout(()=>{const el=$("calStripEl").querySelector(".today,.sel");if(el)el.scrollIntoView({inline:"center",behavior:"smooth"})},50);
   }
 }
 
 function toggleCal(){
-  calExpanded=!calExpanded;
-  const h=$("calHeader"),ch=$("calChevron");
-  h.classList.toggle("expanded",calExpanded);
-  h.classList.toggle("collapsed",!calExpanded);
-  ch.classList.toggle("open",calExpanded);
-  drawCalendar();
+  calExp=!calExp;
+  $("calTbtn").classList.toggle("exp",calExp);
+  drawCal();
+}
+function calNav(d){
+  calMonth+=d; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;}
+  drawCal();
+}
+function selDay(ds){
+  selDate=ds;
+  const d=new Date(ds+"T00:00:00"); calYear=d.getFullYear(); calMonth=d.getMonth();
+  drawCal(); showDay(ds);
+}
+function showDay(ds){
+  const lbl=$("agendaDayLbl"),feed=$("agendaFeed");
+  lbl.style.display="block";
+  lbl.textContent=new Date(ds+"T00:00:00").toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).replace(/^\w/,c=>c.toUpperCase());
+  const list=rides.filter(r=>r.driver_id===user?.id&&r.pickup_time&&r.pickup_time.slice(0,10)===ds).sort((a,b)=>new Date(a.pickup_time)-new Date(b.pickup_time));
+  if(!list.length){feed.innerHTML=`<div class="empty" style="padding:28px 20px"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><div class="empty-t">Geen ritten</div><div class="empty-s">Geen ritten gepland</div></div>`;return;}
+  feed.innerHTML=list.map((r,i)=>`<div class="arow" style="animation-delay:${i*.05}s" onclick="openDetail('${r.id}')">
+    <div class="arow-l">
+      <div class="arow-status">${sLabel(r.status)}</div>
+      <div class="arow-route">${(r.from_address||"-").split(",")[0].trim()}</div>
+      <div class="arow-dir">Richting ${(r.to_address||"-").split(",")[0].trim()}</div>
+      <div class="arow-time">${fmtT(r.pickup_time)}</div>
+    </div>
+    <div class="aprice">${r.price||"€0"}</div>
+  </div>`).join("");
 }
 
-function selectDate(ds){
-  selectedDate=ds;
-  // sync month if needed
-  const d=new Date(ds+"T00:00:00");
-  calYear=d.getFullYear(); calMonth=d.getMonth();
-  drawCalendar();
-  showDayRides(ds);
-}
+/* Cal swipe */
+(()=>{
+  const w=$("calWrap"); let sx=0,sy=0;
+  w.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  w.addEventListener("touchend",e=>{
+    const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>38){
+      if(dy<0&&calExp){calExp=false;$("calTbtn").classList.remove("exp");drawCal();}
+      else if(dy>0&&!calExp){calExp=true;$("calTbtn").classList.add("exp");drawCal();}
+    } else if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>44){
+      calNav(dx<0?1:-1);
+    }
+  },{passive:true});
+})();
 
-function showDayRides(ds){
-  const label=$("agendaDayLabel"),feed=$("agendaFeed");
-  const d=new Date(ds+"T00:00:00");
-  label.style.display="block";
-  label.textContent=d.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).replace(/^\w/,c=>c.toUpperCase());
-  const dayRides=rides.filter(r=>r.driver_id===currentUser?.id&&r.pickup_time&&r.pickup_time.slice(0,10)===ds).sort((a,b)=>new Date(a.pickup_time)-new Date(b.pickup_time));
-  if(!dayRides.length){
-    feed.innerHTML=`<div class="empty" style="padding:30px 20px"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="empty-title">Geen ritten</div><div class="empty-sub">Geen ritten gepland</div></div>`;
-    return;
-  }
-  feed.innerHTML=dayRides.map((r,i)=>{
-    const fromMain=(r.from_address||"-").split(",")[0].trim();
-    const toMain=(r.to_address||"-").split(",")[0].trim();
-    const timeStr=r.pickup_time?new Date(r.pickup_time).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
-    return `<div class="agenda-row" style="animation-delay:${i*.05}s" onclick="openDetail('${r.id}')">
-      <div class="agenda-row-left">
-        <div class="agenda-row-status">${statusLabel(r.status)}</div>
-        <div class="agenda-row-route">${fromMain}</div>
-        <div class="agenda-row-dir">Richting ${toMain}</div>
-        <div class="agenda-row-time">${timeStr}</div>
-      </div>
-      <div class="agenda-row-right"><div class="agenda-price">${r.price||"€0"}</div></div>
-    </div>`;
-  }).join("");
-}
-
-function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}selectedDate=null;drawCalendar();$("agendaDayLabel").style.display="none";$("agendaFeed").innerHTML="";}
-function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}selectedDate=null;drawCalendar();$("agendaDayLabel").style.display="none";$("agendaFeed").innerHTML="";}
-
-/* ── ACCOUNT ── */
+/* ══════════════════════════════
+   ACCOUNT
+══════════════════════════════ */
 function renderAccount(){
-  const name=driverProfile?.name||currentUser?.email||"-";
-  const av=$("accAvatar");
-  const stored=localStorage.getItem("avatarImg");
-  if(stored){av.innerHTML=`<img src="${stored}" alt="">`;}
-  else{av.textContent=initials(name);}
+  const name=profile?.name||user?.email||"-";
+  const stored=localStorage.getItem("avImg");
+  $("accAv").innerHTML=stored?`<img src="${stored}" alt="">`:inits(name);
   $("accName").textContent=name;
-  $("accEmail").textContent=currentUser?.email||"-";
-  $("accRole").textContent=driverProfile?.role||"driver";
-  const done=rides.filter(r=>r.driver_id===currentUser?.id&&r.status==="completed");
-  $("accTotal").textContent=done.length;
-  $("accEarnings").textContent="€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
-  updateNavRadios();
+  $("accEmail").textContent=user?.email||"-";
+  $("accRole").textContent=profile?.role||"driver";
+
+  const now=new Date(), dow=now.getDay()===0?6:now.getDay()-1;
+  const wStart=new Date(now); wStart.setDate(now.getDate()-dow); wStart.setHours(0,0,0,0);
+  const wr=rides.filter(r=>r.driver_id===user?.id&&r.status==="completed"&&r.pickup_time&&new Date(r.pickup_time)>=wStart);
+  $("accWRitten").textContent=wr.length;
+  $("accWEarn").textContent="€"+wr.reduce((s,r)=>s+priceN(r.price),0).toFixed(2);
+  updateRadios();
 }
 
-function triggerAvatarUpload(){$("avatarInput").click();}
+function triggerAvatar(){$("avInput").click()}
 function handleAvatar(e){
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const data=ev.target.result;
-    localStorage.setItem("avatarImg",data);
-    $("accAvatar").innerHTML=`<img src="${data}" alt="">`;
-  };
-  reader.readAsDataURL(file);
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{localStorage.setItem("avImg",ev.target.result);$("accAv").innerHTML=`<img src="${ev.target.result}" alt="">`;};
+  r.readAsDataURL(f);
 }
 
-/* account detail sub-page */
-function showAccDetail(){
-  $("fieldFirst").value=driverProfile?.name?.split(" ")[0]||"";
-  $("fieldLast").value=driverProfile?.name?.split(" ").slice(1).join(" ")||"";
-  $("fieldPhone").value=driverProfile?.phone||"";
-  $("fieldEmail").value=currentUser?.email||"";
-  $("pgAccDetail").classList.add("open");
+function openAccDetail(){
+  $("fFirst").value=profile?.name?.split(" ")[0]||"";
+  $("fLast").value=profile?.name?.split(" ").slice(1).join(" ")||"";
+  $("fPhone").value=profile?.phone||"";
+  $("fEmail").value=user?.email||"";
+  openSP("pgAccDetail");
 }
-function closeAccDetail(){$("pgAccDetail").classList.remove("open");}
+
 async function saveProfile(){
-  const first=$("fieldFirst").value.trim();
-  const last=$("fieldLast").value.trim();
-  const phone=$("fieldPhone").value.trim();
-  const fullName=[first,last].filter(Boolean).join(" ");
-  const {error}=await db.from("profiles").update({name:fullName,phone}).eq("id",currentUser.id);
-  if(error){toast("❌ "+error.message,4000);return;}
-  driverProfile.name=fullName; driverProfile.phone=phone;
-  $("driverName").textContent=fullName||currentUser.email;
-  $("accName").textContent=fullName;
-  closeAccDetail();
-  toast("✓ Profiel opgeslagen!");
+  const first=$("fFirst").value.trim(),last=$("fLast").value.trim(),phone=$("fPhone").value.trim();
+  const full=[first,last].filter(Boolean).join(" ");
+  const {error}=await db.from("profiles").update({name:full,phone}).eq("id",user.id);
+  if(error){tErr("❌ "+error.message);return;}
+  profile.name=full;profile.phone=phone;
+  $("driverName").textContent=full||user.email;$("accName").textContent=full;
+  closeSP("pgAccDetail");tOk("✓ Profiel opgeslagen!");
 }
 
-/* app settings sub-page */
-function showAccSettings(){$("pgAccSettings").classList.add("open");updateNavRadios();}
-function closeAccSettings(){$("pgAccSettings").classList.remove("open");}
-function setNavApp(app){
-  navApp=app;
-  localStorage.setItem("navApp",app);
-  updateNavRadios();
-}
-function updateNavRadios(){
-  ["waze","google","apple"].forEach(a=>{
-    const el=$("radio-"+a);
-    if(!el) return;
-    el.classList.toggle("checked",navApp===a);
-  });
-}
+function setNavApp(a){navApp=a;localStorage.setItem("navApp",a);updateRadios()}
+function updateRadios(){["waze","google","apple"].forEach(a=>{const e=$("r-"+a);if(e)e.classList.toggle("on",navApp===a)})}
 
-/* ── ACTIONS ── */
-async function acceptRide(id){
-  const {error}=await db.from("rides").update({driver_id:currentUser.id,driver_name:driverProfile.name||currentUser.email,driver_phone:driverProfile.phone||"",status:"accepted",accepted_at:new Date().toISOString()}).eq("id",id);
-  if(error){toast("❌ "+error.message,4000);return;}
-  closeDetail();
-  toast("✓ Rit geaccepteerd!");
-  await loadRides();
-  showPage("agenda");
+async function logout(){await db.auth.signOut();location.href="/driver/login.html"}
+
+/* ══════════════════════════════
+   SUB PAGES
+══════════════════════════════ */
+function openSP(id){$(id).classList.add("open")}
+function closeSP(id){$(id).classList.remove("open")}
+
+// Swipe back on subpages
+document.querySelectorAll(".subpage").forEach(sp=>{
+  let sx=0;
+  sp.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
+  sp.addEventListener("touchend",e=>{if(e.changedTouches[0].clientX-sx>55)sp.classList.remove("open")},{passive:true});
+});
+
+/* ══════════════════════════════
+   LIVE LOCATION
+══════════════════════════════ */
+let locW=null;
+function startLoc(){
+  if(!navigator.geolocation||!user) return;
+  locW=navigator.geolocation.watchPosition(async p=>{
+    await db.from("driver_locations").upsert({driver_id:user.id,lat:p.coords.latitude,lng:p.coords.longitude,updated_at:new Date().toISOString()},{onConflict:"driver_id"});
+  },{enableHighAccuracy:true,maximumAge:2000,timeout:5000});
 }
+function stopLoc(){if(locW!==null){navigator.geolocation.clearWatch(locW);locW=null}}
 
-async function quickStatus(id,status){
-  const payload={status};
-  if(status==="completed") payload.completed_at=new Date().toISOString();
-  const {error}=await db.from("rides").update(payload).eq("id",id);
-  if(error){toast("❌ "+error.message,4000);return;}
-  closeDetail();
-  toast(status==="completed"?"✓ Rit voltooid!":status==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
-  await loadRides();
-}
-
-async function logout(){await db.auth.signOut();location.href="/driver/login.html";}
-function errState(msg){return `<div class="empty"><div class="empty-title">⚠️ ${msg}</div></div>`;}
-
-/* ── INIT ── */
-loadRides();
-setInterval(loadRides,12000);
-updateNavRadios();
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+init();
+updateRadios();
 </script>
 </body>
 </html>
