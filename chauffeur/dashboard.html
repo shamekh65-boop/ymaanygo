@@ -989,7 +989,7 @@ async function logout(){await SB.auth.signOut();location.href="/driver/login.htm
 ═══════════════════════════════ */
 // Register service worker for background notifications
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/driver/sw.js').catch(()=>{});
+  navigator.serviceWorker.register('/chauffeur/sw.js').catch(()=>{});
   // Listen for messages from service worker (notification click when app was in background)
   navigator.serviceWorker.addEventListener('message', e => {
     if(e.data?.type==='OPEN_RIDE' && e.data.rideId){
