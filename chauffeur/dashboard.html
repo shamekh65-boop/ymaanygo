@@ -262,24 +262,25 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 <!-- TOPBAR -->
 <header class="top">
   <div class="top-l">
-    <img class="logo" src="https://ymaanygo.nl/Photoroom_20260518_062850.png" alt="ymaanyGO"
-      onerror="this.style.display='none';document.getElementById('lf').style.display='flex'">
-    <div id="lf" class="logo-fb" style="display:none;align-items:center;gap:4px">
-      <svg height="36" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- YmaanY text -->
-        <text x="0" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#ffffff" letter-spacing="1">Ymaany</text>
-        <!-- G letter green -->
-        <text x="148" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#a5d6a7">G</text>
-        <!-- Steering wheel -->
-        <g transform="translate(170,4)">
-          <circle cx="22" cy="22" r="19" stroke="#d0d0d0" stroke-width="4" fill="none"/>
-          <circle cx="22" cy="22" r="12" stroke="#d0d0d0" stroke-width="2.5" fill="none"/>
-          <line x1="22" y1="10" x2="22" y2="16" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
-          <line x1="12" y1="28" x2="17" y2="25" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
-          <line x1="32" y1="28" x2="27" y2="25" stroke="#d0d0d0" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="22" cy="22" r="3.5" fill="#f5d020"/>
-        </g>
-      </svg>
+    <div style="display:flex;align-items:center;gap:4px">
+      <img class="logo" src="https://ymaanygo.nl/Photoroom_20260518_062850.png" alt=""
+        style="position:absolute;opacity:0;height:40px;width:auto"
+        onload="this.style.opacity='1';document.getElementById('lf').style.display='none'"
+        onerror="this.style.display='none'">
+      <div id="lf">
+        <svg height="36" viewBox="0 0 218 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#ffffff">Ymaany</text>
+          <text x="149" y="34" font-family="Outfit,sans-serif" font-weight="900" font-size="32" fill="#a5d6a7">G</text>
+          <g transform="translate(171,4)">
+            <circle cx="20" cy="20" r="17" stroke="#d0d0d0" stroke-width="4" fill="none"/>
+            <circle cx="20" cy="20" r="10" stroke="#d0d0d0" stroke-width="2.5" fill="none"/>
+            <line x1="20" y1="10" x2="20" y2="15" stroke="#d0d0d0" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="11" y1="26" x2="15.5" y2="23" stroke="#d0d0d0" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="29" y1="26" x2="24.5" y2="23" stroke="#d0d0d0" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="20" r="3" fill="#f5d020"/>
+          </g>
+        </svg>
+      </div>
     </div>
     <div class="dname" id="dname">Chauffeur</div>
   </div>
@@ -517,17 +518,27 @@ function toggleOnline(){
 ═══════════════════════════════ */
 async function init(){
   const {data:{session}}=await SB.auth.getSession();
-  if(!session){location.href="/admin/login.html";return}
+  if(!session){location.href="/driver/login.html";return}
   U=session.user;
   const {data:p}=await SB.from("profiles").select("*").eq("id",U.id).maybeSingle();
   P=p||{};
   $("dname").textContent=P.name||U.email||"Chauffeur";
+
+  // Request notification permission
+  requestNotifPermission();
 
   await loadRides();
   subscribeRealtime();
   startLoc();
   drawCal();
   showDay(selDate);
+}
+
+async function requestNotifPermission(){
+  if(!("Notification" in window)) return;
+  if(Notification.permission==="default"){
+    await Notification.requestPermission();
+  }
 }
 
 /* ═══════════════════════════════
@@ -589,6 +600,7 @@ function updateBadge(){$("badge0").textContent=rides.filter(r=>r.status==="pendi
    NOTIFICATION
 ═══════════════════════════════ */
 let notifTimer=null;
+
 function showNotif(r){
   const from=(r.from_address||"-").split(",")[0].trim();
   const to=(r.to_address||"-").split(",")[0].trim();
@@ -600,15 +612,47 @@ function showNotif(r){
     r.price?`Veiling eindigt op ${r.price}`:"",
     r.passengers?`${r.passengers} Passagiers`:""
   ].filter(Boolean);
-  $("ntitle").textContent=`${from} → ${to}`;
-  $("nbody").textContent=parts.join(". ");
+  const title=`${from} → ${to}`;
+  const body=parts.join(". ");
+
   notifRid=r.id;
   beep();
+
+  // 1. In-app banner (always works)
+  $("ntitle").textContent=title;
+  $("nbody").textContent=body;
   const el=$("notif");
   el.classList.add("show");
   clearTimeout(notifTimer);
-  notifTimer=setTimeout(()=>el.classList.remove("show"),7000);
+  notifTimer=setTimeout(()=>el.classList.remove("show"),8000);
+
+  // 2. Real OS notification (works when app is in background)
+  if("Notification" in window && Notification.permission==="granted"){
+    try{
+      const n=new Notification("🚖 Nieuwe rit! — ymaanyGO",{
+        body:`${title}\n${body}`,
+        icon:"https://ymaanygo.nl/Photoroom_20260518_062850.png",
+        badge:"https://ymaanygo.nl/Photoroom_20260518_062850.png",
+        tag:"new-ride-"+r.id,
+        requireInteraction:true,
+        silent:false
+      });
+      n.onclick=()=>{
+        window.focus();
+        n.close();
+        notifRid=r.id;
+        goPage(0);
+        setTimeout(()=>openDetail(r.id),300);
+      };
+    }catch(e){console.warn("Notification error:",e)}
+  } else if("Notification" in window && Notification.permission==="default"){
+    // Try to ask again
+    Notification.requestPermission().then(perm=>{
+      if(perm==="granted") showNotif(r);
+    });
+  }
 }
+
 function notifTap(){$("notif").classList.remove("show");if(notifRid){goPage(0);setTimeout(()=>openDetail(notifRid),300)}}
 
 function beep(){
@@ -938,11 +982,23 @@ function stopLoc(){if(locW!=null){navigator.geolocation.clearWatch(locW);locW=nu
 /* ═══════════════════════════════
    LOGOUT
 ═══════════════════════════════ */
-async function logout(){await SB.auth.signOut();location.href="/admin/login.html"}
+async function logout(){await SB.auth.signOut();location.href="/driver/login.html"}
 
 /* ═══════════════════════════════
    START
 ═══════════════════════════════ */
+// Register service worker for background notifications
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/driver/sw.js').catch(()=>{});
+  // Listen for messages from service worker (notification click when app was in background)
+  navigator.serviceWorker.addEventListener('message', e => {
+    if(e.data?.type==='OPEN_RIDE' && e.data.rideId){
+      goPage(0);
+      setTimeout(()=>openDetail(e.data.rideId), 400);
+    }
+  });
+}
+
 init();
 updRadios();
 </script>
