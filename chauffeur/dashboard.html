@@ -5,856 +5,319 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>ymaanyGO Driver</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════ */
 :root {
-  --g900: #1b5e20;
-  --g800: #2e7d32;
-  --g700: #388e3c;
-  --g600: #43a047;
-  --g100: #e8f5e9;
-  --g50:  #f1f8f2;
-  --white: #ffffff;
-  --bg:    #f2f6f2;
-  --border:#dce8dc;
-  --ink:   #0f2211;
-  --ink2:  #3d5c40;
-  --ink3:  #7a9e7a;
-  --red:   #c62828;
-  --red-bg:#ffebee;
-  --amber: #e65100;
-  --amber-bg:#fff3e0;
-  --blue:  #1565c0;
-  --blue-bg:#e3f2fd;
-  --tab-h: 70px;
-  --r:     16px;
-  --shadow: 0 2px 12px rgba(0,0,0,.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
-}
-
-/* ═══════════════════════════════════════
-   RESET
-═══════════════════════════════════════ */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  min-height:100vh;
-  padding-bottom:calc(var(--tab-h) + 12px);
-  overflow-x:hidden;
-}
-
-/* ═══════════════════════════════════════
-   TOPBAR
-═══════════════════════════════════════ */
-.topbar {
-  background:var(--g900);
-  padding:16px 18px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:90;
-  box-shadow:0 2px 16px rgba(27,94,32,.35);
-}
-
-.topbar-left { display:flex; flex-direction:column; gap:1px; }
-
-.logo {
-  font-family:'Bebas Neue',sans-serif;
-  font-size:26px;
-  letter-spacing:2.5px;
-  color:#fff;
-  line-height:1;
-}
-.logo span { color:#a5d6a7; }
-
-.driver-name {
-  font-size:12px;
-  font-weight:500;
-  color:rgba(255,255,255,.6);
-  letter-spacing:.3px;
-}
-
-.topbar-right { display:flex; align-items:center; gap:10px; }
-
-.clock {
-  font-size:13px;
-  font-weight:600;
-  color:rgba(255,255,255,.6);
-  letter-spacing:.5px;
-}
-
-.toggle-btn {
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 16px;
-  border-radius:50px;
-  border:none;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all .2s;
-  letter-spacing:.2px;
-}
-.toggle-btn.online  { background:#fff; color:var(--g800); }
-.toggle-btn.offline { background:rgba(255,255,255,.15); color:rgba(255,255,255,.7); }
-
-.toggle-dot {
-  width:8px; height:8px;
-  border-radius:50%;
-  flex-shrink:0;
-}
-.toggle-btn.online  .toggle-dot { background:var(--g700); box-shadow:0 0 6px var(--g600); animation:blink 2s infinite; }
-.toggle-btn.offline .toggle-dot { background:#f44336; }
-
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ═══════════════════════════════════════
-   HERO STATS
-═══════════════════════════════════════ */
-.hero {
-  background:var(--g900);
-  padding:0 18px 20px;
-}
-
-.stats-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.stat-card {
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:14px;
-  padding:14px;
-}
-
-.stat-label {
-  font-size:11px;
-  font-weight:600;
-  color:rgba(255,255,255,.6);
-  text-transform:uppercase;
-  letter-spacing:.8px;
-}
-
-.stat-value {
-  font-size:28px;
-  font-weight:800;
-  color:#fff;
-  line-height:1.1;
-  margin-top:4px;
-  letter-spacing:-.5px;
-}
-
-/* ═══════════════════════════════════════
-   SECTION HEADER
-═══════════════════════════════════════ */
-.section-head {
-  background:var(--white);
-  padding:0 18px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  gap:0;
-}
-
-.seg-btn {
-  flex:1;
-  padding:13px 8px;
-  border:none;
-  background:transparent;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  color:var(--ink3);
-  cursor:pointer;
-  position:relative;
-  letter-spacing:.2px;
-  transition:color .18s;
-}
-
-.seg-btn.active { color:var(--g800); }
-
-.seg-btn.active::after {
-  content:'';
-  position:absolute;
-  bottom:0; left:20%; right:20%;
-  height:3px;
-  border-radius:3px 3px 0 0;
-  background:var(--g800);
-}
-
-.seg-badge {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--g800);
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  width:18px; height:18px;
-  border-radius:50%;
-  margin-left:5px;
-  vertical-align:middle;
-}
-
-/* ═══════════════════════════════════════
-   FEED
-═══════════════════════════════════════ */
-.feed {
-  padding:14px 14px 4px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* ═══════════════════════════════════════
-   RIDE CARD
-═══════════════════════════════════════ */
-.rcard {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  animation:rise .32s cubic-bezier(.22,.68,0,1.2) both;
-}
-
-@keyframes rise {
-  from { opacity:0; transform:translateY(10px) scale(.99); }
-  to   { opacity:1; transform:none; }
-}
-
-/* accent bar on top */
-.rcard::before {
-  content:'';
-  display:block;
-  height:4px;
-  background:linear-gradient(90deg,var(--g900),var(--g600));
-}
-
-/* head */
-.rcard-head {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  padding:11px 14px 9px;
-  background:var(--g100);
-  border-bottom:1px solid var(--border);
-}
-
-.rcard-date {
-  font-size:12px;
-  font-weight:700;
-  color:var(--g900);
-}
-.rcard-id {
-  font-size:10px;
-  font-family:monospace;
-  color:var(--ink3);
-  margin-top:2px;
-  letter-spacing:.4px;
-}
-
-.rcard-status {
-  font-size:10px;
-  font-weight:700;
-  padding:3px 10px;
-  border-radius:50px;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  white-space:nowrap;
-}
-.s-pending   { background:#fff8e1; color:#e65100; border:1px solid #ffe0b2; }
-.s-accepted  { background:#e3f2fd; color:#1565c0; border:1px solid #bbdefb; }
-.s-on_the_way{ background:#e8eaf6; color:#283593; border:1px solid #c5cae9; }
-.s-arrived   { background:#f3e5f5; color:#6a1b9a; border:1px solid #e1bee7; }
-.s-completed { background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9; }
-.s-cancelled { background:#ffebee; color:#c62828; border:1px solid #ffcdd2; }
-
-/* route */
-.rroute {
-  padding:12px 14px 10px;
-}
-
-.rroute-row {
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-}
-.rroute-row + .rroute-row { margin-top:2px; }
-
-.rroute-icon {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:16px;
-  flex-shrink:0;
-  padding-top:3px;
-}
-
-.rdot-a {
-  width:10px; height:10px;
-  border-radius:50%;
-  background:var(--g900);
-  flex-shrink:0;
-}
-.rdot-b {
-  width:10px; height:10px;
-  border-radius:3px;
-  border:2px solid var(--g700);
-  background:var(--white);
-  flex-shrink:0;
-}
-.rline {
-  width:2px; flex:1; min-height:20px;
-  background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);
-  opacity:.4;
-  margin:3px 0;
-}
-
-.rroute-text { flex:1; padding-bottom:8px; }
-.rroute-row:last-child .rroute-text { padding-bottom:0; }
-
-.rroute-time { font-size:11px; font-weight:600; color:var(--ink3); margin-bottom:1px; }
-.rroute-name { font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.3; }
-.rroute-city { font-size:11.5px; color:var(--ink2); margin-top:1px; }
-
-.rnav-btn {
-  width:30px; height:30px;
-  border-radius:8px;
-  background:var(--g100);
-  border:1px solid var(--border);
-  color:var(--g900);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
-  align-self:center;
-  flex-shrink:0;
-  font-size:13px;
-  transition:background .15s;
-}
-.rnav-btn:hover { background:#c8e6c9; }
-
-/* meta chips */
-.rmeta {
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  padding:8px 14px;
-  border-top:1px solid var(--border);
-  background:#fafcfa;
-}
-
-.rchip {
-  display:flex;
-  align-items:center;
-  gap:4px;
-  font-size:12px;
-  font-weight:500;
-  color:var(--ink2);
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:3px 10px;
-}
-.rchip svg { opacity:.6; flex-shrink:0; }
-
-/* tags row */
-.rtags {
-  display:flex;
-  gap:7px;
-  padding:0 14px 10px;
-  flex-wrap:wrap;
-}
-.rtag {
-  font-size:10px;
-  font-weight:700;
-  padding:3px 10px;
-  border-radius:50px;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
-
-/* footer */
-.rfoot {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 14px 12px;
-  border-top:1px solid var(--border);
-  gap:10px;
-}
-
-.rprice-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--ink3); }
-.rprice-val   { font-size:26px; font-weight:800; color:var(--g900); letter-spacing:-.5px; line-height:1; }
-.rprice-note  { font-size:10px; color:var(--g700); font-weight:600; margin-top:2px; }
-
-.ractions {
-  display:flex;
-  gap:7px;
-  flex-shrink:0;
-}
-
-/* ═══════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════ */
-.btn {
-  border:none;
-  border-radius:10px;
-  font-family:'Outfit',sans-serif;
-  font-weight:700;
-  font-size:13px;
-  cursor:pointer;
-  padding:9px 16px;
-  transition:all .15s;
-  white-space:nowrap;
-}
-.btn:active { transform:scale(.95); }
-
-.btn-primary { background:var(--g900); color:#fff; }
-.btn-primary:hover { background:var(--g800); }
-
-.btn-success { background:#e8f5e9; color:var(--g800); border:1px solid #c8e6c9; }
-.btn-success:hover { background:#c8e6c9; }
-
-.btn-outline { background:transparent; color:var(--ink2); border:1px solid var(--border); }
-.btn-outline:hover { background:var(--g100); }
-
-.btn-danger { background:var(--red-bg); color:var(--red); border:1px solid #ffcdd2; }
-.btn-danger:hover { background:#ffcdd2; }
-
-.btn-amber { background:var(--amber-bg); color:var(--amber); border:1px solid #ffe0b2; }
-.btn-blue  { background:var(--blue-bg);  color:var(--blue);  border:1px solid #bbdefb; }
-
-/* wide btn */
-.btn-wide {
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  font-size:15px;
-  text-align:center;
-}
-
-/* ═══════════════════════════════════════
-   EMPTY STATE
-═══════════════════════════════════════ */
-.empty {
-  text-align:center;
-  padding:60px 24px;
-  color:var(--ink3);
-}
-.empty-icon { font-size:40px; margin-bottom:10px; opacity:.4; }
-.empty-title { font-size:16px; font-weight:700; color:var(--ink2); }
-.empty-sub   { font-size:13px; margin-top:4px; }
-
-/* ═══════════════════════════════════════
-   AGENDA – full monthly calendar
-═══════════════════════════════════════ */
-.cal-header {
-  background:var(--white);
-  padding:14px 18px 0;
-  border-bottom:1px solid var(--border);
-}
-
-.cal-month-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.cal-month-label {
-  font-size:17px;
-  font-weight:800;
-  color:var(--ink);
-}
-
-.cal-nav {
-  display:flex;
-  gap:6px;
-}
-
-.cal-nav-btn {
-  width:32px; height:32px;
-  border-radius:50%;
-  border:1px solid var(--border);
-  background:var(--white);
-  color:var(--ink2);
-  font-size:16px;
-  cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s;
-}
-.cal-nav-btn:hover { background:var(--g100); }
-
-.cal-weekdays {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  margin-bottom:4px;
-}
-.cal-wday {
-  text-align:center;
-  font-size:11px;
-  font-weight:700;
-  color:var(--ink3);
-  padding:4px 0;
-  text-transform:uppercase;
-  letter-spacing:.4px;
-}
-
-.cal-grid {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:2px;
-  padding-bottom:10px;
-}
-
-.cal-cell {
-  aspect-ratio:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:background .15s;
-  position:relative;
-  font-size:14px;
-  font-weight:600;
-  color:var(--ink);
-}
-.cal-cell:hover { background:var(--g100); }
-.cal-cell.empty { cursor:default; }
-.cal-cell.empty:hover { background:transparent; }
-.cal-cell.other-month { color:var(--border); }
-
-.cal-cell.today .cal-num {
-  background:var(--g900);
-  color:#fff;
-  width:30px; height:30px;
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800;
-}
-
-.cal-cell.selected .cal-num {
-  background:var(--g700);
-  color:#fff;
-  width:30px; height:30px;
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800;
-}
-
-.cal-num { line-height:1; }
-
-.cal-dot {
-  width:5px; height:5px;
-  border-radius:50%;
-  background:var(--g700);
-  flex-shrink:0;
-}
-.cal-cell.today .cal-dot { background:#a5d6a7; }
-
-/* selected day rides */
-.agenda-day-label {
-  font-size:15px;
-  font-weight:800;
-  color:var(--ink);
-  padding:14px 16px 8px;
-}
-
-/* compact ride row for agenda */
-.agenda-row {
-  background:var(--white);
-  border-radius:12px;
-  padding:12px 14px;
-  margin: 0 14px 8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  box-shadow:0 1px 6px rgba(0,0,0,.06);
-  border:1px solid var(--border);
-  cursor:pointer;
-  transition:background .15s;
-  animation:rise .25s ease both;
-}
-.agenda-row:hover { background:var(--g100); }
-
-.agenda-row-left { flex:1; min-width:0; }
-.agenda-row-status { font-size:11px; font-weight:800; color:var(--g800); margin-bottom:2px; }
-.agenda-row-route  { font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.agenda-row-dir    { font-size:11px; color:var(--ink3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.agenda-row-time   { font-size:11px; color:var(--ink2); margin-top:3px; font-weight:500; }
-
-.agenda-row-right {
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:4px;
-  flex-shrink:0;
-}
-.agenda-price {
-  font-size:15px;
-  font-weight:800;
-  color:var(--g900);
-  background:var(--g100);
-  padding:3px 10px;
-  border-radius:8px;
-  border:1px solid var(--border);
-}
-
-/* ═══════════════════════════════════════
-   ACCOUNT
-═══════════════════════════════════════ */
-.acc-hero {
-  background:var(--g900);
-  padding:28px 20px 24px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-}
-.acc-avatar {
-  width:72px; height:72px;
-  border-radius:50%;
-  background:rgba(255,255,255,.15);
-  border:3px solid rgba(255,255,255,.3);
-  display:flex; align-items:center; justify-content:center;
-  font-size:30px;
-  font-weight:800;
-  color:#fff;
-}
-.acc-name  { font-size:20px; font-weight:800; color:#fff; }
-.acc-email { font-size:13px; color:rgba(255,255,255,.6); }
-
-.acc-body { padding:16px 14px; display:flex; flex-direction:column; gap:10px; }
-
-.info-card {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  overflow:hidden;
-}
-.info-row {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-bottom:1px solid var(--border);
-}
-.info-row:last-child { border-bottom:none; }
-.info-icon {
-  width:34px; height:34px;
-  border-radius:9px;
-  background:var(--g100);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px;
-  flex-shrink:0;
-}
-.info-label { font-size:11px; color:var(--ink3); font-weight:600; }
-.info-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
-
-/* ═══════════════════════════════════════
-   BOTTOM TABS
-═══════════════════════════════════════ */
-.tabs {
-  position:fixed;
-  bottom:0; left:0; right:0;
-  height:var(--tab-h);
-  background:var(--white);
-  border-top:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  padding-bottom:env(safe-area-inset-bottom,0);
-  z-index:100;
-  box-shadow:0 -2px 20px rgba(0,0,0,.07);
-}
-
-.tab {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  padding:7px 0;
-  border:none;
-  background:none;
-  color:var(--ink3);
-  font-family:'Outfit',sans-serif;
-  font-size:10px;
-  font-weight:600;
-  cursor:pointer;
-  letter-spacing:.2px;
-  position:relative;
-  transition:color .15s;
-}
-.tab.active { color:var(--g900); }
-.tab.active::before {
-  content:'';
-  position:absolute;
-  top:0; left:50%;
-  transform:translateX(-50%);
-  width:28px; height:3px;
-  border-radius:0 0 4px 4px;
-  background:var(--g900);
-}
-.tab svg { transition:transform .18s; }
-.tab.active svg { transform:scale(1.12); }
-
-/* ═══════════════════════════════════════
-   BOTTOM SHEET (modal)
-═══════════════════════════════════════ */
-.overlay {
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.38);
-  z-index:200;
-  display:flex;
-  align-items:flex-end;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .22s;
-}
-.overlay.open { opacity:1; pointer-events:all; }
-
-.sheet {
-  width:100%;
-  background:var(--white);
-  border-radius:22px 22px 0 0;
-  padding:18px 18px calc(env(safe-area-inset-bottom,0px) + 24px);
-  transform:translateY(100%);
-  transition:transform .28s cubic-bezier(.32,.72,0,1);
-  max-height:92vh;
-  overflow-y:auto;
-}
-.overlay.open .sheet { transform:translateY(0); }
-
-.sheet-handle {
-  width:36px; height:4px;
-  border-radius:2px;
-  background:#ddd;
-  margin:0 auto 20px;
-}
-
-.sheet-title { font-size:21px; font-weight:800; color:var(--ink); }
-.sheet-sub   { font-size:12px; color:var(--ink3); margin-top:3px; margin-bottom:18px; }
-
-.sinfo-row {
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:11px 0;
-  border-bottom:1px solid var(--border);
-}
-.sinfo-row:last-of-type { border-bottom:none; }
-.sinfo-icon {
-  width:36px; height:36px;
-  border-radius:10px;
-  background:var(--g100);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px;
-  flex-shrink:0;
-}
-.sinfo-label { font-size:11px; color:var(--ink3); font-weight:600; }
-.sinfo-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
-
-.price-box {
-  margin:16px 0 14px;
-  background:var(--g100);
-  border:1.5px solid #c8e6c9;
-  border-radius:14px;
-  padding:14px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.price-box-label { font-size:12px; color:var(--ink2); font-weight:600; }
-.price-box-note  { font-size:11px; color:var(--g700); font-weight:600; margin-top:3px; }
-.price-box-val   { font-size:34px; font-weight:800; color:var(--g900); letter-spacing:-1px; }
-
-.sheet-actions {
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  margin-bottom:10px;
-}
-
-/* ═══════════════════════════════════════
-   TOAST
-═══════════════════════════════════════ */
-.toast {
-  position:fixed;
-  bottom:calc(var(--tab-h) + 14px);
-  left:50%;
-  transform:translateX(-50%) translateY(8px);
-  background:var(--g900);
-  color:#fff;
-  padding:10px 22px;
-  border-radius:50px;
-  font-size:13px;
-  font-weight:700;
-  opacity:0;
-  pointer-events:none;
-  transition:all .26s;
-  z-index:999;
-  white-space:nowrap;
-  box-shadow:0 4px 18px rgba(27,94,32,.35);
-}
-.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-/* ═══════════════════════════════════════
-   HIDDEN / UTILS
-═══════════════════════════════════════ */
-.hidden { display:none!important; }
-
-a.btn { text-decoration:none; display:inline-block; }
-
-/* ═══════════════════════════════════════
-   SKELETON LOADER
-═══════════════════════════════════════ */
-.skeleton {
-  background:linear-gradient(90deg,#eef3ee 25%,#e0ebe0 50%,#eef3ee 75%);
-  background-size:200% 100%;
-  animation:shimmer 1.4s infinite;
-  border-radius:8px;
-  height:14px;
-}
-@keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
-
-.skel-card {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:18px 14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
+  --g900:#1b5e20; --g800:#2e7d32; --g700:#388e3c; --g600:#43a047;
+  --g100:#e8f5e9; --g50:#f1f8f2;
+  --white:#ffffff; --bg:#f2f6f2; --border:#dce8dc;
+  --ink:#0f2211; --ink2:#3d5c40; --ink3:#7a9e7a;
+  --red:#c62828; --red-bg:#ffebee;
+  --amber:#e65100; --amber-bg:#fff3e0;
+  --blue:#1565c0; --blue-bg:#e3f2fd;
+  --tab-h:70px; --r:16px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:calc(var(--tab-h)+12px);overflow-x:hidden}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--g900);padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90;box-shadow:0 2px 16px rgba(27,94,32,.35)}
+.topbar-left{display:flex;flex-direction:column;gap:2px}
+
+/* Logo SVG-based */
+.logo-wrap{display:flex;align-items:center;gap:0}
+.logo-text{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1}
+.logo-text em{font-style:normal;color:#a5d6a7}
+.logo-icon{width:28px;height:28px;margin-left:2px;flex-shrink:0}
+
+.driver-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.3px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+
+.toggle-btn{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:50px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.toggle-btn.online{background:#fff;color:var(--g800)}
+.toggle-btn.offline{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
+.toggle-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toggle-btn.online .toggle-dot{background:var(--g700);box-shadow:0 0 6px var(--g600);animation:blink 2s infinite}
+.toggle-btn.offline .toggle-dot{background:#f44336}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── HERO STATS ── */
+.hero{background:var(--g900);padding:0 18px 18px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px}
+.stat-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px}
+.stat-value{font-size:28px;font-weight:800;color:#fff;line-height:1.1;margin-top:4px;letter-spacing:-.5px}
+
+/* ── SECTION HEAD ── */
+.section-head{background:var(--white);padding:0 18px;border-bottom:1px solid var(--border);display:flex;align-items:center}
+.seg-btn{flex:1;padding:13px 8px;border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--ink3);cursor:pointer;position:relative;letter-spacing:.2px;transition:color .18s}
+.seg-btn.active{color:var(--g800)}
+.seg-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:3px;border-radius:3px 3px 0 0;background:var(--g800)}
+.seg-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--g800);color:#fff;font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;margin-left:5px;vertical-align:middle}
+
+/* ── FEED ── */
+.feed{padding:14px 14px 4px;display:flex;flex-direction:column;gap:12px}
+
+/* ── RIDE CARD ── */
+.rcard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06);animation:rise .32s cubic-bezier(.22,.68,0,1.2) both}
+.rcard::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+
+.rcard-head{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 14px 9px;background:var(--g100);border-bottom:1px solid var(--border)}
+.rcard-date{font-size:12px;font-weight:700;color:var(--g900)}
+.rcard-id{font-size:10px;font-family:monospace;color:var(--ink3);margin-top:2px;letter-spacing:.4px}
+
+.rcard-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.s-pending{background:#fff8e1;color:#e65100;border:1px solid #ffe0b2}
+.s-accepted{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb}
+.s-on_the_way{background:#e8eaf6;color:#283593;border:1px solid #c5cae9}
+.s-arrived{background:#f3e5f5;color:#6a1b9a;border:1px solid #e1bee7}
+.s-completed{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
+.s-cancelled{background:#ffebee;color:#c62828;border:1px solid #ffcdd2}
+
+.rroute{padding:12px 14px 10px}
+.rroute-row{display:flex;align-items:flex-start;gap:10px}
+.rroute-row+.rroute-row{margin-top:2px}
+.rroute-icon{display:flex;flex-direction:column;align-items:center;width:16px;flex-shrink:0;padding-top:3px}
+.rdot-a{width:10px;height:10px;border-radius:50%;background:var(--g900);flex-shrink:0}
+.rdot-b{width:10px;height:10px;border-radius:3px;border:2px solid var(--g700);background:var(--white);flex-shrink:0}
+.rline{width:2px;flex:1;min-height:20px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.4;margin:3px 0}
+.rroute-text{flex:1;padding-bottom:8px}
+.rroute-row:last-child .rroute-text{padding-bottom:0}
+.rroute-time{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:1px}
+.rroute-name{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3}
+.rroute-city{font-size:11.5px;color:var(--ink2);margin-top:1px}
+
+.rnav-btn{width:30px;height:30px;border-radius:8px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
+.rnav-btn:hover{background:#c8e6c9}
+
+.rmeta{display:flex;flex-wrap:wrap;gap:7px;padding:8px 14px;border-top:1px solid var(--border);background:#fafcfa}
+.rchip{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--ink2);background:var(--white);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
+.rchip svg{opacity:.6;flex-shrink:0}
+
+.rfoot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;border-top:1px solid var(--border);gap:10px}
+.rprice-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3)}
+.rprice-val{font-size:26px;font-weight:800;color:var(--g900);letter-spacing:-.5px;line-height:1}
+.rprice-note{font-size:10px;color:var(--g700);font-weight:600;margin-top:2px}
+.ractions{display:flex;gap:7px;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.btn{border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:9px 16px;transition:all .15s;white-space:nowrap}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:var(--g900);color:#fff}
+.btn-primary:hover{background:var(--g800)}
+.btn-success{background:#e8f5e9;color:var(--g800);border:1px solid #c8e6c9}
+.btn-outline{background:transparent;color:var(--ink2);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--g100)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid #ffcdd2}
+.btn-amber{background:var(--amber-bg);color:var(--amber);border:1px solid #ffe0b2}
+.btn-blue{background:var(--blue-bg);color:var(--blue);border:1px solid #bbdefb}
+.btn-wide{width:100%;padding:14px;border-radius:12px;font-size:15px;text-align:center}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:60px 24px;color:var(--ink3)}
+.empty-icon{margin-bottom:10px;opacity:.3;display:flex;justify-content:center}
+.empty-title{font-size:16px;font-weight:700;color:var(--ink2)}
+.empty-sub{font-size:13px;margin-top:4px}
+
+/* ══════════════════════════════════════
+   AGENDA – COLLAPSIBLE CALENDAR
+══════════════════════════════════════ */
+.cal-header{background:var(--white);border-bottom:1px solid var(--border);overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.cal-header.expanded{max-height:420px}
+.cal-header.collapsed{max-height:60px}
+
+.cal-top-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none}
+.cal-month-label{font-size:17px;font-weight:800;color:var(--ink)}
+.cal-top-right{display:flex;align-items:center;gap:8px}
+.cal-nav{display:flex;gap:6px}
+.cal-nav-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--white);color:var(--ink2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.cal-nav-btn:hover{background:var(--g100)}
+.cal-chevron{width:20px;height:20px;color:var(--ink3);transition:transform .3s}
+.cal-chevron.open{transform:rotate(180deg)}
+
+/* strip (collapsed) */
+.cal-strip-row{display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:none}
+.cal-strip-row::-webkit-scrollbar{display:none}
+.strip-day{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:40px;padding:6px 4px;border-radius:10px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.strip-day:hover{background:var(--g100)}
+.strip-day.today{background:var(--g900)}
+.strip-day.selected:not(.today){background:var(--g700)}
+.strip-dname{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.strip-dnum{font-size:15px;font-weight:800;color:var(--ink)}
+.strip-day.today .strip-dname,.strip-day.today .strip-dnum{color:#fff}
+.strip-day.selected:not(.today) .strip-dname,.strip-day.selected:not(.today) .strip-dnum{color:#fff}
+.strip-dot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
+.strip-day.today .strip-dot,.strip-day.selected .strip-dot{background:#a5d6a7}
+
+/* full grid (expanded) */
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 10px}
+.cal-wday{text-align:center;font-size:10px;font-weight:700;color:var(--ink3);padding:4px 0;text-transform:uppercase;letter-spacing:.4px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 10px 12px}
+.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:10px;cursor:pointer;transition:background .15s;font-size:14px;font-weight:600;color:var(--ink)}
+.cal-cell:hover{background:var(--g100)}
+.cal-cell.empty,.cal-cell.other-month{color:#ccc;cursor:default}
+.cal-cell.other-month:hover,.cal-cell.empty:hover{background:transparent}
+.cal-num{line-height:1}
+.cal-cell.today .cal-num{background:var(--g900);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.cal-cell.selected:not(.today) .cal-num{background:var(--g700);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--g700)}
+.cal-cell.today .cal-dot{background:#a5d6a7}
+
+/* day rides */
+.agenda-day-label{font-size:15px;font-weight:800;color:var(--ink);padding:14px 16px 8px}
+.agenda-row{background:var(--white);border-radius:12px;padding:12px 14px;margin:0 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);border:1px solid var(--border);cursor:pointer;transition:background .15s;animation:rise .25s ease both}
+.agenda-row:hover{background:var(--g100)}
+.agenda-row-left{flex:1;min-width:0}
+.agenda-row-status{font-size:11px;font-weight:800;color:var(--g800);margin-bottom:2px}
+.agenda-row-route{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agenda-row-dir{font-size:11px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agenda-row-time{font-size:11px;color:var(--ink2);margin-top:3px;font-weight:500}
+.agenda-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.agenda-price{font-size:15px;font-weight:800;color:var(--g900);background:var(--g100);padding:3px 10px;border-radius:8px;border:1px solid var(--border)}
+
+/* ══════════════════════════════════════
+   RIDE DETAIL PAGE (full screen)
+══════════════════════════════════════ */
+#pgDetail{position:fixed;inset:0;background:var(--bg);z-index:150;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+#pgDetail.open{transform:translateX(0)}
+
+.detail-navbar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.detail-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:background .15s;flex-shrink:0}
+.detail-back:hover{background:var(--g100)}
+.detail-navbar-title{font-size:15px;font-weight:800;color:var(--ink)}
+
+.detail-body{padding:16px}
+
+.detail-route-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.detail-route-card::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--g900),var(--g600))}
+
+.detail-route-inner{padding:14px}
+.detail-stop{display:flex;align-items:flex-start;gap:10px}
+.detail-stop+.detail-stop{margin-top:2px}
+.detail-stop-icon{display:flex;flex-direction:column;align-items:center;width:16px;flex-shrink:0;padding-top:3px}
+.detail-stop-line{width:2px;flex:1;min-height:24px;background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);opacity:.4;margin:3px 0}
+.detail-stop-info{flex:1;padding-bottom:10px}
+.detail-stop:last-child .detail-stop-info{padding-bottom:0}
+.detail-stop-label{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.detail-stop-addr{font-size:14px;font-weight:700;color:var(--ink);line-height:1.3}
+.detail-stop-time{font-size:11px;color:var(--ink3);margin-top:2px}
+.detail-nav-btn{width:36px;height:36px;border-radius:10px;background:var(--g100);border:1px solid var(--border);color:var(--g900);display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;flex-shrink:0;transition:background .15s}
+.detail-nav-btn:hover{background:#c8e6c9}
+
+.detail-info-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.detail-info-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.detail-info-row:last-child{border-bottom:none}
+.detail-info-icon{width:34px;height:34px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
+.detail-info-label{font-size:11px;color:var(--ink3);font-weight:600}
+.detail-info-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px}
+
+.detail-price-box{background:var(--g100);border:1.5px solid #c8e6c9;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.detail-price-label{font-size:12px;color:var(--ink2);font-weight:600}
+.detail-price-note{font-size:11px;color:var(--g700);font-weight:600;margin-top:3px}
+.detail-price-val{font-size:34px;font-weight:800;color:var(--g900);letter-spacing:-1px}
+
+.detail-contact-row{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+.detail-status-row{display:flex;flex-direction:column;gap:9px}
+
+/* client info reveal */
+.detail-client-hint{font-size:12px;color:var(--ink3);font-style:italic;padding:4px 0}
+
+/* ══════════════════════════════════════
+   ACCOUNT PAGE
+══════════════════════════════════════ */
+.acc-hero{background:var(--g900);padding:28px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.acc-avatar-wrap{position:relative;cursor:pointer}
+.acc-avatar{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;overflow:hidden}
+.acc-avatar img{width:100%;height:100%;object-fit:cover}
+.acc-avatar-edit{position:absolute;bottom:2px;right:2px;width:24px;height:24px;border-radius:50%;background:var(--g600);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:#fff}
+.acc-name{font-size:20px;font-weight:800;color:#fff}
+.acc-email{font-size:13px;color:rgba(255,255,255,.6)}
+.acc-body{padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+
+.info-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.info-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.info-row:last-child{border-bottom:none}
+.info-row:hover{background:var(--g100)}
+.info-icon{width:34px;height:34px;border-radius:9px;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g800);flex-shrink:0}
+.info-label{font-size:11px;color:var(--ink3);font-weight:600}
+.info-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:1px}
+.info-arrow{margin-left:auto;color:var(--ink3)}
+
+/* sub-pages inside account */
+#pgAccDetail,#pgAccSettings{position:fixed;inset:0;background:var(--bg);z-index:160;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+#pgAccDetail.open,#pgAccSettings.open{transform:translateX(0)}
+
+.subpage-navbar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.subpage-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:background .15s;flex-shrink:0}
+.subpage-back:hover{background:var(--g100)}
+.subpage-title{font-size:16px;font-weight:800;color:var(--ink)}
+.subpage-body{padding:16px 14px;display:flex;flex-direction:column;gap:12px}
+
+/* form fields */
+.field-label{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.field-input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.field-input:focus{border-color:var(--g700)}
+
+/* nav app selector */
+.nav-option{display:flex;align-items:center;gap:14px;padding:14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.nav-option:last-child{border-bottom:none}
+.nav-option:hover{background:var(--g100)}
+.nav-option-icon{width:36px;height:36px;border-radius:10px;background:var(--g100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-option-label{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
+.nav-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.nav-radio.checked{border-color:var(--g800);background:var(--g800)}
+.nav-radio.checked::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+
+/* ── BOTTOM TABS ── */
+.tabs{position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);background:var(--white);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom,0);z-index:100;box-shadow:0 -2px 20px rgba(0,0,0,.07)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border:none;background:none;color:var(--ink3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.2px;position:relative;transition:color .15s}
+.tab.active{color:var(--g900)}
+.tab.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:0 0 4px 4px;background:var(--g900)}
+.tab svg{transition:transform .18s}
+.tab.active svg{transform:scale(1.12)}
+
+/* ── OVERLAY SHEET (kept for edge cases) ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s}
+.overlay.open{opacity:1;pointer-events:all}
+.sheet{width:100%;background:var(--white);border-radius:22px 22px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom,0px)+24px);transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto}
+.overlay.open .sheet{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:#ddd;margin:0 auto 20px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--tab-h)+14px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--g900);color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .26s;z-index:999;white-space:nowrap;box-shadow:0 4px 18px rgba(27,94,32,.35)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<!-- ══ TOP BAR ══ -->
+<!-- ══ TOPBAR ══ -->
 <header class="topbar">
   <div class="topbar-left">
-    <div class="logo">ymaany<span>GO</span></div>
+    <div class="logo-wrap">
+      <!-- YmaanY text + steering wheel SVG logo -->
+      <div class="logo-text">Ymaany<em>G</em></div>
+      <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Steering wheel -->
+        <circle cx="50" cy="50" r="44" stroke="#d0d0d0" stroke-width="10" fill="none"/>
+        <circle cx="50" cy="50" r="28" stroke="#d0d0d0" stroke-width="6" fill="none"/>
+        <!-- spokes -->
+        <line x1="50" y1="22" x2="50" y2="38" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
+        <line x1="26" y1="64" x2="38" y2="57" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
+        <line x1="74" y1="64" x2="62" y2="57" stroke="#d0d0d0" stroke-width="6" stroke-linecap="round"/>
+        <!-- center button -->
+        <circle cx="50" cy="50" r="8" fill="#f5d020"/>
+        <circle cx="50" cy="50" r="5" fill="#f0a500"/>
+      </svg>
+    </div>
     <div class="driver-name" id="driverName">Chauffeur</div>
   </div>
   <div class="topbar-right">
-    <div class="clock" id="clock">--:--</div>
     <button class="toggle-btn online" id="onlineBtn" onclick="toggleOnline()">
       <span class="toggle-dot"></span>
       <span id="onlineTxt">Online</span>
@@ -862,92 +325,108 @@ a.btn { text-decoration:none; display:inline-block; }
   </div>
 </header>
 
-<!-- ══ PAGES ══ -->
-
-<!-- HOME PAGE -->
+<!-- ══ HOME PAGE ══ -->
 <div id="pgHome">
-
-  <!-- Hero stats -->
   <div class="hero">
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Ritten vandaag</div>
-        <div class="stat-value" id="todayCount">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Verdiensten</div>
-        <div class="stat-value" id="todayMoney">€0</div>
-      </div>
+      <div class="stat-card"><div class="stat-label">Ritten vandaag</div><div class="stat-value" id="todayCount">0</div></div>
+      <div class="stat-card"><div class="stat-label">Verdiensten</div><div class="stat-value" id="todayMoney">€0</div></div>
     </div>
   </div>
-
-  <!-- Subheader -->
   <div class="section-head">
-    <button class="seg-btn active" id="segAuction">
-      Beschikbare ritten <span class="seg-badge" id="auctionBadge">0</span>
+    <button class="seg-btn active" id="segRitten">
+      Ritten <span class="seg-badge" id="auctionBadge">0</span>
     </button>
   </div>
-
-  <!-- Feed -->
   <div class="feed" id="homeFeed"></div>
 </div>
 
-<!-- AGENDA PAGE -->
+<!-- ══ AGENDA PAGE ══ -->
 <div id="pgAgenda" class="hidden">
-  <div class="cal-header">
-    <div class="cal-month-row">
+
+  <!-- Collapsible calendar -->
+  <div class="cal-header expanded" id="calHeader">
+    <div class="cal-top-row" onclick="toggleCal()">
       <div class="cal-month-label" id="calMonthLabel">Mei 2026</div>
-      <div class="cal-nav">
-        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
-        <button class="cal-nav-btn" onclick="calNext()">›</button>
+      <div class="cal-top-right">
+        <div class="cal-nav" onclick="event.stopPropagation()">
+          <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+          <button class="cal-nav-btn" onclick="calNext()">›</button>
+        </div>
+        <svg class="cal-chevron open" id="calChevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
       </div>
     </div>
-    <div class="cal-weekdays">
-      <div class="cal-wday">Ma</div>
-      <div class="cal-wday">Di</div>
-      <div class="cal-wday">Wo</div>
-      <div class="cal-wday">Do</div>
-      <div class="cal-wday">Vr</div>
-      <div class="cal-wday">Za</div>
-      <div class="cal-wday">Zo</div>
+    <!-- Full grid (expanded) -->
+    <div id="calFull">
+      <div class="cal-weekdays">
+        <div class="cal-wday">Ma</div><div class="cal-wday">Di</div><div class="cal-wday">Wo</div>
+        <div class="cal-wday">Do</div><div class="cal-wday">Vr</div><div class="cal-wday">Za</div><div class="cal-wday">Zo</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
     </div>
-    <div class="cal-grid" id="calGrid"></div>
+    <!-- Strip (collapsed) -->
+    <div id="calStrip" class="cal-strip-row hidden"></div>
   </div>
+
   <div id="agendaDayLabel" class="agenda-day-label" style="display:none"></div>
-  <div id="agendaFeed"></div>
+  <div id="agendaFeed" style="padding-bottom:8px"></div>
 </div>
 
-<!-- ACCOUNT PAGE -->
+<!-- ══ ACCOUNT PAGE ══ -->
 <div id="pgAccount" class="hidden">
   <div class="acc-hero">
-    <div class="acc-avatar" id="accAvatar">?</div>
+    <div class="acc-avatar-wrap" onclick="triggerAvatarUpload()">
+      <div class="acc-avatar" id="accAvatar">?</div>
+      <div class="acc-avatar-edit">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+    </div>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatar(event)">
     <div class="acc-name" id="accName">-</div>
     <div class="acc-email" id="accEmail">-</div>
   </div>
+
   <div class="acc-body">
+    <!-- Stats -->
     <div class="info-card">
-      <div class="info-row">
-        <div class="info-icon">🪪</div>
-        <div>
-          <div class="info-label">Rol</div>
-          <div class="info-val" id="accRole">driver</div>
+      <div class="info-row" style="cursor:default">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
+        <div><div class="info-label">Rol</div><div class="info-val" id="accRole">driver</div></div>
       </div>
-      <div class="info-row">
-        <div class="info-icon">📊</div>
-        <div>
-          <div class="info-label">Totale ritten</div>
-          <div class="info-val" id="accTotal">0</div>
+      <div class="info-row" style="cursor:default">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
+        <div><div class="info-label">Totale ritten</div><div class="info-val" id="accTotal">0</div></div>
       </div>
-      <div class="info-row">
-        <div class="info-icon">💶</div>
-        <div>
-          <div class="info-label">Totale verdiensten</div>
-          <div class="info-val" id="accEarnings">€0</div>
+      <div class="info-row" style="cursor:default">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
+        <div><div class="info-label">Totale verdiensten</div><div class="info-val" id="accEarnings">€0</div></div>
       </div>
     </div>
+
+    <!-- Links -->
+    <div class="info-card">
+      <div class="info-row" onclick="showAccDetail()">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div><div class="info-label">Profiel</div><div class="info-val">Accountgegevens</div></div>
+        <svg class="info-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="info-row" onclick="showAccSettings()">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div><div class="info-label">Navigatie &amp; Voorkeuren</div><div class="info-val">App instellingen</div></div>
+        <svg class="info-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
     <button class="btn btn-danger btn-wide" onclick="logout()">Uitloggen</button>
   </div>
 </div>
@@ -955,30 +434,105 @@ a.btn { text-decoration:none; display:inline-block; }
 <!-- ══ BOTTOM TABS ══ -->
 <nav class="tabs">
   <button class="tab active" id="tabHome" onclick="showPage('home')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/>
-    </svg>
-    Veiling
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/></svg>
+    Ritten
   </button>
   <button class="tab" id="tabAgenda" onclick="showPage('agenda')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-    </svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     Agenda
   </button>
   <button class="tab" id="tabAccount" onclick="showPage('account')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-    </svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     Account
   </button>
 </nav>
 
-<!-- ══ RIDE DETAIL SHEET ══ -->
-<div class="overlay" id="overlay" onclick="closeSheet(event)">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div id="sheetBody"></div>
+<!-- ══ RIDE DETAIL PAGE (full screen) ══ -->
+<div id="pgDetail">
+  <div class="detail-navbar">
+    <button class="detail-back" onclick="closeDetail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="detail-navbar-title">Ritdetails</div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
+<!-- ══ ACCOUNT DETAIL SUB-PAGE ══ -->
+<div id="pgAccDetail">
+  <div class="subpage-navbar">
+    <button class="subpage-back" onclick="closeAccDetail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="subpage-title">Accountgegevens</div>
+  </div>
+  <div class="subpage-body">
+    <div class="info-card" style="padding:16px;display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div class="field-label">Voornaam</div>
+        <input class="field-input" id="fieldFirst" placeholder="Voornaam">
+      </div>
+      <div>
+        <div class="field-label">Achternaam</div>
+        <input class="field-input" id="fieldLast" placeholder="Achternaam">
+      </div>
+      <div>
+        <div class="field-label">Telefoonnummer</div>
+        <input class="field-input" id="fieldPhone" placeholder="+31 6 ...">
+      </div>
+      <div>
+        <div class="field-label">E-mail</div>
+        <input class="field-input" id="fieldEmail" placeholder="email@..." disabled style="opacity:.6">
+      </div>
+    </div>
+    <button class="btn btn-primary btn-wide" onclick="saveProfile()">
+      <svg style="vertical-align:-2px;margin-right:6px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Opslaan
+    </button>
+  </div>
+</div>
+
+<!-- ══ APP SETTINGS SUB-PAGE ══ -->
+<div id="pgAccSettings">
+  <div class="subpage-navbar">
+    <button class="subpage-back" onclick="closeAccSettings()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="subpage-title">App instellingen</div>
+  </div>
+  <div class="subpage-body">
+    <div style="font-size:13px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px">Standaard navigatie App</div>
+    <div class="info-card">
+      <!-- Waze -->
+      <div class="nav-option" onclick="setNavApp('waze')">
+        <div class="nav-option-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g800)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="10" r="6"/><circle cx="10" cy="9" r="1" fill="var(--g800)" stroke="none"/><circle cx="14" cy="9" r="1" fill="var(--g800)" stroke="none"/><path d="M9 12 q3 3 6 0"/><path d="M12 16 v4"/><circle cx="9" cy="21" r="1" fill="var(--g800)" stroke="none"/><circle cx="15" cy="21" r="1" fill="var(--g800)" stroke="none"/></svg>
+        </div>
+        <div class="nav-option-label">Waze</div>
+        <div class="nav-radio" id="radio-waze"></div>
+      </div>
+      <!-- Google Maps -->
+      <div class="nav-option" onclick="setNavApp('google')">
+        <div class="nav-option-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4" stroke="none"/>
+            <circle cx="12" cy="9" r="2.5" fill="white" stroke="none"/>
+          </svg>
+        </div>
+        <div class="nav-option-label">Google Maps</div>
+        <div class="nav-radio" id="radio-google"></div>
+      </div>
+      <!-- Apple Maps -->
+      <div class="nav-option" onclick="setNavApp('apple')">
+        <div class="nav-option-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#555" stroke="none"/>
+          </svg>
+        </div>
+        <div class="nav-option-label">Apple Maps</div>
+        <div class="nav-radio" id="radio-apple"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -986,396 +540,132 @@ a.btn { text-decoration:none; display:inline-block; }
 <div class="toast" id="toast"></div>
 
 <script>
-/* ─────────────────────────────────────
-   SUPABASE
-───────────────────────────────────── */
-const SUPABASE_URL     = "https://lxbfobdczjgqnotwsnki.supabase.co";
+/* ── SUPABASE ── */
+const SUPABASE_URL      = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ─────────────────────────────────────
-   STATE
-───────────────────────────────────── */
-let currentUser    = null;
-let driverProfile  = null;
-let rides          = [];
-let online         = true;
-let mode           = "auction";   // auction | mine
-let currentPage    = "home";
+/* ── STATE ── */
+let currentUser   = null;
+let driverProfile = null;
+let rides         = [];
+let online        = true;
+let currentPage   = "home";
+let navApp        = localStorage.getItem("navApp") || "google";
 
-/* ─────────────────────────────────────
-   HELPERS
-───────────────────────────────────── */
+let calYear    = new Date().getFullYear();
+let calMonth   = new Date().getMonth();
+let calExpanded = true;
+let selectedDate = new Date().toISOString().slice(0,10);
+
+const MONTHS_NL = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
+
+/* ── HELPERS ── */
 const $ = id => document.getElementById(id);
+const priceNum = v => Number(String(v||"0").replace("€","").replace(",",".").trim())||0;
 
-function priceNum(v) {
-  return Number(String(v||"0").replace("€","").replace(",",".").trim()) || 0;
-}
-
-function fmtDT(v) {
-  if (!v) return "-";
-  const d = new Date(v);
-  if (isNaN(d)) return v;
+function fmtDT(v){
+  if(!v) return "-";
+  const d=new Date(v); if(isNaN(d)) return v;
   return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
 }
+function initials(n){ return n?n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase():"?" }
 
-function fmtDate(v) {
-  if (!v) return "-";
-  const d = new Date(v);
-  if (isNaN(d)) return v;
-  return d.toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
+function statusClass(s){
+  return {pending:"s-pending",accepted:"s-accepted",on_the_way:"s-on_the_way",arrived:"s-arrived",completed:"s-completed",cancelled:"s-cancelled"}[s]||"s-pending";
+}
+function statusLabel(s){
+  return {pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"}[s]||s||"?";
 }
 
-function initials(name) {
-  if (!name) return "?";
-  return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+/* ── TOAST ── */
+function toast(msg,dur=2800){
+  const el=$("toast"); el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),dur);
 }
 
-function statusClass(s) {
-  const map={pending:"s-pending",accepted:"s-accepted",on_the_way:"s-on_the_way",arrived:"s-arrived",completed:"s-completed",cancelled:"s-cancelled"};
-  return map[s]||"s-pending";
-}
-
-function statusLabel(s) {
-  const map={pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"};
-  return map[s]||s||"?";
-}
-
-/* ─────────────────────────────────────
-   CLOCK
-───────────────────────────────────── */
-function tickClock() {
-  const n = new Date();
-  $("clock").textContent =
-    n.getHours().toString().padStart(2,"0")+":"+
-    n.getMinutes().toString().padStart(2,"0");
-}
-setInterval(tickClock,1000); tickClock();
-
-/* ─────────────────────────────────────
-   TOAST
-───────────────────────────────────── */
-function toast(msg, dur=2800) {
-  const el = $("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), dur);
-}
-
-/* ─────────────────────────────────────
-   PAGE NAVIGATION
-───────────────────────────────────── */
-function showPage(p) {
+/* ── PAGE NAV ── */
+function showPage(p){
   ["home","agenda","account"].forEach(n=>{
     $(`pg${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.add("hidden");
     $(`tab${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.remove("active");
   });
   $(`pg${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.remove("hidden");
   $(`tab${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.add("active");
-  currentPage = p;
-
-  if (p==="agenda") renderAgenda();
-  if (p==="account") renderAccount();
+  currentPage=p;
+  if(p==="agenda") renderAgenda();
+  if(p==="account") renderAccount();
 }
 
-/* ─────────────────────────────────────
-   ONLINE TOGGLE
-───────────────────────────────────── */
-function toggleOnline() {
-  online = !online;
-  const btn = $("onlineBtn");
-  if (online) {
-    btn.className = "toggle-btn online";
-    $("onlineTxt").textContent = "Online";
-  } else {
-    btn.className = "toggle-btn offline";
-    $("onlineTxt").textContent = "Offline";
-  }
+/* ── ONLINE TOGGLE ── */
+function toggleOnline(){
+  online=!online;
+  const btn=$("onlineBtn");
+  btn.className="toggle-btn "+(online?"online":"offline");
+  $("onlineTxt").textContent=online?"Online":"Offline";
   renderHome();
 }
 
-/* ─────────────────────────────────────
-   MODE (auction only)
-───────────────────────────────────── */
-function setMode(m) {
-  mode = "auction";
-  renderHome();
-}
-
-/* ─────────────────────────────────────
-   AUTH
-───────────────────────────────────── */
-async function protect() {
-  const { data } = await db.auth.getSession();
-  if (!data.session) { location.href="/driver/login.html"; return false; }
-
-  currentUser = data.session.user;
-  const { data:prof } = await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
-  driverProfile = prof || {};
-
-  const name = driverProfile.name || currentUser.email || "Chauffeur";
-  $("driverName").textContent = name;
+/* ── AUTH ── */
+async function protect(){
+  const {data}=await db.auth.getSession();
+  if(!data.session){location.href="/driver/login.html";return false;}
+  currentUser=data.session.user;
+  const {data:prof}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+  driverProfile=prof||{};
+  const name=driverProfile.name||currentUser.email||"Chauffeur";
+  $("driverName").textContent=name;
   return true;
 }
 
-/* ─────────────────────────────────────
-   LOAD RIDES
-───────────────────────────────────── */
-async function loadRides() {
-  const ok = await protect();
-  if (!ok) return;
-
-  const { data, error } = await db
-    .from("rides")
-    .select("*")
+/* ── LOAD ── */
+async function loadRides(){
+  const ok=await protect(); if(!ok) return;
+  const {data,error}=await db.from("rides").select("*")
     .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
     .order("pickup_time",{ascending:true});
+  if(error){$("homeFeed").innerHTML=errState(error.message);return;}
+  rides=data||[];
+  renderHome(); renderStats(); updateBadges();
+  if(currentPage==="agenda") renderAgenda();
+}
 
-  if (error) {
-    $("homeFeed").innerHTML = errState(error.message);
+/* ── STATS ── */
+function renderStats(){
+  const today=new Date().toISOString().slice(0,10);
+  const done=rides.filter(r=>r.driver_id===currentUser.id&&String(r.pickup_time||"").slice(0,10)===today&&r.status==="completed");
+  $("todayCount").textContent=done.length;
+  $("todayMoney").textContent="€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
+}
+function updateBadges(){
+  $("auctionBadge").textContent=rides.filter(r=>r.status==="pending").length;
+}
+
+/* ── HOME ── */
+function renderHome(){
+  if(!online){
+    $("homeFeed").innerHTML=`<div class="empty"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="empty-title">Je bent offline</div><div class="empty-sub">Zet jezelf online om ritten te zien</div></div>`;
     return;
   }
-
-  rides = data || [];
-  renderHome();
-  renderStats();
-  updateBadges();
-}
-
-/* ─────────────────────────────────────
-   STATS
-───────────────────────────────────── */
-function renderStats() {
-  const today = new Date().toISOString().slice(0,10);
-  const done = rides.filter(r=>
-    r.driver_id===currentUser.id &&
-    String(r.pickup_time||"").slice(0,10)===today &&
-    r.status==="completed"
-  );
-  $("todayCount").textContent = done.length;
-  $("todayMoney").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
-}
-
-function updateBadges() {
-  $("auctionBadge").textContent = rides.filter(r=>r.status==="pending").length;
-}
-
-/* ─────────────────────────────────────
-   RENDER HOME
-───────────────────────────────────── */
-function renderHome() {
-  if (!online) {
-    $("homeFeed").innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">📡</div>
-        <div class="empty-title">Je bent offline</div>
-        <div class="empty-sub">Zet jezelf online om veilingen te zien</div>
-      </div>`;
+  const list=rides.filter(r=>r.status==="pending");
+  if(!list.length){
+    $("homeFeed").innerHTML=`<div class="empty"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/></svg></div><div class="empty-title">Geen ritten</div><div class="empty-sub">Geen beschikbare ritten</div></div>`;
     return;
   }
-
-  const list = rides.filter(r => r.status==="pending");
-
-  if (!list.length) {
-    $("homeFeed").innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🏷️</div>
-        <div class="empty-title">Geen ritten</div>
-        <div class="empty-sub">Geen veilingen beschikbaar</div>
-      </div>`;
-    return;
-  }
-
-  $("homeFeed").innerHTML = list.map((r,i)=>rideCard(r,i)).join("");
+  $("homeFeed").innerHTML=list.map((r,i)=>rideCard(r,i)).join("");
 }
 
-/* ─────────────────────────────────────
-   AGENDA – FULL MONTHLY CALENDAR
-───────────────────────────────────── */
-let calYear  = new Date().getFullYear();
-let calMonth = new Date().getMonth(); // 0-based
-let selectedDate = null; // "YYYY-MM-DD"
-
-const MONTHS_NL = ["Januari","Februari","Maart","April","Mei","Juni",
-                   "Juli","Augustus","September","Oktober","November","December"];
-
-function renderAgenda() {
-  drawCalendar();
-  // default: show today's rides
-  if (!selectedDate) {
-    selectedDate = new Date().toISOString().slice(0,10);
-  }
-  showDayRides(selectedDate);
-}
-
-function drawCalendar() {
-  $("calMonthLabel").textContent = MONTHS_NL[calMonth] + " " + calYear;
-
-  // build set of dates that have MY rides
-  const rideDates = new Set(
-    rides
-      .filter(r => r.driver_id===currentUser?.id)
-      .map(r => r.pickup_time ? r.pickup_time.slice(0,10) : null)
-      .filter(Boolean)
-  );
-
-  const today = new Date().toISOString().slice(0,10);
-
-  // first day of month (Mon=1…Sun=0, we want Mon-start grid)
-  const firstDay = new Date(calYear, calMonth, 1);
-  // day of week Mon-based: Mon=0, Tue=1… Sun=6
-  let startCol = (firstDay.getDay() + 6) % 7;
-
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const prevDays    = new Date(calYear, calMonth, 0).getDate();
-
-  let cells = "";
-
-  // leading empty cells (prev month)
-  for (let i = 0; i < startCol; i++) {
-    const d = prevDays - startCol + 1 + i;
-    cells += `<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-  }
-
-  // current month days
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const isToday    = dateStr === today;
-    const isSelected = dateStr === selectedDate;
-    const hasRide    = rideDates.has(dateStr);
-
-    const cls = [
-      "cal-cell",
-      isToday    ? "today"    : "",
-      isSelected && !isToday ? "selected" : ""
-    ].filter(Boolean).join(" ");
-
-    cells += `
-      <div class="${cls}" onclick="selectDate('${dateStr}')">
-        <div class="cal-num">${d}</div>
-        ${hasRide ? '<div class="cal-dot"></div>' : ''}
-      </div>`;
-  }
-
-  // trailing empty cells
-  const total = startCol + daysInMonth;
-  const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
-  for (let d = 1; d <= trailing; d++) {
-    cells += `<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-  }
-
-  $("calGrid").innerHTML = cells;
-}
-
-function selectDate(dateStr) {
-  selectedDate = dateStr;
-  drawCalendar();      // redraw to update selected highlight
-  showDayRides(dateStr);
-}
-
-function showDayRides(dateStr) {
-  const label = $("agendaDayLabel");
-  const feed  = $("agendaFeed");
-
-  const d = new Date(dateStr+"T00:00:00");
-  const dayLabel = d.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-
-  const dayRides = rides.filter(r =>
-    r.driver_id===currentUser?.id &&
-    r.pickup_time && r.pickup_time.slice(0,10)===dateStr
-  ).sort((a,b)=> new Date(a.pickup_time)-new Date(b.pickup_time));
-
-  label.style.display = "block";
-  label.textContent   = dayLabel.charAt(0).toUpperCase()+dayLabel.slice(1);
-
-  if (!dayRides.length) {
-    feed.innerHTML = `
-      <div class="empty" style="padding:30px 20px">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".25">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <line x1="9" y1="9" x2="9.01" y2="9"/>
-          <line x1="15" y1="9" x2="15.01" y2="9"/>
-        </svg>
-        <div class="empty-title" style="margin-top:8px">Geen ritten</div>
-        <div class="empty-sub">Geen ritten gepland</div>
-      </div>`;
-    return;
-  }
-
-  feed.innerHTML = dayRides.map((r,i) => {
-    const fromMain = (r.from_address||"-").split(",")[0].trim();
-    const toMain   = (r.to_address||"-").split(",")[0].trim();
-    const timeStr  = r.pickup_time ? new Date(r.pickup_time).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}) : "--:--";
-    const price    = r.price || "€0";
-    const sLabel   = statusLabel(r.status);
-    return `
-    <div class="agenda-row" style="animation-delay:${i*.05}s" onclick="openSheet('${r.id}')">
-      <div class="agenda-row-left">
-        <div class="agenda-row-status">${sLabel}</div>
-        <div class="agenda-row-route">${fromMain}</div>
-        <div class="agenda-row-dir">Richting ${toMain}</div>
-        <div class="agenda-row-time">${timeStr}</div>
-      </div>
-      <div class="agenda-row-right">
-        <div class="agenda-price">${price}</div>
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function calPrev() {
-  calMonth--;
-  if (calMonth < 0) { calMonth=11; calYear--; }
-  drawCalendar();
-  $("agendaDayLabel").style.display="none";
-  $("agendaFeed").innerHTML="";
-  selectedDate=null;
-}
-
-function calNext() {
-  calMonth++;
-  if (calMonth > 11) { calMonth=0; calYear++; }
-  drawCalendar();
-  $("agendaDayLabel").style.display="none";
-  $("agendaFeed").innerHTML="";
-  selectedDate=null;
-}
-
-/* ─────────────────────────────────────
-   RENDER ACCOUNT
-───────────────────────────────────── */
-function renderAccount() {
-  const name = driverProfile?.name || currentUser?.email || "-";
-  $("accAvatar").textContent = initials(name);
-  $("accName").textContent   = name;
-  $("accEmail").textContent  = currentUser?.email || "-";
-  $("accRole").textContent   = driverProfile?.role || "driver";
-
-  const allMine = rides.filter(r=>r.driver_id===currentUser?.id);
-  const done    = allMine.filter(r=>r.status==="completed");
-  $("accTotal").textContent    = done.length;
-  $("accEarnings").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
-}
-
-/* ─────────────────────────────────────
-   RIDE CARD HTML
-───────────────────────────────────── */
-function rideCard(r, i=0) {
-  const mine    = r.driver_id===currentUser?.id;
-  const pend    = r.status==="pending";
-  const price   = r.price || "€0";
-
-  const fromParts = (r.from_address||"-").split(",");
-  const toParts   = (r.to_address||"-").split(",");
-  const fromMain  = fromParts[0].trim();
-  const fromCity  = fromParts.slice(1).join(",").trim();
-  const toMain    = toParts[0].trim();
-  const toCity    = toParts.slice(1).join(",").trim();
-
-  const dt = r.pickup_time ? new Date(r.pickup_time) : null;
-  const dateStr = dt ? dt.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}) : "-";
-  const timeStr = dt ? dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}) : "--:--";
+/* ── RIDE CARD ── */
+function rideCard(r,i=0){
+  const mine=r.driver_id===currentUser?.id;
+  const pend=r.status==="pending";
+  const from=(r.from_address||"-").split(",");
+  const to=(r.to_address||"-").split(",");
+  const fromMain=from[0].trim(), fromCity=from.slice(1).join(",").trim();
+  const toMain=to[0].trim(), toCity=to.slice(1).join(",").trim();
+  const dt=r.pickup_time?new Date(r.pickup_time):null;
+  const dateStr=dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}):"-";
+  const timeStr=dt?dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
 
   return `
   <div class="rcard" style="animation-delay:${i*.07}s">
@@ -1389,19 +679,15 @@ function rideCard(r, i=0) {
       </div>
       <span class="rcard-status ${statusClass(r.status)}">${statusLabel(r.status)}</span>
     </div>
-
     <div class="rroute">
       <div class="rroute-row">
-        <div class="rroute-icon">
-          <div class="rdot-a"></div>
-          <div class="rline"></div>
-        </div>
+        <div class="rroute-icon"><div class="rdot-a"></div><div class="rline"></div></div>
         <div class="rroute-text">
           <div class="rroute-time">${timeStr}</div>
           <div class="rroute-name">${fromMain}</div>
           ${fromCity?`<div class="rroute-city">${fromCity}</div>`:""}
         </div>
-        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.from_address||'')}')" title="Navigeer">
+        <button class="rnav-btn" onclick="openNav('${encodeURIComponent(r.from_address||'')}')" title="Navigeer naar ophaallocatie">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         </button>
       </div>
@@ -1411,32 +697,24 @@ function rideCard(r, i=0) {
           <div class="rroute-name">${toMain}</div>
           ${toCity?`<div class="rroute-city">${toCity}</div>`:""}
         </div>
-        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.to_address||'')}')" title="Navigeer">
+        <button class="rnav-btn" onclick="openNav('${encodeURIComponent(r.to_address||'')}')" title="Navigeer naar bestemming">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         </button>
       </div>
     </div>
-
     <div class="rmeta">
-      <div class="rchip">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        ${r.passengers||1} passagier${r.passengers>1?"s":""}
-      </div>
-      <div class="rchip">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        ${r.vehicle||"Standaard"}
-      </div>
-      ${r.payment_status?`<div class="rchip">💳 ${r.payment_status}</div>`:""}
+      <div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.passengers||1} passagier${r.passengers>1?"s":""}</div>
+      <div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>${r.vehicle||"Standaard"}</div>
+      ${r.payment_status?`<div class="rchip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>${r.payment_status}</div>`:""}
     </div>
-
     <div class="rfoot">
       <div>
         <div class="rprice-label">Prijs</div>
-        <div class="rprice-val">${price}</div>
+        <div class="rprice-val">${r.price||"€0"}</div>
         <div class="rprice-note">✓ Geen commissie</div>
       </div>
       <div class="ractions">
-        <button class="btn btn-outline" onclick="openSheet('${r.id}')">Details</button>
+        <button class="btn btn-outline" onclick="openDetail('${r.id}')">Details</button>
         ${pend&&!mine?`<button class="btn btn-primary" onclick="acceptRide('${r.id}')">Accepteren</button>`:""}
         ${mine&&r.status==="accepted"?`<button class="btn btn-amber" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
         ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>`:""}
@@ -1446,52 +724,91 @@ function rideCard(r, i=0) {
   </div>`;
 }
 
-/* ─────────────────────────────────────
-   DETAIL SHEET
-───────────────────────────────────── */
-function openSheet(id) {
-  const r = rides.find(x=>x.id===id);
-  if (!r) return;
+/* ── NAVIGATE ── */
+function openNav(encodedAddr){
+  const addr=decodeURIComponent(encodedAddr);
+  let url;
+  if(navApp==="waze")        url=`https://waze.com/ul?q=${encodeURIComponent(addr)}&navigate=yes`;
+  else if(navApp==="apple")  url=`maps://maps.apple.com/?q=${encodeURIComponent(addr)}`;
+  else                       url=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+  window.open(url,"_blank");
+}
 
-  const mine = r.driver_id===currentUser?.id;
-  const phone = (r.customer_phone||"").replace(/\D/g,"");
+/* ── DETAIL PAGE ── */
+function openDetail(id){
+  const r=rides.find(x=>x.id===id); if(!r) return;
+  const mine=r.driver_id===currentUser?.id;
+  const phone=(r.customer_phone||"").replace(/\D/g,"");
+  const dt=r.pickup_time?new Date(r.pickup_time):null;
+  const timeStr=dt?dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
+  const from=(r.from_address||"-");
+  const to=(r.to_address||"-");
 
-  $("sheetBody").innerHTML = `
-    <div class="sheet-title">${(r.from_address||"-").split(",")[0]} → ${(r.to_address||"-").split(",")[0]}</div>
-    <div class="sheet-sub">${fmtDT(r.pickup_time)} · ${r.id?.slice(0,14)||""}</div>
-
-    <div class="sinfo-row">
-      <div class="sinfo-icon">📍</div>
-      <div><div class="sinfo-label">Ophaallocatie</div><div class="sinfo-val">${r.from_address||"-"}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">🏁</div>
-      <div><div class="sinfo-label">Bestemming</div><div class="sinfo-val">${r.to_address||"-"}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">👤</div>
-      <div><div class="sinfo-label">Klant</div><div class="sinfo-val">${r.customer_name||"-"}${r.customer_phone?`<br><span style="color:var(--ink3);font-size:12px">${r.customer_phone}</span>`:""}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">🚖</div>
-      <div><div class="sinfo-label">Voertuig · Passagiers</div><div class="sinfo-val">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div>
-    </div>
-
-    <div class="price-box">
-      <div>
-        <div class="price-box-label">Jouw uitbetaling</div>
-        <div class="price-box-note">✓ Geen commissie meer af</div>
+  $("detailBody").innerHTML=`
+    <!-- Route card -->
+    <div class="detail-route-card">
+      <div class="detail-route-inner">
+        <div class="detail-stop">
+          <div class="detail-stop-icon"><div class="rdot-a"></div><div class="detail-stop-line"></div></div>
+          <div class="detail-stop-info">
+            <div class="detail-stop-label">Ophaallocatie</div>
+            <div class="detail-stop-addr">${from}</div>
+            <div class="detail-stop-time">${timeStr}</div>
+          </div>
+          <button class="detail-nav-btn" onclick="openNav('${encodeURIComponent(from)}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </button>
+        </div>
+        <div class="detail-stop">
+          <div class="detail-stop-icon"><div class="rdot-b"></div></div>
+          <div class="detail-stop-info">
+            <div class="detail-stop-label">Bestemming</div>
+            <div class="detail-stop-addr">${to}</div>
+          </div>
+          <button class="detail-nav-btn" onclick="openNav('${encodeURIComponent(to)}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="price-box-val">${r.price||"€0"}</div>
     </div>
 
-    <div class="sheet-actions">
-      <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.from_address||"")}" target="_blank">🗺 Navigeren</a>
-      ${phone?`<a class="btn btn-success" href="https://wa.me/${phone}" target="_blank">💬 WhatsApp</a>`:""}
-      ${phone?`<a class="btn btn-outline" href="tel:${r.customer_phone}">📞 Bellen</a>`:""}
+    <!-- Info -->
+    <div class="detail-info-card">
+      <div class="detail-info-row">
+        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <div>
+          <div class="detail-info-label">Klant</div>
+          <div class="detail-info-val">${r.customer_name||"—"}</div>
+          ${r.customer_phone?`<div class="detail-client-hint">${r.customer_phone}</div>`:`<div class="detail-client-hint">12 uur voor aanvang beschikbaar</div>`}
+        </div>
+      </div>
+      <div class="detail-info-row">
+        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        <div><div class="detail-info-label">Voertuig · Passagiers</div><div class="detail-info-val">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div>
+      </div>
+      <div class="detail-info-row">
+        <div class="detail-info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div><div class="detail-info-label">Betaling</div><div class="detail-info-val">${r.payment_status||"unpaid"}</div></div>
+      </div>
     </div>
 
-    <div class="sheet-actions">
+    <!-- Price -->
+    <div class="detail-price-box">
+      <div>
+        <div class="detail-price-label">Jouw uitbetaling</div>
+        <div class="detail-price-note">✓ Geen commissie meer af</div>
+      </div>
+      <div class="detail-price-val">${r.price||"€0"}</div>
+    </div>
+
+    <!-- Contact -->
+    <div class="detail-contact-row">
+      ${phone?`<a class="btn btn-success" href="https://wa.me/${phone}" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>WhatsApp</a>`:""}
+      ${phone?`<a class="btn btn-outline" href="tel:${r.customer_phone}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.83a16 16 0 0 0 6 6l.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Bellen</a>`:""}
+    </div>
+
+    <!-- Status actions -->
+    <div class="detail-status-row">
       ${r.status==="pending"&&!mine?`<button class="btn btn-primary btn-wide" onclick="acceptRide('${r.id}')">✓ Accepteren</button>`:""}
       ${mine&&r.status==="accepted"?`<button class="btn btn-amber btn-wide" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
       ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue btn-wide" onclick="quickStatus('${r.id}','arrived')">Aangekomen ✓</button>`:""}
@@ -1500,63 +817,209 @@ function openSheet(id) {
     </div>
   `;
 
-  $("overlay").classList.add("open");
+  $("pgDetail").classList.add("open");
 }
 
-function closeSheet(e) {
-  if (!e || e.target===$("overlay"))
-    $("overlay").classList.remove("open");
+function closeDetail(){
+  $("pgDetail").classList.remove("open");
 }
 
-/* ─────────────────────────────────────
-   ACTIONS
-───────────────────────────────────── */
-async function acceptRide(id) {
-  const { error } = await db.from("rides").update({
-    driver_id:   currentUser.id,
-    driver_name: driverProfile.name||currentUser.email,
-    driver_phone:driverProfile.phone||"",
-    status:      "accepted",
-    accepted_at: new Date().toISOString()
-  }).eq("id",id);
+/* ── AGENDA ── */
+function renderAgenda(){
+  drawCalendar();
+  showDayRides(selectedDate);
+}
 
-  if (error) { toast("❌ "+error.message,4000); return; }
-  closeSheet();
+function drawCalendar(){
+  $("calMonthLabel").textContent=MONTHS_NL[calMonth]+" "+calYear;
+  const rideDates=new Set(rides.filter(r=>r.driver_id===currentUser?.id).map(r=>r.pickup_time?r.pickup_time.slice(0,10):null).filter(Boolean));
+  const today=new Date().toISOString().slice(0,10);
+
+  if(calExpanded){
+    // full grid
+    const firstDay=new Date(calYear,calMonth,1);
+    let startCol=(firstDay.getDay()+6)%7;
+    const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+    const prevDays=new Date(calYear,calMonth,0).getDate();
+    let cells="";
+    for(let i=0;i<startCol;i++){
+      const d=prevDays-startCol+1+i;
+      cells+=`<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
+    }
+    for(let d=1;d<=daysInMonth;d++){
+      const ds=`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const iT=ds===today, iS=ds===selectedDate&&!iT;
+      cells+=`<div class="cal-cell${iT?" today":""}${iS?" selected":""}" onclick="selectDate('${ds}')">
+        <div class="cal-num">${d}</div>
+        ${rideDates.has(ds)?'<div class="cal-dot"></div>':""}
+      </div>`;
+    }
+    const total=startCol+daysInMonth;
+    const tr=total%7===0?0:7-(total%7);
+    for(let d=1;d<=tr;d++) cells+=`<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
+    $("calGrid").innerHTML=cells;
+    $("calFull").classList.remove("hidden");
+    $("calStrip").classList.add("hidden");
+  } else {
+    // horizontal strip: show 14 days around today
+    const now=new Date(); const days=[];
+    for(let i=-2;i<=11;i++){const d=new Date(now);d.setDate(now.getDate()+i);days.push(d);}
+    const dnames=["Zo","Ma","Di","Wo","Do","Vr","Za"];
+    $("calStrip").innerHTML=days.map(d=>{
+      const ds=d.toISOString().slice(0,10);
+      const iT=ds===today,iS=ds===selectedDate&&!iT;
+      return `<div class="strip-day${iT?" today":""}${iS?" selected":""}" onclick="selectDate('${ds}')">
+        <div class="strip-dname">${dnames[d.getDay()]}</div>
+        <div class="strip-dnum">${d.getDate()}</div>
+        ${rideDates.has(ds)?'<div class="strip-dot"></div>':""}
+      </div>`;
+    }).join("");
+    $("calFull").classList.add("hidden");
+    $("calStrip").classList.remove("hidden");
+  }
+}
+
+function toggleCal(){
+  calExpanded=!calExpanded;
+  const h=$("calHeader"),ch=$("calChevron");
+  h.classList.toggle("expanded",calExpanded);
+  h.classList.toggle("collapsed",!calExpanded);
+  ch.classList.toggle("open",calExpanded);
+  drawCalendar();
+}
+
+function selectDate(ds){
+  selectedDate=ds;
+  // sync month if needed
+  const d=new Date(ds+"T00:00:00");
+  calYear=d.getFullYear(); calMonth=d.getMonth();
+  drawCalendar();
+  showDayRides(ds);
+}
+
+function showDayRides(ds){
+  const label=$("agendaDayLabel"),feed=$("agendaFeed");
+  const d=new Date(ds+"T00:00:00");
+  label.style.display="block";
+  label.textContent=d.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).replace(/^\w/,c=>c.toUpperCase());
+  const dayRides=rides.filter(r=>r.driver_id===currentUser?.id&&r.pickup_time&&r.pickup_time.slice(0,10)===ds).sort((a,b)=>new Date(a.pickup_time)-new Date(b.pickup_time));
+  if(!dayRides.length){
+    feed.innerHTML=`<div class="empty" style="padding:30px 20px"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="empty-title">Geen ritten</div><div class="empty-sub">Geen ritten gepland</div></div>`;
+    return;
+  }
+  feed.innerHTML=dayRides.map((r,i)=>{
+    const fromMain=(r.from_address||"-").split(",")[0].trim();
+    const toMain=(r.to_address||"-").split(",")[0].trim();
+    const timeStr=r.pickup_time?new Date(r.pickup_time).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"--:--";
+    return `<div class="agenda-row" style="animation-delay:${i*.05}s" onclick="openDetail('${r.id}')">
+      <div class="agenda-row-left">
+        <div class="agenda-row-status">${statusLabel(r.status)}</div>
+        <div class="agenda-row-route">${fromMain}</div>
+        <div class="agenda-row-dir">Richting ${toMain}</div>
+        <div class="agenda-row-time">${timeStr}</div>
+      </div>
+      <div class="agenda-row-right"><div class="agenda-price">${r.price||"€0"}</div></div>
+    </div>`;
+  }).join("");
+}
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}selectedDate=null;drawCalendar();$("agendaDayLabel").style.display="none";$("agendaFeed").innerHTML="";}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}selectedDate=null;drawCalendar();$("agendaDayLabel").style.display="none";$("agendaFeed").innerHTML="";}
+
+/* ── ACCOUNT ── */
+function renderAccount(){
+  const name=driverProfile?.name||currentUser?.email||"-";
+  const av=$("accAvatar");
+  const stored=localStorage.getItem("avatarImg");
+  if(stored){av.innerHTML=`<img src="${stored}" alt="">`;}
+  else{av.textContent=initials(name);}
+  $("accName").textContent=name;
+  $("accEmail").textContent=currentUser?.email||"-";
+  $("accRole").textContent=driverProfile?.role||"driver";
+  const done=rides.filter(r=>r.driver_id===currentUser?.id&&r.status==="completed");
+  $("accTotal").textContent=done.length;
+  $("accEarnings").textContent="€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
+  updateNavRadios();
+}
+
+function triggerAvatarUpload(){$("avatarInput").click();}
+function handleAvatar(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const data=ev.target.result;
+    localStorage.setItem("avatarImg",data);
+    $("accAvatar").innerHTML=`<img src="${data}" alt="">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* account detail sub-page */
+function showAccDetail(){
+  $("fieldFirst").value=driverProfile?.name?.split(" ")[0]||"";
+  $("fieldLast").value=driverProfile?.name?.split(" ").slice(1).join(" ")||"";
+  $("fieldPhone").value=driverProfile?.phone||"";
+  $("fieldEmail").value=currentUser?.email||"";
+  $("pgAccDetail").classList.add("open");
+}
+function closeAccDetail(){$("pgAccDetail").classList.remove("open");}
+async function saveProfile(){
+  const first=$("fieldFirst").value.trim();
+  const last=$("fieldLast").value.trim();
+  const phone=$("fieldPhone").value.trim();
+  const fullName=[first,last].filter(Boolean).join(" ");
+  const {error}=await db.from("profiles").update({name:fullName,phone}).eq("id",currentUser.id);
+  if(error){toast("❌ "+error.message,4000);return;}
+  driverProfile.name=fullName; driverProfile.phone=phone;
+  $("driverName").textContent=fullName||currentUser.email;
+  $("accName").textContent=fullName;
+  closeAccDetail();
+  toast("✓ Profiel opgeslagen!");
+}
+
+/* app settings sub-page */
+function showAccSettings(){$("pgAccSettings").classList.add("open");updateNavRadios();}
+function closeAccSettings(){$("pgAccSettings").classList.remove("open");}
+function setNavApp(app){
+  navApp=app;
+  localStorage.setItem("navApp",app);
+  updateNavRadios();
+}
+function updateNavRadios(){
+  ["waze","google","apple"].forEach(a=>{
+    const el=$("radio-"+a);
+    if(!el) return;
+    el.classList.toggle("checked",navApp===a);
+  });
+}
+
+/* ── ACTIONS ── */
+async function acceptRide(id){
+  const {error}=await db.from("rides").update({driver_id:currentUser.id,driver_name:driverProfile.name||currentUser.email,driver_phone:driverProfile.phone||"",status:"accepted",accepted_at:new Date().toISOString()}).eq("id",id);
+  if(error){toast("❌ "+error.message,4000);return;}
+  closeDetail();
   toast("✓ Rit geaccepteerd!");
   await loadRides();
   showPage("agenda");
 }
 
-async function quickStatus(id, status) {
-  const payload = { status };
-  if (status==="completed") payload.completed_at = new Date().toISOString();
-
-  const { error } = await db.from("rides").update(payload).eq("id",id);
-  if (error) { toast("❌ "+error.message,4000); return; }
-
-  closeSheet();
+async function quickStatus(id,status){
+  const payload={status};
+  if(status==="completed") payload.completed_at=new Date().toISOString();
+  const {error}=await db.from("rides").update(payload).eq("id",id);
+  if(error){toast("❌ "+error.message,4000);return;}
+  closeDetail();
   toast(status==="completed"?"✓ Rit voltooid!":status==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
   await loadRides();
 }
 
-function navigate(addr) {
-  window.open(`https://www.google.com/maps/search/?api=1&query=${addr}`,"_blank");
-}
+async function logout(){await db.auth.signOut();location.href="/driver/login.html";}
+function errState(msg){return `<div class="empty"><div class="empty-title">⚠️ ${msg}</div></div>`;}
 
-async function logout() {
-  await db.auth.signOut();
-  location.href = "/driver/login.html";
-}
-
-function errState(msg) {
-  return `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Fout</div><div class="empty-sub">${msg}</div></div>`;
-}
-
-/* ─────────────────────────────────────
-   INIT
-───────────────────────────────────── */
+/* ── INIT ── */
 loadRides();
-setInterval(loadRides, 12000);
+setInterval(loadRides,12000);
+updateNavRadios();
 </script>
 </body>
 </html>
