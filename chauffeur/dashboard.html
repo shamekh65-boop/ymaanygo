@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <link rel="manifest" href="/ymaanygo/chauffeur/manifest.json">
+  <link rel="manifest" href="/chauffeur/manifest.json">
 <meta name="theme-color" content="#1b5e20">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ymaanyGO Driver">
-<link rel="apple-touch-icon" href="/ymaanygo/chauffeur/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/chauffeur/icons/icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>ymaanyGO Driver</title>
@@ -1036,7 +1036,7 @@ async function enablePushNotifications() {
       return;
     }
 
-    const registration = await navigator.serviceWorker.register("/ymaanygo/chauffeur/sw.js");
+    const registration = await navigator.serviceWorker.register("/chauffeur/sw.js");
 
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -1180,7 +1180,7 @@ function setMode(m) {
 ───────────────────────────────────── */
 async function protect() {
   const { data } = await db.auth.getSession();
-  if (!data.session) { location.href="/ymaanygo/chauffeur/login.html"; return false; }
+  if (!data.session) { location.href="/chauffeur/login.html"; return false; }
 
   currentUser = data.session.user;
   const { data:prof } = await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
@@ -1635,7 +1635,7 @@ function navigate(addr) {
 
 async function logout() {
   await db.auth.signOut();
-  location.href = "/ymaanygo/chauffeur/login.html";
+  location.href = "/chauffeur/login.html";
 }
 
 function errState(msg) {
@@ -1650,7 +1650,7 @@ setInterval(loadRides, 12000);
 </script>
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/ymaanygo/chauffeur/sw.js")
+  navigator.serviceWorker.register("/chauffeur/sw.js")
     .then(() => console.log("PWA actief"))
     .catch(err => console.log("PWA fout:", err));
 }
