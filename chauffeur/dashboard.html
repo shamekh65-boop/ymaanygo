@@ -859,12 +859,15 @@ a.btn { text-decoration:none; display:inline-block; }
     <div class="logo">ymaany<span>GO</span></div>
     <div class="driver-name" id="driverName">Chauffeur</div>
   </div>
+
   <div class="topbar-right">
     <div class="clock" id="clock">--:--</div>
+
+    <button class="toggle-btn online" onclick="enablePushNotifications()">
+      🔔 Meldingen
+    </button>
+
     <button class="toggle-btn online" id="onlineBtn" onclick="toggleOnline()">
-      <button class="toggle-btn online" onclick="enablePushNotifications()">
-  🔔 Meldingen
-</button>
       <span class="toggle-dot"></span>
       <span id="onlineTxt">Online</span>
     </button>
@@ -1581,17 +1584,25 @@ function closeSheet(e) {
 /* ─────────────────────────────────────
    ACTIONS
 ───────────────────────────────────── */
-async function acceptRide(id) {
-  const { error } = await db.from("rides").update({
-    driver_id:   currentUser.id,
-    driver_name: driverProfile.name||currentUser.email,
-    driver_phone:driverProfile.phone||"",
-    status:      "accepted",
-    accepted_at: new Date().toISOString()
-.eq("id", id)
-.eq("status", "pending");
 
-  if (error) { toast("❌ "+error.message,4000); return; }
+async function acceptRide(id) {
+  const { error } = await db
+    .from("rides")
+    .update({
+      driver_id: currentUser.id,
+      driver_name: driverProfile.name || currentUser.email,
+      driver_phone: driverProfile.phone || "",
+      status: "accepted",
+      accepted_at: new Date().toISOString()
+    })
+    .eq("id", id)
+    .eq("status", "pending");
+
+  if (error) {
+    toast("❌ " + error.message, 4000);
+    return;
+  }
+
   closeSheet();
   toast("✓ Rit geaccepteerd!");
   await loadRides();
@@ -1600,23 +1611,31 @@ async function acceptRide(id) {
 
 async function quickStatus(id, status) {
   const payload = { status };
-  if (status==="completed") payload.completed_at = new Date().toISOString();
+  if (status === "completed") payload.completed_at = new Date().toISOString();
 
-  const { error } = await db.from("rides").update(payload).eq("id",id);
-  if (error) { toast("❌ "+error.message,4000); return; }
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id", id)
+    .eq("driver_id", currentUser.id);
+
+  if (error) {
+    toast("❌ " + error.message, 4000);
+    return;
+  }
 
   closeSheet();
-  toast(status==="completed"?"✓ Rit voltooid!":status==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
+  toast(status === "completed" ? "✓ Rit voltooid!" : status === "cancelled" ? "Rit geannuleerd" : "Status bijgewerkt");
   await loadRides();
 }
 
 function navigate(addr) {
-  window.open(`https://www.google.com/maps/search/?api=1&query=${addr}`,"_blank");
+  window.open(`https://www.google.com/maps/search/?api=1&query=${addr}`, "_blank");
 }
 
 async function logout() {
   await db.auth.signOut();
-location.href = "/ymaanygo/chauffeur/login.html";
+  location.href = "/ymaanygo/chauffeur/login.html";
 }
 
 function errState(msg) {
