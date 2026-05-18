@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Realtime & Notificaties</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Test Realtime & Notificaties</h1>
+    <div id="log" style="background:#f0f0f0; padding:10px; height:300px; overflow:auto;"></div>
+    <button id="requestPerm">Vraag notificatie toestemming</button>
+
+    <script>
+        const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const logDiv = document.getElementById('log');
+        function log(msg) {
+            const p = document.createElement('div');
+            p.textContent = new Date().toLocaleTimeString() + ' - ' + msg;
+            logDiv.appendChild(p);
+            console.log(msg);
+        }
+
+        // Verzoek notificatie toestemming
+        document.getElementById('requestPerm').onclick = () => {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(perm => log(`Notificatie toestemming: ${perm}`));
+            } else {
+                log("Notificaties niet ondersteund");
+            }
+        };
+
+        // Speel geluid af
+        function playSound() {
+            const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+            audio.volume = 0.5;
+            audio.play().catch(e => log("Geluid geblokkeerd: " + e));
+        }
+
+        // Stuur notificatie
+        function sendNotificatie(ride) {
+            if (Notification.permission === "granted") {
+                new Notification("Nieuwe rit!", {
+                    body: `${ride.from_address} → ${ride.to_address} · €${ride.price}`,
+                    icon: "https://ymaanygo.nl/favicon.ico"
+                });
+                playSound();
+                log(`Notificatie verzonden voor rit ${ride.id}`);
+            } else {
+                log(`Notificatie niet verzonden (toestemming niet gegeven) voor rit ${ride.id}`);
+            }
+        }
+
+        // 1. Eerst alle bestaande pending ritten ophalen
+        async function fetchPendingRides() {
+            const { data, error } = await db.from('rides').select('*').eq('status', 'pending');
+            if (error) {
+                log(`FOUT bij ophalen: ${error.message}`);
+                return [];
+            }
+            log(`${data.length} pending ritten gevonden bij initieel laden`);
+            return data;
+        }
+
+        // Set om bij te houden welke ritten we al hebben gezien
+        let seenRideIds = new Set();
+
+        async function init() {
+            log("Start test...");
+            // Haal bestaande ritten op
+            const existing = await fetchPendingRides();
+            existing.forEach(ride => seenRideIds.add(ride.id));
+            log(`Reeds bekende rit IDs: ${Array.from(seenRideIds).join(', ')}`);
+
+            // 2. Realtime listener
+            const channel = db.channel('test-rides')
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'rides' 
+                }, (payload) => {
+                    const newRide = payload.new;
+                    log(`Nieuwe rit ontvangen via Realtime! ID: ${newRide.id}, status: ${newRide.status}`);
+                    
+                    if (newRide.status === 'pending' && !seenRideIds.has(newRide.id)) {
+                        seenRideIds.add(newRide.id);
+                        sendNotificatie(newRide);
+                    } else {
+                        log(`Rit niet pending of al gezien, overslaan.`);
+                    }
+                })
+                .subscribe((status) => {
+                    log(`Realtime subscription status: ${status}`);
+                });
+
+            log("Realtime listener ingesteld. Wachten op INSERT events...");
+        }
+
+        init();
+    </script>
+</body>
+</html>
