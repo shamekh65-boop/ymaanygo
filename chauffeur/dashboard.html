@@ -2,1651 +2,762 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>ymaanyGO Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>ymaanyGO · Chauffeur</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════ */
-:root {
-  --g900: #1b5e20;
-  --g800: #2e7d32;
-  --g700: #388e3c;
-  --g600: #43a047;
-  --g100: #e8f5e9;
-  --g50:  #f1f8f2;
-  --white: #ffffff;
-  --bg:    #f2f6f2;
-  --border:#dce8dc;
-  --ink:   #0f2211;
-  --ink2:  #3d5c40;
-  --ink3:  #7a9e7a;
-  --red:   #c62828;
-  --red-bg:#ffebee;
-  --amber: #e65100;
-  --amber-bg:#fff3e0;
-  --blue:  #1565c0;
-  --blue-bg:#e3f2fd;
-  --tab-h: 70px;
-  --r:     16px;
-  --shadow: 0 2px 12px rgba(0,0,0,.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
-}
-
-/* ═══════════════════════════════════════
-   RESET
-═══════════════════════════════════════ */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  min-height:100vh;
-  padding-bottom:calc(var(--tab-h) + 12px);
-  overflow-x:hidden;
-}
-
-/* ═══════════════════════════════════════
-   TOPBAR
-═══════════════════════════════════════ */
-.topbar {
-  background:var(--g900);
-  padding:16px 18px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:90;
-  box-shadow:0 2px 16px rgba(27,94,32,.35);
-}
-
-.topbar-left { display:flex; flex-direction:column; gap:1px; }
-
-.logo {
-  font-family:'Bebas Neue',sans-serif;
-  font-size:26px;
-  letter-spacing:2.5px;
-  color:#fff;
-  line-height:1;
-}
-.logo span { color:#a5d6a7; }
-
-.driver-name {
-  font-size:12px;
-  font-weight:500;
-  color:rgba(255,255,255,.6);
-  letter-spacing:.3px;
-}
-
-.topbar-right { display:flex; align-items:center; gap:10px; }
-
-.clock {
-  font-size:13px;
-  font-weight:600;
-  color:rgba(255,255,255,.6);
-  letter-spacing:.5px;
-}
-
-.toggle-btn {
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 16px;
-  border-radius:50px;
-  border:none;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all .2s;
-  letter-spacing:.2px;
-}
-.toggle-btn.online  { background:#fff; color:var(--g800); }
-.toggle-btn.offline { background:rgba(255,255,255,.15); color:rgba(255,255,255,.7); }
-
-.toggle-dot {
-  width:8px; height:8px;
-  border-radius:50%;
-  flex-shrink:0;
-}
-.toggle-btn.online  .toggle-dot { background:var(--g700); box-shadow:0 0 6px var(--g600); animation:blink 2s infinite; }
-.toggle-btn.offline .toggle-dot { background:#f44336; }
-
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ═══════════════════════════════════════
-   HERO STATS
-═══════════════════════════════════════ */
-.hero {
-  background:var(--g900);
-  padding:0 18px 20px;
-}
-
-.stats-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.stat-card {
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:14px;
-  padding:14px;
-}
-
-.stat-label {
-  font-size:11px;
-  font-weight:600;
-  color:rgba(255,255,255,.6);
-  text-transform:uppercase;
-  letter-spacing:.8px;
-}
-
-.stat-value {
-  font-size:28px;
-  font-weight:800;
-  color:#fff;
-  line-height:1.1;
-  margin-top:4px;
-  letter-spacing:-.5px;
-}
-
-/* ═══════════════════════════════════════
-   SECTION HEADER
-═══════════════════════════════════════ */
-.section-head {
-  background:var(--white);
-  padding:0 18px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  gap:0;
-}
-
-.seg-btn {
-  flex:1;
-  padding:13px 8px;
-  border:none;
-  background:transparent;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  color:var(--ink3);
-  cursor:pointer;
-  position:relative;
-  letter-spacing:.2px;
-  transition:color .18s;
-}
-
-.seg-btn.active { color:var(--g800); }
-
-.seg-btn.active::after {
-  content:'';
-  position:absolute;
-  bottom:0; left:20%; right:20%;
-  height:3px;
-  border-radius:3px 3px 0 0;
-  background:var(--g800);
-}
-
-.seg-badge {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--g800);
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  width:18px; height:18px;
-  border-radius:50%;
-  margin-left:5px;
-  vertical-align:middle;
-}
-
-/* ═══════════════════════════════════════
-   FEED
-═══════════════════════════════════════ */
-.feed {
-  padding:14px 14px 4px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* ═══════════════════════════════════════
-   RIDE CARD
-═══════════════════════════════════════ */
-.rcard {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  animation:rise .32s cubic-bezier(.22,.68,0,1.2) both;
-}
-
-@keyframes rise {
-  from { opacity:0; transform:translateY(10px) scale(.99); }
-  to   { opacity:1; transform:none; }
-}
-
-/* accent bar on top */
-.rcard::before {
-  content:'';
-  display:block;
-  height:4px;
-  background:linear-gradient(90deg,var(--g900),var(--g600));
-}
-
-/* head */
-.rcard-head {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  padding:11px 14px 9px;
-  background:var(--g100);
-  border-bottom:1px solid var(--border);
-}
-
-.rcard-date {
-  font-size:12px;
-  font-weight:700;
-  color:var(--g900);
-}
-.rcard-id {
-  font-size:10px;
-  font-family:monospace;
-  color:var(--ink3);
-  margin-top:2px;
-  letter-spacing:.4px;
-}
-
-.rcard-status {
-  font-size:10px;
-  font-weight:700;
-  padding:3px 10px;
-  border-radius:50px;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  white-space:nowrap;
-}
-.s-pending   { background:#fff8e1; color:#e65100; border:1px solid #ffe0b2; }
-.s-accepted  { background:#e3f2fd; color:#1565c0; border:1px solid #bbdefb; }
-.s-on_the_way{ background:#e8eaf6; color:#283593; border:1px solid #c5cae9; }
-.s-arrived   { background:#f3e5f5; color:#6a1b9a; border:1px solid #e1bee7; }
-.s-completed { background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9; }
-.s-cancelled { background:#ffebee; color:#c62828; border:1px solid #ffcdd2; }
-
-/* route */
-.rroute {
-  padding:12px 14px 10px;
-}
-
-.rroute-row {
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-}
-.rroute-row + .rroute-row { margin-top:2px; }
-
-.rroute-icon {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:16px;
-  flex-shrink:0;
-  padding-top:3px;
-}
-
-.rdot-a {
-  width:10px; height:10px;
-  border-radius:50%;
-  background:var(--g900);
-  flex-shrink:0;
-}
-.rdot-b {
-  width:10px; height:10px;
-  border-radius:3px;
-  border:2px solid var(--g700);
-  background:var(--white);
-  flex-shrink:0;
-}
-.rline {
-  width:2px; flex:1; min-height:20px;
-  background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);
-  opacity:.4;
-  margin:3px 0;
-}
-
-.rroute-text { flex:1; padding-bottom:8px; }
-.rroute-row:last-child .rroute-text { padding-bottom:0; }
-
-.rroute-time { font-size:11px; font-weight:600; color:var(--ink3); margin-bottom:1px; }
-.rroute-name { font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.3; }
-.rroute-city { font-size:11.5px; color:var(--ink2); margin-top:1px; }
-
-.rnav-btn {
-  width:30px; height:30px;
-  border-radius:8px;
-  background:var(--g100);
-  border:1px solid var(--border);
-  color:var(--g900);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
-  align-self:center;
-  flex-shrink:0;
-  font-size:13px;
-  transition:background .15s;
-}
-.rnav-btn:hover { background:#c8e6c9; }
-
-/* meta chips */
-.rmeta {
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  padding:8px 14px;
-  border-top:1px solid var(--border);
-  background:#fafcfa;
-}
-
-.rchip {
-  display:flex;
-  align-items:center;
-  gap:4px;
-  font-size:12px;
-  font-weight:500;
-  color:var(--ink2);
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:3px 10px;
-}
-.rchip svg { opacity:.6; flex-shrink:0; }
-
-/* tags row */
-.rtags {
-  display:flex;
-  gap:7px;
-  padding:0 14px 10px;
-  flex-wrap:wrap;
-}
-.rtag {
-  font-size:10px;
-  font-weight:700;
-  padding:3px 10px;
-  border-radius:50px;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
-
-/* footer */
-.rfoot {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 14px 12px;
-  border-top:1px solid var(--border);
-  gap:10px;
-}
-
-.rprice-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--ink3); }
-.rprice-val   { font-size:26px; font-weight:800; color:var(--g900); letter-spacing:-.5px; line-height:1; }
-.rprice-note  { font-size:10px; color:var(--g700); font-weight:600; margin-top:2px; }
-
-.ractions {
-  display:flex;
-  gap:7px;
-  flex-shrink:0;
-}
-
-/* ═══════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════ */
-.btn {
-  border:none;
-  border-radius:10px;
-  font-family:'Outfit',sans-serif;
-  font-weight:700;
-  font-size:13px;
-  cursor:pointer;
-  padding:9px 16px;
-  transition:all .15s;
-  white-space:nowrap;
-}
-.btn:active { transform:scale(.95); }
-
-.btn-primary { background:var(--g900); color:#fff; }
-.btn-primary:hover { background:var(--g800); }
-
-.btn-success { background:#e8f5e9; color:var(--g800); border:1px solid #c8e6c9; }
-.btn-success:hover { background:#c8e6c9; }
-
-.btn-outline { background:transparent; color:var(--ink2); border:1px solid var(--border); }
-.btn-outline:hover { background:var(--g100); }
-
-.btn-danger { background:var(--red-bg); color:var(--red); border:1px solid #ffcdd2; }
-.btn-danger:hover { background:#ffcdd2; }
-
-.btn-amber { background:var(--amber-bg); color:var(--amber); border:1px solid #ffe0b2; }
-.btn-blue  { background:var(--blue-bg);  color:var(--blue);  border:1px solid #bbdefb; }
-
-/* wide btn */
-.btn-wide {
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  font-size:15px;
-  text-align:center;
-}
-
-/* ═══════════════════════════════════════
-   EMPTY STATE
-═══════════════════════════════════════ */
-.empty {
-  text-align:center;
-  padding:60px 24px;
-  color:var(--ink3);
-}
-.empty-icon { font-size:40px; margin-bottom:10px; opacity:.4; }
-.empty-title { font-size:16px; font-weight:700; color:var(--ink2); }
-.empty-sub   { font-size:13px; margin-top:4px; }
-
-/* ═══════════════════════════════════════
-   AGENDA – full monthly calendar
-═══════════════════════════════════════ */
-.cal-header {
-  background:var(--white);
-  padding:14px 18px 0;
-  border-bottom:1px solid var(--border);
-}
-
-.cal-month-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.cal-month-label {
-  font-size:17px;
-  font-weight:800;
-  color:var(--ink);
-}
-
-.cal-nav {
-  display:flex;
-  gap:6px;
-}
-
-.cal-nav-btn {
-  width:32px; height:32px;
-  border-radius:50%;
-  border:1px solid var(--border);
-  background:var(--white);
-  color:var(--ink2);
-  font-size:16px;
-  cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s;
-}
-.cal-nav-btn:hover { background:var(--g100); }
-
-.cal-weekdays {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  margin-bottom:4px;
-}
-.cal-wday {
-  text-align:center;
-  font-size:11px;
-  font-weight:700;
-  color:var(--ink3);
-  padding:4px 0;
-  text-transform:uppercase;
-  letter-spacing:.4px;
-}
-
-.cal-grid {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:2px;
-  padding-bottom:10px;
-}
-
-.cal-cell {
-  aspect-ratio:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:background .15s;
-  position:relative;
-  font-size:14px;
-  font-weight:600;
-  color:var(--ink);
-}
-.cal-cell:hover { background:var(--g100); }
-.cal-cell.empty { cursor:default; }
-.cal-cell.empty:hover { background:transparent; }
-.cal-cell.other-month { color:var(--border); }
-
-.cal-cell.today .cal-num {
-  background:var(--g900);
-  color:#fff;
-  width:30px; height:30px;
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800;
-}
-
-.cal-cell.selected .cal-num {
-  background:var(--g700);
-  color:#fff;
-  width:30px; height:30px;
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800;
-}
-
-.cal-num { line-height:1; }
-
-.cal-dot {
-  width:5px; height:5px;
-  border-radius:50%;
-  background:var(--g700);
-  flex-shrink:0;
-}
-.cal-cell.today .cal-dot { background:#a5d6a7; }
-
-/* selected day rides */
-.agenda-day-label {
-  font-size:15px;
-  font-weight:800;
-  color:var(--ink);
-  padding:14px 16px 8px;
-}
-
-/* compact ride row for agenda */
-.agenda-row {
-  background:var(--white);
-  border-radius:12px;
-  padding:12px 14px;
-  margin: 0 14px 8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  box-shadow:0 1px 6px rgba(0,0,0,.06);
-  border:1px solid var(--border);
-  cursor:pointer;
-  transition:background .15s;
-  animation:rise .25s ease both;
-}
-.agenda-row:hover { background:var(--g100); }
-
-.agenda-row-left { flex:1; min-width:0; }
-.agenda-row-status { font-size:11px; font-weight:800; color:var(--g800); margin-bottom:2px; }
-.agenda-row-route  { font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.agenda-row-dir    { font-size:11px; color:var(--ink3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.agenda-row-time   { font-size:11px; color:var(--ink2); margin-top:3px; font-weight:500; }
-
-.agenda-row-right {
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:4px;
-  flex-shrink:0;
-}
-.agenda-price {
-  font-size:15px;
-  font-weight:800;
-  color:var(--g900);
-  background:var(--g100);
-  padding:3px 10px;
-  border-radius:8px;
-  border:1px solid var(--border);
-}
-
-/* ═══════════════════════════════════════
-   ACCOUNT
-═══════════════════════════════════════ */
-.acc-hero {
-  background:var(--g900);
-  padding:28px 20px 24px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-}
-.acc-avatar {
-  width:72px; height:72px;
-  border-radius:50%;
-  background:rgba(255,255,255,.15);
-  border:3px solid rgba(255,255,255,.3);
-  display:flex; align-items:center; justify-content:center;
-  font-size:30px;
-  font-weight:800;
-  color:#fff;
-}
-.acc-name  { font-size:20px; font-weight:800; color:#fff; }
-.acc-email { font-size:13px; color:rgba(255,255,255,.6); }
-
-.acc-body { padding:16px 14px; display:flex; flex-direction:column; gap:10px; }
-
-.info-card {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  overflow:hidden;
-}
-.info-row {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-bottom:1px solid var(--border);
-}
-.info-row:last-child { border-bottom:none; }
-.info-icon {
-  width:34px; height:34px;
-  border-radius:9px;
-  background:var(--g100);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px;
-  flex-shrink:0;
-}
-.info-label { font-size:11px; color:var(--ink3); font-weight:600; }
-.info-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
-
-/* ═══════════════════════════════════════
-   BOTTOM TABS
-═══════════════════════════════════════ */
-.tabs {
-  position:fixed;
-  bottom:0; left:0; right:0;
-  height:var(--tab-h);
-  background:var(--white);
-  border-top:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  padding-bottom:env(safe-area-inset-bottom,0);
-  z-index:100;
-  box-shadow:0 -2px 20px rgba(0,0,0,.07);
-}
-
-.tab {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  padding:7px 0;
-  border:none;
-  background:none;
-  color:var(--ink3);
-  font-family:'Outfit',sans-serif;
-  font-size:10px;
-  font-weight:600;
-  cursor:pointer;
-  letter-spacing:.2px;
-  position:relative;
-  transition:color .15s;
-}
-.tab.active { color:var(--g900); }
-.tab.active::before {
-  content:'';
-  position:absolute;
-  top:0; left:50%;
-  transform:translateX(-50%);
-  width:28px; height:3px;
-  border-radius:0 0 4px 4px;
-  background:var(--g900);
-}
-.tab svg { transition:transform .18s; }
-.tab.active svg { transform:scale(1.12); }
-
-/* ═══════════════════════════════════════
-   BOTTOM SHEET (modal)
-═══════════════════════════════════════ */
-.overlay {
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.38);
-  z-index:200;
-  display:flex;
-  align-items:flex-end;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .22s;
-}
-.overlay.open { opacity:1; pointer-events:all; }
-
-.sheet {
-  width:100%;
-  background:var(--white);
-  border-radius:22px 22px 0 0;
-  padding:18px 18px calc(env(safe-area-inset-bottom,0px) + 24px);
-  transform:translateY(100%);
-  transition:transform .28s cubic-bezier(.32,.72,0,1);
-  max-height:92vh;
-  overflow-y:auto;
-}
-.overlay.open .sheet { transform:translateY(0); }
-
-.sheet-handle {
-  width:36px; height:4px;
-  border-radius:2px;
-  background:#ddd;
-  margin:0 auto 20px;
-}
-
-.sheet-title { font-size:21px; font-weight:800; color:var(--ink); }
-.sheet-sub   { font-size:12px; color:var(--ink3); margin-top:3px; margin-bottom:18px; }
-
-.sinfo-row {
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:11px 0;
-  border-bottom:1px solid var(--border);
-}
-.sinfo-row:last-of-type { border-bottom:none; }
-.sinfo-icon {
-  width:36px; height:36px;
-  border-radius:10px;
-  background:var(--g100);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px;
-  flex-shrink:0;
-}
-.sinfo-label { font-size:11px; color:var(--ink3); font-weight:600; }
-.sinfo-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
-
-.price-box {
-  margin:16px 0 14px;
-  background:var(--g100);
-  border:1.5px solid #c8e6c9;
-  border-radius:14px;
-  padding:14px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.price-box-label { font-size:12px; color:var(--ink2); font-weight:600; }
-.price-box-note  { font-size:11px; color:var(--g700); font-weight:600; margin-top:3px; }
-.price-box-val   { font-size:34px; font-weight:800; color:var(--g900); letter-spacing:-1px; }
-
-.sheet-actions {
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  margin-bottom:10px;
-}
-
-/* ═══════════════════════════════════════
-   TOAST
-═══════════════════════════════════════ */
-.toast {
-  position:fixed;
-  bottom:calc(var(--tab-h) + 14px);
-  left:50%;
-  transform:translateX(-50%) translateY(8px);
-  background:var(--g900);
-  color:#fff;
-  padding:10px 22px;
-  border-radius:50px;
-  font-size:13px;
-  font-weight:700;
-  opacity:0;
-  pointer-events:none;
-  transition:all .26s;
-  z-index:999;
-  white-space:nowrap;
-  box-shadow:0 4px 18px rgba(27,94,32,.35);
-}
-.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-/* ═══════════════════════════════════════
-   HIDDEN / UTILS
-═══════════════════════════════════════ */
-.hidden { display:none!important; }
-
-a.btn { text-decoration:none; display:inline-block; }
-
-/* ═══════════════════════════════════════
-   SKELETON LOADER
-═══════════════════════════════════════ */
-.skeleton {
-  background:linear-gradient(90deg,#eef3ee 25%,#e0ebe0 50%,#eef3ee 75%);
-  background-size:200% 100%;
-  animation:shimmer 1.4s infinite;
-  border-radius:8px;
-  height:14px;
-}
-@keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
-
-.skel-card {
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:18px 14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f9f5;
+    color: #1a2e1a;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+  }
+
+  /* Variables */
+  :root {
+    --green-dark: #1b5e20;
+    --green-main: #2e7d32;
+    --green-light: #e8f5e9;
+    --green-soft: #c8e6c9;
+    --gray-bg: #f0f4f0;
+    --border: #dce8dc;
+    --ink: #1e2a1e;
+    --ink-light: #4a6741;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --amber: #ef6c00;
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--green-dark);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 28px;
+    color: white;
+    letter-spacing: 1px;
+  }
+  .logo span { color: #a5d6a7; }
+  .driver-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .toggle-btn {
+    background: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .toggle-btn.offline { background: #e0e0e0; color: #555; }
+  .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #2e7d32; }
+  .toggle-btn.offline .status-dot { background: #9e9e9e; }
+
+  /* Stats */
+  .stats-grid {
+    display: flex;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--green-dark);
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(2px);
+    border-radius: 18px;
+    padding: 12px 16px;
+    flex: 1;
+  }
+  .stat-label { font-size: 11px; color: #c8e6c9; font-weight: 500; text-transform: uppercase; }
+  .stat-value { font-size: 28px; font-weight: 800; color: white; line-height: 1.1; }
+
+  /* Segments */
+  .segments {
+    display: flex;
+    padding: 12px 16px 0;
+    gap: 10px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .seg-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    background: none;
+    border: none;
+    border-radius: 30px;
+    color: #6a8e6a;
+  }
+  .seg-btn.active {
+    background: var(--green-light);
+    color: var(--green-main);
+  }
+  .badge {
+    background: var(--green-main);
+    color: white;
+    border-radius: 40px;
+    padding: 2px 8px;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  /* Ride cards */
+  .feed {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ride-card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    transition: 0.2s;
+  }
+  .ride-header {
+    background: var(--green-light);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .ride-time { font-weight: 700; font-size: 13px; color: var(--green-dark); }
+  .ride-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+  }
+  .status-pending { background: #fff3e0; color: #e65100; }
+  .status-accepted { background: #e3f2fd; color: #1565c0; }
+  .status-completed { background: #e8f5e9; color: #2e7d32; }
+
+  .route-row {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: flex-start;
+  }
+  .route-icon { width: 20px; display: flex; flex-direction: column; align-items: center; }
+  .pin-start { width: 10px; height: 10px; background: var(--green-dark); border-radius: 50%; }
+  .pin-end { width: 10px; height: 10px; border: 2px solid var(--green-main); background: white; border-radius: 2px; }
+  .route-line { width: 2px; flex: 1; background: repeating-linear-gradient(to bottom, #9bc49b 0px, #9bc49b 5px, transparent 5px, transparent 10px); margin: 4px 0; }
+  .route-text { flex: 1; }
+  .route-addr { font-weight: 700; font-size: 14px; }
+  .route-sub { font-size: 11px; color: #6e8f6e; }
+  .nav-icon {
+    background: var(--green-light);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #fafefa;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-chip {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .price-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+  }
+  .price-amount {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    border: none;
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.1s;
+  }
+  .btn-primary { background: var(--green-dark); color: white; }
+  .btn-outline { background: white; border: 1px solid var(--border); }
+  .btn-amber { background: #fff3e0; color: #e65100; }
+
+  /* Calendar */
+  .cal-container {
+    background: white;
+    margin: 12px;
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+  .cal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8aa88a;
+    margin-bottom: 8px;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .cal-day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 40px;
+    cursor: pointer;
+  }
+  .cal-day.selected { background: var(--green-dark); color: white; }
+  .cal-day.today { background: var(--green-light); font-weight: 800; }
+  .cal-day.has-ride::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--green-main);
+    border-radius: 50%;
+    margin-top: 2px;
+  }
+
+  /* Agenda rows */
+  .agenda-item {
+    background: white;
+    margin: 8px 16px;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 20px 20px;
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    z-index: 200;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8ba28b;
+  }
+  .nav-item.active { color: var(--green-dark); }
+
+  /* Sheet modal */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    background: white;
+    width: 100%;
+    border-radius: 32px 32px 0 0;
+    padding: 20px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: 0.3s ease-out;
+  }
+  .overlay.open .sheet { transform: translateY(0); }
+  .hidden { display: none; }
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e2a1e;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 14px;
+    z-index: 400;
+    opacity: 0;
+    transition: 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; bottom: 100px; }
 </style>
 </head>
 <body>
 
-<!-- ══ TOP BAR ══ -->
-<header class="topbar">
-  <div class="topbar-left">
+<div class="topbar">
+  <div>
     <div class="logo">ymaany<span>GO</span></div>
     <div class="driver-name" id="driverName">Chauffeur</div>
   </div>
-  <div class="topbar-right">
-    <div class="clock" id="clock">--:--</div>
-    <button class="toggle-btn online" id="onlineBtn" onclick="toggleOnline()">
-      <span class="toggle-dot"></span>
-      <span id="onlineTxt">Online</span>
-    </button>
-  </div>
-</header>
-
-<!-- ══ PAGES ══ -->
-
-<!-- HOME PAGE -->
-<div id="pgHome">
-
-  <!-- Hero stats -->
-  <div class="hero">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Ritten vandaag</div>
-        <div class="stat-value" id="todayCount">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Verdiensten</div>
-        <div class="stat-value" id="todayMoney">€0</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Subheader -->
-  <div class="section-head">
-    <button class="seg-btn active" id="segAuction">
-      Beschikbare ritten <span class="seg-badge" id="auctionBadge">0</span>
-    </button>
-  </div>
-
-  <!-- Feed -->
-  <div class="feed" id="homeFeed"></div>
-</div>
-
-<!-- AGENDA PAGE -->
-<div id="pgAgenda" class="hidden">
-  <div class="cal-header">
-    <div class="cal-month-row">
-      <div class="cal-month-label" id="calMonthLabel">Mei 2026</div>
-      <div class="cal-nav">
-        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
-        <button class="cal-nav-btn" onclick="calNext()">›</button>
-      </div>
-    </div>
-    <div class="cal-weekdays">
-      <div class="cal-wday">Ma</div>
-      <div class="cal-wday">Di</div>
-      <div class="cal-wday">Wo</div>
-      <div class="cal-wday">Do</div>
-      <div class="cal-wday">Vr</div>
-      <div class="cal-wday">Za</div>
-      <div class="cal-wday">Zo</div>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-  </div>
-  <div id="agendaDayLabel" class="agenda-day-label" style="display:none"></div>
-  <div id="agendaFeed"></div>
-</div>
-
-<!-- ACCOUNT PAGE -->
-<div id="pgAccount" class="hidden">
-  <div class="acc-hero">
-    <div class="acc-avatar" id="accAvatar">?</div>
-    <div class="acc-name" id="accName">-</div>
-    <div class="acc-email" id="accEmail">-</div>
-  </div>
-  <div class="acc-body">
-    <div class="info-card">
-      <div class="info-row">
-        <div class="info-icon">🪪</div>
-        <div>
-          <div class="info-label">Rol</div>
-          <div class="info-val" id="accRole">driver</div>
-        </div>
-      </div>
-      <div class="info-row">
-        <div class="info-icon">📊</div>
-        <div>
-          <div class="info-label">Totale ritten</div>
-          <div class="info-val" id="accTotal">0</div>
-        </div>
-      </div>
-      <div class="info-row">
-        <div class="info-icon">💶</div>
-        <div>
-          <div class="info-label">Totale verdiensten</div>
-          <div class="info-val" id="accEarnings">€0</div>
-        </div>
-      </div>
-    </div>
-    <button class="btn btn-danger btn-wide" onclick="logout()">Uitloggen</button>
-  </div>
-</div>
-
-<!-- ══ BOTTOM TABS ══ -->
-<nav class="tabs">
-  <button class="tab active" id="tabHome" onclick="showPage('home')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/>
-    </svg>
-    Veiling
+  <button class="toggle-btn online" id="onlineToggle">
+    <span class="status-dot"></span>
+    <span id="onlineText">Online</span>
   </button>
-  <button class="tab" id="tabAgenda" onclick="showPage('agenda')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-    </svg>
-    Agenda
-  </button>
-  <button class="tab" id="tabAccount" onclick="showPage('account')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-    </svg>
-    Account
-  </button>
-</nav>
+</div>
 
-<!-- ══ RIDE DETAIL SHEET ══ -->
-<div class="overlay" id="overlay" onclick="closeSheet(event)">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div id="sheetBody"></div>
+<!-- Home panel -->
+<div id="homePanel">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Ritten vandaag</div><div class="stat-value" id="todayCount">0</div></div>
+    <div class="stat-card"><div class="stat-label">Verdiend</div><div class="stat-value" id="todayEarn">€0</div></div>
+  </div>
+  <div class="segments">
+    <button class="seg-btn active" id="auctionTab">Veiling <span class="badge" id="pendingBadge">0</span></button>
+  </div>
+  <div id="homeFeed" class="feed"></div>
+</div>
+
+<!-- Agenda panel -->
+<div id="agendaPanel" class="hidden">
+  <div class="cal-container" id="calendarContainer"></div>
+  <div id="agendaList"></div>
+</div>
+
+<!-- Account panel -->
+<div id="accountPanel" class="hidden">
+  <div style="background: var(--green-dark); padding: 32px 20px; text-align: center; color: white;">
+    <div style="font-size: 48px; font-weight: 800;" id="avatarInitials">Y</div>
+    <div style="font-size: 20px; font-weight: 700;" id="accountName">-</div>
+    <div style="font-size: 13px; opacity: 0.8;" id="accountEmail">-</div>
+  </div>
+  <div style="padding: 20px;">
+    <div style="background: white; border-radius: 28px; padding: 16px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; padding: 12px 0;"><span>Totale ritten</span><strong id="totalRides">0</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 12px 0;"><span>Totale verdiensten</span><strong id="totalEarnings">€0</strong></div>
+    </div>
+    <button class="btn btn-outline" style="width:100%;" id="logoutBtn">Uitloggen</button>
   </div>
 </div>
 
-<!-- ══ TOAST ══ -->
-<div class="toast" id="toast"></div>
+<!-- bottom nav -->
+<div class="bottom-nav">
+  <button class="nav-item active" data-page="home">🏠 Ritten</button>
+  <button class="nav-item" data-page="agenda">📅 Agenda</button>
+  <button class="nav-item" data-page="account">👤 Account</button>
+</div>
+
+<div class="overlay" id="sheetOverlay"><div class="sheet" id="sheetContent"></div></div>
+<div class="toast" id="toastMsg"></div>
 
 <script>
-/* ─────────────────────────────────────
-   SUPABASE
-───────────────────────────────────── */
-const SUPABASE_URL     = "https://lxbfobdczjgqnotwsnki.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // ==================== SUPABASE ====================
+  const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+  const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ─────────────────────────────────────
-   STATE
-───────────────────────────────────── */
-let currentUser    = null;
-let driverProfile  = null;
-let rides          = [];
-let online         = true;
-let mode           = "auction";   // auction | mine
-let currentPage    = "home";
+  let currentUser = null;
+  let driverProfile = null;
+  let rides = [];
+  let online = true;
+  let currentPage = "home";
+  let selectedDate = new Date().toISOString().slice(0,10);
 
-/* ─────────────────────────────────────
-   HELPERS
-───────────────────────────────────── */
-const $ = id => document.getElementById(id);
+  // Known rides for notification dedup
+  let knownRideIds = new Set();
+  let firstLoad = true;
 
-function priceNum(v) {
-  return Number(String(v||"0").replace("€","").replace(",",".").trim()) || 0;
-}
+  // DOM elements
+  const homePanel = document.getElementById("homePanel");
+  const agendaPanel = document.getElementById("agendaPanel");
+  const accountPanel = document.getElementById("accountPanel");
+  const homeFeed = document.getElementById("homeFeed");
+  const agendaList = document.getElementById("agendaList");
+  const calendarContainer = document.getElementById("calendarContainer");
+  const sheetOverlay = document.getElementById("sheetOverlay");
+  const sheetContent = document.getElementById("sheetContent");
+  const toastMsg = document.getElementById("toastMsg");
 
-function fmtDT(v) {
-  if (!v) return "-";
-  const d = new Date(v);
-  if (isNaN(d)) return v;
-  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
-}
-
-function fmtDate(v) {
-  if (!v) return "-";
-  const d = new Date(v);
-  if (isNaN(d)) return v;
-  return d.toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
-}
-
-function initials(name) {
-  if (!name) return "?";
-  return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
-}
-
-function statusClass(s) {
-  const map={pending:"s-pending",accepted:"s-accepted",on_the_way:"s-on_the_way",arrived:"s-arrived",completed:"s-completed",cancelled:"s-cancelled"};
-  return map[s]||"s-pending";
-}
-
-function statusLabel(s) {
-  const map={pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"};
-  return map[s]||s||"?";
-}
-
-/* ─────────────────────────────────────
-   CLOCK
-───────────────────────────────────── */
-function tickClock() {
-  const n = new Date();
-  $("clock").textContent =
-    n.getHours().toString().padStart(2,"0")+":"+
-    n.getMinutes().toString().padStart(2,"0");
-}
-setInterval(tickClock,1000); tickClock();
-
-/* ─────────────────────────────────────
-   TOAST
-───────────────────────────────────── */
-function toast(msg, dur=2800) {
-  const el = $("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), dur);
-}
-
-/* ─────────────────────────────────────
-   PAGE NAVIGATION
-───────────────────────────────────── */
-function showPage(p) {
-  ["home","agenda","account"].forEach(n=>{
-    $(`pg${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.add("hidden");
-    $(`tab${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.remove("active");
-  });
-  $(`pg${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.remove("hidden");
-  $(`tab${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.add("active");
-  currentPage = p;
-
-  if (p==="agenda") renderAgenda();
-  if (p==="account") renderAccount();
-}
-
-/* ─────────────────────────────────────
-   ONLINE TOGGLE
-───────────────────────────────────── */
-function toggleOnline() {
-  online = !online;
-  const btn = $("onlineBtn");
-  if (online) {
-    btn.className = "toggle-btn online";
-    $("onlineTxt").textContent = "Online";
-  } else {
-    btn.className = "toggle-btn offline";
-    $("onlineTxt").textContent = "Offline";
-  }
-  renderHome();
-}
-
-/* ─────────────────────────────────────
-   MODE (auction only)
-───────────────────────────────────── */
-function setMode(m) {
-  mode = "auction";
-  renderHome();
-}
-
-/* ─────────────────────────────────────
-   AUTH
-───────────────────────────────────── */
-async function protect() {
-  const { data } = await db.auth.getSession();
-  if (!data.session) { location.href="/driver/login.html"; return false; }
-
-  currentUser = data.session.user;
-  const { data:prof } = await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
-  driverProfile = prof || {};
-
-  const name = driverProfile.name || currentUser.email || "Chauffeur";
-  $("driverName").textContent = name;
-  return true;
-}
-
-/* ─────────────────────────────────────
-   LOAD RIDES
-───────────────────────────────────── */
-async function loadRides() {
-  const ok = await protect();
-  if (!ok) return;
-
-  const { data, error } = await db
-    .from("rides")
-    .select("*")
-    .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
-    .order("pickup_time",{ascending:true});
-
-  if (error) {
-    $("homeFeed").innerHTML = errState(error.message);
-    return;
+  // helpers
+  function showToast(msg, duration = 3000) {
+    toastMsg.textContent = msg;
+    toastMsg.classList.add("show");
+    setTimeout(() => toastMsg.classList.remove("show"), duration);
   }
 
-  rides = data || [];
-  renderHome();
-  renderStats();
-  updateBadges();
-}
+  function formatTime(d) { return new Date(d).toLocaleTimeString("nl-NL", {hour:"2-digit", minute:"2-digit"}); }
+  function formatDate(d) { return new Date(d).toLocaleDateString("nl-NL", {day:"numeric", month:"short"}); }
+  function priceNum(price) { return parseFloat(String(price).replace("€","").replace(",",".")) || 0; }
 
-/* ─────────────────────────────────────
-   STATS
-───────────────────────────────────── */
-function renderStats() {
-  const today = new Date().toISOString().slice(0,10);
-  const done = rides.filter(r=>
-    r.driver_id===currentUser.id &&
-    String(r.pickup_time||"").slice(0,10)===today &&
-    r.status==="completed"
-  );
-  $("todayCount").textContent = done.length;
-  $("todayMoney").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
-}
-
-function updateBadges() {
-  $("auctionBadge").textContent = rides.filter(r=>r.status==="pending").length;
-}
-
-/* ─────────────────────────────────────
-   RENDER HOME
-───────────────────────────────────── */
-function renderHome() {
-  if (!online) {
-    $("homeFeed").innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">📡</div>
-        <div class="empty-title">Je bent offline</div>
-        <div class="empty-sub">Zet jezelf online om veilingen te zien</div>
-      </div>`;
-    return;
+  // ==================== AUTH ====================
+  async function initAuth() {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) { location.href = "/driver/login.html"; return false; }
+    currentUser = data.session.user;
+    const { data: prof } = await supabase.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+    driverProfile = prof || {};
+    document.getElementById("driverName").innerText = driverProfile.name || currentUser.email?.split("@")[0] || "Chauffeur";
+    document.getElementById("accountName").innerText = driverProfile.name || currentUser.email;
+    document.getElementById("accountEmail").innerText = currentUser.email;
+    const initial = (driverProfile.name?.[0] || currentUser.email?.[0] || "Y").toUpperCase();
+    document.getElementById("avatarInitials").innerText = initial;
+    return true;
   }
 
-  const list = rides.filter(r => r.status==="pending");
-
-  if (!list.length) {
-    $("homeFeed").innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🏷️</div>
-        <div class="empty-title">Geen ritten</div>
-        <div class="empty-sub">Geen veilingen beschikbaar</div>
-      </div>`;
-    return;
-  }
-
-  $("homeFeed").innerHTML = list.map((r,i)=>rideCard(r,i)).join("");
-}
-
-/* ─────────────────────────────────────
-   AGENDA – FULL MONTHLY CALENDAR
-───────────────────────────────────── */
-let calYear  = new Date().getFullYear();
-let calMonth = new Date().getMonth(); // 0-based
-let selectedDate = null; // "YYYY-MM-DD"
-
-const MONTHS_NL = ["Januari","Februari","Maart","April","Mei","Juni",
-                   "Juli","Augustus","September","Oktober","November","December"];
-
-function renderAgenda() {
-  drawCalendar();
-  // default: show today's rides
-  if (!selectedDate) {
-    selectedDate = new Date().toISOString().slice(0,10);
-  }
-  showDayRides(selectedDate);
-}
-
-function drawCalendar() {
-  $("calMonthLabel").textContent = MONTHS_NL[calMonth] + " " + calYear;
-
-  // build set of dates that have MY rides
-  const rideDates = new Set(
-    rides
-      .filter(r => r.driver_id===currentUser?.id)
-      .map(r => r.pickup_time ? r.pickup_time.slice(0,10) : null)
-      .filter(Boolean)
-  );
-
-  const today = new Date().toISOString().slice(0,10);
-
-  // first day of month (Mon=1…Sun=0, we want Mon-start grid)
-  const firstDay = new Date(calYear, calMonth, 1);
-  // day of week Mon-based: Mon=0, Tue=1… Sun=6
-  let startCol = (firstDay.getDay() + 6) % 7;
-
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const prevDays    = new Date(calYear, calMonth, 0).getDate();
-
-  let cells = "";
-
-  // leading empty cells (prev month)
-  for (let i = 0; i < startCol; i++) {
-    const d = prevDays - startCol + 1 + i;
-    cells += `<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-  }
-
-  // current month days
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const isToday    = dateStr === today;
-    const isSelected = dateStr === selectedDate;
-    const hasRide    = rideDates.has(dateStr);
-
-    const cls = [
-      "cal-cell",
-      isToday    ? "today"    : "",
-      isSelected && !isToday ? "selected" : ""
-    ].filter(Boolean).join(" ");
-
-    cells += `
-      <div class="${cls}" onclick="selectDate('${dateStr}')">
-        <div class="cal-num">${d}</div>
-        ${hasRide ? '<div class="cal-dot"></div>' : ''}
-      </div>`;
-  }
-
-  // trailing empty cells
-  const total = startCol + daysInMonth;
-  const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
-  for (let d = 1; d <= trailing; d++) {
-    cells += `<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;
-  }
-
-  $("calGrid").innerHTML = cells;
-}
-
-function selectDate(dateStr) {
-  selectedDate = dateStr;
-  drawCalendar();      // redraw to update selected highlight
-  showDayRides(dateStr);
-}
-
-function showDayRides(dateStr) {
-  const label = $("agendaDayLabel");
-  const feed  = $("agendaFeed");
-
-  const d = new Date(dateStr+"T00:00:00");
-  const dayLabel = d.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-
-  const dayRides = rides.filter(r =>
-    r.driver_id===currentUser?.id &&
-    r.pickup_time && r.pickup_time.slice(0,10)===dateStr
-  ).sort((a,b)=> new Date(a.pickup_time)-new Date(b.pickup_time));
-
-  label.style.display = "block";
-  label.textContent   = dayLabel.charAt(0).toUpperCase()+dayLabel.slice(1);
-
-  if (!dayRides.length) {
-    feed.innerHTML = `
-      <div class="empty" style="padding:30px 20px">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".25">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <line x1="9" y1="9" x2="9.01" y2="9"/>
-          <line x1="15" y1="9" x2="15.01" y2="9"/>
-        </svg>
-        <div class="empty-title" style="margin-top:8px">Geen ritten</div>
-        <div class="empty-sub">Geen ritten gepland</div>
-      </div>`;
-    return;
-  }
-
-  feed.innerHTML = dayRides.map((r,i) => {
-    const fromMain = (r.from_address||"-").split(",")[0].trim();
-    const toMain   = (r.to_address||"-").split(",")[0].trim();
-    const timeStr  = r.pickup_time ? new Date(r.pickup_time).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}) : "--:--";
-    const price    = r.price || "€0";
-    const sLabel   = statusLabel(r.status);
-    return `
-    <div class="agenda-row" style="animation-delay:${i*.05}s" onclick="openSheet('${r.id}')">
-      <div class="agenda-row-left">
-        <div class="agenda-row-status">${sLabel}</div>
-        <div class="agenda-row-route">${fromMain}</div>
-        <div class="agenda-row-dir">Richting ${toMain}</div>
-        <div class="agenda-row-time">${timeStr}</div>
-      </div>
-      <div class="agenda-row-right">
-        <div class="agenda-price">${price}</div>
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function calPrev() {
-  calMonth--;
-  if (calMonth < 0) { calMonth=11; calYear--; }
-  drawCalendar();
-  $("agendaDayLabel").style.display="none";
-  $("agendaFeed").innerHTML="";
-  selectedDate=null;
-}
-
-function calNext() {
-  calMonth++;
-  if (calMonth > 11) { calMonth=0; calYear++; }
-  drawCalendar();
-  $("agendaDayLabel").style.display="none";
-  $("agendaFeed").innerHTML="";
-  selectedDate=null;
-}
-
-/* ─────────────────────────────────────
-   RENDER ACCOUNT
-───────────────────────────────────── */
-function renderAccount() {
-  const name = driverProfile?.name || currentUser?.email || "-";
-  $("accAvatar").textContent = initials(name);
-  $("accName").textContent   = name;
-  $("accEmail").textContent  = currentUser?.email || "-";
-  $("accRole").textContent   = driverProfile?.role || "driver";
-
-  const allMine = rides.filter(r=>r.driver_id===currentUser?.id);
-  const done    = allMine.filter(r=>r.status==="completed");
-  $("accTotal").textContent    = done.length;
-  $("accEarnings").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
-}
-
-/* ─────────────────────────────────────
-   RIDE CARD HTML
-───────────────────────────────────── */
-function rideCard(r, i=0) {
-  const mine    = r.driver_id===currentUser?.id;
-  const pend    = r.status==="pending";
-  const price   = r.price || "€0";
-
-  const fromParts = (r.from_address||"-").split(",");
-  const toParts   = (r.to_address||"-").split(",");
-  const fromMain  = fromParts[0].trim();
-  const fromCity  = fromParts.slice(1).join(",").trim();
-  const toMain    = toParts[0].trim();
-  const toCity    = toParts.slice(1).join(",").trim();
-
-  const dt = r.pickup_time ? new Date(r.pickup_time) : null;
-  const dateStr = dt ? dt.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}) : "-";
-  const timeStr = dt ? dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}) : "--:--";
-
-  return `
-  <div class="rcard" style="animation-delay:${i*.07}s">
-    <div class="rcard-head">
-      <div>
-        <div class="rcard-date">
-          <svg style="vertical-align:-2px;margin-right:3px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          ${dateStr} · ${timeStr}
-        </div>
-        <div class="rcard-id">${r.id?.slice(0,12)||"—"}</div>
-      </div>
-      <span class="rcard-status ${statusClass(r.status)}">${statusLabel(r.status)}</span>
-    </div>
-
-    <div class="rroute">
-      <div class="rroute-row">
-        <div class="rroute-icon">
-          <div class="rdot-a"></div>
-          <div class="rline"></div>
-        </div>
-        <div class="rroute-text">
-          <div class="rroute-time">${timeStr}</div>
-          <div class="rroute-name">${fromMain}</div>
-          ${fromCity?`<div class="rroute-city">${fromCity}</div>`:""}
-        </div>
-        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.from_address||'')}')" title="Navigeer">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        </button>
-      </div>
-      <div class="rroute-row">
-        <div class="rroute-icon"><div class="rdot-b"></div></div>
-        <div class="rroute-text">
-          <div class="rroute-name">${toMain}</div>
-          ${toCity?`<div class="rroute-city">${toCity}</div>`:""}
-        </div>
-        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.to_address||'')}')" title="Navigeer">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="rmeta">
-      <div class="rchip">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        ${r.passengers||1} passagier${r.passengers>1?"s":""}
-      </div>
-      <div class="rchip">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        ${r.vehicle||"Standaard"}
-      </div>
-      ${r.payment_status?`<div class="rchip">💳 ${r.payment_status}</div>`:""}
-    </div>
-
-    <div class="rfoot">
-      <div>
-        <div class="rprice-label">Prijs</div>
-        <div class="rprice-val">${price}</div>
-        <div class="rprice-note">✓ Geen commissie</div>
-      </div>
-      <div class="ractions">
-        <button class="btn btn-outline" onclick="openSheet('${r.id}')">Details</button>
-        ${pend&&!mine?`<button class="btn btn-primary" onclick="acceptRide('${r.id}')">Accepteren</button>`:""}
-        ${mine&&r.status==="accepted"?`<button class="btn btn-amber" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
-        ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>`:""}
-        ${mine&&r.status==="arrived"?`<button class="btn btn-success" onclick="quickStatus('${r.id}','completed')">✓ Voltooien</button>`:""}
-      </div>
-    </div>
-  </div>`;
-}
-
-/* ─────────────────────────────────────
-   DETAIL SHEET
-───────────────────────────────────── */
-function openSheet(id) {
-  const r = rides.find(x=>x.id===id);
-  if (!r) return;
-
-  const mine = r.driver_id===currentUser?.id;
-  const phone = (r.customer_phone||"").replace(/\D/g,"");
-
-  $("sheetBody").innerHTML = `
-    <div class="sheet-title">${(r.from_address||"-").split(",")[0]} → ${(r.to_address||"-").split(",")[0]}</div>
-    <div class="sheet-sub">${fmtDT(r.pickup_time)} · ${r.id?.slice(0,14)||""}</div>
-
-    <div class="sinfo-row">
-      <div class="sinfo-icon">📍</div>
-      <div><div class="sinfo-label">Ophaallocatie</div><div class="sinfo-val">${r.from_address||"-"}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">🏁</div>
-      <div><div class="sinfo-label">Bestemming</div><div class="sinfo-val">${r.to_address||"-"}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">👤</div>
-      <div><div class="sinfo-label">Klant</div><div class="sinfo-val">${r.customer_name||"-"}${r.customer_phone?`<br><span style="color:var(--ink3);font-size:12px">${r.customer_phone}</span>`:""}</div></div>
-    </div>
-    <div class="sinfo-row">
-      <div class="sinfo-icon">🚖</div>
-      <div><div class="sinfo-label">Voertuig · Passagiers</div><div class="sinfo-val">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div>
-    </div>
-
-    <div class="price-box">
-      <div>
-        <div class="price-box-label">Jouw uitbetaling</div>
-        <div class="price-box-note">✓ Geen commissie meer af</div>
-      </div>
-      <div class="price-box-val">${r.price||"€0"}</div>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.from_address||"")}" target="_blank">🗺 Navigeren</a>
-      ${phone?`<a class="btn btn-success" href="https://wa.me/${phone}" target="_blank">💬 WhatsApp</a>`:""}
-      ${phone?`<a class="btn btn-outline" href="tel:${r.customer_phone}">📞 Bellen</a>`:""}
-    </div>
-
-    <div class="sheet-actions">
-      ${r.status==="pending"&&!mine?`<button class="btn btn-primary btn-wide" onclick="acceptRide('${r.id}')">✓ Accepteren</button>`:""}
-      ${mine&&r.status==="accepted"?`<button class="btn btn-amber btn-wide" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
-      ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue btn-wide" onclick="quickStatus('${r.id}','arrived')">Aangekomen ✓</button>`:""}
-      ${mine&&r.status==="arrived"?`<button class="btn btn-success btn-wide" onclick="quickStatus('${r.id}','completed')">✓ Rit voltooien</button>`:""}
-      ${mine&&!["completed","cancelled"].includes(r.status)?`<button class="btn btn-danger btn-wide" onclick="quickStatus('${r.id}','cancelled')">Annuleren</button>`:""}
-    </div>
-  `;
-
-  $("overlay").classList.add("open");
-}
-
-function closeSheet(e) {
-  if (!e || e.target===$("overlay"))
-    $("overlay").classList.remove("open");
-}
-
-/* ─────────────────────────────────────
-   ACTIONS
-───────────────────────────────────── */
-async function acceptRide(id) {
-  const { error } = await db.from("rides").update({
-    driver_id:   currentUser.id,
-    driver_name: driverProfile.name||currentUser.email,
-    driver_phone:driverProfile.phone||"",
-    status:      "accepted",
-    accepted_at: new Date().toISOString()
-  }).eq("id",id);
-
-  if (error) { toast("❌ "+error.message,4000); return; }
-  closeSheet();
-  toast("✓ Rit geaccepteerd!");
-  await loadRides();
-  showPage("agenda");
-}
-
-async function quickStatus(id, status) {
-  const payload = { status };
-  if (status==="completed") payload.completed_at = new Date().toISOString();
-
-  const { error } = await db.from("rides").update(payload).eq("id",id);
-  if (error) { toast("❌ "+error.message,4000); return; }
-
-  closeSheet();
-  toast(status==="completed"?"✓ Rit voltooid!":status==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
-  await loadRides();
-}
-
-function navigate(addr) {
-  window.open(`https://www.google.com/maps/search/?api=1&query=${addr}`,"_blank");
-}
-
-async function logout() {
-  await db.auth.signOut();
-  location.href = "/driver/login.html";
-}
-
-function errState(msg) {
-  return `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Fout</div><div class="empty-sub">${msg}</div></div>`;
-}
-
-/* ─────────────────────────────────────
-   NOTIFICATIONS
-───────────────────────────────────── */
-
-let knownRideIds = new Set();
-let firstLoadDone = false;
-
-// طلب إذن الإشعارات
-async function initNotifications() {
-  if ("Notification" in window) {
-    if (Notification.permission !== "granted") {
-      await Notification.requestPermission();
+  // ==================== FETCH RIDES & REALTIME ====================
+  async function fetchRides() {
+    if (!currentUser) return;
+    const { data, error } = await supabase
+      .from("rides")
+      .select("*")
+      .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
+      .order("pickup_time", { ascending: true });
+    if (!error && data) {
+      rides = data;
+      renderHome();
+      renderStatsToday();
+      updateBadge();
+      if (currentPage === "agenda") renderCalendarAndAgenda();
+      if (currentPage === "account") renderAccountStats();
+      detectNewRidesAndNotify(data);
     }
   }
-}
 
-// صوت تنبيه
-function playNotificationSound() {
-  const audio = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
-  audio.volume = 1;
-  audio.play().catch(()=>{});
-}
-
-// إرسال إشعار
-function sendRideNotification(ride) {
-
-  if (!("Notification" in window)) return;
-  if (Notification.permission !== "granted") return;
-
-  const title =
-    `${(ride.from_address || "").split(",")[0]} → ${(ride.to_address || "").split(",")[0]}`;
-
-  const body =
-    `${new Date(ride.pickup_time).toLocaleDateString("nl-NL", {
-      weekday:"long",
-      day:"2-digit",
-      month:"long",
-      hour:"2-digit",
-      minute:"2-digit"
-    })} · ${ride.passengers || 1} passagiers · ${ride.price || "€0"}`;
-
-  const notif = new Notification("Nieuwe rit beschikbaar", {
-    body,
-    icon: "https://ymaanygo.nl/favicon.ico",
-    badge: "https://ymaanygo.nl/favicon.ico",
-    tag: ride.id
-  });
-
-  notif.onclick = () => {
-    window.focus();
-    openSheet(ride.id);
-  };
-
-  playNotificationSound();
-}
-
-// فحص الرحلات الجديدة
-function detectNewRides() {
-
-  const pendingRides = rides.filter(r => r.status === "pending");
-
-  if (!firstLoadDone) {
-    pendingRides.forEach(r => knownRideIds.add(r.id));
-    firstLoadDone = true;
-    return;
+  function detectNewRidesAndNotify(newRides) {
+    const pendingNow = newRides.filter(r => r.status === "pending");
+    if (firstLoad) {
+      pendingNow.forEach(r => knownRideIds.add(r.id));
+      firstLoad = false;
+      return;
+    }
+    for (const ride of pendingNow) {
+      if (!knownRideIds.has(ride.id)) {
+        knownRideIds.add(ride.id);
+        // 🔔 SOUND + NOTIFICATION
+        playNotificationSound();
+        if (Notification.permission === "granted") {
+          new Notification("🚖 Nieuwe rit beschikbaar", {
+            body: `${ride.from_address?.split(",")[0]} → ${ride.to_address?.split(",")[0]} · €${ride.price} · ${formatTime(ride.pickup_time)}`,
+            icon: "https://ymaanygo.nl/favicon.ico",
+            tag: ride.id
+          });
+        } else {
+          showToast("🔔 Nieuwe rit! Check de veiling", 5000);
+        }
+      }
+    }
   }
 
-  pendingRides.forEach(ride => {
+  function playNotificationSound() {
+    const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+    audio.volume = 0.6;
+    audio.play().catch(e => console.log("audio blocked"));
+  }
 
-    if (!knownRideIds.has(ride.id)) {
+  function setupRealtime() {
+    const channel = supabase.channel("rides-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "rides" }, (payload) => {
+        fetchRides();
+      })
+      .subscribe();
+  }
 
-      knownRideIds.add(ride.id);
+  // ==================== ACCEPT RIDE with race condition protection ====================
+  async function acceptRide(rideId) {
+    const { data, error } = await supabase
+      .from("rides")
+      .update({
+        driver_id: currentUser.id,
+        driver_name: driverProfile.name || currentUser.email,
+        status: "accepted",
+        accepted_at: new Date().toISOString()
+      })
+      .eq("id", rideId)
+      .eq("status", "pending")
+      .select();
 
-      sendRideNotification(ride);
-
+    if (error) {
+      showToast("❌ Fout bij accepteren", 3000);
+      return;
     }
+    if (!data || data.length === 0) {
+      showToast("⚠️ Deze rit is al geaccepteerd door een andere chauffeur!", 4000);
+      return;
+    }
+    showToast("✅ Rit geaccepteerd! Ga naar Agenda", 3000);
+    closeSheet();
+    fetchRides();
+    showPage("agenda");
+  }
 
+  async function updateRideStatus(rideId, newStatus) {
+    await supabase.from("rides").update({ status: newStatus }).eq("id", rideId);
+    fetchRides();
+    closeSheet();
+  }
+
+  // ==================== LIVE LOCATION ====================
+  function startLiveLocation() {
+    if (!currentUser) return;
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(async (pos) => {
+        await supabase.from("driver_locations").upsert({
+          driver_id: currentUser.id,
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "driver_id" });
+      }, err => console.warn("location err"), { enableHighAccuracy: true, interval: 5000 });
+    }
+  }
+
+  // ==================== RENDER HOME ====================
+  function renderHome() {
+    if (!online) {
+      homeFeed.innerHTML = `<div style="text-align:center; padding:40px;">📡 Je bent offline. Zet online om ritten te zien.</div>`;
+      return;
+    }
+    const pendingRides = rides.filter(r => r.status === "pending");
+    if (pendingRides.length === 0) {
+      homeFeed.innerHTML = `<div style="text-align:center; padding:40px;">✨ Geen beschikbare ritten</div>`;
+      return;
+    }
+    homeFeed.innerHTML = pendingRides.map(ride => `
+      <div class="ride-card">
+        <div class="ride-header">
+          <span class="ride-time">📅 ${formatDate(ride.pickup_time)} ${formatTime(ride.pickup_time)}</span>
+          <span class="ride-status status-pending">Beschikbaar</span>
+        </div>
+        <div class="route-row">
+          <div class="route-icon"><div class="pin-start"></div><div class="route-line"></div></div>
+          <div class="route-text"><div class="route-addr">${ride.from_address?.split(",")[0] || ""}</div><div class="route-sub">${ride.from_address || ""}</div></div>
+          <button class="nav-icon" onclick="navigateTo('${ride.from_address}')">🗺️</button>
+        </div>
+        <div class="route-row">
+          <div class="route-icon"><div class="pin-end"></div></div>
+          <div class="route-text"><div class="route-addr">${ride.to_address?.split(",")[0] || ""}</div><div class="route-sub">${ride.to_address || ""}</div></div>
+          <button class="nav-icon" onclick="navigateTo('${ride.to_address}')">🗺️</button>
+        </div>
+        <div class="meta-row">
+          <span class="meta-chip">👥 ${ride.passengers || 1} pax</span>
+          <span class="meta-chip">🚗 ${ride.vehicle || "Standaard"}</span>
+        </div>
+        <div class="price-footer">
+          <div><span class="price-amount">€${priceNum(ride.price).toFixed(2)}</span><div style="font-size:11px;">✓ Geen commissie</div></div>
+          <div class="actions">
+            <button class="btn btn-outline" onclick="openRideDetail('${ride.id}')">Details</button>
+            <button class="btn btn-primary" onclick="acceptRide('${ride.id}')">Accepteren</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function renderStatsToday() {
+    const today = new Date().toISOString().slice(0,10);
+    const completedToday = rides.filter(r => r.driver_id === currentUser?.id && r.status === "completed" && r.pickup_time?.startsWith(today));
+    document.getElementById("todayCount").innerText = completedToday.length;
+    const total = completedToday.reduce((s, r) => s + priceNum(r.price), 0);
+    document.getElementById("todayEarn").innerHTML = `€${total.toFixed(2)}`;
+  }
+
+  function updateBadge() {
+    document.getElementById("pendingBadge").innerText = rides.filter(r => r.status === "pending").length;
+  }
+
+  // ==================== CALENDAR + AGENDA ====================
+  let currentCalYear = new Date().getFullYear();
+  let currentCalMonth = new Date().getMonth();
+
+  function renderCalendarAndAgenda() {
+    renderCalendar();
+    showAgendaForDate(selectedDate);
+  }
+
+  function renderCalendar() {
+    const firstDay = new Date(currentCalYear, currentCalMonth, 1);
+    const startWeekday = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const ridesByDate = new Set();
+    rides.filter(r => r.driver_id === currentUser?.id).forEach(r => {
+      if (r.pickup_time) ridesByDate.add(r.pickup_time.slice(0,10));
+    });
+
+    let gridHtml = `<div class="cal-header"><strong>${firstDay.toLocaleString("nl-NL", {month:"long", year:"numeric"})}</strong>
+      <div><button id="prevMonthBtn">◀</button> <button id="nextMonthBtn">▶</button></div></div>`;
+    gridHtml += `<div class="cal-weekdays"><span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span></div><div class="cal-grid">`;
+
+    for (let i = 0; i < startWeekday; i++) gridHtml += `<div></div>`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${currentCalYear}-${String(currentCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let cls = "cal-day";
+      if (dateStr === selectedDate) cls += " selected";
+      if (dateStr === todayStr) cls += " today";
+      if (ridesByDate.has(dateStr)) cls += " has-ride";
+      gridHtml += `<div class="${cls}" data-date="${dateStr}">${d}</div>`;
+    }
+    gridHtml += `</div>`;
+    calendarContainer.innerHTML = gridHtml;
+    document.querySelectorAll(".cal-day").forEach(el => {
+      el.addEventListener("click", (e) => {
+        const date = el.dataset.date;
+        if (date) { selectedDate = date; renderCalendarAndAgenda(); }
+      });
+    });
+    document.getElementById("prevMonthBtn")?.addEventListener("click", () => { currentCalMonth--; if(currentCalMonth<0){currentCalMonth=11;currentCalYear--;} renderCalendarAndAgenda(); });
+    document.getElementById("nextMonthBtn")?.addEventListener("click", () => { currentCalMonth++; if(currentCalMonth>11){currentCalMonth=0;currentCalYear++;} renderCalendarAndAgenda(); });
+  }
+
+  function showAgendaForDate(date) {
+    const dayRides = rides.filter(r => r.driver_id === currentUser?.id && r.pickup_time?.startsWith(date)).sort((a,b)=>new Date(a.pickup_time)-new Date(b.pickup_time));
+    if (dayRides.length === 0) { agendaList.innerHTML = `<div style="padding:40px; text-align:center;">Geen ritten op ${date}</div>`; return; }
+    agendaList.innerHTML = dayRides.map(r => `
+      <div class="agenda-item" onclick="openRideDetail('${r.id}')">
+        <div><strong>${formatTime(r.pickup_time)}</strong><br>${r.from_address?.split(",")[0]} → ${r.to_address?.split(",")[0]}</div>
+        <div><strong>€${priceNum(r.price).toFixed(2)}</strong><br><span class="ride-status status-${r.status}">${r.status}</span></div>
+      </div>
+    `).join("");
+  }
+
+  function renderAccountStats() {
+    const myRides = rides.filter(r => r.driver_id === currentUser?.id);
+    const completed = myRides.filter(r => r.status === "completed");
+    document.getElementById("totalRides").innerText = completed.length;
+    const totalEarn = completed.reduce((s,r) => s + priceNum(r.price), 0);
+    document.getElementById("totalEarnings").innerText = `€${totalEarn.toFixed(2)}`;
+  }
+
+  // ==================== DETAIL SHEET ====================
+  function openRideDetail(rideId) {
+    const ride = rides.find(r => r.id === rideId);
+    if (!ride) return;
+    const isMine = ride.driver_id === currentUser?.id;
+    sheetContent.innerHTML = `
+      <div style="font-size:22px; font-weight:800;">${ride.from_address?.split(",")[0]} → ${ride.to_address?.split(",")[0]}</div>
+      <div style="margin: 12px 0;"><span>🕒 ${new Date(ride.pickup_time).toLocaleString("nl-NL")}</span></div>
+      <div style="background:#f5f5f5; padding:12px; border-radius:20px;"><strong>📍 Ophalen</strong><br>${ride.from_address}</div>
+      <div style="margin:8px 0; background:#f5f5f5; padding:12px; border-radius:20px;"><strong>🏁 Bestemming</strong><br>${ride.to_address}</div>
+      <div><strong>Klant:</strong> ${ride.customer_name || "—"} · ${ride.customer_phone || ""}</div>
+      <div><strong>Prijs:</strong> €${priceNum(ride.price).toFixed(2)}</div>
+      <div style="margin:20px 0; display:flex; gap:10px;">
+        <button class="btn btn-outline" onclick="navigateTo('${ride.from_address}')">🗺️ Start</button>
+        <button class="btn btn-outline" onclick="navigateTo('${ride.to_address}')">🗺️ Bestemming</button>
+        ${!isMine && ride.status === "pending" ? `<button class="btn btn-primary" onclick="acceptRide('${ride.id}')">Accepteren</button>` : ""}
+        ${isMine && ride.status === "accepted" ? `<button class="btn btn-amber" onclick="updateRideStatus('${ride.id}','on_the_way')">Onderweg</button>` : ""}
+        ${isMine && ride.status === "on_the_way" ? `<button class="btn btn-primary" onclick="updateRideStatus('${ride.id}','arrived')">Aangekomen</button>` : ""}
+        ${isMine && ride.status === "arrived" ? `<button class="btn btn-primary" onclick="updateRideStatus('${ride.id}','completed')">Voltooien</button>` : ""}
+      </div>
+    `;
+    sheetOverlay.classList.add("open");
+  }
+  function closeSheet() { sheetOverlay.classList.remove("open"); }
+  window.openRideDetail = openRideDetail;
+  window.acceptRide = acceptRide;
+  window.updateRideStatus = updateRideStatus;
+  window.navigateTo = (addr) => { if(addr) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`); };
+  window.closeSheet = closeSheet;
+  sheetOverlay.addEventListener("click", (e) => { if(e.target === sheetOverlay) closeSheet(); });
+
+  // ==================== PAGE SWITCH ====================
+  function showPage(page) {
+    currentPage = page;
+    homePanel.classList.add("hidden");
+    agendaPanel.classList.add("hidden");
+    accountPanel.classList.add("hidden");
+    if (page === "home") homePanel.classList.remove("hidden");
+    if (page === "agenda") agendaPanel.classList.remove("hidden"), renderCalendarAndAgenda();
+    if (page === "account") accountPanel.classList.remove("hidden"), renderAccountStats();
+    document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add("active");
+  }
+  document.querySelectorAll(".nav-item").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
+
+  // online toggle
+  const toggleBtn = document.getElementById("onlineToggle");
+  toggleBtn.addEventListener("click", () => {
+    online = !online;
+    toggleBtn.classList.toggle("offline", !online);
+    document.getElementById("onlineText").innerText = online ? "Online" : "Offline";
+    renderHome();
   });
 
-}
+  // logout
+  document.getElementById("logoutBtn").addEventListener("click", async () => { await supabase.auth.signOut(); location.href="/driver/login.html"; });
 
-/* ─────────────────────────────────────
-   INIT
-───────────────────────────────────── */
-
-initNotifications();
-
-loadRides().then(() => {
-  detectNewRides();
-});
-
-setInterval(async () => {
-  await loadRides();
-  detectNewRides();
-}, 12000);
+  // ==================== INIT ====================
+  (async function init() {
+    const authed = await initAuth();
+    if (!authed) return;
+    await fetchRides();
+    setupRealtime();
+    startLiveLocation();
+    if (Notification.permission !== "granted") Notification.requestPermission();
+    showPage("home");
+  })();
 </script>
 </body>
 </html>
