@@ -1523,7 +1523,8 @@ async function acceptRide(id) {
     driver_phone:driverProfile.phone||"",
     status:      "accepted",
     accepted_at: new Date().toISOString()
-  }).eq("id",id);
+.eq("id", id)
+.eq("status", "pending");
 
   if (error) { toast("❌ "+error.message,4000); return; }
   closeSheet();
