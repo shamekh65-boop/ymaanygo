@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ymaanyGO Driver – Ritten</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{margin:0;font-family:system-ui;background:#f4f7f4;color:#1a2e1a;padding-bottom:76px}
+.topbar{background:#1b5e20;color:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-size:22px;font-weight:900;letter-spacing:1px}
+.logo span{color:#a5d6a7}
+.online{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 14px;font-weight:800;font-size:12px}
+.wrap{padding:14px}
+.sub{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sub h2{margin:0;font-size:18px}
+.count{background:#2e7d32;color:white;border-radius:99px;padding:3px 10px;font-weight:900;font-size:12px}
+.card{background:white;border:1px solid #dce8dc;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.card-head{background:#e8f5e9;padding:12px 14px;border-bottom:1px solid #dce8dc}
+.date{font-weight:800;color:#1b5e20;font-size:13px}
+.id{font-family:monospace;color:#7a9e7a;font-size:11px;margin-top:2px}
+.route{padding:14px}
+.point{margin-bottom:12px}
+.label{font-size:11px;color:#7a9e7a;font-weight:800;text-transform:uppercase}
+.addr{font-size:14px;font-weight:800;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px}
+.chip{background:#fafcfa;border:1px solid #dce8dc;border-radius:99px;padding:5px 10px;font-size:12px;color:#4a6b4a;font-weight:700}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid #dce8dc}
+.price{font-size:28px;font-weight:900;color:#1b5e20}
+.note{font-size:11px;color:#388e3c;font-weight:800}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:900;cursor:pointer}
+.btn.dark{background:#1b5e20;color:white}
+.btn.green{background:#2ecc71;color:white}
+.btn.red{background:#c62828;color:white}
+.btn.gray{background:#eef3ef;color:#1a2e1a}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.empty{text-align:center;color:#7a9e7a;padding:70px 20px}
+.tabs{position:fixed;bottom:0;left:0;right:0;height:68px;background:white;border-top:1px solid #dce8dc;display:flex;z-index:30}
+.tab{flex:1;border:0;background:white;color:#7a9e7a;font-weight:900}
+.tab.active{color:#1b5e20}
+.hidden{display:none}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;z-index:50}
+.overlay.open{display:flex}
+.sheet{background:white;width:100%;border-radius:22px 22px 0 0;padding:18px;max-height:88vh;overflow:auto}
+.sheet h2{margin:0 0 10px}
+.info{background:#f6fbf8;border:1px solid #dce8dc;border-radius:14px;padding:12px;margin:10px 0}
+.info small{display:block;color:#7a9e7a;font-weight:900;margin-bottom:4px}
+input{width:100%;padding:13px;border-radius:14px;border:1px solid #dce8dc;margin-top:6px}
+.account-card{background:white;border-radius:18px;padding:16px;border:1px solid #dce8dc}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="logo">ymaany<span>GO</span></div>
+  <div class="online" id="onlineBadge">🟢 Online</div>
+</div>
+
+<div class="wrap">
+
+<section id="tabRitten">
+  <div class="sub">
+    <h2>Ritten</h2>
+    <span class="count" id="tripCount">0</span>
+  </div>
+  <div id="ridesList"></div>
+</section>
+
+<section id="tabAgenda" class="hidden">
+  <div class="sub">
+    <h2>Agenda</h2>
+    <span class="count" id="agendaCount">0</span>
+  </div>
+  <div id="agendaList"></div>
+</section>
+
+<section id="tabAccount" class="hidden">
+  <div class="account-card">
+    <h2>Account</h2>
+    <div class="info"><small>Naam</small><div id="accName">-</div></div>
+    <div class="info"><small>E-mail</small><div id="accEmail">-</div></div>
+    <div class="info"><small>Telefoon</small><div id="accPhone">-</div></div>
+    <div class="info"><small>Status</small><div id="accRole">driver</div></div>
+    <button class="btn red" onclick="logout()">Uitloggen</button>
+  </div>
+</section>
+
+</div>
+
+<nav class="tabs">
+  <button id="navRitten" class="tab active" onclick="showTab('ritten')">🚕<br>Ritten</button>
+  <button id="navAgenda" class="tab" onclick="showTab('agenda')">📅<br>Agenda</button>
+  <button id="navAccount" class="tab" onclick="showTab('account')">👤<br>Account</button>
+</nav>
+
+<div id="overlay" class="overlay" onclick="closeSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let user = null;
+let profile = null;
+let rides = [];
+let selectedRide = null;
+
+function money(v){
+  return String(v || "€0");
+}
+
+function fmtDate(v){
+  if(!v) return "-";
+  const d = new Date(v);
+  if(isNaN(d)) return "-";
+  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+}
+
+function showTab(tab){
+  tabRitten.classList.add("hidden");
+  tabAgenda.classList.add("hidden");
+  tabAccount.classList.add("hidden");
+
+  navRitten.classList.remove("active");
+  navAgenda.classList.remove("active");
+  navAccount.classList.remove("active");
+
+  if(tab === "ritten"){
+    tabRitten.classList.remove("hidden");
+    navRitten.classList.add("active");
+    renderRides();
+  }
+
+  if(tab === "agenda"){
+    tabAgenda.classList.remove("hidden");
+    navAgenda.classList.add("active");
+    renderAgenda();
+  }
+
+  if(tab === "account"){
+    tabAccount.classList.remove("hidden");
+    navAccount.classList.add("active");
+  }
+}
+
+async function protectDriver(){
+  const { data:sessionData } = await db.auth.getSession();
+
+  if(!sessionData.session){
+    window.location.href = "/driver/login.html";
+    return false;
+  }
+
+  user = sessionData.session.user;
+
+  const { data:p } = await db
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  profile = p || {};
+
+  accName.textContent = profile.name || "-";
+  accEmail.textContent = user.email || "-";
+  accPhone.textContent = profile.phone || "-";
+  accRole.textContent = profile.role || "driver";
+
+  return true;
+}
+
+async function loadRides(){
+  const ok = await protectDriver();
+  if(!ok) return;
+
+  const { data,error } = await db
+    .from("rides")
+    .select("*")
+    .or(`status.eq.pending,driver_id.eq.${user.id}`)
+    .order("pickup_time",{ascending:true});
+
+  if(error){
+    ridesList.innerHTML = `<div class="empty">${error.message}</div>`;
+    return;
+  }
+
+  rides = data || [];
+  renderRides();
+  renderAgenda();
+}
+
+function renderRides(){
+  const list = rides.filter(r =>
+    r.status === "pending" || r.driver_id === user.id
+  );
+
+  tripCount.textContent = list.length;
+
+  if(!list.length){
+    ridesList.innerHTML = `<div class="empty">Geen ritten beschikbaar.</div>`;
+    return;
+  }
+
+  ridesList.innerHTML = list.map(rideCard).join("");
+}
+
+function renderAgenda(){
+  const list = rides.filter(r =>
+    r.driver_id === user.id &&
+    !["completed","cancelled"].includes(r.status)
+  );
+
+  agendaCount.textContent = list.length;
+
+  if(!list.length){
+    agendaList.innerHTML = `<div class="empty">Geen ritten gepland.</div>`;
+    return;
+  }
+
+  agendaList.innerHTML = list.map(rideCard).join("");
+}
+
+function rideCard(r){
+  const mine = r.driver_id === user.id;
+
+  return `
+    <div class="card">
+      <div class="card-head">
+        <div class="date">${fmtDate(r.pickup_time)}</div>
+        <div class="id">#${String(r.id).slice(0,8)}</div>
+      </div>
+
+      <div class="route">
+        <div class="point">
+          <div class="label">Pickup</div>
+          <div class="addr">${r.from_address || "-"}</div>
+        </div>
+
+        <div class="point">
+          <div class="label">Destination</div>
+          <div class="addr">${r.to_address || "-"}</div>
+        </div>
+
+        ${mine ? `<div class="actions">
+          <button class="btn dark" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
+          <button class="btn dark" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
+          <button class="btn green" onclick="quickStatus('${r.id}','completed')">Voltooien</button>
+        </div>` : ""}
+      </div>
+
+      <div class="meta">
+        <div class="chip">🚖 ${r.vehicle || "-"}</div>
+        <div class="chip">👤 ${r.passengers || 1}</div>
+        <div class="chip">💳 ${r.payment_status || "unpaid"}</div>
+        <div class="chip">📌 ${r.status || "pending"}</div>
+      </div>
+
+      <div class="footer">
+        <div>
+          <div class="price">${money(r.price)}</div>
+          <div class="note">100% voor chauffeur · Geen commissie</div>
+        </div>
+        <button class="btn dark" onclick="openRide('${r.id}')">Bekijken</button>
+      </div>
+    </div>
+  `;
+}
+
+function openRide(id){
+  selectedRide = rides.find(r => r.id === id);
+  if(!selectedRide) return;
+
+  const r = selectedRide;
+  const mine = r.driver_id === user.id;
+
+  sheetBody.innerHTML = `
+    <h2>Rit details</h2>
+
+    <div class="info"><small>Pickup</small>${r.from_address || "-"}</div>
+    <div class="info"><small>Destination</small>${r.to_address || "-"}</div>
+    <div class="info"><small>Tijd</small>${fmtDate(r.pickup_time)}</div>
+    <div class="info"><small>Klant</small>${r.customer_name || "-"}<br>${r.customer_phone || "-"}</div>
+    <div class="info"><small>Prijs</small><b>${money(r.price)}</b><br>100% voor chauffeur</div>
+    <div class="info"><small>Betaling</small>${r.payment_status || "unpaid"}</div>
+
+    <div class="actions">
+      <a class="btn dark" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.from_address || "")}">Navigeren</a>
+      ${r.customer_phone ? `<a class="btn green" target="_blank" href="https://wa.me/${String(r.customer_phone).replace(/\\D/g,"")}">WhatsApp</a>` : ""}
+      ${r.customer_phone ? `<a class="btn gray" href="tel:${r.customer_phone}">Bellen</a>` : ""}
+    </div>
+
+    <div class="actions">
+      ${!mine && r.status === "pending" ? `<button class="btn green" onclick="acceptRide('${r.id}')">Accepteren</button>` : ""}
+      ${mine ? `
+        <button class="btn dark" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
+        <button class="btn dark" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
+        <button class="btn green" onclick="quickStatus('${r.id}','completed')">Voltooien</button>
+      ` : ""}
+    </div>
+  `;
+
+  overlay.classList.add("open");
+}
+
+function closeSheet(e){
+  if(!e || e.target === overlay){
+    overlay.classList.remove("open");
+  }
+}
+
+async function acceptRide(id){
+  const payload = {
+    driver_id: user.id,
+    driver_name: profile.name || user.email,
+    driver_phone: profile.phone || "",
+    status: "accepted",
+    accepted_at: new Date().toISOString()
+  };
+
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id", id)
+    .eq("status", "pending");
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  closeSheet();
+  await loadRides();
+  showTab("agenda");
+}
+
+async function quickStatus(id,status){
+  const payload = { status };
+
+  if(status === "completed"){
+    payload.completed_at = new Date().toISOString();
+  }
+
+  const { error } = await db
+    .from("rides")
+    .update(payload)
+    .eq("id", id)
+    .eq("driver_id", user.id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  closeSheet();
+  await loadRides();
+}
+
+async function logout(){
+  await db.auth.signOut();
+  window.location.href = "/driver/login.html";
+}
+
+loadRides();
+setInterval(loadRides,10000);
+</script>
+
+</body>
+</html>
