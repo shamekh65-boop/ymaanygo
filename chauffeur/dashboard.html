@@ -518,7 +518,7 @@ function toggleOnline(){
 ═══════════════════════════════ */
 async function init(){
   const {data:{session}}=await SB.auth.getSession();
-  if(!session){location.href="/driver/login.html";return}
+  if(!session){location.href="/chauffeur/login.html";return}
   U=session.user;
   const {data:p}=await SB.from("profiles").select("*").eq("id",U.id).maybeSingle();
   P=p||{};
@@ -982,7 +982,7 @@ function stopLoc(){if(locW!=null){navigator.geolocation.clearWatch(locW);locW=nu
 /* ═══════════════════════════════
    LOGOUT
 ═══════════════════════════════ */
-async function logout(){await SB.auth.signOut();location.href="/driver/login.html"}
+async function logout(){await SB.auth.signOut();location.href="/chauffeur/login.html"}
 
 /* ═══════════════════════════════
    START
