@@ -1,374 +1,1320 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ymaanyGO Driver – Ritten</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>ymaanyGO Driver</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:system-ui;background:#f4f7f4;color:#1a2e1a;padding-bottom:76px}
-.topbar{background:#1b5e20;color:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo{font-size:22px;font-weight:900;letter-spacing:1px}
-.logo span{color:#a5d6a7}
-.online{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 14px;font-weight:800;font-size:12px}
-.wrap{padding:14px}
-.sub{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.sub h2{margin:0;font-size:18px}
-.count{background:#2e7d32;color:white;border-radius:99px;padding:3px 10px;font-weight:900;font-size:12px}
-.card{background:white;border:1px solid #dce8dc;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.card-head{background:#e8f5e9;padding:12px 14px;border-bottom:1px solid #dce8dc}
-.date{font-weight:800;color:#1b5e20;font-size:13px}
-.id{font-family:monospace;color:#7a9e7a;font-size:11px;margin-top:2px}
-.route{padding:14px}
-.point{margin-bottom:12px}
-.label{font-size:11px;color:#7a9e7a;font-weight:800;text-transform:uppercase}
-.addr{font-size:14px;font-weight:800;margin-top:2px}
-.meta{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px}
-.chip{background:#fafcfa;border:1px solid #dce8dc;border-radius:99px;padding:5px 10px;font-size:12px;color:#4a6b4a;font-weight:700}
-.footer{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid #dce8dc}
-.price{font-size:28px;font-weight:900;color:#1b5e20}
-.note{font-size:11px;color:#388e3c;font-weight:800}
-.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:900;cursor:pointer}
-.btn.dark{background:#1b5e20;color:white}
-.btn.green{background:#2ecc71;color:white}
-.btn.red{background:#c62828;color:white}
-.btn.gray{background:#eef3ef;color:#1a2e1a}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.empty{text-align:center;color:#7a9e7a;padding:70px 20px}
-.tabs{position:fixed;bottom:0;left:0;right:0;height:68px;background:white;border-top:1px solid #dce8dc;display:flex;z-index:30}
-.tab{flex:1;border:0;background:white;color:#7a9e7a;font-weight:900}
-.tab.active{color:#1b5e20}
-.hidden{display:none}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;z-index:50}
-.overlay.open{display:flex}
-.sheet{background:white;width:100%;border-radius:22px 22px 0 0;padding:18px;max-height:88vh;overflow:auto}
-.sheet h2{margin:0 0 10px}
-.info{background:#f6fbf8;border:1px solid #dce8dc;border-radius:14px;padding:12px;margin:10px 0}
-.info small{display:block;color:#7a9e7a;font-weight:900;margin-bottom:4px}
-input{width:100%;padding:13px;border-radius:14px;border:1px solid #dce8dc;margin-top:6px}
-.account-card{background:white;border-radius:18px;padding:16px;border:1px solid #dce8dc}
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --g900: #1b5e20;
+  --g800: #2e7d32;
+  --g700: #388e3c;
+  --g600: #43a047;
+  --g100: #e8f5e9;
+  --g50:  #f1f8f2;
+  --white: #ffffff;
+  --bg:    #f2f6f2;
+  --border:#dce8dc;
+  --ink:   #0f2211;
+  --ink2:  #3d5c40;
+  --ink3:  #7a9e7a;
+  --red:   #c62828;
+  --red-bg:#ffebee;
+  --amber: #e65100;
+  --amber-bg:#fff3e0;
+  --blue:  #1565c0;
+  --blue-bg:#e3f2fd;
+  --tab-h: 70px;
+  --r:     16px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:calc(var(--tab-h) + 12px);
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════ */
+.topbar {
+  background:var(--g900);
+  padding:16px 18px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:90;
+  box-shadow:0 2px 16px rgba(27,94,32,.35);
+}
+
+.topbar-left { display:flex; flex-direction:column; gap:1px; }
+
+.logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;
+  letter-spacing:2.5px;
+  color:#fff;
+  line-height:1;
+}
+.logo span { color:#a5d6a7; }
+
+.driver-name {
+  font-size:12px;
+  font-weight:500;
+  color:rgba(255,255,255,.6);
+  letter-spacing:.3px;
+}
+
+.topbar-right { display:flex; align-items:center; gap:10px; }
+
+.clock {
+  font-size:13px;
+  font-weight:600;
+  color:rgba(255,255,255,.6);
+  letter-spacing:.5px;
+}
+
+.toggle-btn {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 16px;
+  border-radius:50px;
+  border:none;
+  font-family:'Outfit',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.2px;
+}
+.toggle-btn.online  { background:#fff; color:var(--g800); }
+.toggle-btn.offline { background:rgba(255,255,255,.15); color:rgba(255,255,255,.7); }
+
+.toggle-dot {
+  width:8px; height:8px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.toggle-btn.online  .toggle-dot { background:var(--g700); box-shadow:0 0 6px var(--g600); animation:blink 2s infinite; }
+.toggle-btn.offline .toggle-dot { background:#f44336; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ═══════════════════════════════════════
+   HERO STATS
+═══════════════════════════════════════ */
+.hero {
+  background:var(--g900);
+  padding:0 18px 20px;
+}
+
+.stats-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.stat-card {
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
+}
+
+.stat-label {
+  font-size:11px;
+  font-weight:600;
+  color:rgba(255,255,255,.6);
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+.stat-value {
+  font-size:28px;
+  font-weight:800;
+  color:#fff;
+  line-height:1.1;
+  margin-top:4px;
+  letter-spacing:-.5px;
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════ */
+.section-head {
+  background:var(--white);
+  padding:0 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+
+.seg-btn {
+  flex:1;
+  padding:13px 8px;
+  border:none;
+  background:transparent;
+  font-family:'Outfit',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  color:var(--ink3);
+  cursor:pointer;
+  position:relative;
+  letter-spacing:.2px;
+  transition:color .18s;
+}
+
+.seg-btn.active { color:var(--g800); }
+
+.seg-btn.active::after {
+  content:'';
+  position:absolute;
+  bottom:0; left:20%; right:20%;
+  height:3px;
+  border-radius:3px 3px 0 0;
+  background:var(--g800);
+}
+
+.seg-badge {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--g800);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  width:18px; height:18px;
+  border-radius:50%;
+  margin-left:5px;
+  vertical-align:middle;
+}
+
+/* ═══════════════════════════════════════
+   FEED
+═══════════════════════════════════════ */
+.feed {
+  padding:14px 14px 4px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* ═══════════════════════════════════════
+   RIDE CARD
+═══════════════════════════════════════ */
+.rcard {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  animation:rise .32s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+@keyframes rise {
+  from { opacity:0; transform:translateY(10px) scale(.99); }
+  to   { opacity:1; transform:none; }
+}
+
+/* accent bar on top */
+.rcard::before {
+  content:'';
+  display:block;
+  height:4px;
+  background:linear-gradient(90deg,var(--g900),var(--g600));
+}
+
+/* head */
+.rcard-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding:11px 14px 9px;
+  background:var(--g100);
+  border-bottom:1px solid var(--border);
+}
+
+.rcard-date {
+  font-size:12px;
+  font-weight:700;
+  color:var(--g900);
+}
+.rcard-id {
+  font-size:10px;
+  font-family:monospace;
+  color:var(--ink3);
+  margin-top:2px;
+  letter-spacing:.4px;
+}
+
+.rcard-status {
+  font-size:10px;
+  font-weight:700;
+  padding:3px 10px;
+  border-radius:50px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  white-space:nowrap;
+}
+.s-pending   { background:#fff8e1; color:#e65100; border:1px solid #ffe0b2; }
+.s-accepted  { background:#e3f2fd; color:#1565c0; border:1px solid #bbdefb; }
+.s-on_the_way{ background:#e8eaf6; color:#283593; border:1px solid #c5cae9; }
+.s-arrived   { background:#f3e5f5; color:#6a1b9a; border:1px solid #e1bee7; }
+.s-completed { background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9; }
+.s-cancelled { background:#ffebee; color:#c62828; border:1px solid #ffcdd2; }
+
+/* route */
+.rroute {
+  padding:12px 14px 10px;
+}
+
+.rroute-row {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.rroute-row + .rroute-row { margin-top:2px; }
+
+.rroute-icon {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:16px;
+  flex-shrink:0;
+  padding-top:3px;
+}
+
+.rdot-a {
+  width:10px; height:10px;
+  border-radius:50%;
+  background:var(--g900);
+  flex-shrink:0;
+}
+.rdot-b {
+  width:10px; height:10px;
+  border-radius:3px;
+  border:2px solid var(--g700);
+  background:var(--white);
+  flex-shrink:0;
+}
+.rline {
+  width:2px; flex:1; min-height:20px;
+  background:repeating-linear-gradient(to bottom,var(--g700) 0,var(--g700) 4px,transparent 4px,transparent 8px);
+  opacity:.4;
+  margin:3px 0;
+}
+
+.rroute-text { flex:1; padding-bottom:8px; }
+.rroute-row:last-child .rroute-text { padding-bottom:0; }
+
+.rroute-time { font-size:11px; font-weight:600; color:var(--ink3); margin-bottom:1px; }
+.rroute-name { font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.3; }
+.rroute-city { font-size:11.5px; color:var(--ink2); margin-top:1px; }
+
+.rnav-btn {
+  width:30px; height:30px;
+  border-radius:8px;
+  background:var(--g100);
+  border:1px solid var(--border);
+  color:var(--g900);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  align-self:center;
+  flex-shrink:0;
+  font-size:13px;
+  transition:background .15s;
+}
+.rnav-btn:hover { background:#c8e6c9; }
+
+/* meta chips */
+.rmeta {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  padding:8px 14px;
+  border-top:1px solid var(--border);
+  background:#fafcfa;
+}
+
+.rchip {
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:12px;
+  font-weight:500;
+  color:var(--ink2);
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:3px 10px;
+}
+.rchip svg { opacity:.6; flex-shrink:0; }
+
+/* tags row */
+.rtags {
+  display:flex;
+  gap:7px;
+  padding:0 14px 10px;
+  flex-wrap:wrap;
+}
+.rtag {
+  font-size:10px;
+  font-weight:700;
+  padding:3px 10px;
+  border-radius:50px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+/* footer */
+.rfoot {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 14px 12px;
+  border-top:1px solid var(--border);
+  gap:10px;
+}
+
+.rprice-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--ink3); }
+.rprice-val   { font-size:26px; font-weight:800; color:var(--g900); letter-spacing:-.5px; line-height:1; }
+.rprice-note  { font-size:10px; color:var(--g700); font-weight:600; margin-top:2px; }
+
+.ractions {
+  display:flex;
+  gap:7px;
+  flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn {
+  border:none;
+  border-radius:10px;
+  font-family:'Outfit',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  padding:9px 16px;
+  transition:all .15s;
+  white-space:nowrap;
+}
+.btn:active { transform:scale(.95); }
+
+.btn-primary { background:var(--g900); color:#fff; }
+.btn-primary:hover { background:var(--g800); }
+
+.btn-success { background:#e8f5e9; color:var(--g800); border:1px solid #c8e6c9; }
+.btn-success:hover { background:#c8e6c9; }
+
+.btn-outline { background:transparent; color:var(--ink2); border:1px solid var(--border); }
+.btn-outline:hover { background:var(--g100); }
+
+.btn-danger { background:var(--red-bg); color:var(--red); border:1px solid #ffcdd2; }
+.btn-danger:hover { background:#ffcdd2; }
+
+.btn-amber { background:var(--amber-bg); color:var(--amber); border:1px solid #ffe0b2; }
+.btn-blue  { background:var(--blue-bg);  color:var(--blue);  border:1px solid #bbdefb; }
+
+/* wide btn */
+.btn-wide {
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  font-size:15px;
+  text-align:center;
+}
+
+/* ═══════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════ */
+.empty {
+  text-align:center;
+  padding:60px 24px;
+  color:var(--ink3);
+}
+.empty-icon { font-size:40px; margin-bottom:10px; opacity:.4; }
+.empty-title { font-size:16px; font-weight:700; color:var(--ink2); }
+.empty-sub   { font-size:13px; margin-top:4px; }
+
+/* ═══════════════════════════════════════
+   AGENDA – calendar strip
+═══════════════════════════════════════ */
+.cal-strip {
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:12px 14px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.cal-strip::-webkit-scrollbar { display:none; }
+
+.cal-day {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  min-width:44px;
+  padding:8px 6px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:background .15s;
+  flex-shrink:0;
+}
+.cal-day:hover { background:var(--g100); }
+.cal-day.today { background:var(--g900); }
+.cal-day.has-ride::after {
+  content:'';
+  width:5px; height:5px;
+  border-radius:50%;
+  background:var(--g700);
+}
+.cal-day.today.has-ride::after { background:#a5d6a7; }
+.cal-dname { font-size:10px; font-weight:600; color:var(--ink3); text-transform:uppercase; letter-spacing:.5px; }
+.cal-dnum  { font-size:17px; font-weight:800; color:var(--ink); }
+.cal-day.today .cal-dname,
+.cal-day.today .cal-dnum { color:#fff; }
+
+/* ═══════════════════════════════════════
+   ACCOUNT
+═══════════════════════════════════════ */
+.acc-hero {
+  background:var(--g900);
+  padding:28px 20px 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.acc-avatar {
+  width:72px; height:72px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  border:3px solid rgba(255,255,255,.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:30px;
+  font-weight:800;
+  color:#fff;
+}
+.acc-name  { font-size:20px; font-weight:800; color:#fff; }
+.acc-email { font-size:13px; color:rgba(255,255,255,.6); }
+
+.acc-body { padding:16px 14px; display:flex; flex-direction:column; gap:10px; }
+
+.info-card {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+}
+.info-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+}
+.info-row:last-child { border-bottom:none; }
+.info-icon {
+  width:34px; height:34px;
+  border-radius:9px;
+  background:var(--g100);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.info-label { font-size:11px; color:var(--ink3); font-weight:600; }
+.info-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
+
+/* ═══════════════════════════════════════
+   BOTTOM TABS
+═══════════════════════════════════════ */
+.tabs {
+  position:fixed;
+  bottom:0; left:0; right:0;
+  height:var(--tab-h);
+  background:var(--white);
+  border-top:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding-bottom:env(safe-area-inset-bottom,0);
+  z-index:100;
+  box-shadow:0 -2px 20px rgba(0,0,0,.07);
+}
+
+.tab {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:7px 0;
+  border:none;
+  background:none;
+  color:var(--ink3);
+  font-family:'Outfit',sans-serif;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+  letter-spacing:.2px;
+  position:relative;
+  transition:color .15s;
+}
+.tab.active { color:var(--g900); }
+.tab.active::before {
+  content:'';
+  position:absolute;
+  top:0; left:50%;
+  transform:translateX(-50%);
+  width:28px; height:3px;
+  border-radius:0 0 4px 4px;
+  background:var(--g900);
+}
+.tab svg { transition:transform .18s; }
+.tab.active svg { transform:scale(1.12); }
+
+/* ═══════════════════════════════════════
+   BOTTOM SHEET (modal)
+═══════════════════════════════════════ */
+.overlay {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.38);
+  z-index:200;
+  display:flex;
+  align-items:flex-end;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .22s;
+}
+.overlay.open { opacity:1; pointer-events:all; }
+
+.sheet {
+  width:100%;
+  background:var(--white);
+  border-radius:22px 22px 0 0;
+  padding:18px 18px calc(env(safe-area-inset-bottom,0px) + 24px);
+  transform:translateY(100%);
+  transition:transform .28s cubic-bezier(.32,.72,0,1);
+  max-height:92vh;
+  overflow-y:auto;
+}
+.overlay.open .sheet { transform:translateY(0); }
+
+.sheet-handle {
+  width:36px; height:4px;
+  border-radius:2px;
+  background:#ddd;
+  margin:0 auto 20px;
+}
+
+.sheet-title { font-size:21px; font-weight:800; color:var(--ink); }
+.sheet-sub   { font-size:12px; color:var(--ink3); margin-top:3px; margin-bottom:18px; }
+
+.sinfo-row {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid var(--border);
+}
+.sinfo-row:last-of-type { border-bottom:none; }
+.sinfo-icon {
+  width:36px; height:36px;
+  border-radius:10px;
+  background:var(--g100);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.sinfo-label { font-size:11px; color:var(--ink3); font-weight:600; }
+.sinfo-val   { font-size:14px; font-weight:700; color:var(--ink); margin-top:1px; }
+
+.price-box {
+  margin:16px 0 14px;
+  background:var(--g100);
+  border:1.5px solid #c8e6c9;
+  border-radius:14px;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.price-box-label { font-size:12px; color:var(--ink2); font-weight:600; }
+.price-box-note  { font-size:11px; color:var(--g700); font-weight:600; margin-top:3px; }
+.price-box-val   { font-size:34px; font-weight:800; color:var(--g900); letter-spacing:-1px; }
+
+.sheet-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-bottom:10px;
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position:fixed;
+  bottom:calc(var(--tab-h) + 14px);
+  left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:var(--g900);
+  color:#fff;
+  padding:10px 22px;
+  border-radius:50px;
+  font-size:13px;
+  font-weight:700;
+  opacity:0;
+  pointer-events:none;
+  transition:all .26s;
+  z-index:999;
+  white-space:nowrap;
+  box-shadow:0 4px 18px rgba(27,94,32,.35);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════
+   HIDDEN / UTILS
+═══════════════════════════════════════ */
+.hidden { display:none!important; }
+
+a.btn { text-decoration:none; display:inline-block; }
+
+/* ═══════════════════════════════════════
+   SKELETON LOADER
+═══════════════════════════════════════ */
+.skeleton {
+  background:linear-gradient(90deg,#eef3ee 25%,#e0ebe0 50%,#eef3ee 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:8px;
+  height:14px;
+}
+@keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
+
+.skel-card {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:18px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 </style>
 </head>
-
 <body>
 
-<div class="topbar">
-  <div class="logo">ymaany<span>GO</span></div>
-  <div class="online" id="onlineBadge">🟢 Online</div>
+<!-- ══ TOP BAR ══ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">ymaany<span>GO</span></div>
+    <div class="driver-name" id="driverName">Chauffeur</div>
+  </div>
+  <div class="topbar-right">
+    <div class="clock" id="clock">--:--</div>
+    <button class="toggle-btn online" id="onlineBtn" onclick="toggleOnline()">
+      <span class="toggle-dot"></span>
+      <span id="onlineTxt">Online</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ PAGES ══ -->
+
+<!-- HOME PAGE -->
+<div id="pgHome">
+
+  <!-- Hero stats -->
+  <div class="hero">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Ritten vandaag</div>
+        <div class="stat-value" id="todayCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Verdiensten</div>
+        <div class="stat-value" id="todayMoney">€0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segment control -->
+  <div class="section-head">
+    <button class="seg-btn active" id="segAuction" onclick="setMode('auction')">
+      Veiling <span class="seg-badge" id="auctionBadge">0</span>
+    </button>
+    <button class="seg-btn" id="segMine" onclick="setMode('mine')">
+      Mijn ritten <span class="seg-badge" id="mineBadge">0</span>
+    </button>
+  </div>
+
+  <!-- Feed -->
+  <div class="feed" id="homeFeed"></div>
 </div>
 
-<div class="wrap">
+<!-- AGENDA PAGE -->
+<div id="pgAgenda" class="hidden">
 
-<section id="tabRitten">
-  <div class="sub">
-    <h2>Ritten</h2>
-    <span class="count" id="tripCount">0</span>
-  </div>
-  <div id="ridesList"></div>
-</section>
+  <!-- Calendar strip -->
+  <div class="cal-strip" id="calStrip"></div>
 
-<section id="tabAgenda" class="hidden">
-  <div class="sub">
-    <h2>Agenda</h2>
-    <span class="count" id="agendaCount">0</span>
-  </div>
-  <div id="agendaList"></div>
-</section>
-
-<section id="tabAccount" class="hidden">
-  <div class="account-card">
-    <h2>Account</h2>
-    <div class="info"><small>Naam</small><div id="accName">-</div></div>
-    <div class="info"><small>E-mail</small><div id="accEmail">-</div></div>
-    <div class="info"><small>Telefoon</small><div id="accPhone">-</div></div>
-    <div class="info"><small>Status</small><div id="accRole">driver</div></div>
-    <button class="btn red" onclick="logout()">Uitloggen</button>
-  </div>
-</section>
-
+  <div class="feed" id="agendaFeed"></div>
 </div>
 
+<!-- ACCOUNT PAGE -->
+<div id="pgAccount" class="hidden">
+  <div class="acc-hero">
+    <div class="acc-avatar" id="accAvatar">?</div>
+    <div class="acc-name" id="accName">-</div>
+    <div class="acc-email" id="accEmail">-</div>
+  </div>
+  <div class="acc-body">
+    <div class="info-card">
+      <div class="info-row">
+        <div class="info-icon">🪪</div>
+        <div>
+          <div class="info-label">Rol</div>
+          <div class="info-val" id="accRole">driver</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📊</div>
+        <div>
+          <div class="info-label">Totale ritten</div>
+          <div class="info-val" id="accTotal">0</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">💶</div>
+        <div>
+          <div class="info-label">Totale verdiensten</div>
+          <div class="info-val" id="accEarnings">€0</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-danger btn-wide" onclick="logout()">Uitloggen</button>
+  </div>
+</div>
+
+<!-- ══ BOTTOM TABS ══ -->
 <nav class="tabs">
-  <button id="navRitten" class="tab active" onclick="showTab('ritten')">🚕<br>Ritten</button>
-  <button id="navAgenda" class="tab" onclick="showTab('agenda')">📅<br>Agenda</button>
-  <button id="navAccount" class="tab" onclick="showTab('account')">👤<br>Account</button>
+  <button class="tab active" id="tabHome" onclick="showPage('home')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/>
+    </svg>
+    Veiling
+  </button>
+  <button class="tab" id="tabAgenda" onclick="showPage('agenda')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+    </svg>
+    Agenda
+  </button>
+  <button class="tab" id="tabAccount" onclick="showPage('account')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    Account
+  </button>
 </nav>
 
-<div id="overlay" class="overlay" onclick="closeSheet(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
+<!-- ══ RIDE DETAIL SHEET ══ -->
+<div class="overlay" id="overlay" onclick="closeSheet(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
     <div id="sheetBody"></div>
   </div>
 </div>
 
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
 <script>
-const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+/* ─────────────────────────────────────
+   SUPABASE
+───────────────────────────────────── */
+const SUPABASE_URL     = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let user = null;
-let profile = null;
-let rides = [];
-let selectedRide = null;
+/* ─────────────────────────────────────
+   STATE
+───────────────────────────────────── */
+let currentUser    = null;
+let driverProfile  = null;
+let rides          = [];
+let online         = true;
+let mode           = "auction";   // auction | mine
+let currentPage    = "home";
 
-function money(v){
-  return String(v || "€0");
+/* ─────────────────────────────────────
+   HELPERS
+───────────────────────────────────── */
+const $ = id => document.getElementById(id);
+
+function priceNum(v) {
+  return Number(String(v||"0").replace("€","").replace(",",".").trim()) || 0;
 }
 
-function fmtDate(v){
-  if(!v) return "-";
+function fmtDT(v) {
+  if (!v) return "-";
   const d = new Date(v);
-  if(isNaN(d)) return "-";
-  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  if (isNaN(d)) return v;
+  return d.toLocaleString("nl-NL",{weekday:"short",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
 }
 
-function showTab(tab){
-  tabRitten.classList.add("hidden");
-  tabAgenda.classList.add("hidden");
-  tabAccount.classList.add("hidden");
-
-  navRitten.classList.remove("active");
-  navAgenda.classList.remove("active");
-  navAccount.classList.remove("active");
-
-  if(tab === "ritten"){
-    tabRitten.classList.remove("hidden");
-    navRitten.classList.add("active");
-    renderRides();
-  }
-
-  if(tab === "agenda"){
-    tabAgenda.classList.remove("hidden");
-    navAgenda.classList.add("active");
-    renderAgenda();
-  }
-
-  if(tab === "account"){
-    tabAccount.classList.remove("hidden");
-    navAccount.classList.add("active");
-  }
+function fmtDate(v) {
+  if (!v) return "-";
+  const d = new Date(v);
+  if (isNaN(d)) return v;
+  return d.toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
 }
 
-async function protectDriver(){
-  const { data:sessionData } = await db.auth.getSession();
+function initials(name) {
+  if (!name) return "?";
+  return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+}
 
-  if(!sessionData.session){
-    window.location.href = "/chauffeur/login.html";
-    return false;
+function statusClass(s) {
+  const map={pending:"s-pending",accepted:"s-accepted",on_the_way:"s-on_the_way",arrived:"s-arrived",completed:"s-completed",cancelled:"s-cancelled"};
+  return map[s]||"s-pending";
+}
+
+function statusLabel(s) {
+  const map={pending:"Beschikbaar",accepted:"Geaccepteerd",on_the_way:"Onderweg",arrived:"Aangekomen",completed:"Voltooid",cancelled:"Geannuleerd"};
+  return map[s]||s||"?";
+}
+
+/* ─────────────────────────────────────
+   CLOCK
+───────────────────────────────────── */
+function tickClock() {
+  const n = new Date();
+  $("clock").textContent =
+    n.getHours().toString().padStart(2,"0")+":"+
+    n.getMinutes().toString().padStart(2,"0");
+}
+setInterval(tickClock,1000); tickClock();
+
+/* ─────────────────────────────────────
+   TOAST
+───────────────────────────────────── */
+function toast(msg, dur=2800) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), dur);
+}
+
+/* ─────────────────────────────────────
+   PAGE NAVIGATION
+───────────────────────────────────── */
+function showPage(p) {
+  ["home","agenda","account"].forEach(n=>{
+    $(`pg${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.add("hidden");
+    $(`tab${n.charAt(0).toUpperCase()+n.slice(1)}`).classList.remove("active");
+  });
+  $(`pg${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.remove("hidden");
+  $(`tab${p.charAt(0).toUpperCase()+p.slice(1)}`).classList.add("active");
+  currentPage = p;
+
+  if (p==="agenda") renderAgenda();
+  if (p==="account") renderAccount();
+}
+
+/* ─────────────────────────────────────
+   ONLINE TOGGLE
+───────────────────────────────────── */
+function toggleOnline() {
+  online = !online;
+  const btn = $("onlineBtn");
+  if (online) {
+    btn.className = "toggle-btn online";
+    $("onlineTxt").textContent = "Online";
+  } else {
+    btn.className = "toggle-btn offline";
+    $("onlineTxt").textContent = "Offline";
   }
+  renderHome();
+}
 
-  user = sessionData.session.user;
+/* ─────────────────────────────────────
+   MODE (auction / mine)
+───────────────────────────────────── */
+function setMode(m) {
+  mode = m;
+  $("segAuction").classList.toggle("active", m==="auction");
+  $("segMine").classList.toggle("active", m==="mine");
+  renderHome();
+}
 
-  const { data:p } = await db
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
+/* ─────────────────────────────────────
+   AUTH
+───────────────────────────────────── */
+async function protect() {
+  const { data } = await db.auth.getSession();
+  if (!data.session) { location.href="/chauffeur/login.html"; return false; }
 
-  profile = p || {};
+  currentUser = data.session.user;
+  const { data:prof } = await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+  driverProfile = prof || {};
 
-  accName.textContent = profile.name || "-";
-  accEmail.textContent = user.email || "-";
-  accPhone.textContent = profile.phone || "-";
-  accRole.textContent = profile.role || "driver";
-
+  const name = driverProfile.name || currentUser.email || "Chauffeur";
+  $("driverName").textContent = name;
   return true;
 }
 
-async function loadRides(){
-  const ok = await protectDriver();
-  if(!ok) return;
+/* ─────────────────────────────────────
+   LOAD RIDES
+───────────────────────────────────── */
+async function loadRides() {
+  const ok = await protect();
+  if (!ok) return;
 
-  const { data,error } = await db
+  const { data, error } = await db
     .from("rides")
     .select("*")
-    .or(`status.eq.pending,driver_id.eq.${user.id}`)
+    .or(`status.eq.pending,driver_id.eq.${currentUser.id}`)
     .order("pickup_time",{ascending:true});
 
-  if(error){
-    ridesList.innerHTML = `<div class="empty">${error.message}</div>`;
+  if (error) {
+    $("homeFeed").innerHTML = errState(error.message);
     return;
   }
 
   rides = data || [];
-  renderRides();
-  renderAgenda();
+  renderHome();
+  renderStats();
+  updateBadges();
 }
 
-function renderRides(){
-  const list = rides.filter(r =>
-    r.status === "pending" || r.driver_id === user.id
+/* ─────────────────────────────────────
+   STATS
+───────────────────────────────────── */
+function renderStats() {
+  const today = new Date().toISOString().slice(0,10);
+  const done = rides.filter(r=>
+    r.driver_id===currentUser.id &&
+    String(r.pickup_time||"").slice(0,10)===today &&
+    r.status==="completed"
   );
+  $("todayCount").textContent = done.length;
+  $("todayMoney").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
+}
 
-  tripCount.textContent = list.length;
+function updateBadges() {
+  $("auctionBadge").textContent = rides.filter(r=>r.status==="pending").length;
+  $("mineBadge").textContent    = rides.filter(r=>r.driver_id===currentUser?.id && r.status!=="completed" && r.status!=="cancelled").length;
+}
 
-  if(!list.length){
-    ridesList.innerHTML = `<div class="empty">Geen ritten beschikbaar.</div>`;
+/* ─────────────────────────────────────
+   RENDER HOME
+───────────────────────────────────── */
+function renderHome() {
+  if (!online && mode==="auction") {
+    $("homeFeed").innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📡</div>
+        <div class="empty-title">Je bent offline</div>
+        <div class="empty-sub">Zet jezelf online om veilingen te zien</div>
+      </div>`;
     return;
   }
 
-  ridesList.innerHTML = list.map(rideCard).join("");
-}
+  let list = rides.filter(r => {
+    if (mode==="auction") return r.status==="pending";
+    return r.driver_id===currentUser.id;
+  });
 
-function renderAgenda(){
-  const list = rides.filter(r =>
-    r.driver_id === user.id &&
-    !["completed","cancelled"].includes(r.status)
-  );
-
-  agendaCount.textContent = list.length;
-
-  if(!list.length){
-    agendaList.innerHTML = `<div class="empty">Geen ritten gepland.</div>`;
+  if (!list.length) {
+    $("homeFeed").innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">${mode==="auction"?"🏷️":"🚖"}</div>
+        <div class="empty-title">Geen ritten</div>
+        <div class="empty-sub">${mode==="auction"?"Geen veilingen beschikbaar":"Je hebt nog geen ritten geaccepteerd"}</div>
+      </div>`;
     return;
   }
 
-  agendaList.innerHTML = list.map(rideCard).join("");
+  $("homeFeed").innerHTML = list.map((r,i)=>rideCard(r,i)).join("");
 }
 
-function rideCard(r){
-  const mine = r.driver_id === user.id;
+/* ─────────────────────────────────────
+   RENDER AGENDA
+───────────────────────────────────── */
+function renderAgenda() {
+  renderCalStrip();
+  const mine = rides.filter(r=>
+    r.driver_id===currentUser?.id &&
+    r.status!=="completed" && r.status!=="cancelled"
+  );
+
+  $("agendaFeed").innerHTML = mine.length
+    ? mine.map((r,i)=>rideCard(r,i)).join("")
+    : `<div class="empty"><div class="empty-icon">📅</div><div class="empty-title">Geen geplande ritten</div></div>`;
+}
+
+/* ─────────────────────────────────────
+   CALENDAR STRIP
+───────────────────────────────────── */
+function renderCalStrip() {
+  const today = new Date();
+  const rideDays = new Set(rides.map(r=>r.pickup_time?new Date(r.pickup_time).toDateString():null).filter(Boolean));
+  const days=[];
+  for(let i=-1;i<=10;i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    days.push(d);
+  }
+  const dnames=["Zo","Ma","Di","Wo","Do","Vr","Za"];
+  $("calStrip").innerHTML = days.map(d=>{
+    const isToday = d.toDateString()===today.toDateString();
+    const hasRide = rideDays.has(d.toDateString());
+    return `<div class="cal-day${isToday?" today":""}${hasRide?" has-ride":""}">
+      <div class="cal-dname">${dnames[d.getDay()]}</div>
+      <div class="cal-dnum">${d.getDate()}</div>
+    </div>`;
+  }).join("");
+}
+
+/* ─────────────────────────────────────
+   RENDER ACCOUNT
+───────────────────────────────────── */
+function renderAccount() {
+  const name = driverProfile?.name || currentUser?.email || "-";
+  $("accAvatar").textContent = initials(name);
+  $("accName").textContent   = name;
+  $("accEmail").textContent  = currentUser?.email || "-";
+  $("accRole").textContent   = driverProfile?.role || "driver";
+
+  const allMine = rides.filter(r=>r.driver_id===currentUser?.id);
+  const done    = allMine.filter(r=>r.status==="completed");
+  $("accTotal").textContent    = done.length;
+  $("accEarnings").textContent = "€"+done.reduce((s,r)=>s+priceNum(r.price),0).toFixed(2);
+}
+
+/* ─────────────────────────────────────
+   RIDE CARD HTML
+───────────────────────────────────── */
+function rideCard(r, i=0) {
+  const mine    = r.driver_id===currentUser?.id;
+  const pend    = r.status==="pending";
+  const price   = r.price || "€0";
+
+  const fromParts = (r.from_address||"-").split(",");
+  const toParts   = (r.to_address||"-").split(",");
+  const fromMain  = fromParts[0].trim();
+  const fromCity  = fromParts.slice(1).join(",").trim();
+  const toMain    = toParts[0].trim();
+  const toCity    = toParts.slice(1).join(",").trim();
+
+  const dt = r.pickup_time ? new Date(r.pickup_time) : null;
+  const dateStr = dt ? dt.toLocaleDateString("nl-NL",{weekday:"short",day:"2-digit",month:"short"}) : "-";
+  const timeStr = dt ? dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}) : "--:--";
 
   return `
-    <div class="card">
-      <div class="card-head">
-        <div class="date">${fmtDate(r.pickup_time)}</div>
-        <div class="id">#${String(r.id).slice(0,8)}</div>
-      </div>
-
-      <div class="route">
-        <div class="point">
-          <div class="label">Pickup</div>
-          <div class="addr">${r.from_address || "-"}</div>
+  <div class="rcard" style="animation-delay:${i*.07}s">
+    <div class="rcard-head">
+      <div>
+        <div class="rcard-date">
+          <svg style="vertical-align:-2px;margin-right:3px" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          ${dateStr} · ${timeStr}
         </div>
+        <div class="rcard-id">${r.id?.slice(0,12)||"—"}</div>
+      </div>
+      <span class="rcard-status ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+    </div>
 
-        <div class="point">
-          <div class="label">Destination</div>
-          <div class="addr">${r.to_address || "-"}</div>
+    <div class="rroute">
+      <div class="rroute-row">
+        <div class="rroute-icon">
+          <div class="rdot-a"></div>
+          <div class="rline"></div>
         </div>
-
-        ${mine ? `<div class="actions">
-          <button class="btn dark" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
-          <button class="btn dark" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
-          <button class="btn green" onclick="quickStatus('${r.id}','completed')">Voltooien</button>
-        </div>` : ""}
-      </div>
-
-      <div class="meta">
-        <div class="chip">🚖 ${r.vehicle || "-"}</div>
-        <div class="chip">👤 ${r.passengers || 1}</div>
-        <div class="chip">💳 ${r.payment_status || "unpaid"}</div>
-        <div class="chip">📌 ${r.status || "pending"}</div>
-      </div>
-
-      <div class="footer">
-        <div>
-          <div class="price">${money(r.price)}</div>
-          <div class="note">100% voor chauffeur · Geen commissie</div>
+        <div class="rroute-text">
+          <div class="rroute-time">${timeStr}</div>
+          <div class="rroute-name">${fromMain}</div>
+          ${fromCity?`<div class="rroute-city">${fromCity}</div>`:""}
         </div>
-        <button class="btn dark" onclick="openRide('${r.id}')">Bekijken</button>
+        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.from_address||'')}')" title="Navigeer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        </button>
       </div>
+      <div class="rroute-row">
+        <div class="rroute-icon"><div class="rdot-b"></div></div>
+        <div class="rroute-text">
+          <div class="rroute-name">${toMain}</div>
+          ${toCity?`<div class="rroute-city">${toCity}</div>`:""}
+        </div>
+        <button class="rnav-btn" onclick="navigate('${encodeURIComponent(r.to_address||'')}')" title="Navigeer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="rmeta">
+      <div class="rchip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        ${r.passengers||1} passagier${r.passengers>1?"s":""}
+      </div>
+      <div class="rchip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        ${r.vehicle||"Standaard"}
+      </div>
+      ${r.payment_status?`<div class="rchip">💳 ${r.payment_status}</div>`:""}
+    </div>
+
+    <div class="rfoot">
+      <div>
+        <div class="rprice-label">Prijs</div>
+        <div class="rprice-val">${price}</div>
+        <div class="rprice-note">✓ Geen commissie</div>
+      </div>
+      <div class="ractions">
+        <button class="btn btn-outline" onclick="openSheet('${r.id}')">Details</button>
+        ${pend&&!mine?`<button class="btn btn-primary" onclick="acceptRide('${r.id}')">Accepteren</button>`:""}
+        ${mine&&r.status==="accepted"?`<button class="btn btn-amber" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
+        ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>`:""}
+        ${mine&&r.status==="arrived"?`<button class="btn btn-success" onclick="quickStatus('${r.id}','completed')">✓ Voltooien</button>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ─────────────────────────────────────
+   DETAIL SHEET
+───────────────────────────────────── */
+function openSheet(id) {
+  const r = rides.find(x=>x.id===id);
+  if (!r) return;
+
+  const mine = r.driver_id===currentUser?.id;
+  const phone = (r.customer_phone||"").replace(/\D/g,"");
+
+  $("sheetBody").innerHTML = `
+    <div class="sheet-title">${(r.from_address||"-").split(",")[0]} → ${(r.to_address||"-").split(",")[0]}</div>
+    <div class="sheet-sub">${fmtDT(r.pickup_time)} · ${r.id?.slice(0,14)||""}</div>
+
+    <div class="sinfo-row">
+      <div class="sinfo-icon">📍</div>
+      <div><div class="sinfo-label">Ophaallocatie</div><div class="sinfo-val">${r.from_address||"-"}</div></div>
+    </div>
+    <div class="sinfo-row">
+      <div class="sinfo-icon">🏁</div>
+      <div><div class="sinfo-label">Bestemming</div><div class="sinfo-val">${r.to_address||"-"}</div></div>
+    </div>
+    <div class="sinfo-row">
+      <div class="sinfo-icon">👤</div>
+      <div><div class="sinfo-label">Klant</div><div class="sinfo-val">${r.customer_name||"-"}${r.customer_phone?`<br><span style="color:var(--ink3);font-size:12px">${r.customer_phone}</span>`:""}</div></div>
+    </div>
+    <div class="sinfo-row">
+      <div class="sinfo-icon">🚖</div>
+      <div><div class="sinfo-label">Voertuig · Passagiers</div><div class="sinfo-val">${r.vehicle||"Standaard"} · ${r.passengers||1} pax</div></div>
+    </div>
+
+    <div class="price-box">
+      <div>
+        <div class="price-box-label">Jouw uitbetaling</div>
+        <div class="price-box-note">✓ Geen commissie meer af</div>
+      </div>
+      <div class="price-box-val">${r.price||"€0"}</div>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.from_address||"")}" target="_blank">🗺 Navigeren</a>
+      ${phone?`<a class="btn btn-success" href="https://wa.me/${phone}" target="_blank">💬 WhatsApp</a>`:""}
+      ${phone?`<a class="btn btn-outline" href="tel:${r.customer_phone}">📞 Bellen</a>`:""}
+    </div>
+
+    <div class="sheet-actions">
+      ${r.status==="pending"&&!mine?`<button class="btn btn-primary btn-wide" onclick="acceptRide('${r.id}')">✓ Accepteren</button>`:""}
+      ${mine&&r.status==="accepted"?`<button class="btn btn-amber btn-wide" onclick="quickStatus('${r.id}','on_the_way')">Onderweg →</button>`:""}
+      ${mine&&r.status==="on_the_way"?`<button class="btn btn-blue btn-wide" onclick="quickStatus('${r.id}','arrived')">Aangekomen ✓</button>`:""}
+      ${mine&&r.status==="arrived"?`<button class="btn btn-success btn-wide" onclick="quickStatus('${r.id}','completed')">✓ Rit voltooien</button>`:""}
+      ${mine&&!["completed","cancelled"].includes(r.status)?`<button class="btn btn-danger btn-wide" onclick="quickStatus('${r.id}','cancelled')">Annuleren</button>`:""}
     </div>
   `;
+
+  $("overlay").classList.add("open");
 }
 
-function openRide(id){
-  selectedRide = rides.find(r => r.id === id);
-  if(!selectedRide) return;
-
-  const r = selectedRide;
-  const mine = r.driver_id === user.id;
-
-  sheetBody.innerHTML = `
-    <h2>Rit details</h2>
-
-    <div class="info"><small>Pickup</small>${r.from_address || "-"}</div>
-    <div class="info"><small>Destination</small>${r.to_address || "-"}</div>
-    <div class="info"><small>Tijd</small>${fmtDate(r.pickup_time)}</div>
-    <div class="info"><small>Klant</small>${r.customer_name || "-"}<br>${r.customer_phone || "-"}</div>
-    <div class="info"><small>Prijs</small><b>${money(r.price)}</b><br>100% voor chauffeur</div>
-    <div class="info"><small>Betaling</small>${r.payment_status || "unpaid"}</div>
-
-    <div class="actions">
-      <a class="btn dark" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.from_address || "")}">Navigeren</a>
-      ${r.customer_phone ? `<a class="btn green" target="_blank" href="https://wa.me/${String(r.customer_phone).replace(/\\D/g,"")}">WhatsApp</a>` : ""}
-      ${r.customer_phone ? `<a class="btn gray" href="tel:${r.customer_phone}">Bellen</a>` : ""}
-    </div>
-
-    <div class="actions">
-      ${!mine && r.status === "pending" ? `<button class="btn green" onclick="acceptRide('${r.id}')">Accepteren</button>` : ""}
-      ${mine ? `
-        <button class="btn dark" onclick="quickStatus('${r.id}','on_the_way')">Onderweg</button>
-        <button class="btn dark" onclick="quickStatus('${r.id}','arrived')">Aangekomen</button>
-        <button class="btn green" onclick="quickStatus('${r.id}','completed')">Voltooien</button>
-      ` : ""}
-    </div>
-  `;
-
-  overlay.classList.add("open");
+function closeSheet(e) {
+  if (!e || e.target===$("overlay"))
+    $("overlay").classList.remove("open");
 }
 
-function closeSheet(e){
-  if(!e || e.target === overlay){
-    overlay.classList.remove("open");
-  }
-}
-
-async function acceptRide(id){
-  const payload = {
-    driver_id: user.id,
-    driver_name: profile.name || user.email,
-    driver_phone: profile.phone || "",
-    status: "accepted",
+/* ─────────────────────────────────────
+   ACTIONS
+───────────────────────────────────── */
+async function acceptRide(id) {
+  const { error } = await db.from("rides").update({
+    driver_id:   currentUser.id,
+    driver_name: driverProfile.name||currentUser.email,
+    driver_phone:driverProfile.phone||"",
+    status:      "accepted",
     accepted_at: new Date().toISOString()
-  };
+  }).eq("id",id);
 
-  const { error } = await db
-    .from("rides")
-    .update(payload)
-    .eq("id", id)
-    .eq("status", "pending");
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
+  if (error) { toast("❌ "+error.message,4000); return; }
   closeSheet();
+  toast("✓ Rit geaccepteerd!");
   await loadRides();
-  showTab("agenda");
+  setMode("mine");
 }
 
-async function quickStatus(id,status){
+async function quickStatus(id, status) {
   const payload = { status };
+  if (status==="completed") payload.completed_at = new Date().toISOString();
 
-  if(status === "completed"){
-    payload.completed_at = new Date().toISOString();
-  }
-
-  const { error } = await db
-    .from("rides")
-    .update(payload)
-    .eq("id", id)
-    .eq("driver_id", user.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
+  const { error } = await db.from("rides").update(payload).eq("id",id);
+  if (error) { toast("❌ "+error.message,4000); return; }
 
   closeSheet();
+  toast(status==="completed"?"✓ Rit voltooid!":status==="cancelled"?"Rit geannuleerd":"Status bijgewerkt");
   await loadRides();
 }
 
-async function logout(){
-  await db.auth.signOut();
-  window.location.href = "/chauffeur/login.html";
+function navigate(addr) {
+  window.open(`https://www.google.com/maps/search/?api=1&query=${addr}`,"_blank");
 }
 
-loadRides();
-setInterval(loadRides,10000);
-</script>
+async function logout() {
+  await db.auth.signOut();
+  location.href = "/chauffeur/login.html";
+}
 
+function errState(msg) {
+  return `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Fout</div><div class="empty-sub">${msg}</div></div>`;
+}
+
+/* ─────────────────────────────────────
+   INIT
+───────────────────────────────────── */
+loadRides();
+setInterval(loadRides, 12000);
+</script>
 </body>
 </html>
