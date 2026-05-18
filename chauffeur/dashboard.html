@@ -1555,8 +1555,100 @@ function errState(msg) {
 /* ─────────────────────────────────────
    INIT
 ───────────────────────────────────── */
+
+/* ─────────────────────────────────────
+   NOTIFICATIONS
+───────────────────────────────────── */
+
+let knownRideIds = new Set();
+let firstLoadDone = false;
+
+// طلب إذن الإشعارات
+async function initNotifications() {
+  if ("Notification" in window) {
+    if (Notification.permission !== "granted") {
+      await Notification.requestPermission();
+    }
+  }
+}
+
+// صوت تنبيه
+function playNotificationSound() {
+  const audio = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
+  audio.volume = 1;
+  audio.play().catch(()=>{});
+}
+
+// إرسال إشعار
+function sendRideNotification(ride) {
+
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+
+  const title =
+    `${(ride.from_address || "").split(",")[0]} → ${(ride.to_address || "").split(",")[0]}`;
+
+  const body =
+    `${new Date(ride.pickup_time).toLocaleDateString("nl-NL", {
+      weekday:"long",
+      day:"2-digit",
+      month:"long",
+      hour:"2-digit",
+      minute:"2-digit"
+    })} · ${ride.passengers || 1} passagiers · ${ride.price || "€0"}`;
+
+  const notif = new Notification("Nieuwe rit beschikbaar", {
+    body,
+    icon: "https://ymaanygo.nl/favicon.ico",
+    badge: "https://ymaanygo.nl/favicon.ico",
+    tag: ride.id
+  });
+
+  notif.onclick = () => {
+    window.focus();
+    openSheet(ride.id);
+  };
+
+  playNotificationSound();
+}
+
+// فحص الرحلات الجديدة
+function detectNewRides() {
+
+  const pendingRides = rides.filter(r => r.status === "pending");
+
+  if (!firstLoadDone) {
+    pendingRides.forEach(r => knownRideIds.add(r.id));
+    firstLoadDone = true;
+    return;
+  }
+
+  pendingRides.forEach(ride => {
+
+    if (!knownRideIds.has(ride.id)) {
+
+      knownRideIds.add(ride.id);
+
+      sendRideNotification(ride);
+
+    }
+
+  });
+
+}
+
+/* ─────────────────────────────────────
+   INIT
+───────────────────────────────────── */
+
+initNotifications();
+
 loadRides();
-setInterval(loadRides, 12000);
+
+setInterval(async () => {
+  await loadRides();
+  detectNewRides();
+}, 12000);
 </script>
 </body>
 </html>
