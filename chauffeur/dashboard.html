@@ -1112,7 +1112,7 @@ function setMode(m) {
 ───────────────────────────────────── */
 async function protect() {
   const { data } = await db.auth.getSession();
-  if (!data.session) { location.href="/driver/login.html"; return false; }
+  if (!data.session) { location.href="/ymaanygo/chauffeur/login.html";"; return false; }
 
   currentUser = data.session.user;
   const { data:prof } = await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
