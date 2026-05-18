@@ -1639,7 +1639,9 @@ function detectNewRides() {
 
 initNotifications();
 
-loadRides();
+loadRides().then(() => {
+  detectNewRides();
+});
 
 setInterval(async () => {
   await loadRides();
