@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1b5e20">
+<link rel="manifest" href="/chauffeur/manifest.json">
+<link rel="apple-touch-icon" href="https://ymaanygo.nl/Photoroom_20260518_062850.png">
 <title>ymaanyGO Driver</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -441,7 +443,9 @@ async function registerPush(){
     },{onConflict:"endpoint"});
     console.log("✅ Push subscription opgeslagen");
   }catch(e){
-    console.warn("Push registratie fout:",e);
+    console.log("Push error name:", e.name);
+    console.log("Push error message:", e.message);
+    tErr("❌ " + e.name + ": " + e.message);
   }
 }
 const SB = supabase.createClient(
@@ -541,6 +545,12 @@ async function init(){
 ═══════════════════════════════════════ */
 function askNotifPermission(){
   if(!("Notification" in window))return;
+  // Check of app geopend is via Home Screen
+  const isStandalone=window.matchMedia("(display-mode: standalone)").matches;
+  if(!isStandalone){
+    tErr("⚠️ Open de app via Home Screen!");
+    return;
+  }
   const btn=$("notifBtn");
   if(Notification.permission==="granted"){
     if(btn) btn.style.display="none";
@@ -571,20 +581,30 @@ function askNotifPermission(){
 ═══════════════════════════════════════ */
 let notifTimer=null;
 
+function getCityFromAddress(addr){
+  if(!addr||addr==="-") return "-";
+  const parts=addr.split(",").map(p=>p.trim()).filter(Boolean);
+  // Probeer tweede deel (stad), anders laatste deel
+  if(parts.length>=2){
+    // Sla "Nederland" / "Netherlands" over
+    const filtered=parts.filter(p=>!p.match(/^(nederland|netherlands|nl)$/i));
+    return filtered[filtered.length-1]||parts[0];
+  }
+  return parts[0];
+}
+
 function stuurNotificatie(r){
-  const van=(r.from_address||"-").split(",")[0].trim();
-  const naar=(r.to_address||"-").split(",")[0].trim();
+  const van=getCityFromAddress(r.from_address);
+  const naar=getCityFromAddress(r.to_address);
   const dt=r.pickup_time?new Date(r.pickup_time):null;
-  const delen=[
-    dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"}):"",
-    tT(r.pickup_time),
-    r.distance_km?`${r.distance_km}km`:"",
-    r.price?`Veiling eindigt op ${r.price}`:"",
-    r.passengers?`${r.passengers} Passagiers`:"",
-  ].filter(Boolean);
 
   const titel=`${van} → ${naar}`;
-  const tekst=delen.join(" · ");
+  const tekst=[
+    dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"})+" · "+tT(r.pickup_time):"",
+    r.distance_km?`${r.distance_km}km`:"",
+    r.price||"",
+    r.passengers?`${r.passengers} pax`:"",
+  ].filter(Boolean).join(" · ");
 
   notifRid=r.id;
 
@@ -597,7 +617,7 @@ function stuurNotificatie(r){
   }
 
   // 3. IN-APP BANNER (altijd zichtbaar, ook als app open is)
-  $("ntitle").textContent=titel;
+  $("ntitle").textContent="🚖 "+titel+" 🚖";
   $("nbody").textContent=tekst;
   const banner=$("notif");
   banner.classList.add("show");
@@ -611,14 +631,13 @@ function stuurNotificatie(r){
       if(navigator.serviceWorker && navigator.serviceWorker.controller){
         navigator.serviceWorker.controller.postMessage({
           type:"SHOW_NOTIFICATION",
-          title:"🚖 Nieuwe rit! — "+titel,
+          title:"🚖 Nieuwe rit! 🚖 — "+titel,
           body:tekst,
           rideId:r.id
         });
       } else {
-        // Fallback: directe Notification
-        const n=new Notification("🚖 Nieuwe rit! — "+titel,{
-          body:tekst,
+        const n=new Notification("🚖 Nieuwe rit! 🚖",{
+          body:titel+"\n"+tekst,
           icon:"/favicon.ico",
           tag:"rit-"+r.id,
           requireInteraction:true,
