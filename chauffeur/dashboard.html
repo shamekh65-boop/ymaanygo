@@ -268,6 +268,7 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
   <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
     <span class="ondot"></span><span id="ontxt">Online</span>
   </button>
+  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;margin-left:6px" title="Notificaties inschakelen">🔔</button>
 </header>
 
 <!-- PAGES -->
@@ -520,8 +521,12 @@ async function init(){
   P=p||{};
   $("dname").textContent=P.name||U.email||"Chauffeur";
 
-  // ══ VRAAG NOTIFICATIES TOESTEMMING ══
-  askNotifPermission();
+  // ══ VRAAG NOTIFICATIES NA EERSTE TAP ══
+  // iOS vereist gebruikersinteractie vóór toestemming
+  document.addEventListener("click", function askOnce(){
+    askNotifPermission();
+    document.removeEventListener("click", askOnce);
+  }, {once:true});
 
   await loadRides();
   subscribeRealtime();
@@ -536,10 +541,24 @@ async function init(){
 ═══════════════════════════════════════ */
 function askNotifPermission(){
   if(!("Notification" in window))return;
-  if(Notification.permission==="granted"){registerPush();return;}
-  if(Notification.permission==="denied")return;
+  const btn=$("notifBtn");
+  if(Notification.permission==="granted"){
+    if(btn) btn.style.display="none";
+    registerPush();
+    return;
+  }
+  if(Notification.permission==="denied"){
+    if(btn) btn.style.display="none";
+    return;
+  }
+  // Toon bell knop als nog niet gevraagd
+  if(btn) btn.style.display="flex";
   Notification.requestPermission().then(p=>{
-    if(p==="granted"){tOk("✅ Notificaties ingeschakeld!");registerPush();}
+    if(p==="granted"){
+      tOk("✅ Notificaties ingeschakeld!");
+      if(btn) btn.style.display="none";
+      registerPush();
+    }
   });
 }
 
@@ -669,16 +688,48 @@ async function loadRides(){
 }
 
 /* ═══════════════════════
-   REALTIME
+   REALTIME + POLLING FALLBACK
 ═══════════════════════ */
 function subscribeRealtime(){
-  SB.channel("rides-rt-v2")
+  // Realtime via Supabase
+  const channel = SB.channel("rides-rt-v3")
     .on("postgres_changes",{event:"*",schema:"public",table:"rides"},({eventType,new:nr,old:or})=>{
+      console.log("Realtime event:",eventType);
       handleChange(eventType,nr,or);
     })
     .subscribe(status=>{
-      console.log("Realtime:",status);
+      console.log("Realtime status:",status);
+      if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){
+        console.warn("Realtime fout — gebruik polling");
+        startPolling();
+      }
     });
+
+  // Polling als backup elke 5 seconden
+  startPolling();
+}
+
+let pollingInterval=null;
+function startPolling(){
+  if(pollingInterval) return; // Niet dubbel starten
+  pollingInterval=setInterval(async()=>{
+    const {data,error}=await SB.from("rides").select("*")
+      .or(`status.eq.pending,driver_id.eq.${U.id}`)
+      .order("pickup_time",{ascending:true});
+    if(error||!data) return;
+
+    // Check voor nieuwe pending ritten
+    const nieuweRitten=data.filter(r=>r.status==="pending"&&!knownIds.has(r.id));
+    nieuweRitten.forEach(r=>{
+      knownIds.add(r.id);
+      stuurNotificatie(r);
+    });
+
+    rides=data;
+    renderHome();updateBadge();
+    if(curPg===1){drawCal();showDay(selDate)}
+    if(curPg===2)renderAccount();
+  },5000);
 }
 
 function handleChange(type,nr,or){
