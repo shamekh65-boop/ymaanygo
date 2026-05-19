@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -256,6 +257,100 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 
 .hidden{display:none!important}
 </style>
+<div id="installModal" class="install-modal">
+  <div class="install-card">
+    <h2>ymaanyGO Driver installeren</h2>
+    <p>Installeer de app voor snellere toegang en meldingen.</p>
+
+    <div class="ios-steps">
+      <b>Voor iPhone:</b>
+      <span>1. Tik op de Deel-knop in Safari</span>
+      <span>2. Kies “Zet op beginscherm”</span>
+      <span>3. Tik op “Voeg toe”</span>
+    </div>
+
+    <button id="installAppBtn">App toevoegen</button>
+    <button id="closeInstall">Later</button>
+  </div>
+</div>
+
+<style>
+.install-modal{
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  display:none; align-items:end; justify-content:center; z-index:99999;
+}
+.install-card{
+  background:#fff; width:100%; max-width:430px; padding:22px;
+  border-radius:24px 24px 0 0; font-family:Arial,sans-serif;
+  box-shadow:0 -10px 35px rgba(0,0,0,.25);
+}
+.install-card h2{margin:0 0 8px;color:#0b2e1f}
+.install-card p{margin:0 0 14px;color:#4f7f68}
+.ios-steps{
+  background:#f3fbf6; border:1px solid #d7f2df; border-radius:16px;
+  padding:14px; margin-bottom:14px; display:grid; gap:8px; color:#0b2e1f;
+}
+#installAppBtn{
+  width:100%; padding:14px; border:0; border-radius:14px;
+  background:#2ecc71; color:white; font-weight:800; font-size:16px;
+}
+#closeInstall{
+  width:100%; padding:12px; margin-top:8px; border:0;
+  border-radius:14px; background:#eee; color:#333; font-weight:700;
+}
+</style>
+
+<script>
+let deferredPrompt;
+const modal = document.getElementById("installModal");
+const installBtn = document.getElementById("installAppBtn");
+const closeBtn = document.getElementById("closeInstall");
+
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
+function showInstallModal(){
+  if(!isStandalone() && !localStorage.getItem("install_modal_closed")){
+    modal.style.display = "flex";
+  }
+}
+
+window.addEventListener("beforeinstallprompt", function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallModal();
+});
+
+window.addEventListener("load", function(){
+  if(isIOS()){
+    setTimeout(showInstallModal, 1200);
+  }
+});
+
+installBtn.onclick = async function(){
+  if(isIOS()){
+    alert("Tik op de Deel-knop in Safari, kies 'Zet op beginscherm' en tik daarna op 'Voeg toe'.");
+    return;
+  }
+
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    modal.style.display = "none";
+  }
+};
+
+closeBtn.onclick = function(){
+  localStorage.setItem("install_modal_closed", "1");
+  modal.style.display = "none";
+};
+</script>
 </head>
 <body>
 
