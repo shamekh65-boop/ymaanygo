@@ -1,0 +1,15 @@
+{
+  "name": "ymaanyGO Driver",
+  "short_name": "ymaanyGO",
+  "start_url": "/chauffeur/dashboard.html",
+  "display": "standalone",
+  "background_color": "#1b5e20",
+  "theme_color": "#1b5e20",
+  "icons": [
+    {
+      "src": "https://ymaanygo.nl/Photoroom_20260518_062850.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
