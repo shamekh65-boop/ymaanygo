@@ -441,9 +441,7 @@ async function registerPush(){
     },{onConflict:"endpoint"});
     console.log("✅ Push subscription opgeslagen");
   }catch(e){
-    console.log("Push error name:", e.name);
-    console.log("Push error message:", e.message);
-    tErr("❌ " + e.name + ": " + e.message);
+    console.warn("Push registratie fout:",e);
   }
 }
 const SB = supabase.createClient(
@@ -543,12 +541,6 @@ async function init(){
 ═══════════════════════════════════════ */
 function askNotifPermission(){
   if(!("Notification" in window))return;
-  // Check of app geopend is via Home Screen
-  const isStandalone=window.matchMedia("(display-mode: standalone)").matches;
-  if(!isStandalone){
-    tErr("⚠️ Open de app via Home Screen!");
-    return;
-  }
   const btn=$("notifBtn");
   if(Notification.permission==="granted"){
     if(btn) btn.style.display="none";
