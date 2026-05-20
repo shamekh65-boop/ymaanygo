@@ -439,6 +439,7 @@
           </div>
         </div>
 
+        <!-- STEP 1 -->
         <section id="step1">
           <div class="block">
             <h2 class="route-title" id="whereTitle">Waar wil je heen?</h2>
@@ -482,27 +483,92 @@
           </div>
         </section>
 
+        <!-- STEP 2 -->
         <section id="step2" class="hidden">
-          <div class="block">
-            <div class="lbl" id="carLbl">Voertuig</div>
-            <select id="car" class="ctrl">
-              <option value="Standaard">Standaard</option>
-              <option value="Comfort">Comfort</option>
-              <option value="Busje">Busje (8 pers.)</option>
-            </select>
-            <div class="helper" id="carHint">Comfort heeft toeslag.</div>
+
+          <!-- Route map -->
+          <div id="routeMapWrap">
+            <div id="routeMap" style="width:100%;height:100%"></div>
           </div>
 
-          <div style="height:12px"></div>
+          <!-- Vehicle label -->
+          <div class="lbl" id="carLbl">Kies je voertuig</div>
+          <input type="hidden" id="car" value="Standaard">
 
-          <div class="block">
-            <div class="lbl" id="priceLbl">Indicatie prijs</div>
-            <div style="font-size:14px;font-weight:950" id="price">—</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:6px" id="meta">—</div>
-            <div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
+          <!-- Vehicle cards -->
+          <div id="vehicleCards" style="margin-top:8px">
+
+            <div class="vcard selected" data-val="Standaard" onclick="selectVehicle('Standaard')">
+              <div class="vcard-ico">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13" rx="2"/>
+                  <path d="M16 8h4l3 4v4h-7V8z"/>
+                  <circle cx="5.5" cy="18.5" r="2.5"/>
+                  <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+              </div>
+              <div class="vcard-info">
+                <div class="vcard-name">GO</div>
+                <div class="vcard-desc">Standaard · max 4 pers.</div>
+              </div>
+              <div class="vcard-right">
+                <div class="vcard-price" id="priceGO">—</div>
+                <div class="vcard-check"></div>
+              </div>
+            </div>
+
+            <div class="vcard" data-val="Comfort" onclick="selectVehicle('Comfort')">
+              <div class="vcard-ico">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13" rx="2"/>
+                  <path d="M16 8h4l3 4v4h-7V8z"/>
+                  <circle cx="5.5" cy="18.5" r="2.5"/>
+                  <circle cx="18.5" cy="18.5" r="2.5"/>
+                  <path d="M4 9h8"/>
+                </svg>
+              </div>
+              <div class="vcard-info">
+                <div class="vcard-name">Comfort</div>
+                <div class="vcard-desc">Premium · max 4 pers.</div>
+              </div>
+              <div class="vcard-right">
+                <div class="vcard-price" id="priceComfort">—</div>
+                <div class="vcard-check"></div>
+              </div>
+            </div>
+
+            <div class="vcard" data-val="Busje" onclick="selectVehicle('Busje')">
+              <div class="vcard-ico">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="18" height="14" rx="2"/>
+                  <path d="M19 8h2l2 5v3h-4"/>
+                  <circle cx="6" cy="20" r="2"/>
+                  <circle cx="16" cy="20" r="2"/>
+                </svg>
+              </div>
+              <div class="vcard-info">
+                <div class="vcard-name">XL</div>
+                <div class="vcard-desc">Busje · max 8 pers.</div>
+              </div>
+              <div class="vcard-right">
+                <div class="vcard-price" id="priceXL">—</div>
+                <div class="vcard-check"></div>
+              </div>
+            </div>
+
           </div>
+
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px" id="meta">—</div>
+          <div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
+
+          <!-- Hidden elements needed by booking.js -->
+          <div style="display:none" id="price">—</div>
+          <div style="display:none" id="carHint"></div>
+          <div style="display:none" id="priceLbl"></div>
+
         </section>
 
+        <!-- STEP 3 -->
         <section id="step3" class="hidden">
           <div class="block">
             <div class="lbl" id="rideForLbl">Voor wie is de rit?</div>
@@ -544,7 +610,8 @@
             </div>
           </div>
         </section>
-      </div>
+
+      </div><!-- end sheet-body -->
 
       <div class="sheet-footer">
         <div class="footer-actions">
@@ -552,8 +619,9 @@
           <button id="mainActionBtn" class="main-action" type="button" onclick="handleMainAction()">Volgende ›</button>
         </div>
       </div>
-    </div>
-  </div>
+
+    </div><!-- end sheet-card -->
+  </div><!-- end homeSheet -->
 
   <!-- Favorites Manager -->
   <div id="favModal" class="overlay" style="z-index:200;display:none;align-items:flex-end;justify-content:center;">
