@@ -10,21 +10,13 @@
 
 <style>
 :root{
-  --green:#2ecc71;
-  --green2:#27ae60;
-  --red:#e74c3c;
-  --red2:#c0392b;
-  --orange:#e67e22;
-  --orange2:#d35400;
-  --gray:#95a5a6;
-  --gray2:#7f8c8d;
-  --dark:#0b2e1f;
-  --muted:#5d7f6c;
-  --line:rgba(0,0,0,.08);
+  --green:#2ecc71;--green2:#27ae60;
+  --red:#e74c3c;--red2:#c0392b;
+  --orange:#e67e22;--orange2:#d35400;
+  --gray:#95a5a6;--gray2:#7f8c8d;
+  --dark:#0b2e1f;--muted:#5d7f6c;--line:rgba(0,0,0,.08);
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
-
 body{
   min-height:100vh;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -33,26 +25,12 @@ body{
     radial-gradient(circle at top right,rgba(39,174,96,.22),transparent 30%),
     linear-gradient(180deg,#f6fbf8,#e6f3ed,#d7ece2);
   color:var(--dark);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:22px;
-  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  padding:22px;overflow:hidden;
 }
-
-/* Fireworks — alleen bij success */
-.fireworks{
-  position:fixed;inset:0;
-  pointer-events:none;z-index:1;
-  display:none;
-}
+.fireworks{position:fixed;inset:0;pointer-events:none;z-index:1;display:none}
 .fireworks.show{display:block}
-.burst{
-  position:absolute;
-  width:8px;height:8px;
-  border-radius:50%;
-  animation:boom 1.8s infinite ease-out;
-}
+.burst{position:absolute;width:8px;height:8px;border-radius:50%;animation:boom 1.8s infinite ease-out}
 .burst:nth-child(1){top:16%;left:18%;background:#2ecc71;animation-delay:.1s}
 .burst:nth-child(2){top:12%;right:18%;background:#f1c40f;animation-delay:.45s}
 .burst:nth-child(3){top:28%;left:78%;background:#27ae60;animation-delay:.85s}
@@ -62,119 +40,43 @@ body{
   60%{box-shadow:0 -42px 0 0 currentColor,34px -24px 0 0 currentColor,42px 0 0 0 currentColor,30px 30px 0 0 currentColor,0 42px 0 0 currentColor,-30px 30px 0 0 currentColor,-42px 0 0 0 currentColor,-34px -24px 0 0 currentColor;opacity:.85}
   100%{opacity:0;transform:scale(1.4)}
 }
-
-/* Card */
 .card{
-  position:relative;z-index:2;
-  width:100%;max-width:500px;
-  background:rgba(255,255,255,.95);
-  border:1px solid var(--line);
-  border-radius:32px;
-  padding:36px 24px;
-  text-align:center;
+  position:relative;z-index:2;width:100%;max-width:500px;
+  background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:32px;padding:36px 24px;text-align:center;
   box-shadow:0 28px 60px rgba(11,46,31,.18);
 }
-
-/* Logo */
-.logo{
-  width:76px;height:76px;
-  border-radius:20px;
-  background:#fff;
-  padding:8px;
-  border:1px solid var(--line);
-  margin-bottom:18px;
-}
-
-/* Icon circle */
+.logo{width:76px;height:76px;border-radius:20px;background:#fff;padding:8px;border:1px solid var(--line);margin-bottom:18px}
 .icon-circle{
-  width:90px;height:90px;
-  margin:0 auto 20px;
-  border-radius:50%;
-  display:grid;place-items:center;
-  color:#fff;
-  font-size:46px;font-weight:900;
+  width:90px;height:90px;margin:0 auto 20px;border-radius:50%;
+  display:grid;place-items:center;color:#fff;font-size:46px;font-weight:900;
   animation:pop .7s ease;
 }
-.icon-circle.success{
-  background:linear-gradient(135deg,var(--green),var(--green2));
-  box-shadow:0 18px 34px rgba(46,204,113,.38);
-}
-.icon-circle.failed{
-  background:linear-gradient(135deg,var(--red),var(--red2));
-  box-shadow:0 18px 34px rgba(231,76,60,.35);
-}
-.icon-circle.cancelled{
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
-  box-shadow:0 18px 34px rgba(230,126,34,.35);
-}
-.icon-circle.expired{
-  background:linear-gradient(135deg,var(--gray),var(--gray2));
-  box-shadow:0 18px 34px rgba(149,165,166,.35);
-}
-.icon-circle.loading{
-  background:linear-gradient(135deg,#3498db,#2980b9);
-  box-shadow:0 18px 34px rgba(52,152,219,.35);
-  animation:spin 1s linear infinite;
-}
-@keyframes pop{
-  0%{transform:scale(.35);opacity:0}
-  70%{transform:scale(1.12)}
-  100%{transform:scale(1);opacity:1}
-}
+.icon-circle.success{background:linear-gradient(135deg,var(--green),var(--green2));box-shadow:0 18px 34px rgba(46,204,113,.38)}
+.icon-circle.failed{background:linear-gradient(135deg,var(--red),var(--red2));box-shadow:0 18px 34px rgba(231,76,60,.35)}
+.icon-circle.cancelled{background:linear-gradient(135deg,var(--orange),var(--orange2));box-shadow:0 18px 34px rgba(230,126,34,.35)}
+.icon-circle.expired{background:linear-gradient(135deg,var(--gray),var(--gray2));box-shadow:0 18px 34px rgba(149,165,166,.35)}
+.icon-circle.loading{background:linear-gradient(135deg,#3498db,#2980b9);box-shadow:0 18px 34px rgba(52,152,219,.35);animation:spin 1s linear infinite}
+@keyframes pop{0%{transform:scale(.35);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-h1{font-size:32px;line-height:1.15;margin-bottom:10px;}
-p{color:var(--muted);font-size:16px;line-height:1.6;}
-
-/* Notice */
-.notice{
-  margin-top:18px;padding:15px;
-  border-radius:18px;
-  font-size:14px;font-weight:700;
-}
-.notice.success{background:rgba(46,204,113,.10);border:1px solid rgba(46,204,113,.22);color:#146c3c;}
-.notice.failed{background:rgba(231,76,60,.10);border:1px solid rgba(231,76,60,.22);color:#922b21;}
-.notice.cancelled{background:rgba(230,126,34,.10);border:1px solid rgba(230,126,34,.22);color:#784212;}
-.notice.expired{background:rgba(149,165,166,.10);border:1px solid rgba(149,165,166,.30);color:#566573;}
-
-/* Steps (alleen success) */
-.steps{margin-top:18px;display:grid;gap:10px;text-align:left;}
-.step{
-  background:#fff;border:1px solid var(--line);
-  border-radius:16px;padding:12px 14px;
-  font-size:14px;color:#335b45;
-  display:flex;gap:10px;align-items:center;
-}
-.step span{
-  width:26px;height:26px;border-radius:50%;
-  background:rgba(46,204,113,.14);color:#27ae60;
-  display:grid;place-items:center;font-weight:900;
-}
-
-/* Actions */
-.actions{margin-top:24px;display:grid;gap:12px;}
-.btn{
-  display:block;text-decoration:none;
-  border-radius:18px;padding:15px 18px;
-  font-weight:900;font-size:15px;
-  cursor:pointer;border:none;width:100%;
-}
-.btn.primary{
-  color:#fff;
-  background:linear-gradient(90deg,var(--green),var(--green2));
-  box-shadow:0 16px 24px -14px rgba(46,204,113,.7);
-}
-.btn.secondary{color:var(--dark);background:#fff;border:1px solid var(--line);}
-.btn.retry{
-  color:#fff;
-  background:linear-gradient(90deg,var(--orange),var(--orange2));
-  box-shadow:0 16px 24px -14px rgba(230,126,34,.5);
-}
-
-.small{margin-top:20px;font-size:12px;color:#7c9989;}
+h1{font-size:32px;line-height:1.15;margin-bottom:10px}
+p{color:var(--muted);font-size:16px;line-height:1.6}
+.notice{margin-top:18px;padding:15px;border-radius:18px;font-size:14px;font-weight:700}
+.notice.success{background:rgba(46,204,113,.10);border:1px solid rgba(46,204,113,.22);color:#146c3c}
+.notice.failed{background:rgba(231,76,60,.10);border:1px solid rgba(231,76,60,.22);color:#922b21}
+.notice.cancelled{background:rgba(230,126,34,.10);border:1px solid rgba(230,126,34,.22);color:#784212}
+.notice.expired{background:rgba(149,165,166,.10);border:1px solid rgba(149,165,166,.30);color:#566573}
+.steps{margin-top:18px;display:grid;gap:10px;text-align:left}
+.step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:14px;color:#335b45;display:flex;gap:10px;align-items:center}
+.step span{width:26px;height:26px;border-radius:50%;background:rgba(46,204,113,.14);color:#27ae60;display:grid;place-items:center;font-weight:900}
+.actions{margin-top:24px;display:grid;gap:12px}
+.btn{display:block;text-decoration:none;border-radius:18px;padding:15px 18px;font-weight:900;font-size:15px;cursor:pointer;border:none;width:100%}
+.btn.primary{color:#fff;background:linear-gradient(90deg,var(--green),var(--green2));box-shadow:0 16px 24px -14px rgba(46,204,113,.7)}
+.btn.secondary{color:var(--dark);background:#fff;border:1px solid var(--line)}
+.btn.retry{color:#fff;background:linear-gradient(90deg,var(--orange),var(--orange2));box-shadow:0 16px 24px -14px rgba(230,126,34,.5)}
+.small{margin-top:20px;font-size:12px;color:#7c9989}
 </style>
 </head>
-
 <body>
 
 <div class="fireworks" id="fw">
@@ -187,27 +89,30 @@ p{color:var(--muted);font-size:16px;line-height:1.6;}
        src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg"
        onerror="this.src='https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico'"
        alt="ymaanyGO">
-
   <div class="icon-circle loading" id="icon">⟳</div>
   <h1 id="title">Betaling controleren…</h1>
   <p id="desc">Even geduld, we controleren uw betaling.</p>
-
   <div class="small">© 2026 ymaanyGO</div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const db = supabase.createClient(
+  "https://lxbfobdczjgqnotwsnki.supabase.co",
+  "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp"
+);
+
 const STATES = {
   paid:{
     icon:'✓', cls:'success',
     title:'Betaling ontvangen',
-    desc:'Bedankt. Uw betaling is succesvol verwerkt. Uw taxirit aanvraag is ontvangen door ymaanyGO.',
+    desc:'Bedankt. Uw betaling is succesvol verwerkt. Uw taxirit is bevestigd.',
     notice:{text:'Uw rit staat nu klaar voor een chauffeur.', cls:'success'},
     steps:['Betaling is ontvangen','Wij controleren uw ritgegevens','U ontvangt zo snel mogelijk bevestiging'],
     actions:[
       {label:'Bekijk mijn ritten', href:'/boeken/', cls:'primary'},
       {label:'Naar homepage', href:'/', cls:'secondary'}
-    ],
-    fw:true
+    ], fw:true
   },
   failed:{
     icon:'✕', cls:'failed',
@@ -232,7 +137,7 @@ const STATES = {
   expired:{
     icon:'⏰', cls:'expired',
     title:'Betaling verlopen',
-    desc:'De betaaltermijn is verlopen. Maak een nieuwe boeking om uw rit te bevestigen.',
+    desc:'De betaaltermijn is verlopen. Maak een nieuwe boeking.',
     notice:{text:'Maak een nieuwe boeking om verder te gaan.', cls:'expired'},
     actions:[
       {label:'Opnieuw boeken', href:'/boeken/', cls:'primary'},
@@ -246,20 +151,17 @@ function showState(key){
   const card = document.getElementById('card');
   const footer = card.querySelector('.small');
 
-  // Icon & tekst
   const icon = document.getElementById('icon');
   icon.textContent = s.icon;
   icon.className = 'icon-circle ' + s.cls;
   document.getElementById('title').textContent = s.title;
   document.getElementById('desc').textContent = s.desc;
 
-  // Notice
   const notice = document.createElement('div');
   notice.className = 'notice ' + s.notice.cls;
   notice.textContent = s.notice.text;
   card.insertBefore(notice, footer);
 
-  // Steps (alleen paid)
   if(s.steps){
     const steps = document.createElement('div');
     steps.className = 'steps';
@@ -272,7 +174,6 @@ function showState(key){
     card.insertBefore(steps, footer);
   }
 
-  // Buttons
   const actions = document.createElement('div');
   actions.className = 'actions';
   s.actions.forEach(a=>{
@@ -284,7 +185,6 @@ function showState(key){
   });
   card.insertBefore(actions, footer);
 
-  // Fireworks
   if(s.fw) document.getElementById('fw').classList.add('show');
 }
 
@@ -294,17 +194,57 @@ async function checkPayment(){
   if(!rideId){ showState('failed'); return; }
 
   try{
-    const res = await fetch(
-      'https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/check-payment',
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ride_id: rideId})
-      }
-    );
-    const data = await res.json();
-    if(data.error){ showState('failed'); return; }
-    showState(data.status || 'failed');
+    // اقرأ الرحلة
+    const { data: ride, error } = await db
+      .from('rides')
+      .select('status, payment_status, mollie_payment_id, from_address, to_address, price')
+      .eq('id', rideId)
+      .maybeSingle();
+
+    if(error || !ride){ showState('failed'); return; }
+
+    // لو مدفوع مسبقاً
+    if(ride.payment_status === 'paid'){
+      showState('paid');
+      return;
+    }
+
+    // لو لا يزال awaiting_payment → غير إلى pending
+    if(ride.status === 'awaiting_payment'){
+      const { error: updateError } = await db
+        .from('rides')
+        .update({ status:'pending', payment_status:'paid' })
+        .eq('id', rideId)
+        .eq('status', 'awaiting_payment');
+
+      if(updateError){ showState('failed'); return; }
+
+      // أرسل push للسائق
+      try{
+        await fetch(
+          'https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push',
+          {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              title:'Nieuwe rit beschikbaar',
+              body:`${ride.from_address} → ${ride.to_address} • ${ride.price}`
+            })
+          }
+        );
+      }catch(e){ console.warn('Push fout:', e); }
+
+      showState('paid');
+      return;
+    }
+
+    // حالات أخرى
+    if(ride.status === 'pending' || ride.status === 'accepted'){
+      showState('paid'); return;
+    }
+
+    showState('failed');
+
   }catch(e){
     console.error(e);
     showState('failed');
