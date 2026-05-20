@@ -482,78 +482,87 @@
           </div>
         </section>
 
-        <section id="step2" class="hidden">
-          <div class="block">
-            <div class="lbl" id="carLbl">Voertuig</div>
-            <select id="car" class="ctrl">
-              <option value="Standaard">Standaard</option>
-              <option value="Comfort">Comfort</option>
-              <option value="Busje">Busje (8 pers.)</option>
-            </select>
-            <div class="helper" id="carHint">Comfort heeft toeslag.</div>
-          </div>
+<section id="step2" class="hidden">
 
-          <div style="height:12px"></div>
+  <!-- خريطة المسار -->
+  <div id="routeMapWrap">
+    <div id="routeMap" style="width:100%;height:100%"></div>
+  </div>
 
-          <div class="block">
-            <div class="lbl" id="priceLbl">Indicatie prijs</div>
-            <div style="font-size:14px;font-weight:950" id="price">—</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:6px" id="meta">—</div>
-            <div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
-          </div>
-        </section>
+  <!-- كاردات الفئات -->
+  <div class="lbl" id="carLbl">Kies je voertuig</div>
+  <input type="hidden" id="car" value="Standaard">
 
-        <section id="step3" class="hidden">
-          <div class="block">
-            <div class="lbl" id="rideForLbl">Voor wie is de rit?</div>
-            <div class="toggle" role="tablist" aria-label="ride for">
-              <button id="forMeBtn" class="active" type="button" onclick="setRideFor('me')">Voor mij</button>
-              <button id="forOtherBtn" type="button" onclick="setRideFor('other')">Voor iemand anders</button>
-            </div>
+  <div id="vehicleCards" style="margin-top:8px">
 
-            <div id="otherPersonBlock" class="hidden" style="margin-top:12px">
-              <div class="lbl" id="otherNameLbl">Naam van passagier</div>
-              <input id="otherName" class="ctrl" type="text" />
-              <div style="height:10px"></div>
-              <div class="lbl" id="otherPhoneLbl">Telefoon van passagier</div>
-              <input id="otherPhone" class="ctrl" type="tel" inputmode="tel" placeholder="06... / +31..." />
-            </div>
-          </div>
-
-          <div style="height:12px"></div>
-
-          <div class="grid2">
-            <div class="block">
-              <div class="lbl" id="timeLbl">Ophaalmoment</div>
-              <input id="when" class="ctrl" type="datetime-local" />
-              <div class="helper" id="timeHint">Minimaal 15 minuten vanaf nu.</div>
-            </div>
-            <div class="block">
-              <div class="lbl" id="paxLbl">Aantal reizigers</div>
-              <select id="pax" class="ctrl">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-              </select>
-              <div class="helper" id="paxHint">>4 zet automatisch Busje.</div>
-            </div>
-          </div>
-        </section>
+    <div class="vcard selected" data-val="Standaard" onclick="selectVehicle('Standaard')">
+      <div class="vcard-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="2"/>
+          <path d="M16 8h4l3 4v4h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
       </div>
-
-      <div class="sheet-footer">
-        <div class="footer-actions">
-          <button id="backBtn" class="back-action" type="button" onclick="goBack()">‹ Terug</button>
-          <button id="mainActionBtn" class="main-action" type="button" onclick="handleMainAction()">Volgende ›</button>
-        </div>
+      <div class="vcard-info">
+        <div class="vcard-name">GO</div>
+        <div class="vcard-desc">Standaard · max 4 pers.</div>
+      </div>
+      <div class="vcard-right">
+        <div class="vcard-price" id="priceGO">—</div>
+        <div class="vcard-check"></div>
       </div>
     </div>
+
+    <div class="vcard" data-val="Comfort" onclick="selectVehicle('Comfort')">
+      <div class="vcard-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="2"/>
+          <path d="M16 8h4l3 4v4h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+          <path d="M4 9h8"/>
+        </svg>
+      </div>
+      <div class="vcard-info">
+        <div class="vcard-name">Comfort</div>
+        <div class="vcard-desc">Premium · max 4 pers.</div>
+      </div>
+      <div class="vcard-right">
+        <div class="vcard-price" id="priceComfort">—</div>
+        <div class="vcard-check"></div>
+      </div>
+    </div>
+
+    <div class="vcard" data-val="Busje" onclick="selectVehicle('Busje')">
+      <div class="vcard-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="18" height="14" rx="2"/>
+          <path d="M19 8h2l2 5v3h-4"/>
+          <circle cx="6" cy="20" r="2"/>
+          <circle cx="16" cy="20" r="2"/>
+        </svg>
+      </div>
+      <div class="vcard-info">
+        <div class="vcard-name">XL</div>
+        <div class="vcard-desc">Busje · max 8 pers.</div>
+      </div>
+      <div class="vcard-right">
+        <div class="vcard-price" id="priceXL">—</div>
+        <div class="vcard-check"></div>
+      </div>
+    </div>
+
   </div>
+
+  <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px" id="meta">—</div>
+  <div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
+  <div style="display:none" id="price">—</div>
+  <div style="display:none" id="carHint"></div>
+  <div style="display:none" id="priceLbl"></div>
+
+</section>
+
 
   <!-- Favorites Manager -->
   <div id="favModal" class="overlay" style="z-index:200;display:none;align-items:flex-end;justify-content:center;">
