@@ -496,70 +496,54 @@
           <input type="hidden" id="car" value="Standaard">
 
           <!-- Vehicle cards -->
-          <div id="vehicleCards" style="margin-top:8px">
+<div id="vehicleCards" style="margin-top:8px">
 
-            <div class="vcard selected" data-val="Standaard" onclick="selectVehicle('Standaard')">
-              <div class="vcard-ico">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1" y="3" width="15" height="13" rx="2"/>
-                  <path d="M16 8h4l3 4v4h-7V8z"/>
-                  <circle cx="5.5" cy="18.5" r="2.5"/>
-                  <circle cx="18.5" cy="18.5" r="2.5"/>
-                </svg>
-              </div>
-              <div class="vcard-info">
-                <div class="vcard-name">GO</div>
-                <div class="vcard-desc">Standaard · max 4 pers.</div>
-              </div>
-              <div class="vcard-right">
-                <div class="vcard-price" id="priceGO">—</div>
-                <div class="vcard-check"></div>
-              </div>
-            </div>
+  <div class="vcard selected" data-val="Standaard" onclick="selectVehicle('Standaard')">
+    <div class="vcard-ico">
+      <img src="https://ymaanygo.nl/boeken/IMG_8720.jpeg" style="width:42px;height:42px;object-fit:contain;border-radius:8px">
+    </div>
+    <div class="vcard-info">
+      <div class="vcard-name">GO</div>
+      <div class="vcard-desc">Standaard · max 4 pers.</div>
+    </div>
+    <div class="vcard-right">
+      <div class="vcard-price" id="priceGO">—</div>
+      <div class="vcard-check"></div>
+    </div>
+  </div>
 
-            <div class="vcard" data-val="Comfort" onclick="selectVehicle('Comfort')">
-              <div class="vcard-ico">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1" y="3" width="15" height="13" rx="2"/>
-                  <path d="M16 8h4l3 4v4h-7V8z"/>
-                  <circle cx="5.5" cy="18.5" r="2.5"/>
-                  <circle cx="18.5" cy="18.5" r="2.5"/>
-                  <path d="M4 9h8"/>
-                </svg>
-              </div>
-              <div class="vcard-info">
-                <div class="vcard-name">Comfort</div>
-                <div class="vcard-desc">Premium · max 4 pers.</div>
-              </div>
-              <div class="vcard-right">
-                <div class="vcard-price" id="priceComfort">—</div>
-                <div class="vcard-check"></div>
-              </div>
-            </div>
+  <div class="vcard" data-val="Comfort" onclick="selectVehicle('Comfort')">
+    <div class="vcard-ico">
+      <img src="https://ymaanygo.nl/boeken/IMG_8721.jpeg" style="width:42px;height:42px;object-fit:contain;border-radius:8px">
+    </div>
+    <div class="vcard-info">
+      <div class="vcard-name">Comfort</div>
+      <div class="vcard-desc">Premium · max 4 pers.</div>
+    </div>
+    <div class="vcard-right">
+      <div class="vcard-price" id="priceComfort">—</div>
+      <div class="vcard-check"></div>
+    </div>
+  </div>
 
-            <div class="vcard" data-val="Busje" onclick="selectVehicle('Busje')">
-              <div class="vcard-ico">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1" y="4" width="18" height="14" rx="2"/>
-                  <path d="M19 8h2l2 5v3h-4"/>
-                  <circle cx="6" cy="20" r="2"/>
-                  <circle cx="16" cy="20" r="2"/>
-                </svg>
-              </div>
-              <div class="vcard-info">
-                <div class="vcard-name">XL</div>
-                <div class="vcard-desc">Busje · max 8 pers.</div>
-              </div>
-              <div class="vcard-right">
-                <div class="vcard-price" id="priceXL">—</div>
-                <div class="vcard-check"></div>
-              </div>
-            </div>
+  <div class="vcard" data-val="Busje" onclick="selectVehicle('Busje')">
+    <div class="vcard-ico">
+      <img src="https://ymaanygo.nl/boeken/IMG_8722.jpeg" style="width:42px;height:42px;object-fit:contain;border-radius:8px">
+    </div>
+    <div class="vcard-info">
+      <div class="vcard-name">XL</div>
+      <div class="vcard-desc">Busje · max 8 pers.</div>
+    </div>
+    <div class="vcard-right">
+      <div class="vcard-price" id="priceXL">—</div>
+      <div class="vcard-check"></div>
+    </div>
+  </div>
 
-          </div>
+</div>
 
-          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px" id="meta">—</div>
-          <div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
+<div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px" id="meta">—</div>
+<div class="helper" id="priceNote">Indicatief. Definitieve bevestiging via WhatsApp.</div>
 
           <!-- Hidden elements needed by booking.js -->
           <div style="display:none" id="price">—</div>
