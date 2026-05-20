@@ -299,19 +299,29 @@ async function calc(force){
 }
 
 /* =========================
-   BACKEND BOOKING + PAYMENT
+   SUBMIT BOOKING + PAYMENT
    ========================= */
 async function submitBooking(){
   const lang = getLang();
+  const mainBtn = document.getElementById('mainActionBtn');
 
-  const { data:{ user } } = await db.auth.getUser();
-
-  if(!user){
-    alert(lang === 'ar' ? "يجب تسجيل الدخول أولاً." : "Log eerst in.");
-    window.location.href = "/klant-login.html";
+  // تأكد من تسجيل الدخول
+  let user = null;
+  try{
+    const { data, error } = await db.auth.getUser();
+    if(error || !data?.user){
+      alert(lang === 'ar' ? "يجب تسجيل الدخول أولاً." : "Log eerst in.");
+      window.location.href = "/klant-login.html";
+      return;
+    }
+    user = data.user;
+  }catch(e){
+    console.error("Auth error:", e);
+    alert(lang === 'ar' ? "خطأ في التحقق. حاول مجدداً." : "Authenticatie fout. Probeer opnieuw.");
     return;
   }
 
+  // تحقق من البيانات
   const from = (document.getElementById('from').value || "").trim();
   const to = (document.getElementById('to').value || "").trim();
   const when = document.getElementById('when').value;
@@ -325,16 +335,12 @@ async function submitBooking(){
   const car = document.getElementById('car').value;
   const priceText = document.getElementById('price').textContent || "€0";
 
-  const priceNumber =
-    Number(
-      priceText
-        .replace("€", "")
-        .replace(",", ".")
-        .trim()
-    ) || 0;
+  const priceNumber = Number(
+    priceText.replace("€", "").replace(",", ".").trim()
+  ) || 0;
 
   if(priceNumber <= 0){
-    alert("Prijs is ongeldig.");
+    alert(lang === 'ar' ? "السعر غير صحيح." : "Prijs is ongeldig.");
     return;
   }
 
@@ -343,7 +349,6 @@ async function submitBooking(){
     .filter(Boolean);
 
   const profile = getProfile();
-
   let customerName = profile.name || "ymaanyGO klant";
   let customerPhone = profile.phone || "";
   let customerEmail = profile.email || user.email || "";
@@ -380,64 +385,86 @@ async function submitBooking(){
     payment_status: "unpaid"
   };
 
-  const mainBtn = document.getElementById('mainActionBtn');
+  // أرسل الحجز
   mainBtn.disabled = true;
   mainBtn.innerHTML = "Bezig met versturen...";
 
-  const { data: rideInsert, error: rideError } = await db
-    .from("rides")
-    .insert([rideData])
-    .select()
-    .single();
+  let rideInsert = null;
 
-   if(rideError){
-    console.error(rideError);
+  try{
+    const { data, error: rideError } = await db
+      .from("rides")
+      .insert([rideData])
+      .select()
+      .single();
+
+    if(rideError){
+      console.error("Ride insert error:", rideError);
+      alert("Fout bij opslaan: " + rideError.message);
+      mainBtn.disabled = false;
+      mainBtn.innerHTML = "Boeken & betalen ›";
+      return;
+    }
+
+    rideInsert = data;
+  }catch(e){
+    console.error("Ride insert exception:", e);
+    alert(lang === 'ar' ? "خطأ في الحجز. تحقق من الاتصال." : "Netwerkfout bij opslaan. Probeer opnieuw.");
     mainBtn.disabled = false;
     mainBtn.innerHTML = "Boeken & betalen ›";
-    alert("Fout: " + rideError.message);
     return;
   }
 
-  fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      title: "Nieuwe rit beschikbaar",
-      body: `${from} → ${to} • ${priceText}`
-    })
-  }).catch(err => console.log("Push fout:", err));
+  // أرسل إشعار Push
+  try{
+    await fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: "Nieuwe rit beschikbaar",
+        body: `${from} → ${to} • ${priceText}`
+      })
+    });
+  }catch(e){
+    console.warn("Push notification fout:", e);
+    // لا نوقف العملية لو Push فشل
+  }
 
+  // احفظ محلياً
   saveRideToHistory();
 
+  // افتح صفحة الدفع
   mainBtn.innerHTML = "Betaling openen...";
 
-  const paymentResponse = await fetch(
-    "https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/create-payment",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        amount: priceNumber,
-        description: `Taxi rit ${from} → ${to}`,
-        ride_id: rideInsert.id
-      })
-    }
-  );
+  try{
+    const paymentResponse = await fetch(
+      "https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/create-payment",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: priceNumber,
+          description: `Taxi rit ${from} → ${to}`,
+          ride_id: rideInsert.id
+        })
+      }
+    );
 
-  const paymentData = await paymentResponse.json();
+    const paymentData = await paymentResponse.json();
+
+    if(paymentData.checkoutUrl){
+      window.location.href = paymentData.checkoutUrl;
+      return;
+    }
+
+    console.error("Payment response:", paymentData);
+    alert(lang === 'ar' ? "خطأ في الدفع. حاول مجدداً." : "Betaling fout. Probeer opnieuw.");
+
+  }catch(e){
+    console.error("Payment exception:", e);
+    alert(lang === 'ar' ? "خطأ في الاتصال بالدفع." : "Netwerkfout bij betaling. Probeer opnieuw.");
+  }
 
   mainBtn.disabled = false;
   mainBtn.innerHTML = "Boeken & betalen ›";
-
-  if(paymentData.checkoutUrl){
-    window.location.href = paymentData.checkoutUrl;
-    return;
-  }
-
-  console.error(paymentData);
-  alert("Betaling fout. Probeer opnieuw.");
 }
