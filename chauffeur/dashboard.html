@@ -875,7 +875,14 @@ async function acceptRide(id){
   document.querySelectorAll(`[onclick*="acceptRide('${id}')"]`).forEach(b=>{b.disabled=true;b.textContent="Bezig..."});
 
   const {data:upd,error}=await SB.from("rides")
-    .update({driver_id:U.id,driver_name:P.name||U.email,driver_phone:P.phone||"",status:"accepted",accepted_at:new Date().toISOString()})
+.update({
+  driver_id: U.id,
+  driver_name: P.name || U.email,
+  driver_phone: P.phone || "",
+  driver_avatar_url: P.avatar_url || "",
+  status: "accepted",
+  accepted_at: new Date().toISOString()
+})
     .eq("id",id).eq("status","pending")
     .select().maybeSingle();
 
@@ -885,7 +892,7 @@ async function acceptRide(id){
     closeSP("spDetail");return;
   }
   const i=rides.findIndex(r=>r.id===id);
-  if(i>-1)rides[i]={...rides[i],driver_id:U.id,status:"accepted"};
+if(i>-1)rides[i]=upd;
   closeSP("spDetail");
   tOk("✓ Rit geaccepteerd!");
   renderHome();updateBadge();
@@ -968,8 +975,8 @@ function showDay(ds){
 ═══════════════════════ */
 function renderAccount(){
   const name=P?.name||U?.email||"-";
-  const stored=localStorage.getItem("avImg");
-  $("av").innerHTML=stored?`<img src="${stored}" alt="">`:ini(name);
+  const avatar = P?.avatar_url || "";
+  $("av").innerHTML = avatar ? `<img src="${avatar}" alt="">` : ini(name);
   $("acname").textContent=name;$("acemail").textContent=U?.email||"-";
   $("arole").textContent=P?.role||"driver";
   const now=new Date(),dow=now.getDay()===0?6:now.getDay()-1;
@@ -980,11 +987,43 @@ function renderAccount(){
   updRadios();
 }
 function triggerAv(){$("avinput").click()}
-function onAv(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{localStorage.setItem("avImg",ev.target.result);$("av").innerHTML=`<img src="${ev.target.result}" alt="">`;};
-  r.readAsDataURL(f);
+async function onAv(e){
+  const f = e.target.files[0];
+  if(!f || !U) return;
+
+  const ext = f.name.split(".").pop().toLowerCase();
+  const filePath = `${U.id}/profile.${ext}`;
+
+  const { error: upErr } = await SB.storage
+    .from("driver-avatars")
+    .upload(filePath, f, { upsert:true });
+
+  if(upErr){
+    tErr("❌ Fout bij uploaden foto");
+    console.error(upErr);
+    return;
+  }
+
+  const { data } = SB.storage
+    .from("driver-avatars")
+    .getPublicUrl(filePath);
+
+  const avatarUrl = data.publicUrl + "?v=" + Date.now();
+
+  const { error } = await SB
+    .from("profiles")
+    .update({ avatar_url: avatarUrl })
+    .eq("id", U.id);
+
+  if(error){
+    tErr("❌ Foto niet opgeslagen");
+    console.error(error);
+    return;
+  }
+
+  P.avatar_url = avatarUrl;
+  $("av").innerHTML = `<img src="${avatarUrl}" alt="">`;
+  tOk("✓ Profielfoto opgeslagen");
 }
 function openAccDetail(){
   $("ff").value=P?.name?.split(" ")[0]||"";
