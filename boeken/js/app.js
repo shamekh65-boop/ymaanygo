@@ -108,7 +108,10 @@ async function saveProfile(){
   }
 }
 
-function changePassword(){
+/* =========================
+   CHANGE PASSWORD - SUPABASE
+   ========================= */
+async function changePassword(){
   const lang = getLang();
   const T = i18n[lang] || i18n.nl;
   const a = (document.getElementById('newPw').value || "").trim();
@@ -128,12 +131,33 @@ function changePassword(){
     return;
   }
 
-  localStorage.setItem(LS.pw, a);
-  document.getElementById('newPw').value = "";
-  document.getElementById('newPw2').value = "";
-  closeSheet('securitySheet');
+  try{
+    const { error } = await db.auth.updateUser({ password: a });
+
+    if(error){
+      alert(error.message);
+      return;
+    }
+
+    document.getElementById('newPw').value = "";
+    document.getElementById('newPw2').value = "";
+    closeSheet('securitySheet');
+
+    alert(
+      lang === 'ar'
+        ? "تم تغيير كلمة المرور."
+        : (lang === 'en' ? "Password updated." : "Wachtwoord gewijzigd.")
+    );
+
+  }catch(e){
+    console.error(e);
+    alert("Er is een fout opgetreden.");
+  }
 }
 
+/* =========================
+   PAYMENT
+   ========================= */
 function setPayment(v){
   localStorage.setItem(LS.payment, v);
   refreshPaymentUI();
@@ -195,7 +219,7 @@ function showPage(which){
     closeHomeSheet();
   }
 
-  if(which === 'rides') refreshRidesUI();
+  if(which === 'rides') refreshRidesUI().catch(console.error);
   if(which === 'account') refreshProfileUI();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
