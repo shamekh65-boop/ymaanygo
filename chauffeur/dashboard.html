@@ -273,10 +273,6 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
   </button>
   <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;margin-left:6px" title="Notificaties inschakelen">🔔</button>
 </header>
-<button onclick="speelGeluid()" 
-style="margin:10px;padding:12px 20px;background:#1b5e20;color:white;border:none;border-radius:10px">
-Test geluid
-</button>
 
 <!-- PAGES -->
 <div class="pages" id="pages">
@@ -653,19 +649,32 @@ function notifTap(){
 /* ═══════════════════════
    GELUID 🔔
 ═══════════════════════ */
-const meldingGeluid = new Audio("/assets/sounds/mixkit-software-interface-remove-2576.wav?v=2");
-meldingGeluid.volume = 1;
-meldingGeluid.preload = "auto";
-
 function speelGeluid(){
   try{
-    meldingGeluid.pause();
-    meldingGeluid.currentTime = 0;
-    meldingGeluid.play().catch(err => console.log("Geluid fout:", err));
-  }catch(e){
-    console.log(e);
-  }
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    // Toon-reeks: oplopend alarm
+    [
+      [440,0.00,0.15],
+      [550,0.18,0.15],
+      [660,0.36,0.15],
+      [880,0.54,0.20],
+      [660,0.78,0.15],
+      [880,0.96,0.25],
+    ].forEach(([freq,start,dur])=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=freq;
+      osc.type="sine";
+      const t=ctx.currentTime+start;
+      gain.gain.setValueAtTime(0,t);
+      gain.gain.linearRampToValueAtTime(0.35,t+0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+dur);
+      osc.start(t);osc.stop(t+dur);
+    });
+  }catch(e){}
 }
+
 /* ═══════════════════════
    LOAD RIDES
 ═══════════════════════ */
