@@ -244,5 +244,71 @@ p{
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db = supabase.createClient(
+  "https://lxbfobdczjgqnotwsnki.supabase.co",
+  "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp"
+);
+
+async function confirmPayment(){
+  const params = new URLSearchParams(window.location.search);
+  const rideId = params.get("ride_id");
+
+  if(!rideId){
+    console.warn("Geen ride_id in URL");
+    return;
+  }
+
+  // اقرأ بيانات الرحلة
+  const { data: ride, error: rideError } = await db
+    .from("rides")
+    .select("from_address, to_address, price")
+    .eq("id", rideId)
+    .maybeSingle();
+
+  if(rideError || !ride){
+    console.error("Rit niet gevonden:", rideError);
+    return;
+  }
+
+  // غير status إلى pending فقط لو كانت awaiting_payment
+  const { error: updateError } = await db
+    .from("rides")
+    .update({
+      status: "pending",
+      payment_status: "paid"
+    })
+    .eq("id", rideId)
+    .eq("status", "awaiting_payment");
+
+  if(updateError){
+    console.error("Update fout:", updateError);
+    return;
+  }
+
+  // أرسل push للسائق الآن فقط
+  try{
+    await fetch(
+      "https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/send-push",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Nieuwe rit beschikbaar",
+          body: `${ride.from_address} → ${ride.to_address} • ${ride.price}`
+        })
+      }
+    );
+  }catch(e){
+    console.warn("Push fout:", e);
+  }
+
+  console.log("✅ Rit bevestigd en chauffeur geïnformeerd");
+}
+
+confirmPayment();
+</script>
+
 </body>
 </html>
