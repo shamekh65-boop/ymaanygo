@@ -871,14 +871,14 @@ body.dark .vcard.selected {
   background: rgba(47,125,50,.15);
 }
 .vcard-ico {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 60px;
+  height: 60px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   overflow: hidden;
 }
+
 
 .vcard-info { flex: 1; min-width: 0; }
 .vcard-name { font-size: 13px; font-weight: 900; color: var(--text); }
