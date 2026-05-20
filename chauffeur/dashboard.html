@@ -582,7 +582,7 @@ function stuurNotificatie(r){
     dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"}):"",
     tT(r.pickup_time),
     r.distance_km?`${r.distance_km}km`:"",
-    r.price?`Veiling eindigt op ${r.price}`:"",
+    r.price?`rit prijs ${r.price}`:"",
     r.passengers?`${r.passengers} Passagiers`:"",
   ].filter(Boolean);
 
