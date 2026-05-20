@@ -846,3 +846,86 @@ body[dir="rtl"] .row{flex-direction:row-reverse}
 body[dir="rtl"] .sheet-head{flex-direction:row-reverse}
 body[dir="rtl"] .rrow{flex-direction:row-reverse}
 body[dir="rtl"] .footer-actions{flex-direction:row-reverse}
+/* ══ VEHICLE CARDS ══ */
+.vcard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.80);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  margin-bottom: 8px;
+}
+body.dark .vcard {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.10);
+}
+.vcard.selected {
+  border-color: var(--accent);
+  background: rgba(47,125,50,.07);
+}
+body.dark .vcard.selected {
+  background: rgba(47,125,50,.15);
+}
+.vcard-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(47,125,50,.10);
+  border: 1px solid rgba(47,125,50,.18);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.vcard.selected .vcard-ico {
+  background: rgba(47,125,50,.18);
+}
+.vcard-info { flex: 1; min-width: 0; }
+.vcard-name { font-size: 13px; font-weight: 900; color: var(--text); }
+.vcard-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.vcard-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.vcard-price { font-size: 14px; font-weight: 900; color: var(--accent); }
+.vcard-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.20);
+  display: grid;
+  place-items: center;
+  transition: all .15s;
+}
+body.dark .vcard-check { border-color: rgba(255,255,255,.25); }
+.vcard.selected .vcard-check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.vcard.selected .vcard-check::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  display: block;
+}
+
+/* ══ ROUTE MAP ══ */
+#routeMapWrap {
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+body.dark #routeMapWrap {
+  border-color: rgba(255,255,255,.08);
+}
