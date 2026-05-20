@@ -874,15 +874,12 @@ body.dark .vcard.selected {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: rgba(47,125,50,.10);
-  border: 1px solid rgba(47,125,50,.18);
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
-.vcard.selected .vcard-ico {
-  background: rgba(47,125,50,.18);
-}
+
 .vcard-info { flex: 1; min-width: 0; }
 .vcard-name { font-size: 13px; font-weight: 900; color: var(--text); }
 .vcard-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
