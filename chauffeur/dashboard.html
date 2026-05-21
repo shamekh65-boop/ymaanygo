@@ -835,6 +835,9 @@ function doNav(e,enc){
 /* ═══════════════════════
    DETAIL - MET KAART
 ═══════════════════════ */
+/* ═══════════════════════
+   DETAIL - MET KAART
+═══════════════════════ */
 function openDetail(id){
   const r=rides.find(x=>x.id===id);if(!r)return;
   const mine=r.driver_id===U?.id;
@@ -880,8 +883,6 @@ function openDetail(id){
   `;
 
   openSP("spDetail");
-
-  // Laad kaart na open animatie
   setTimeout(()=>loadDetailMap(fr, to), 350);
 }
 
@@ -894,7 +895,6 @@ async function loadDetailMap(fromAddr, toAddr){
   const mapEl = document.getElementById("dtMap");
   if(!mapEl) return;
 
-  // Leaflet al geladen?
   if(!window.L){
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -908,12 +908,10 @@ async function loadDetailMap(fromAddr, toAddr){
     });
   }
 
-  // Verwijder oude kaart
   if(detailMapObj){ detailMapObj.remove(); detailMapObj = null; }
 
-  // Geocodeer beide adressen
   async function geocode(addr){
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&countrycodes=nl&limit=1`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&countrycodes=nl,be,de&limit=1`;
     const res = await fetch(url, {headers:{"Accept-Language":"nl"}});
     const data = await res.json();
     if(!data.length) return null;
@@ -927,7 +925,6 @@ async function loadDetailMap(fromAddr, toAddr){
     return;
   }
 
-  // Maak kaart
   mapEl.innerHTML = "";
   const map = L.map(mapEl, {
     zoomControl: false,
@@ -941,30 +938,27 @@ async function loadDetailMap(fromAddr, toAddr){
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19}).addTo(map);
 
-  // Markers
+  // Marker + label IN één icon — label ONDER de punt
   const iconFrom = L.divIcon({
-    html:`<div style="width:14px;height:14px;border-radius:50%;background:#1b5e20;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>`,
-    className:"",iconAnchor:[7,7]
-  });
-  const iconTo = L.divIcon({
-    html:`<div style="width:14px;height:14px;border-radius:3px;background:#fff;border:3px solid #2e7d32;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>`,
-    className:"",iconAnchor:[7,7]
+    html:`<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div style="background:#1b5e20;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:sans-serif">Vertrek</div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#1b5e20;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+    </div>`,
+    className:"",
+    iconAnchor:[30, 38]
   });
 
-  // Tijdslabels
-  const labelFrom = L.divIcon({
-    html:`<div style="background:#1b5e20;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.25);font-family:'Outfit',sans-serif">Vertrek</div>`,
-    className:"",iconAnchor:[-8,7]
-  });
-  const labelTo = L.divIcon({
-    html:`<div style="background:#2e7d32;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.25);font-family:'Outfit',sans-serif">Aankomst</div>`,
-    className:"",iconAnchor:[-8,7]
+  const iconTo = L.divIcon({
+    html:`<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div style="background:#1565c0;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:sans-serif">Aankomst</div>
+      <div style="width:12px;height:12px;border-radius:3px;background:#fff;border:3px solid #1565c0;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+    </div>`,
+    className:"",
+    iconAnchor:[34, 38]
   });
 
   L.marker(fromCoord, {icon:iconFrom}).addTo(map);
-  L.marker(fromCoord, {icon:labelFrom}).addTo(map);
   L.marker(toCoord, {icon:iconTo}).addTo(map);
-  L.marker(toCoord, {icon:labelTo}).addTo(map);
 
   // Route via OSRM
   try{
@@ -973,18 +967,15 @@ async function loadDetailMap(fromAddr, toAddr){
     const rd = await rr.json();
     if(rd.routes && rd.routes[0]){
       const coords = rd.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
-      L.polyline(coords,{color:"#2e7d32",weight:4,opacity:.85}).addTo(map);
-      const bounds = L.latLngBounds([fromCoord, toCoord, ...coords]);
-      map.fitBounds(bounds, {padding:[28,28]});
-    } else {
-      throw new Error("Geen route");
-    }
+      L.polyline(coords,{color:"#2e7d32",weight:4,opacity:.9}).addTo(map);
+      map.fitBounds(L.latLngBounds([fromCoord, toCoord, ...coords.filter((_,i)=>i%10===0)]),{padding:[40,40]});
+    } else throw new Error();
   }catch{
-    // Fallback: rechte lijn
     L.polyline([fromCoord, toCoord],{color:"#2e7d32",weight:3,dashArray:"8,6",opacity:.7}).addTo(map);
-    map.fitBounds(L.latLngBounds([fromCoord, toCoord]),{padding:[32,32]});
+    map.fitBounds(L.latLngBounds([fromCoord, toCoord]),{padding:[50,50]});
   }
 }
+
 
 
 /* ═══════════════════════
