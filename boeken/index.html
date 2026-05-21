@@ -15,6 +15,21 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (async () => {
+    const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      window.location.replace("/login.html"); // ← مسار صفحة اللوجين
+    }
+  })();
+</script>
+
   <!-- Map (always present but hidden on non-home pages) -->
   <div id="map" aria-label="map"></div>
 
