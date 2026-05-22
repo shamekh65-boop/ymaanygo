@@ -3,28 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ymaanyGO – Voorwaarden, Privacy & Cookies</title>
+  <title>ymaanyGO – Algemene Voorwaarden, Privacy & Cookies</title>
   <meta name="description" content="Algemene voorwaarden, privacybeleid en cookiebeleid van ymaanyGO taxi in Noord-Holland.">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'Outfit', sans-serif;
       background: #fff;
       color: #111;
       font-size: 15px;
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
-    /* ── Header ── */
+    /* Header */
     .header {
       background: #2f7d32;
-      padding: 14px 20px;
+      padding: 13px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -32,168 +30,80 @@
       top: 0;
       z-index: 50;
     }
-
     .back-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
+      width: 34px; height: 34px;
+      border-radius: 50%; border: none;
       background: rgba(255,255,255,.2);
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
+      color: #fff; font-size: 17px;
+      cursor: pointer; display: grid; place-items: center;
     }
+    .header-brand { font-size: 17px; font-weight: 800; color: #fff; }
 
-    .header-brand {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-    }
+    /* Page */
+    .page { max-width: 720px; margin: 0 auto; padding: 32px 20px 72px; }
 
-    /* ── Page ── */
-    .page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 32px 20px 64px;
-    }
-
-    /* ── Nav links ── */
-    .nav-links {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #e5e5e5;
-    }
-
+    /* Nav */
+    .nav-links { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid #e5e5e5; }
     .nav-links a {
-      padding: 7px 16px;
-      border-radius: 999px;
-      border: 1.5px solid #2f7d32;
-      color: #2f7d32;
-      font-weight: 700;
-      font-size: 13.5px;
-      text-decoration: none;
-      transition: .15s;
+      padding: 6px 15px; border-radius: 999px;
+      border: 1.5px solid #2f7d32; color: #2f7d32;
+      font-weight: 700; font-size: 13px; text-decoration: none; transition: .15s;
     }
+    .nav-links a:hover { background: #2f7d32; color: #fff; }
 
-    .nav-links a:hover {
-      background: #2f7d32;
-      color: #fff;
-    }
+    /* Title block */
+    .doc-title { font-size: 27px; font-weight: 800; color: #2f7d32; margin-bottom: 3px; }
+    .doc-meta { font-size: 13px; color: #888; margin-bottom: 20px; }
 
-    /* ── Page title ── */
-    .page-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: #2f7d32;
-      margin-bottom: 4px;
-    }
-
-    .page-date {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 32px;
-    }
-
-    /* ── Section anchors ── */
-    .section-block {
-      margin-bottom: 44px;
-    }
-
-    .section-heading {
-      font-size: 20px;
-      font-weight: 800;
-      color: #2f7d32;
-      border-bottom: 2px solid #2f7d32;
-      padding-bottom: 8px;
-      margin-bottom: 20px;
-    }
-
-    /* ── Article headings ── */
-    h3 {
-      font-size: 15.5px;
-      font-weight: 700;
-      color: #111;
-      margin: 20px 0 6px;
-    }
-
-    p {
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    ul {
-      padding-left: 20px;
-      margin-bottom: 10px;
-    }
-
-    li {
-      color: #333;
-      margin-bottom: 6px;
-    }
-
-    /* ── Highlight box ── */
-    .highlight {
+    .welcome-box {
       background: #f0faf4;
       border-left: 4px solid #2f7d32;
-      padding: 12px 16px;
+      padding: 14px 18px;
       border-radius: 0 8px 8px 0;
-      margin: 12px 0;
+      margin-bottom: 28px;
       font-size: 14.5px;
       color: #333;
     }
 
+    /* Section blocks */
+    .section-block { margin-bottom: 44px; }
+    .section-heading {
+      font-size: 21px; font-weight: 800; color: #2f7d32;
+      border-bottom: 2px solid #2f7d32;
+      padding-bottom: 8px; margin-bottom: 22px;
+    }
+
+    /* Article */
+    .article { margin-bottom: 18px; }
+    .article-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 5px; }
+    p { color: #333; margin-bottom: 8px; font-size: 14.5px; }
+    ul { padding-left: 20px; margin-bottom: 8px; }
+    li { color: #333; margin-bottom: 5px; font-size: 14.5px; }
+
+    /* Highlight */
+    .highlight {
+      background: #f0faf4; border-left: 4px solid #2f7d32;
+      padding: 11px 16px; border-radius: 0 8px 8px 0;
+      margin: 10px 0; font-size: 14px; color: #333;
+    }
     .highlight strong { color: #2f7d32; }
 
-    /* ── Table ── */
-    .tbl-wrap { overflow-x: auto; margin: 12px 0; }
+    /* Table */
+    .tbl-wrap { overflow-x: auto; margin: 10px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { background: #f0faf4; color: #2f7d32; font-weight: 700; text-align: left; padding: 9px 12px; border: 1px solid #ddd; }
+    td { padding: 9px 12px; border: 1px solid #ddd; color: #333; vertical-align: top; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
+    /* Company info */
+    .co-info { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px 18px; margin-top: 10px; }
+    .co-info p { margin-bottom: 4px; }
 
-    th {
-      background: #f0faf4;
-      color: #2f7d32;
-      font-weight: 700;
-      text-align: left;
-      padding: 9px 12px;
-      border: 1px solid #ddd;
-    }
+    /* Slotwoord */
+    .slotwoord { background: #f0faf4; border-radius: 10px; padding: 20px 22px; margin-top: 10px; }
+    .slotwoord p { color: #333; margin-bottom: 6px; }
 
-    td {
-      padding: 9px 12px;
-      border: 1px solid #ddd;
-      color: #333;
-      vertical-align: top;
-    }
-
-    /* ── Company info ── */
-    .co-info {
-      background: #f9f9f9;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-top: 10px;
-      font-size: 14.5px;
-    }
-
-    .co-info p { margin-bottom: 4px; color: #333; }
-
-    /* ── Footer ── */
-    .page-footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e5e5;
-      font-size: 13px;
-      color: #999;
-    }
+    /* Footer */
+    .page-footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid #e5e5e5; font-size: 13px; color: #999; }
   </style>
 </head>
 <body>
@@ -205,284 +115,419 @@
 
 <div class="page">
 
-  <!-- Nav -->
   <div class="nav-links">
     <a href="#voorwaarden">Voorwaarden</a>
     <a href="#privacy">Privacy</a>
     <a href="#cookies">Cookies</a>
   </div>
 
-  <div class="page-title">Voorwaarden, Privacy & Cookies</div>
-  <p class="page-date">Versie voor klanten — bijgewerkt: <span id="pageDate">—</span></p>
-
-  <!-- ══════════════════════════════
+  <!-- ══════════════════════════════════════
        ALGEMENE VOORWAARDEN
-  ══════════════════════════════ -->
+  ══════════════════════════════════════ -->
   <div class="section-block" id="voorwaarden">
+
+    <div class="doc-title">Algemene Voorwaarden Klant</div>
+    <p class="doc-meta">Versie voor Klanten, laatst geüpdatet: <span id="pageDate">—</span></p>
+
+    <div class="welcome-box">
+      <strong>Welkom bij ymaanyGO</strong><br>
+      Bedankt dat u met ymaanyGO reist! Wij doen er alles aan om uw rit soepel, veilig en prettig te laten verlopen. Hier leest u precies hoe wij uw reis zorgeloos laten verlopen en wat u kunt doen om dat samen met ons mogelijk te maken.<br><br>
+      Deze voorwaarden zijn van toepassing op de overeenkomst tussen de consument ("Klant") en ymaanyGO ("wij", "ondernemer"), ingeschreven bij de Kamer van Koophandel onder nummer 92893724.
+    </div>
+
     <div class="section-heading">Algemene Voorwaarden</div>
 
-    <p>Welkom bij ymaanyGO. Wij doen er alles aan om uw rit soepel, veilig en prettig te laten verlopen. Deze voorwaarden zijn van toepassing op alle ritten en diensten van ymaanyGO in Noord-Holland.</p>
-
-    <h3>1. Definities</h3>
-    <ul>
-      <li><strong>Klant / passagier:</strong> de persoon die een rit boekt en/of meereist met ymaanyGO.</li>
-      <li><strong>Chauffeur:</strong> de bestuurder die de rit uitvoert namens ymaanyGO.</li>
-      <li><strong>Rit:</strong> vervoer van de afgesproken ophaallocatie naar de afgesproken bestemming.</li>
-      <li><strong>Geplande rit:</strong> een rit die vooraf is geboekt voor een later tijdstip.</li>
-      <li><strong>No-show:</strong> wanneer de klant niet op het afgesproken tijdstip aanwezig is op de ophaallocatie.</li>
-      <li><strong>Wachttijd:</strong> de periode waarin de chauffeur na het afgesproken ophaalmoment op de klant wacht.</li>
-      <li><strong>Platform:</strong> de website of app van ymaanyGO waarmee ritten kunnen worden geboekt en beheerd.</li>
-    </ul>
-
-    <h3>2. Toepasselijkheid</h3>
-    <ul>
-      <li>Deze voorwaarden zijn van toepassing op alle taxidiensten die door ymaanyGO worden aangeboden.</li>
-      <li>Door een rit te boeken gaat de klant akkoord met deze voorwaarden.</li>
-      <li>Afwijkingen zijn alleen geldig indien uitdrukkelijk en schriftelijk door ymaanyGO bevestigd.</li>
-      <li>Bij verschillen tussen een vertaalde versie en de Nederlandse tekst is de Nederlandse tekst doorslaggevend.</li>
-    </ul>
-
-    <h3>3. Boeking en bevestiging</h3>
-    <ul>
-      <li>Een rit kan worden aangevraagd via website, telefoon of WhatsApp.</li>
-      <li>Een rit is definitief zodra de klant een bevestiging van ymaanyGO heeft ontvangen.</li>
-      <li>De klant is verantwoordelijk voor het correct doorgeven van ophaaladres, bestemming, tijdstip en contactgegevens.</li>
-      <li>Speciale wensen (kinderzitje, extra bagage, rolstoel, hulphond) dienen bij boeking te worden vermeld. Beschikbaarheid kan beperkt zijn.</li>
-    </ul>
-
-    <h3>4. Vaste prijs en tarieven</h3>
-    <div class="highlight"><strong>Vast tarief blijft vast</strong> — wanneer vooraf een prijs is bevestigd en de rit inhoudelijk gelijk blijft, rekenen wij nooit meer.</div>
-    <ul>
-      <li>Een vooraf bevestigde prijs blijft gelden zolang de bestemming niet verandert en er geen extra stops of aanvullende verzoeken worden toegevoegd.</li>
-      <li>De prijs kan wijzigen wanneer de klant na bevestiging de rit wijzigt, extra wachttijd veroorzaakt of aanvullende diensten vraagt.</li>
-      <li>Eventuele bijkomende kosten zoals tol of pontkosten worden apart en zonder opslag doorbelast, tenzij anders overeengekomen.</li>
-    </ul>
-
-    <h3>5. Wachttijd en no-show</h3>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Type rit</th><th>Gratis wachttijd</th><th>Extra wachttarief</th></tr></thead>
-        <tbody>
-          <tr><td>Reguliere rit</td><td>10 minuten</td><td>€10 per 10 minuten</td></tr>
-          <tr><td>Luchthaven pick-up</td><td>20 minuten na landingstijd</td><td>€10 per 10 minuten</td></tr>
-        </tbody>
-      </table>
+    <!-- 1 -->
+    <div class="article">
+      <div class="article-title">1. Wat wij doen</div>
+      <p>1.1. ymaanyGO biedt een online boekingsplatform waarop klanten geplande taxiritten kunnen boeken in Noord-Holland en omgeving. De totaalprijs wordt altijd vooraf bevestigd en de ritten worden uitgevoerd als privé-taxi.</p>
+      <p>1.2. ymaanyGO is zowel vervoerder als aanspreekpunt voor boekingen, klantenservice en uitvoering van de rit.</p>
     </div>
-    <ul>
-      <li>Als de klant niet binnen de wachttijd aanwezig is, geldt dit als een <strong>no-show</strong> — ongeacht of er telefonisch contact is geweest.</li>
-      <li>Bij een no-show mag de chauffeur de rit beëindigen en worden de volledige ritkosten in rekening gebracht zonder restitutie.</li>
-      <li>Extra wachttijd wordt berekend per aangevangen periode van 10 minuten en voldaan aan de chauffeur.</li>
-      <li>De klant dient tijdens het ophaalmoment bereikbaar te zijn op het opgegeven telefoonnummer. Niet bereikbaar zijn kan worden beschouwd als een no-show.</li>
-    </ul>
 
-    <h3>6. Annulering</h3>
-    <div class="highlight">Kosteloos annuleren kan tot <strong>3 uur vóór</strong> het afgesproken ophaaltijdstip, tenzij anders overeengekomen.</div>
-    <ul>
-      <li>Bij annulering binnen 3 uur voor het ophaalmoment vindt geen restitutie plaats.</li>
-      <li>Het herroepingsrecht (14-dagenbedenktijd) geldt niet voor geboekte taxiritten met een vast tijdstip van uitvoering (art. 6:230p sub d BW).</li>
-      <li>Indien ymaanyGO een rit niet kan uitvoeren, heeft de klant recht op volledige restitutie of een alternatieve oplossing.</li>
-    </ul>
+    <!-- 2 -->
+    <div class="article">
+      <div class="article-title">2. Contact en klantenservice</div>
+      <p>2.1. De klantenservice van ymaanyGO is bereikbaar via WhatsApp en e-mail.</p>
+      <p>2.2. Wij zijn bereikbaar via e-mail op <strong>support@ymaanygo.nl</strong> en via WhatsApp via de contactknop op onze website.</p>
+    </div>
 
-    <h3>7. Luchthavenritten</h3>
-    <ul>
-      <li>Voor luchthavenritten kan een geldig vluchtnummer worden opgegeven. ymaanyGO volgt actief de vluchtstatus voor zover publiekelijk beschikbaar.</li>
-      <li>Bij vluchtvertraging wordt het ophaalmoment aangepast aan de actuele aankomsttijd. Na dit aangepaste moment geldt een wachttijd van 20 minuten.</li>
-      <li>Wordt geen vluchtnummer opgegeven, dan kunnen bij vertraging geen rechten worden ontleend aan vluchtinformatie.</li>
-      <li>ymaanyGO verzorgt transfers naar en van Schiphol, Düsseldorf en Brussel.</li>
-    </ul>
+    <!-- 3 -->
+    <div class="article">
+      <div class="article-title">3. Begripsbepalingen</div>
+      <ul>
+        <li><strong>Boeking:</strong> de overeenkomst tussen de Klant en ymaanyGO die via het Platform tot stand komt.</li>
+        <li><strong>Geplande rit:</strong> een rit die vooraf is geboekt voor een later tijdstip.</li>
+        <li><strong>Klant:</strong> de persoon die via het Platform een rit boekt of gebruikmaakt van de diensten van ymaanyGO.</li>
+        <li><strong>No-show:</strong> wanneer de Klant niet op het afgesproken tijdstip bij de taxi aanwezig is op de ophaallocatie.</li>
+        <li><strong>Platform:</strong> de digitale omgeving (website of app) van ymaanyGO waarmee ritten kunnen worden geboekt, beheerd en betaald.</li>
+        <li><strong>Rit:</strong> de overeengekomen vervoersprestatie die op het tijdstip, traject en tarief zoals in de Boeking vermeld wordt uitgevoerd.</li>
+        <li><strong>Chauffeur:</strong> de bestuurder die de rit uitvoert namens ymaanyGO.</li>
+        <li><strong>Wachttijd:</strong> de periode waarin de chauffeur na het afgesproken ophaalmoment op de Klant wacht.</li>
+      </ul>
+    </div>
 
-    <h3>8. Veiligheid en gedrag</h3>
-    <ul>
-      <li>Passagiers dienen zich respectvol en veilig te gedragen tegenover de chauffeur en andere weggebruikers.</li>
-      <li>Agressie, bedreiging, vandalisme of intimidatie wordt niet geaccepteerd.</li>
-      <li>De chauffeur heeft het recht een rit te weigeren of te beëindigen wanneer de veiligheid in gevaar komt. Eventuele kosten tot het moment van beëindiging worden in rekening gebracht.</li>
-    </ul>
+    <!-- 4 -->
+    <div class="article">
+      <div class="article-title">4. Toepasselijkheid en rangorde</div>
+      <p>4.1. Deze voorwaarden zijn van toepassing op alle Boekingen die door de Klant via het Platform van ymaanyGO worden geplaatst.</p>
+      <p>4.2. Als er verschillen zijn tussen documenten, gelden eerst deze Algemene Voorwaarden Klant, daarna de Boeking of prijsbevestiging. Bij verschillen tussen de Nederlandse en een vertaalde versie is de Nederlandse tekst doorslaggevend.</p>
+      <p>4.3. Afwijkingen van deze voorwaarden zijn alleen geldig indien uitdrukkelijk en schriftelijk door ymaanyGO bevestigd.</p>
+    </div>
 
-    <h3>9. Bagage, kinderzitjes en huisdieren</h3>
-    <ul>
-      <li><strong>Bagage:</strong> normale bagage is toegestaan. Grote of uitzonderlijke bagage dient vooraf te worden gemeld.</li>
-      <li><strong>Kinderzitjes:</strong> taxi's zijn wettelijk vrijgesteld van de autostoeltjesplicht. De klant is zelf verantwoordelijk voor een vereist kinderzitje. Beschikbaarheid op verzoek — niet gegarandeerd.</li>
-      <li><strong>Huisdieren:</strong> uitsluitend na voorafgaand overleg toegestaan, tenzij het een wettelijk toegestane hulphond betreft.</li>
-    </ul>
+    <!-- 5 -->
+    <div class="article">
+      <div class="article-title">5. Gebruik van het Platform</div>
+      <p>5.1. De Klant garandeert correcte en volledige gegevens te verstrekken en bevoegd te zijn om een Boeking te doen.</p>
+      <p>5.2. Misbruik van het Platform — waaronder fictieve boekingen, fraude of het veroorzaken van hinder — kan leiden tot blokkering van het account of weigering van toekomstige Boekingen. ymaanyGO behoudt zich het recht voor om geleden schade te verhalen en aangifte te doen bij de bevoegde autoriteiten.</p>
+      <p>5.3. Inloggegevens zijn strikt persoonlijk en mogen niet met derden worden gedeeld. De Klant is verantwoordelijk voor alle handelingen via zijn account.</p>
+      <p>5.4. Het Platform mag uitsluitend worden gebruikt voor het boeken en beheren van ritten. Commerciële exploitatie of doorverkoop is niet toegestaan.</p>
+      <p>5.5. ymaanyGO streeft naar ononderbroken beschikbaarheid van het Platform, maar kan dit niet garanderen. Tijdelijke storingen geven geen recht op schadevergoeding.</p>
+    </div>
 
-    <h3>10. Bijzondere omstandigheden</h3>
-    <ul>
-      <li>Tijdens grote evenementen, extreme weersomstandigheden of overheidsmaatregelen kunnen aanvullende voorwaarden gelden. Dit wordt vooraf gecommuniceerd waar mogelijk.</li>
-      <li>Wanneer een ophaallocatie niet direct bereikbaar is, wordt in overleg een alternatieve locatie afgesproken.</li>
-    </ul>
+    <!-- 6 -->
+    <div class="article">
+      <div class="article-title">6. Boeken van een rit</div>
+      <p>6.1. Een Boeking komt tot stand zodra de Klant de rit bevestigt en wij de boekingsbevestiging tonen of versturen.</p>
+      <p>6.2. Wij tonen vóór bevestiging de totale prijs en de belangrijkste voorwaarden (wachttijd, no-show, annuleringsregels).</p>
+      <p>6.3. Voor luchthaventransfers vragen wij vluchtgegevens om aankomst te monitoren. Zie artikel 12.</p>
+      <p>6.4. Speciale wensen (kinderzitje, extra bagage, hulphond, rolstoel) moeten tijdens het boeken worden aangegeven. Beschikbaarheid kan beperkt zijn.</p>
+      <p>6.5. Een retourrit wordt beschouwd als twee afzonderlijke ritten, tenzij anders aangegeven.</p>
+    </div>
 
-    <h3>11. Overmacht</h3>
-    <ul>
-      <li>Overmacht omvat gebeurtenissen buiten redelijke controle, zoals extreme weersomstandigheden, grootschalige verkeersstoringen of overheidsmaatregelen.</li>
-      <li>Bij overmacht wordt de rit kosteloos geannuleerd. De klant ontvangt de keuze: (a) volledige restitutie, of (b) een tegoedbon met dezelfde waarde.</li>
-    </ul>
+    <!-- 7 -->
+    <div class="article">
+      <div class="article-title">7. Prijzen</div>
+      <p>7.1. De prijs van een rit wordt berekend op basis van de route, afstand, tijdstip en het type voertuig. Tarieven worden altijd getoond voordat de Klant de boeking afrondt.</p>
+      <p>7.2. Bij sommige ritten kunnen aanvullende kosten ontstaan zoals tol-, veer- of pontkosten. Deze worden zonder opslag doorbelast en dienen rechtstreeks tijdens de rit te worden voldaan, tenzij ymaanyGO uitdrukkelijk anders aangeeft.</p>
+      <p>7.3. Als er sprake is van een prijsfout die voor de gemiddelde klant duidelijk onjuist is, mag ymaanyGO deze herstellen door een redelijke oplossing te bieden, zoals kosteloze annulering of herboeking.</p>
+    </div>
 
-    <h3>12. Aansprakelijkheid</h3>
-    <ul>
-      <li>ymaanyGO is uitsluitend aansprakelijk voor directe schade als rechtstreeks gevolg van een aantoonbare tekortkoming in de uitvoering van de dienst.</li>
-      <li>ymaanyGO is niet aansprakelijk voor indirecte schade of gevolgschade, waaronder gemiste vluchten, hotel- of verblijfskosten.</li>
-      <li>ymaanyGO is niet aansprakelijk voor schade door overmacht als bedoeld in artikel 11.</li>
-      <li>De klant is aansprakelijk voor schade of vervuiling veroorzaakt door zijn handelen in het voertuig.</li>
-    </ul>
+    <!-- 8 -->
+    <div class="article">
+      <div class="article-title">8. Betaling</div>
+      <p>8.1. Betalingen verlopen conform de vooraf gemaakte afspraak. Contante betalingen zijn mogelijk tenzij anders overeengekomen.</p>
+      <p>8.2. Aanvullende bedragen zoals wachttijdkosten worden afgehandeld volgens artikel 11.3.</p>
+      <p>8.3. Bij mislukte of teruggeboekte betalingen blijft de Klant de ritprijs verschuldigd.</p>
+    </div>
 
-    <h3>13. Betaling</h3>
-    <ul>
-      <li>Betaling geschiedt conform de vooraf gemaakte afspraak.</li>
-      <li>Bij mislukte betalingen blijft de klant de ritprijs verschuldigd.</li>
-      <li>Bij schade of buitengewone vervuiling worden redelijke herstel- of schoonmaakkosten in rekening gebracht.</li>
-    </ul>
+    <!-- 9 -->
+    <div class="article">
+      <div class="article-title">9. Wijzigen of annuleren</div>
+      <p>9.1. Geplande ritten kunnen tot drie uur vóór het ophaaltijdstip kosteloos worden geannuleerd.</p>
+      <p>9.2. Bij annuleringen binnen drie uur vóór het ophaalmoment vindt geen restitutie plaats, aangezien de rit al is ingepland en er kosten zijn gemaakt.</p>
+      <p>9.3. Bij retourritten zijn heen- en terugreis afzonderlijke Boekingen. Een annulering van de ene rit heeft geen gevolgen voor de andere.</p>
+    </div>
 
-    <h3>14. Klachten</h3>
-    <ul>
-      <li>Klachten dienen bij voorkeur binnen 10 dagen na de rit te worden ingediend via WhatsApp, telefoon of e-mail.</li>
-      <li>ymaanyGO streeft naar een reactie binnen 5 werkdagen en een oplossing binnen 14 dagen.</li>
-      <li>Vergeten voorwerpen: neem direct contact op — ymaanyGO bemiddelt kosteloos maar geeft geen garantie op terugvinding.</li>
-    </ul>
+    <!-- 10 -->
+    <div class="article">
+      <div class="article-title">10. Herroepingsrecht</div>
+      <p>10.1. Het wettelijke herroepingsrecht (14-dagenbedenktijd) geldt niet voor overeenkomsten inzake personenvervoer met een vast tijdstip van uitvoering, zoals geboekte taxiritten. Dit is bepaald in artikel 6:230p sub d Burgerlijk Wetboek.</p>
+      <p>10.2. Een geboekte rit kan daarom niet kosteloos worden herroepen op grond van de 14-dagenregeling. In plaats daarvan geldt de annuleringsregeling zoals beschreven in artikel 9.</p>
+      <p>10.3. Indien ymaanyGO een rit niet kan uitvoeren, behoudt de Klant de rechten op restitutie of een redelijke oplossing.</p>
+    </div>
 
-    <h3>15. Toepasselijk recht en geschillen</h3>
-    <ul>
-      <li>Op alle overeenkomsten is uitsluitend Nederlands recht van toepassing.</li>
-      <li>Een geschil wordt pas behandeld nadat de interne klachtenprocedure volledig is doorlopen.</li>
-      <li>Voor consumenten geldt dat ymaanyGO een consument uitsluitend kan dagvaarden bij de rechter van de woonplaats van de consument.</li>
-    </ul>
+    <!-- 11 -->
+    <div class="article">
+      <div class="article-title">11. Wachttijd en no-show</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Type rit</th><th>Gratis wachttijd</th><th>Extra wachttarief</th></tr></thead>
+          <tbody>
+            <tr><td>Reguliere rit</td><td>10 minuten</td><td>€10 per 10 minuten</td></tr>
+            <tr><td>Luchthaven pick-up</td><td>20 minuten na landingstijd</td><td>€10 per 10 minuten</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>11.1. De standaardwachttijd bedraagt tien minuten bij reguliere ritten, gerekend vanaf het geboekte ophaalmoment. Voor luchthavenritten gelden afwijkende regels zoals beschreven in artikel 12.</p>
+      <p>11.2. Als de Klant niet binnen de wachttijd verschijnt, geldt dit als een no-show — ongeacht telefonisch contact. De chauffeur mag de rit beëindigen en de volledige ritkosten worden in rekening gebracht zonder restitutie.</p>
+      <p>11.3. Als de chauffeur op verzoek langer wacht, geldt een wachttarief van €10 per tien minuten. Elke aangevangen periode geldt als volledig verschuldigd. Betaling vindt plaats aan de chauffeur in de taxi.</p>
+      <p>11.4. Wanneer de Klant kort na de no-show contact opneemt en de rit nog uitvoerbaar is, kan de chauffeur — naar eigen oordeel — besluiten de rit alsnog uit te voeren, eventueel met extra wachttijdvergoeding.</p>
+      <p>11.5. De Klant neemt onmiddellijk contact op met ymaanyGO wanneer de chauffeur niet bereikbaar is, te laat is of niet verschijnt. Als de klant dit nalaat, kan dit gevolgen hebben voor het recht op restitutie of ondersteuning.</p>
+    </div>
 
-    <h3>Bedrijfsgegevens</h3>
-    <div class="co-info">
+    <!-- 12 -->
+    <div class="article">
+      <div class="article-title">12. Luchthavenritten</div>
+      <p>12.1. Voor luchthavenritten kan een geldig vluchtnummer worden opgegeven. De chauffeur volgt actief de vluchtstatus voor zover publiekelijk beschikbaar. Na het geplande ophaalmoment geldt een standaard wachttijd van twintig minuten. Wordt geen vluchtnummer opgegeven, dan kunnen bij vertraging geen rechten worden ontleend aan vluchtinformatie.</p>
+      <p>12.2. Bij vluchtvertraging wordt het ophaalmoment aangepast aan de actuele aankomsttijd. Na dit aangepaste moment geldt opnieuw een standaard wachttijd van twintig minuten.</p>
+      <p>12.3. ymaanyGO verzorgt transfers naar en van Schiphol, Düsseldorf en Brussel.</p>
+    </div>
+
+    <!-- 13 -->
+    <div class="article">
+      <div class="article-title">13. Bagage en kinderzitjes</div>
+      <p>13.1. Normale koffers en handbagage zijn toegestaan. Grote of afwijkende bagage dient vooraf te worden gemeld en geaccepteerd. Als de aangeboden bagage afwijkt van de opgave en de rit daardoor niet verantwoord kan worden uitgevoerd, mag de chauffeur de rit weigeren. Eventuele kosten zijn in dat geval voor rekening van de Klant.</p>
+      <p>13.2. Taxi's zijn wettelijk vrijgesteld van de autostoeltjesplicht. Als een kinderzitje gewenst is, kan de Klant dit bij de Boeking aangeven. Beschikbaarheid kan niet worden gegarandeerd.</p>
+    </div>
+
+    <!-- 14 -->
+    <div class="article">
+      <div class="article-title">14. Evenementen en uitzonderlijke omstandigheden</div>
+      <p>14.1. Tijdens grote evenementen, verkeersomleidingen, extreme weersomstandigheden of overheidsmaatregelen kunnen aanvullende voorwaarden gelden. Deze worden vooraf gecommuniceerd waar mogelijk.</p>
+      <p>14.2. Wanneer de chauffeur de ophaal- of afzetlocatie niet direct kan bereiken, wordt in overleg een alternatieve locatie afgesproken binnen redelijke loopafstand.</p>
+      <p>14.3. Afwijkende annuleringstermijnen kunnen gelden bij ritten rondom dergelijke omstandigheden. Dit wordt vermeld tijdens het boeken of zo spoedig mogelijk daarna.</p>
+      <p>14.4. Extra kosten door uitzonderlijke verkeersdrukte, wachttijd of omrijden worden vooraf of zo spoedig mogelijk gecommuniceerd.</p>
+      <p>14.5. De Klant is tijdens het ophaalmoment verplicht bereikbaar te zijn op het opgegeven telefoonnummer. Niet bereikbaar zijn kan worden beschouwd als een no-show.</p>
+    </div>
+
+    <!-- 15 -->
+    <div class="article">
+      <div class="article-title">15. Voertuigcategorieën</div>
+      <p>15.1. Chauffeurs van ymaanyGO beschikken over geldige vergunningen en verzekeringen.</p>
+      <p>15.2. Chauffeurs mogen een rit weigeren of beëindigen bij een onveilige of onrechtmatige situatie. Eventuele kosten komen voor rekening van de Klant.</p>
+      <p>15.3. De Klant kan kiezen uit standaard-, elektrische- of taxibusvervoer (5 tot 8 zitplaatsen). Het weergegeven voertuig is illustratief en kan afwijken binnen de geboekte categorie.</p>
+    </div>
+
+    <!-- 16 -->
+    <div class="article">
+      <div class="article-title">16. Overmacht</div>
+      <p>16.1. Overmacht omvat gebeurtenissen buiten redelijke invloed, zoals extreme weersomstandigheden, grootschalige verkeersstoringen, stakingen of overheidsmaatregelen.</p>
+      <p>16.2. Bij overmacht wordt de rit kosteloos geannuleerd en krijgt de Klant de keuze: (a) volledige restitutie, of (b) een tegoedbon met dezelfde waarde.</p>
+    </div>
+
+    <!-- 17 -->
+    <div class="article">
+      <div class="article-title">17. Aansprakelijkheid ymaanyGO</div>
+      <p>17.1. ymaanyGO is uitsluitend aansprakelijk voor directe schade die het rechtstreekse gevolg is van een toerekenbare tekortkoming in de uitvoering van de dienst, en handelt met de zorg die van een goed opdrachtnemer mag worden verwacht (art. 7:401 BW).</p>
+      <p>17.2. ymaanyGO is niet aansprakelijk voor schade die (mede) het gevolg is van foutieve of onvolledige informatieverstrekking door de Klant.</p>
+      <p>17.3. ymaanyGO is niet aansprakelijk voor indirecte schade of gevolgschade, waaronder maar niet beperkt tot gemiste vluchten, hotel- of verblijfskosten, vervangend vervoer of gederfde vakantiedagen.</p>
+      <p>17.4. ymaanyGO is niet aansprakelijk voor schade door overmacht als bedoeld in artikel 16.</p>
+      <p>17.5. Voor zover op grond van dwingend recht toch aansprakelijkheid bestaat, wordt de schadevergoeding vastgesteld naar maatstaven van redelijkheid en billijkheid, in verhouding tot de prijs van de Boeking — tenzij de schade verband houdt met overlijden, lichamelijk letsel of opzet van ymaanyGO.</p>
+    </div>
+
+    <!-- 18 -->
+    <div class="article">
+      <div class="article-title">18. Aansprakelijkheid Klant</div>
+      <p>18.1. De Klant is aansprakelijk voor schade, vervuiling of herstelkosten die ontstaan door zijn handelen of nalaten, waaronder het bevuilen van het voertuig of het beschadigen van eigendommen van de chauffeur.</p>
+      <p>18.2. Deze aansprakelijkheidsregeling laat de wettelijke consumentenrechten onverlet.</p>
+    </div>
+
+    <!-- 19 -->
+    <div class="article">
+      <div class="article-title">19. Klachten en hulp</div>
+      <p>19.1. Wij doen ons uiterste best om elke rit prettig te laten verlopen. Heeft u een klacht, meld dit dan zo spoedig mogelijk en bij voorkeur binnen tien dagen na de rit via <strong>support@ymaanygo.nl</strong> of WhatsApp.</p>
+      <p>19.2. Klachten die later worden ingediend kunnen worden behandeld voor zover de benodigde gegevens nog beschikbaar zijn.</p>
+      <p>19.3. Wij streven naar een reactie binnen 5 werkdagen en een oplossing binnen 14 dagen.</p>
+      <p>19.4. Bent u iets vergeten in de taxi? Neem direct contact op met de chauffeur of met ymaanyGO via e-mail of WhatsApp. ymaanyGO bemiddelt kosteloos maar kan geen garantie geven dat voorwerpen worden teruggevonden.</p>
+    </div>
+
+    <!-- 20 -->
+    <div class="article">
+      <div class="article-title">20. Gegevensbescherming</div>
+      <p>20.1. Wij gaan zorgvuldig om met persoonsgegevens. Deze worden verwerkt om ritten uit te voeren, klantenservice te bieden en fraude te voorkomen. Voor marketingactiviteiten verwerken wij gegevens alleen met toestemming.</p>
+      <p>20.2. Klanten hebben het recht om hun gegevens in te zien, te laten corrigeren of verwijderen. De procedures hiervoor staan uitgelegd in ons privacybeleid.</p>
+      <p>20.3. Chauffeurs ontvangen alleen de gegevens die nodig zijn om een rit goed uit te voeren.</p>
+      <p>20.4. Voor tracking-cookies vragen wij altijd vooraf toestemming.</p>
+      <p>20.5. Wij nemen passende technische en organisatorische maatregelen om persoonsgegevens te beschermen tegen misbruik, verlies en onbevoegde toegang.</p>
+      <p>20.6. Bij een beveiligingsincident of datalek wordt de Klant onverwijld geïnformeerd.</p>
+    </div>
+
+    <!-- 21 -->
+    <div class="article">
+      <div class="article-title">21. Intellectuele eigendom</div>
+      <p>21.1. Alle rechten op het Platform, de teksten, logo's en overige inhoud berusten bij ymaanyGO of haar licentiegevers.</p>
+      <p>21.2. De Klant krijgt een niet-exclusieve, herroepbare licentie om het Platform te gebruiken voor het boeken van ritten.</p>
+    </div>
+
+    <!-- 22 -->
+    <div class="article">
+      <div class="article-title">22. Wijziging van deze voorwaarden</div>
+      <p>22.1. ymaanyGO mag deze voorwaarden in de toekomst wijzigen. Bij materiële wijzigingen worden Klanten tijdig geïnformeerd.</p>
+      <p>22.2. Gewijzigde voorwaarden treden in werking op het moment van publicatie. Voor reeds geboekte ritten blijft de versie gelden die gold op het moment van boeken.</p>
+    </div>
+
+    <!-- 23 -->
+    <div class="article">
+      <div class="article-title">23. Overdracht</div>
+      <p>23.1. ymaanyGO mag zijn rechten en verplichtingen overdragen bij overdracht van (een deel van) de onderneming, mits de rechten van de Klant daardoor niet worden beperkt.</p>
+      <p>23.2. De Klant mag zijn rechten niet overdragen zonder voorafgaande schriftelijke toestemming van ymaanyGO.</p>
+    </div>
+
+    <!-- 24 -->
+    <div class="article">
+      <div class="article-title">24. Scheidbaarheid</div>
+      <p>24.1. Indien een bepaling geheel of gedeeltelijk nietig is, blijven de overige bepalingen onverminderd van kracht. Partijen treden in overleg om de betreffende bepaling te vervangen door een geldige bepaling met hetzelfde doel.</p>
+    </div>
+
+    <!-- 25 -->
+    <div class="article">
+      <div class="article-title">25. Geschillen en toepasselijk recht</div>
+      <p>25.1. Op alle overeenkomsten is uitsluitend Nederlands recht van toepassing.</p>
+      <p>25.2. Een geschil wordt pas in behandeling genomen nadat de interne klachtenprocedure volledig is doorlopen.</p>
+      <p>25.3. Voor consumenten geldt dat ymaanyGO een consument uitsluitend kan dagvaarden bij de rechter van de woonplaats van de consument. De consument kan ymaanyGO dagvaarden bij zijn eigen woonplaats of bij de bevoegde rechter in de vestigingsplaats van ymaanyGO.</p>
+      <p>25.4. Voor niet-consumenten is uitsluitend de rechter in de vestigingsplaats van ymaanyGO bevoegd.</p>
+    </div>
+
+    <!-- Slotwoord -->
+    <div class="slotwoord">
+      <p><strong>Slotwoord</strong></p>
+      <p>Wij willen dat elke reis met ymaanyGO prettig en zorgeloos verloopt. Gemak, betrouwbaarheid en aandacht voor de reiziger staan daarbij centraal.</p>
+      <p>Samen met onze chauffeurs zorgen we er elke dag voor dat u met een gerust gevoel op weg kunt. We waarderen dat u voor ons kiest en wensen u een fijne reis.</p>
+      <p><em>Team ymaanyGO</em></p>
+    </div>
+
+    <div class="co-info" style="margin-top:24px;">
       <p><strong>Bedrijfsnaam:</strong> ymaanyGO</p>
       <p><strong>KVK-nummer:</strong> 92893724</p>
       <p><strong>BTW-nummer:</strong> NL004984269B78</p>
-      <p><strong>Regio:</strong> Noord-Holland (Den Helder, Alkmaar, Hoorn en omgeving)</p>
+      <p><strong>Regio:</strong> Noord-Holland — Den Helder, Alkmaar, Hoorn en omgeving</p>
     </div>
+
   </div>
 
-  <!-- ══════════════════════════════
+  <!-- ══════════════════════════════════════
        PRIVACY
-  ══════════════════════════════ -->
+  ══════════════════════════════════════ -->
   <div class="section-block" id="privacy">
     <div class="section-heading">Privacybeleid</div>
 
     <p>ymaanyGO verwerkt persoonsgegevens zorgvuldig in overeenstemming met de AVG (GDPR) en geldende Nederlandse privacywetgeving.</p>
 
-    <h3>1. Welke gegevens wij verwerken</h3>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Gegeven</th><th>Doel</th><th>Verplicht?</th></tr></thead>
-        <tbody>
-          <tr><td>Naam</td><td>Boeking en identificatie</td><td>Ja</td></tr>
-          <tr><td>Telefoonnummer</td><td>Communicatie over de rit</td><td>Ja</td></tr>
-          <tr><td>Ophaal- en bestemming</td><td>Uitvoering van de rit</td><td>Ja</td></tr>
-          <tr><td>Datum en tijd</td><td>Planning en inroostering</td><td>Ja</td></tr>
-          <tr><td>Locatie (GPS)</td><td>Kaartweergave en adressuggestie</td><td>Optioneel</td></tr>
-          <tr><td>WhatsApp-berichten</td><td>Klantenservice</td><td>Indien gebruikt</td></tr>
-          <tr><td>Factuurgegevens</td><td>Zakelijke administratie</td><td>Optioneel</td></tr>
-        </tbody>
-      </table>
+    <div class="article">
+      <div class="article-title">1. Welke gegevens wij verwerken</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Gegeven</th><th>Doel</th><th>Verplicht?</th></tr></thead>
+          <tbody>
+            <tr><td>Naam</td><td>Boeking en identificatie</td><td>Ja</td></tr>
+            <tr><td>E-mailadres</td><td>Account en communicatie</td><td>Ja</td></tr>
+            <tr><td>Telefoonnummer</td><td>Communicatie over de rit</td><td>Ja</td></tr>
+            <tr><td>Ophaaladres en bestemming</td><td>Uitvoering van de rit</td><td>Ja</td></tr>
+            <tr><td>Datum en tijd van ritten</td><td>Planning en inroostering</td><td>Ja</td></tr>
+            <tr><td>Locatie (GPS)</td><td>Boeking, route en kaartweergave</td><td>Optioneel</td></tr>
+            <tr><td>Accountgegevens</td><td>Login en beveiliging</td><td>Ja</td></tr>
+            <tr><td>Apparaat- en technische gegevens</td><td>Werking, beveiliging en foutoplossing</td><td>Automatisch</td></tr>
+            <tr><td>Factuurgegevens</td><td>Zakelijke administratie</td><td>Optioneel</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <h3>2. Waarom wij deze gegevens gebruiken</h3>
-    <ul>
-      <li>Voor het plannen, bevestigen en uitvoeren van taxiritten.</li>
-      <li>Voor communicatie met klanten over hun rit.</li>
-      <li>Voor administratie, facturatie en klantenservice.</li>
-      <li>Voor het naleven van wettelijke verplichtingen.</li>
-    </ul>
-    <div class="highlight"><strong>Wij verkopen geen persoonsgegevens</strong> en gebruiken ze nooit voor advertenties of profilering door derden.</div>
+    <div class="article">
+      <div class="article-title">2. Waarom wij deze gegevens gebruiken</div>
+      <ul>
+        <li>Voor het plannen, bevestigen en uitvoeren van taxiritten.</li>
+        <li>Voor communicatie met klanten over hun rit.</li>
+        <li>Voor administratie, facturatie en klantenservice.</li>
+        <li>Voor het naleven van wettelijke verplichtingen.</li>
+      </ul>
+      <div class="highlight"><strong>Wij verkopen geen persoonsgegevens</strong> en gebruiken ze nooit voor advertenties of profilering door derden.</div>
+    </div>
 
-    <h3>3. Bewaring en beveiliging</h3>
-    <ul>
-      <li>Boekingsgegevens worden maximaal 7 jaar bewaard voor wettelijke en fiscale verplichtingen.</li>
-      <li>Communicatiegegevens worden verwijderd binnen 12 maanden na het laatste contact.</li>
-      <li>Locatiegegevens worden niet bewaard na afronding van de rit.</li>
-      <li>ymaanyGO neemt passende technische en organisatorische maatregelen om persoonsgegevens te beschermen.</li>
-      <li>Bij een beveiligingsincident of datalek wordt de klant onverwijld geïnformeerd.</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">3. Bewaring en beveiliging</div>
+      <ul>
+        <li>Boekingsgegevens worden maximaal 7 jaar bewaard voor wettelijke en fiscale verplichtingen.</li>
+        <li>Communicatiegegevens worden verwijderd binnen 12 maanden na het laatste contact.</li>
+        <li>Locatiegegevens worden niet bewaard na afronding van de rit.</li>
+        <li>ymaanyGO neemt passende technische en organisatorische maatregelen om persoonsgegevens te beschermen.</li>
+        <li>Bij een beveiligingsincident of datalek wordt de Klant onverwijld geïnformeerd.</li>
+      </ul>
+    </div>
 
-    <h3>4. Delen van gegevens</h3>
-    <ul>
-      <li>Chauffeurs ontvangen uitsluitend de gegevens die nodig zijn voor de rit (naam, ophaallocatie, bestemming).</li>
-      <li>Gegevens worden alleen gedeeld wanneer dit wettelijk verplicht is of strikt noodzakelijk voor de dienstverlening.</li>
-      <li>Wij verkopen geen persoonsgegevens aan derden.</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">4. Delen van gegevens</div>
+      <ul>
+        <li>Chauffeurs ontvangen uitsluitend naam, ophaallocatie en bestemming — noodzakelijk voor de rit.</li>
+        <li>Gegevens worden alleen gedeeld wanneer dit wettelijk verplicht is of noodzakelijk voor de dienstverlening.</li>
+        <li>Wij verkopen geen persoonsgegevens aan derden.</li>
+      </ul>
+    </div>
 
-    <h3>5. Uw rechten (AVG)</h3>
-    <ul>
-      <li><strong>Inzage:</strong> u kunt een kopie opvragen van uw gegevens.</li>
-      <li><strong>Rectificatie:</strong> u kunt onjuiste gegevens laten corrigeren.</li>
-      <li><strong>Verwijdering:</strong> u kunt verzoeken uw gegevens te wissen, voor zover wettelijk mogelijk.</li>
-      <li><strong>Beperking:</strong> u kunt de verwerking in bepaalde gevallen laten beperken.</li>
-      <li><strong>Bezwaar:</strong> u kunt bezwaar maken tegen bepaalde verwerkingen.</li>
-      <li><strong>Overdraagbaarheid:</strong> u kunt uw gegevens in een overdraagbaar formaat ontvangen.</li>
-    </ul>
-    <p>Neem contact met ons op om gebruik te maken van uw rechten. Wij reageren binnen 30 dagen. Bent u niet tevreden? U kunt een klacht indienen bij de <strong>Autoriteit Persoonsgegevens</strong> via <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" style="color:#2f7d32;">autoriteitpersoonsgegevens.nl</a>.</p>
+    <div class="article">
+      <div class="article-title">5. Uw rechten (AVG)</div>
+      <ul>
+        <li><strong>Inzage:</strong> u kunt een kopie opvragen van uw gegevens.</li>
+        <li><strong>Rectificatie:</strong> u kunt onjuiste gegevens laten corrigeren.</li>
+        <li><strong>Verwijdering:</strong> u kunt verzoeken uw gegevens te wissen, voor zover wettelijk mogelijk.</li>
+        <li><strong>Beperking:</strong> u kunt de verwerking in bepaalde gevallen laten beperken.</li>
+        <li><strong>Bezwaar:</strong> u kunt bezwaar maken tegen bepaalde verwerkingen.</li>
+        <li><strong>Overdraagbaarheid:</strong> u kunt uw gegevens in een overdraagbaar formaat ontvangen.</li>
+      </ul>
+      <p>Wij reageren op uw verzoek binnen 30 dagen. Bent u niet tevreden? U kunt een klacht indienen bij de <strong>Autoriteit Persoonsgegevens</strong> via <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" style="color:#2f7d32;">autoriteitpersoonsgegevens.nl</a>.</p>
+    </div>
 
-    <h3>6. Account en gegevens verwijderen</h3>
-    <ul>
-      <li>Gebruikers kunnen hun account en persoonsgegevens laten verwijderen.</li>
-      <li>Stuur een verzoek naar: <strong>support@ymaanygo.nl</strong></li>
-      <li>Vermeld uw naam, telefoonnummer of e-mailadres dat gekoppeld is aan uw account.</li>
-      <li>Wij verwijderen het account en de gekoppelde gegevens binnen een redelijke termijn.</li>
-      <li>Bepaalde gegevens kunnen langer worden bewaard wanneer dit wettelijk verplicht is, bijvoorbeeld voor administratie, veiligheid of fraudepreventie.</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">6. Account en gegevens verwijderen</div>
+      <ul>
+        <li>Gebruikers kunnen hun account en persoonsgegevens laten verwijderen.</li>
+        <li>Stuur een verzoek naar: <strong>support@ymaanygo.nl</strong></li>
+        <li>Vermeld uw naam, telefoonnummer of e-mailadres dat gekoppeld is aan uw account.</li>
+        <li>Wij verwijderen het account en de gekoppelde gegevens binnen een redelijke termijn.</li>
+        <li>Bepaalde gegevens kunnen langer worden bewaard wanneer dit wettelijk verplicht is, bijvoorbeeld voor administratie, veiligheid of fraudepreventie.</li>
+      </ul>
+    </div>
 
-    <h3>7. Gegevens die de app kan verzamelen</h3>
-    <ul>
-      <li>Naam</li>
-      <li>E-mailadres</li>
-      <li>Telefoonnummer</li>
-      <li>Ophaaladres en bestemming</li>
-      <li>Datum en tijd van ritten</li>
-      <li>Locatiegegevens (GPS) — wanneer dit nodig is voor boeking, route, adresbepaling of uitvoering van de rit</li>
-      <li>Accountgegevens voor login en beveiliging</li>
-      <li>Apparaat- en technische gegevens voor werking, beveiliging en foutoplossing</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">7. Gegevens die de app kan verzamelen</div>
+      <ul>
+        <li>Naam</li>
+        <li>E-mailadres</li>
+        <li>Telefoonnummer</li>
+        <li>Ophaaladres en bestemming</li>
+        <li>Datum en tijd van ritten</li>
+        <li>Locatiegegevens (GPS) — wanneer dit nodig is voor boeking, route, adresbepaling of uitvoering van de rit</li>
+        <li>Accountgegevens voor login en beveiliging</li>
+        <li>Apparaat- en technische gegevens voor werking, beveiliging en foutoplossing</li>
+      </ul>
+    </div>
 
-    <h3>8. Externe diensten</h3>
-    <ul>
-      <li>ymaanyGO kan gebruikmaken van externe diensten zoals Supabase voor accountbeheer, database, authenticatie en beveiliging.</li>
-      <li>Kaart- en locatiediensten kunnen worden gebruikt voor adressen, routes, afstandsberekening en kaartweergave.</li>
-      <li>Deze diensten verwerken gegevens alleen voor zover dit nodig is voor de werking van de app.</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">8. Externe diensten</div>
+      <ul>
+        <li>ymaanyGO kan gebruikmaken van externe diensten zoals Supabase voor accountbeheer, database, authenticatie en beveiliging.</li>
+        <li>Kaart- en locatiediensten kunnen worden gebruikt voor adressen, routes, afstandsberekening en kaartweergave.</li>
+        <li>Deze diensten verwerken gegevens alleen voor zover dit nodig is voor de werking van de app.</li>
+      </ul>
+    </div>
 
-    <h3>9. Contact voor privacy en ondersteuning</h3>
-    <ul>
-      <li>Voor vragen over privacy, inzage, correctie of verwijdering van gegevens kunt u contact opnemen via:</li>
-      <li><strong>support@ymaanygo.nl</strong></li>
-    </ul>
+    <div class="article">
+      <div class="article-title">9. Contact voor privacy en ondersteuning</div>
+      <ul>
+        <li>Voor vragen over privacy, inzage, correctie of verwijdering van gegevens kunt u contact opnemen via:</li>
+        <li><strong>support@ymaanygo.nl</strong></li>
+      </ul>
+    </div>
   </div>
 
-  <!-- ══════════════════════════════
+  <!-- ══════════════════════════════════════
        COOKIES
-  ══════════════════════════════ -->
+  ══════════════════════════════════════ -->
   <div class="section-block" id="cookies">
     <div class="section-heading">Cookiebeleid</div>
 
     <p>Onze website gebruikt cookies en vergelijkbare technieken om goed te functioneren en de gebruikservaring te verbeteren.</p>
 
-    <h3>1. Wat zijn cookies?</h3>
-    <p>Cookies zijn kleine tekstbestanden die door een website op uw apparaat worden opgeslagen bij een bezoek.</p>
-
-    <h3>2. Welke cookies wij gebruiken</h3>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Type</th><th>Doel</th><th>Toestemming vereist?</th></tr></thead>
-        <tbody>
-          <tr><td>Noodzakelijk</td><td>Technische werking van de website</td><td>Nee</td></tr>
-          <tr><td>Functioneel</td><td>Onthouden van voorkeuren</td><td>Nee</td></tr>
-          <tr><td>Analytisch</td><td>Verbetering van de website (privacyvriendelijk)</td><td>Optioneel</td></tr>
-          <tr><td>Tracking / marketing</td><td>Gepersonaliseerde advertenties</td><td>Ja, altijd vooraf</td></tr>
-        </tbody>
-      </table>
+    <div class="article">
+      <div class="article-title">1. Wat zijn cookies?</div>
+      <p>Cookies zijn kleine tekstbestanden die door een website op uw apparaat worden opgeslagen bij een bezoek.</p>
     </div>
 
-    <h3>3. Cookies beheren</h3>
-    <ul>
-      <li>U kunt cookies verwijderen of blokkeren via de instellingen van uw browser.</li>
-      <li>Onderdelen van de website kunnen dan mogelijk minder goed functioneren.</li>
-      <li>Voor tracking- of marketingcookies vragen wij altijd vooraf uw toestemming.</li>
-    </ul>
+    <div class="article">
+      <div class="article-title">2. Welke cookies wij gebruiken</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Doel</th><th>Toestemming vereist?</th></tr></thead>
+          <tbody>
+            <tr><td>Noodzakelijk</td><td>Technische werking van de website</td><td>Nee</td></tr>
+            <tr><td>Functioneel</td><td>Onthouden van voorkeuren</td><td>Nee</td></tr>
+            <tr><td>Analytisch</td><td>Verbetering van de website (privacyvriendelijk)</td><td>Optioneel</td></tr>
+            <tr><td>Tracking / marketing</td><td>Gepersonaliseerde advertenties</td><td>Ja, altijd vooraf</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="article">
+      <div class="article-title">3. Cookies beheren</div>
+      <ul>
+        <li>U kunt cookies verwijderen of blokkeren via de instellingen van uw browser.</li>
+        <li>Onderdelen van de website kunnen dan mogelijk minder goed functioneren.</li>
+        <li>Voor tracking- of marketingcookies vragen wij altijd vooraf uw toestemming.</li>
+      </ul>
+    </div>
   </div>
 
-  <!-- Footer -->
   <div class="page-footer">
     <p>© <span id="year">—</span> ymaanyGO — Alle rechten voorbehouden.</p>
     <p style="margin-top:4px;">Bijgewerkt: <span id="footerDate">—</span></p>
