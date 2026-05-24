@@ -22,6 +22,11 @@
   --BLU:#1565c0;--BLUBG:#e3f2fd;
   --TH:68px;--R:14px;
 }
+body.dark{
+  --GL:#1a2e1a;--W:#1e2820;--BG:#141a14;--BD:#2a3a2a;
+  --INK:#e8f5e9;--INK2:#a5c8a5;--INK3:#6a9a6a;
+  --REDBG:#2a1010;--AMBBG:#2a1800;--BLUBG:#0d1a2e;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:pan-y}
 body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
@@ -211,14 +216,19 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 </head>
 <body>
 <header class="top">
-  <div class="top-l">
-    <div class="logo-txt">Ymaany<span>GO</span></div>
-    <div class="dname" id="dname">Chauffeur</div>
+  <div style="display:flex;align-items:center;gap:9px">
+    <div id="topAv" onclick="goPage(2)" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0;cursor:pointer">?</div>
+    <div class="top-l">
+      <div class="logo-txt">Ymaany<span>GO</span></div>
+      <div class="dname" id="dname">Chauffeur</div>
+    </div>
   </div>
-  <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
-    <span class="ondot"></span><span id="ontxt">Online</span>
-  </button>
-  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;margin-left:6px">🔔</button>
+  <div style="display:flex;align-items:center;gap:7px">
+    <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
+      <span class="ondot"></span><span id="ontxt">Online</span>
+    </button>
+    <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer">🔔</button>
+  </div>
 </header>
 <div class="pages" id="pages">
   <div class="track" id="track">
@@ -268,11 +278,20 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
             <div class="irow" style="cursor:default"><div class="iico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="ilbl">Ritten deze week</div><div class="ival" id="awritten">0</div></div></div>
             <div class="irow" style="cursor:default"><div class="iico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="ilbl">Verdiensten deze week</div><div class="ival" id="awearn">€0</div></div></div>
           </div>
+          <div class="icard" style="padding:14px">
+            <div style="font-size:11px;font-weight:700;color:var(--INK3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">🏆 Prestaties</div>
+            <div id="badgesRow" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+          </div>
           <div class="icard">
             <div class="irow" onclick="openAccDetail()"><div class="iico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div><div class="ilbl">Profiel</div><div class="ival">Accountgegevens</div></div><svg class="iarr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="irow" onclick="openSP('spSettings')"><div class="iico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/></svg></div><div><div class="ilbl">Navigatie</div><div class="ival">App instellingen</div></div><svg class="iarr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="irow" onclick="window.open('https://ymaanygo.nl/contact.html','_blank')"><div class="iico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="ilbl">Support</div><div class="ival">Hulp nodig?</div></div><svg class="iarr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
           </div>
+          <!-- SOS BUTTON -->
+          <button onclick="sosAlert()" style="width:100%;padding:16px;border-radius:12px;background:linear-gradient(135deg,#b71c1c,#e53935);color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 18px rgba(229,57,53,.4);letter-spacing:.5px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            SOS Noodgeval
+          </button>
           <button class="btn bred bw" onclick="logout()">Uitloggen</button>
         </div>
       </div>
@@ -280,7 +299,11 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
   </div>
 </div>
 <nav class="tabs">
-  <button class="tb a" id="tab0" onclick="goPage(0)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/></svg>Ritten</button>
+  <button class="tb a" id="tab0" onclick="goPage(0)" style="position:relative">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 10l6-6m0 0h-5m5 0v5"/><path d="M3 21l9-9"/><path d="M8 21H3v-5"/></svg>
+    Ritten
+    <span id="tabBadge" style="display:none;position:absolute;top:4px;right:calc(50% - 18px);min-width:16px;height:16px;border-radius:99px;background:#e53935;color:#fff;font-size:9px;font-weight:800;padding:0 4px;align-items:center;justify-content:center;border:2px solid var(--W)">0</span>
+  </button>
   <button class="tb" id="tab1" onclick="goPage(1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda</button>
   <button class="tb" id="tab2" onclick="goPage(2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Account</button>
 </nav>
@@ -308,6 +331,16 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
       <div class="nopt" onclick="setNav('waze')"><div class="nopic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--G2)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="10" r="6"/></svg></div><div class="nolbl">Waze</div><div class="nrad" id="nr-waze"></div></div>
       <div class="nopt" onclick="setNav('google')"><div class="nopic"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#4285F4"/><circle cx="12" cy="9" r="2.5" fill="white"/></svg></div><div class="nolbl">Google Maps</div><div class="nrad" id="nr-google"></div></div>
       <div class="nopt" onclick="setNav('apple')"><div class="nopic"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.54 3.99z" fill="#555"/></svg></div><div class="nolbl">Apple Maps</div><div class="nrad" id="nr-apple"></div></div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--INK3);text-transform:uppercase;letter-spacing:.7px;margin-top:14px">Weergave</div>
+    <div class="icard">
+      <div class="nopt" onclick="toggleDark()">
+        <div class="nopic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--G2)" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+        <div class="nolbl">Dark mode</div>
+        <div id="darkToggle" style="width:44px;height:26px;border-radius:13px;background:var(--BD);position:relative;transition:.25s;cursor:pointer">
+          <div id="darkKnob" style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -587,7 +620,7 @@ function handleChange(type,nr,or){
   if(curPg===2)renderAccount();
 }
 
-function updateBadge(){$("badge0").textContent=rides.filter(r=>r.status==="pending").length}
+function updateBadge(){$("badge0").textContent=rides.filter(r=>r.status==="pending").length;updateTabBadge();}
 
 function renderHome(){
   const feed=$("homeFeed");
@@ -798,6 +831,109 @@ async function saveProfile(){
 }
 function setNav(a){navApp=a;localStorage.setItem("nav",a);updRadios()}
 function updRadios(){["waze","google","apple"].forEach(a=>{const e=$("nr-"+a);if(e)e.classList.toggle("on",navApp===a)})}
+
+/* ══ DARK MODE ══ */
+let darkMode = localStorage.getItem("dark") === "1";
+function applyDark(){
+  document.body.classList.toggle("dark", darkMode);
+  const knob = $("darkKnob"), tog = $("darkToggle");
+  if(knob){ knob.style.left = darkMode ? "21px" : "3px"; }
+  if(tog){ tog.style.background = darkMode ? "var(--G2)" : "var(--BD)"; }
+}
+function toggleDark(){
+  darkMode = !darkMode;
+  localStorage.setItem("dark", darkMode ? "1" : "0");
+  applyDark();
+  tOk(darkMode ? "🌙 Dark mode aan" : "☀️ Light mode aan");
+}
+applyDark();
+
+/* ══ TAB BADGE ══ */
+function updateTabBadge(){
+  const count = rides.filter(r => r.status === "pending").length;
+  const badge = $("tabBadge");
+  if(badge){
+    badge.textContent = count;
+    badge.style.display = count > 0 ? "inline-flex" : "none";
+  }
+}
+
+/* ══ TOPBAR AVATAR ══ */
+function updateTopAvatar(){
+  const av = $("topAv"); if(!av) return;
+  const name = P?.name || U?.email || "?";
+  const avatar = P?.avatar_url || "";
+  if(avatar){
+    av.innerHTML = `<img src="${avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    av.textContent = ini(name);
+  }
+}
+
+/* ══ SOS ══ */
+function sosAlert(){
+  if(!confirm("🚨 SOS — Noodgeval melden?\n\nDit zal de nooddiensten bellen (112) en uw locatie delen.")) return;
+  // Stuur SOS locatie naar Supabase
+  if(U && navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(async({coords:{latitude:lat,longitude:lng}})=>{
+      await SB.from("driver_locations").upsert({
+        driver_id: U.id,
+        driver_name: P?.name || U.email,
+        lat, lng,
+        status: "SOS",
+        updated_at: new Date().toISOString()
+      },{onConflict:"driver_id"});
+      tOk("📍 Locatie gedeeld met beheerder");
+    }, ()=>{});
+  }
+  // Bel 112
+  window.location.href = "tel:112";
+}
+
+/* ══ BADGES / PRESTATIES ══ */
+const BADGES = [
+  {id:"r10",   icon:"🚖", label:"10 ritten",    check: n => n >= 10},
+  {id:"r50",   icon:"⭐", label:"50 ritten",    check: n => n >= 50},
+  {id:"r100",  icon:"🏆", label:"100 ritten",   check: n => n >= 100},
+  {id:"r500",  icon:"👑", label:"500 ritten",   check: n => n >= 500},
+  {id:"week1", icon:"📅", label:"1 week actief",check: () => true},
+];
+
+function renderBadges(){
+  const el = $("badgesRow"); if(!el) return;
+  const total = rides.filter(r => r.driver_id === U?.id).length;
+  el.innerHTML = BADGES.map(b => {
+    const earned = b.check(total);
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;opacity:${earned?1:.3};filter:${earned?'none':'grayscale(1)'}">
+      <div style="font-size:26px">${b.icon}</div>
+      <div style="font-size:9px;font-weight:700;color:var(--INK3);text-align:center;max-width:52px;line-height:1.2">${b.label}</div>
+    </div>`;
+  }).join("");
+}
+
+/* ══ REMINDER 30 MIN ══ */
+function checkReminders(){
+  const now = new Date();
+  rides.filter(r => r.driver_id === U?.id && r.status === "accepted" && r.pickup_time).forEach(r => {
+    const pickup = new Date(r.pickup_time);
+    const diff = (pickup - now) / 60000; // minuten
+    if(diff > 25 && diff < 32){
+      const key = "reminded_" + r.id;
+      if(!localStorage.getItem(key)){
+        localStorage.setItem(key, "1");
+        stuurNotificatie({
+          ...r,
+          from_address: "⏰ Rit herinnering — " + (r.from_address || ""),
+          to_address: `Over ~30 min: ${(r.from_address||"").split(",")[0]}`,
+        });
+        if("vibrate" in navigator) navigator.vibrate([200,100,200]);
+        tOk("⏰ Herinnering: rit over 30 minuten!");
+      }
+    }
+  });
+}
+// Check elke minuut
+setInterval(checkReminders, 60000);
 function openSP(id){$(id).classList.add("open")}
 function closeSP(id){$(id).classList.remove("open")}
 document.querySelectorAll(".sp").forEach(sp=>{
