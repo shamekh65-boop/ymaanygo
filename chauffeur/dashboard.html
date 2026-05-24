@@ -100,6 +100,10 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 .et{font-size:16px;font-weight:700;color:var(--INK2);margin-bottom:4px}
 .es{font-size:13px}
 .calwrap{background:var(--W);border-bottom:1px solid var(--BD);flex-shrink:0}
+.calgw{transition:all .3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.strip{transition:opacity .2s ease}
+#calFull{animation:fadeSlideDown .3s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .caltop{display:flex;align-items:center;justify-content:space-between;padding:12px 15px 8px}
 .calmth{font-size:16px;font-weight:800;color:var(--INK)}
 .calctrl{display:flex;align-items:center;gap:5px}
@@ -229,7 +233,7 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
           <div class="calctrl">
             <button class="calnb" onclick="calNav(-1)">‹</button>
             <button class="calnb" onclick="calNav(1)">›</button>
-            <button class="caltb" id="caltb" onclick="toggleCal()">
+            <button class="caltb" id="caltb" onclick="toggleCal()" ontouchstart="this.style.background='#f0f7f0'" ontouchend="this.style.background='#fff'">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
             </button>
           </div>
@@ -240,8 +244,8 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
         </div>
         <div id="calStrip" class="strip"></div>
       </div>
-        <div style="display:flex;justify-content:center;padding:6px 0 2px;background:#fff;border-bottom:1px solid var(--BD)">
-          <div style="width:36px;height:4px;border-radius:99px;background:#c8d8c8"></div>
+        <div id="calHandle" style="display:flex;justify-content:center;align-items:center;padding:8px 0;background:#fff;border-bottom:1px solid var(--BD);cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .15s" onclick="toggleCal()">
+          <div id="calHandleBar" style="width:36px;height:4px;border-radius:99px;background:#c8d8c8;transition:all .25s cubic-bezier(.4,0,.2,1)"></div>
         </div>
       <div class="scroll">
         <div id="adlbl" class="adlbl" style="display:none"></div>
@@ -728,7 +732,20 @@ function drawCal(){
     setTimeout(()=>{const el=$("calStrip").querySelector(".today,.sel");if(el)el.scrollIntoView({inline:"center",behavior:"smooth"})},60);
   }
 }
-function toggleCal(){calExp=!calExp;$("caltb").classList.toggle("exp",calExp);drawCal()}
+function toggleCal(){
+  calExp=!calExp;
+  $("caltb").classList.toggle("exp",calExp);
+  // Animeer handle bar
+  const bar=document.getElementById("calHandleBar");
+  const handle=document.getElementById("calHandle");
+  if(bar){
+    bar.style.width=calExp?"28px":"36px";
+    bar.style.background=calExp?"#a0bfa0":"#c8d8c8";
+  }
+  // Haptic feedback (Android Chrome)
+  if("vibrate" in navigator) navigator.vibrate(8);
+  drawCal();
+}
 function calNav(d){calM+=d;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}drawCal()}
 function selDay(ds){selDate=ds;const d=new Date(ds+"T00:00:00");calY=d.getFullYear();calM=d.getMonth();drawCal();showDay(ds)}
 (()=>{
