@@ -540,6 +540,15 @@ body {
 .view.active { display:block; }
 
 
+
+/* ── AVATAR COLORS ── */
+.av-c0 { background:#fff; color:#2f7d32; }
+.av-c1 { background:#fff; color:#1565c0; }
+.av-c2 { background:#fff; color:#6a1b9a; }
+.av-c3 { background:#fff; color:#c62828; }
+.av-c4 { background:#fff; color:#e65100; }
+.av-c5 { background:#fff; color:#00695c; }
+
 /* ── RLS WARNING ── */
 .rls-warn {
   background: var(--amber-dim); border: 1px solid rgba(255,167,38,.3);
@@ -1087,8 +1096,12 @@ function renderAllDrivers(){
       const cnt   = allRides.filter(r=>r.driver_id==d.id||r.driver_name==name||r.driver_email==d.email).length;
       const sc = (d.status==="approved"||d.status==="active") ? "var(--g2)" : "var(--amber)";
       const st = d.status==="approved"?"Actief":d.status==="pending"?"Wachtend":d.status||"–";
+      const photo = photoCache[d.id];
+      const avHtml = photo
+        ? `<div class="drv-av"><img src="${photo}" alt="${name}" onerror="this.style.display='none'"><span class="av-initials ${avColor(name)}" style="background:transparent">${inits(name)}</span></div>`
+        : `<div class="drv-av ${avColor(name)}"><span class="av-initials">${inits(name)}</span></div>`;
       return `<div class="driver-card">
-        <div class="drv-av">${inits(name)}</div>
+        ${avHtml}
         <div class="drv-info">
           <div class="drv-name">${name}</div>
           <div class="drv-sub">
@@ -1278,6 +1291,11 @@ async function loadAll(){
 
   allRides   = rides   || [];
   allDrivers = drivers || [];
+  
+  // Laad chauffeur foto's op de achtergrond
+  loadDriverPhotos(allDrivers).then(()=>{
+    renderAllDrivers();
+  });
 
   const todayR  = allRides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td);
   const pending = allRides.filter(r=>!r.status||r.status==="pending");
