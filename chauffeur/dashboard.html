@@ -1176,16 +1176,101 @@ document.querySelectorAll(".sp").forEach(sp=>{
 /* ═══════════════════════
    LIVE LOCATIE
 ═══════════════════════ */
-let locW=null;
-function startLoc(){
-  if(!navigator.geolocation||!U)return;
-  locW=navigator.geolocation.watchPosition(async({coords:{latitude:lat,longitude:lng}})=>{
-    await SB.from("driver_locations").upsert({driver_id:U.id,lat,lng,updated_at:new Date().toISOString()},{onConflict:"driver_id"});
-  },{enableHighAccuracy:true,maximumAge:2000,timeout:8000});
-}
-function stopLoc(){if(locW!=null){navigator.geolocation.clearWatch(locW);locW=null}}
+/* ══════════════════════════════════════════════════════════
+   ymaanyGO Driver App — GPS Patch
+   
+   افتح ملف تطبيق السائق (dashboard.html)
+   ابحث عن كل دالة قديمة واستبدلها بالجديدة
+══════════════════════════════════════════════════════════ */
 
-async function logout(){await SB.auth.signOut();location.href="/chauffeur/login.html"}
+/* ────────────────────────────────────────
+   1. ابحث عن هذا واستبدله:
+   function startLoc(){ ... }
+   function stopLoc(){ ... }
+   ──────────────────────────────────────── */
+
+function startLoc(){
+  if(!navigator.geolocation||!U) return;
+
+  // حالة السائق: available / in-ride / offline
+  const getStatus=()=>{
+    if(!online) return "offline";
+    return rides.some(r=>
+      r.driver_id===U.id &&
+      ["accepted","on_the_way","arrived"].includes(r.status)
+    ) ? "in-ride" : "available";
+  };
+
+  // أرسل الموقع فوراً عند التشغيل
+  navigator.geolocation.getCurrentPosition(
+    async({coords:{latitude:lat,longitude:lng}})=>{
+      await SB.from("driver_locations").upsert({
+        driver_id:   U.id,
+        driver_name: P?.name || U.email || "Chauffeur",
+        lat, lng,
+        status:      getStatus(),
+        updated_at:  new Date().toISOString()
+      },{onConflict:"driver_id"});
+    },
+    (err)=>console.warn("GPS init fout:",err.message),
+    {enableHighAccuracy:true, timeout:10000}
+  );
+
+  // تابع إرسال الموقع عند كل تحرك
+  locW = navigator.geolocation.watchPosition(
+    async({coords:{latitude:lat,longitude:lng,accuracy,speed}})=>{
+      await SB.from("driver_locations").upsert({
+        driver_id:   U.id,
+        driver_name: P?.name || U.email || "Chauffeur",
+        lat, lng,
+        accuracy:    accuracy || null,
+        speed:       speed    || null,
+        status:      getStatus(),
+        updated_at:  new Date().toISOString()
+      },{onConflict:"driver_id"});
+    },
+    (err)=>console.warn("GPS fout:",err.message),
+    {enableHighAccuracy:true, maximumAge:5000, timeout:15000}
+  );
+}
+
+function stopLoc(){
+  if(locW != null){
+    navigator.geolocation.clearWatch(locW);
+    locW = null;
+  }
+  // ضع الحالة offline في قاعدة البيانات
+  if(U){
+    SB.from("driver_locations").upsert({
+      driver_id:   U.id,
+      driver_name: P?.name || U.email || "Chauffeur",
+      lat:         0,
+      lng:         0,
+      status:      "offline",
+      updated_at:  new Date().toISOString()
+    },{onConflict:"driver_id"});
+  }
+}
+
+/* ────────────────────────────────────────
+   2. ابحث عن هذا واستبدله:
+   function toggleOnline(){ ... }
+   ──────────────────────────────────────── */
+
+function toggleOnline(){
+  online = !online;
+  const b = $("onbtn");
+  b.className = "onbtn " + (online ? "on" : "off");
+  $("ontxt").textContent = online ? "Online" : "Offline";
+  renderHome();
+  if(online){
+    startLoc();
+    tOk("✓ Je bent nu online");
+  } else {
+    stopLoc();
+    tOk("Je bent nu offline");
+  }
+}
 
 /* ═══════════════════════════════════
    SERVICE WORKER
