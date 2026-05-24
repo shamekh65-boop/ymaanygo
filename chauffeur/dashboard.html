@@ -37,7 +37,7 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 .onbtn.on .ondot{background:var(--G4);box-shadow:0 0 7px var(--G4);animation:pulse 2s infinite}
 .onbtn.off .ondot{background:#ef5350}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.pages{flex:1;overflow:hidden;position:relative}
+.pages{flex:1;overflow:hidden;position:relative;touch-action:pan-y}
 .track{display:flex;height:100%;width:300%;will-change:transform;transition:transform .3s cubic-bezier(.4,0,.2,1)}
 .track.nt{transition:none}
 .pg{width:33.333%;height:100%;display:flex;flex-direction:column;overflow:hidden}
@@ -354,6 +354,7 @@ function tOk(m){const e=$("tok");e.textContent=m;e.classList.add("s");setTimeout
 function tErr(m){const e=$("terr");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),3500)}
 
 function goPage(i,anim=true){
+  i=Math.max(0,Math.min(2,i)); // Begrenzing 0-2
   curPg=i;
   const t=$("track");
   if(!anim){t.classList.add("nt");requestAnimationFrame(()=>t.classList.remove("nt"))}
