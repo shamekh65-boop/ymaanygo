@@ -5,12 +5,95 @@ let step = 1;
 let rideFor = 'me';
 const stops = { ids: [], max: 3 };
 
-const pricing = {
-  START: 5.00,
-  PER_KM_STD: 2.00,
-  PER_KM_VAN: 2.50,
-  COMFORT: 7.00
-};
+/* =========================
+  PRICING CACHE (van Supabase)
+  ========================= */
+let _pricing    = null;
+let _surcharges = null;
+
+async function loadPricingFromDB(){
+  if(_pricing) return; // al geladen
+
+  try{
+    const [priceRes, surchargeRes] = await Promise.all([
+      db.from('pricing_settings').select('*').single(),
+      db.from('postcode_surcharges').select('*')
+    ]);
+
+    _pricing    = priceRes.data    || null;
+    _surcharges = surchargeRes.data || [];
+  }catch(e){
+    console.warn('Pricing laden mislukt, fallback gebruikt.', e);
+  }
+
+  // Fallback als Supabase niet bereikbaar is
+  if(!_pricing){
+    _pricing = {
+      base_start:   5.00,
+      per_km_van:   2.50,
+      comfort_fee:  7.00,
+      tier_0_10:    2.30,
+      tier_10_20:   1.80,
+      tier_20_30:   1.60,
+      tier_30_50:   1.30,
+      tier_50_plus: 1.30,
+      surge_active: false
+    };
+  }
+}
+
+function resetPricingCache(){
+  _pricing    = null;
+  _surcharges = null;
+}
+
+/* helpers */
+function getBaseStart()  { return parseFloat(_pricing?.base_start)  || 5.00; }
+function getVanPerKm()   { return parseFloat(_pricing?.per_km_van)  || 2.50; }
+function getComfortFee() { return parseFloat(_pricing?.comfort_fee) || 7.00; }
+function isSurgeActive() { return _pricing?.surge_active === true; }
+
+function getPricePerKm(km){
+  if(!_pricing) return 2.30;
+  if(km <= 10)  return parseFloat(_pricing.tier_0_10)    || 2.30;
+  if(km <= 20)  return parseFloat(_pricing.tier_10_20)   || 1.80;
+  if(km <= 30)  return parseFloat(_pricing.tier_20_30)   || 1.60;
+  if(km <= 50)  return parseFloat(_pricing.tier_30_50)   || 1.30;
+  return parseFloat(_pricing.tier_50_plus) || 1.30;
+}
+
+/**
+ * Zoekt de hoogste surge voor de opgegeven adressen.
+ * Vergelijkt postcode (cijfers + letters zonder spatie) met het adres.
+ */
+function getSurge(fromAddress, toAddress){
+  if(!isSurgeActive() || !_surcharges || _surcharges.length === 0){
+    return { pct: 0, flat: 0 };
+  }
+
+  const text = (fromAddress + ' ' + toAddress).toUpperCase().replace(/\s/g, '');
+
+  let maxPct  = 0;
+  let maxFlat = 0;
+
+  for(const s of _surcharges){
+    const pc = (s.postcode || '').toUpperCase().replace(/\s/g, '');
+    if(pc && text.includes(pc)){
+      if((s.surge_pct  || 0) > maxPct)  maxPct  = parseFloat(s.surge_pct)  || 0;
+      if((s.surge_flat || 0) > maxFlat) maxFlat = parseFloat(s.surge_flat) || 0;
+    }
+  }
+
+  return { pct: maxPct, flat: maxFlat };
+}
+
+/**
+ * Prijs + (prijs * pct/100) + flat
+ */
+function applySurge(price, surge){
+  if(!surge || (surge.pct === 0 && surge.flat === 0)) return price;
+  return price + (price * surge.pct / 100) + surge.flat;
+}
 
 let calcTimer = null;
 
@@ -35,7 +118,6 @@ function setStep(n){
     autoCalc(true);
   }
 
-  // Init route map when going to step 2
   if(n === 2){
     setTimeout(() => initRouteMap(), 150);
   }
@@ -93,7 +175,7 @@ function selectVehicle(val){
   document.querySelectorAll('.vcard').forEach(c => {
     c.classList.toggle('selected', c.dataset.val === val);
   });
-  // Auto busje for 5+ passengers
+
   const pax = parseInt(document.getElementById('pax')?.value || 1, 10);
   if(val !== 'Busje' && pax > 4){
     document.getElementById('car').value = 'Busje';
@@ -105,10 +187,10 @@ function selectVehicle(val){
   updateFooterButtons();
 }
 
-function updateVehiclePrices(km){
-  const priceGO      = pricing.START + km * getPricePerKm(km);
-  const priceComfort = priceGO + pricing.COMFORT;
-  const priceXL      = pricing.START + km * pricing.PER_KM_VAN;
+function updateVehiclePrices(km, surge){
+  const priceGO      = applySurge(getBaseStart() + km * getPricePerKm(km), surge);
+  const priceComfort = applySurge(getBaseStart() + km * getPricePerKm(km) + getComfortFee(), surge);
+  const priceXL      = applySurge(getBaseStart() + km * getVanPerKm(), surge);
 
   const fmt = v => '€ ' + v.toFixed(2);
   const el  = id => document.getElementById(id);
@@ -152,13 +234,11 @@ async function initRouteMap(){
   const A = [pA.lat, pA.lon];
   const B = [pB.lat, pB.lon];
 
-  // Clear old layers
   routeMapInst.eachLayer(l => {
     if(l instanceof L.Marker || l instanceof L.Polyline)
       routeMapInst.removeLayer(l);
   });
 
-  // Markers
   const mkA = L.divIcon({
     className: '',
     html: `<div style="width:12px;height:12px;border-radius:50%;background:#2f7d32;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>`,
@@ -173,7 +253,6 @@ async function initRouteMap(){
   L.marker(A, { icon: mkA }).addTo(routeMapInst);
   L.marker(B, { icon: mkB }).addTo(routeMapInst);
 
-  // Route line via OSRM
   try{
     const url  = `${API.OSRM}/route/v1/driving/${pA.lon},${pA.lat};${pB.lon},${pB.lat}?overview=full&geometries=geojson`;
     const data = await (await fetch(url)).json();
@@ -206,7 +285,6 @@ function bindPaxRule(){
 
     if(n > 4){
       car.value = "Busje";
-      // Update vcard selection too
       document.querySelectorAll('.vcard').forEach(c => {
         c.classList.toggle('selected', c.dataset.val === 'Busje');
       });
@@ -296,16 +374,8 @@ function removeStop(id){
 }
 
 /* =========================
-  PRICING
+  CALC
   ========================= */
-function getPricePerKm(km){
-  if(km <= 10) return 2.30;
-  if(km <= 20) return 1.80;
-  if(km <= 30) return 1.60;
-  if(km <= 50) return 1.30;
-  return 1.30;
-}
-
 function autoCalc(force){
   clearTimeout(calcTimer);
   calcTimer = setTimeout(()=>calc(force), force ? 80 : 520);
@@ -314,29 +384,24 @@ function autoCalc(force){
 async function routeKm(A, B){
   const url = `${API.OSRM}/route/v1/driving/${A.lon},${A.lat};${B.lon},${B.lat}?overview=false`;
 
-  const res = await fetch(url,{
-    headers:{ "Accept":"application/json" }
-  });
-
+  const res  = await fetch(url, { headers:{ "Accept":"application/json" } });
   const data = await res.json();
 
   if(data?.code !== "Ok" || !data?.routes?.[0]) return null;
 
   return {
-    km: data.routes[0].distance / 1000,
+    km:  data.routes[0].distance / 1000,
     min: data.routes[0].duration / 60
   };
 }
 
 async function routeMulti(points){
-  let totalKm = 0;
-  let totalMin = 0;
+  let totalKm = 0, totalMin = 0;
 
   for(let i = 0; i < points.length - 1; i++){
     const r = await routeKm(points[i], points[i + 1]);
     if(!r) return null;
-
-    totalKm += r.km;
+    totalKm  += r.km;
     totalMin += r.min;
   }
 
@@ -345,73 +410,79 @@ async function routeMulti(points){
 
 async function calc(force){
   const from = (document.getElementById('from').value || "").trim();
-  const to = (document.getElementById('to').value || "").trim();
+  const to   = (document.getElementById('to').value   || "").trim();
 
   if(!from || !to){
     document.getElementById('price').textContent = "—";
-    document.getElementById('meta').textContent = "—";
+    document.getElementById('meta').textContent  = "—";
     return;
   }
 
   const when = document.getElementById('when').value;
-
   if(step === 3 && (!when || isPastPickup(when, 15))){
     document.getElementById('price').textContent = "—";
-    document.getElementById('meta').textContent = "—";
+    document.getElementById('meta').textContent  = "—";
     return;
   }
 
   document.getElementById('meta').textContent = "Berekenen...";
+
+  // Prijzen laden vanuit Supabase (met cache)
+  await loadPricingFromDB();
 
   const stopVals = stops.ids
     .map(id => (document.getElementById(id)?.value || "").trim())
     .filter(Boolean);
 
   const addresses = [from, ...stopVals, to];
-  const points = [];
+  const points    = [];
 
   for(const addr of addresses){
     const p = await geocode(addr);
-
     if(!p){
       document.getElementById('price').textContent = "—";
-      document.getElementById('meta').textContent = "—";
+      document.getElementById('meta').textContent  = "—";
       return;
     }
-
     points.push(p);
   }
 
   const r = await routeMulti(points);
-
   if(!r){
     document.getElementById('price').textContent = "—";
-    document.getElementById('meta').textContent = "—";
+    document.getElementById('meta').textContent  = "—";
     return;
   }
 
-  const car = document.getElementById('car').value;
-  let perKm = car === "Busje" ? pricing.PER_KM_VAN : getPricePerKm(r.km);
+  const car   = document.getElementById('car').value;
+  const surge = getSurge(from, to);
 
-  let price = pricing.START + (r.km * perKm);
+  let perKm = car === "Busje" ? getVanPerKm() : getPricePerKm(r.km);
+  let price  = getBaseStart() + (r.km * perKm);
 
-  if(car === "Comfort"){
-    price += pricing.COMFORT;
-  }
+  if(car === "Comfort") price += getComfortFee();
+
+  // Surge toepassen
+  price = applySurge(price, surge);
 
   document.getElementById('price').textContent = "€ " + price.toFixed(2);
-  document.getElementById('meta').textContent =
-    `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
 
-  // Update all vehicle card prices
-  updateVehiclePrices(r.km);
+  // Meta tekst
+  let meta = `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
+  if(isSurgeActive() && (surge.pct > 0 || surge.flat > 0)){
+    meta += ` ⚡ +${surge.pct}%${surge.flat > 0 ? ' +€' + surge.flat.toFixed(2) : ''}`;
+  }
+  document.getElementById('meta').textContent = meta;
+
+  // Voertuigkaarten bijwerken
+  updateVehiclePrices(r.km, surge);
 }
 
 /* =========================
   SUBMIT BOOKING + PAYMENT
   ========================= */
 async function submitBooking(){
-  const lang = getLang();
+  const lang    = getLang();
   const mainBtn = document.getElementById('mainActionBtn');
 
   let user = null;
@@ -430,7 +501,7 @@ async function submitBooking(){
   }
 
   const from = (document.getElementById('from').value || "").trim();
-  const to = (document.getElementById('to').value || "").trim();
+  const to   = (document.getElementById('to').value   || "").trim();
   const when = document.getElementById('when').value;
 
   if(!when || isPastPickup(when, 15)){
@@ -438,8 +509,8 @@ async function submitBooking(){
     return;
   }
 
-  const pax = document.getElementById('pax').value;
-  const car = document.getElementById('car').value;
+  const pax       = document.getElementById('pax').value;
+  const car       = document.getElementById('car').value;
   const priceText = document.getElementById('price').textContent || "€0";
 
   const priceNumber = Number(
@@ -456,12 +527,12 @@ async function submitBooking(){
     .filter(Boolean);
 
   const profile = getProfile();
-  let customerName = profile.name || "ymaanyGO klant";
+  let customerName  = profile.name  || "ymaanyGO klant";
   let customerPhone = profile.phone || "";
   let customerEmail = profile.email || user.email || "";
 
   if(rideFor === 'other'){
-    const otherName = (document.getElementById('otherName').value || "").trim();
+    const otherName  = (document.getElementById('otherName').value  || "").trim();
     const otherPhone = (document.getElementById('otherPhone').value || "").trim();
 
     if(!otherName || !otherPhone){
@@ -472,27 +543,33 @@ async function submitBooking(){
       return;
     }
 
-    customerName = otherName;
+    customerName  = otherName;
     customerPhone = otherPhone;
   }
 
+  // Surge info opslaan in rit
+  const surge = getSurge(from, to);
+
   const rideData = {
-    customer_id: user.id,
-    customer_name: customerName,
+    customer_id:    user.id,
+    customer_name:  customerName,
     customer_phone: customerPhone,
     customer_email: customerEmail,
-    from_address: from,
-    to_address: to,
-    stops: stopVals,
-    vehicle: car,
-    passengers: Number(pax),
-    pickup_time: new Date(when).toISOString(),
-    price: priceText,
-    status: "awaiting_payment",
+    from_address:   from,
+    to_address:     to,
+    stops:          stopVals,
+    vehicle:        car,
+    passengers:     Number(pax),
+    pickup_time:    new Date(when).toISOString(),
+    price:          priceText,
+    surge_active:   isSurgeActive(),
+    surge_pct:      surge.pct,
+    surge_flat:     surge.flat,
+    status:         "awaiting_payment",
     payment_status: "unpaid"
   };
 
-  mainBtn.disabled = true;
+  mainBtn.disabled  = true;
   mainBtn.innerHTML = "Bezig met versturen...";
 
   let rideInsert = null;
@@ -507,7 +584,7 @@ async function submitBooking(){
     if(rideError){
       console.error("Ride insert error:", rideError);
       alert("Fout bij opslaan: " + rideError.message);
-      mainBtn.disabled = false;
+      mainBtn.disabled  = false;
       mainBtn.innerHTML = "Boeken & betalen ›";
       return;
     }
@@ -516,7 +593,7 @@ async function submitBooking(){
   }catch(e){
     console.error("Ride insert exception:", e);
     alert(lang === 'ar' ? "خطأ في الحجز. تحقق من الاتصال." : "Netwerkfout bij opslaan. Probeer opnieuw.");
-    mainBtn.disabled = false;
+    mainBtn.disabled  = false;
     mainBtn.innerHTML = "Boeken & betalen ›";
     return;
   }
@@ -529,12 +606,12 @@ async function submitBooking(){
     const paymentResponse = await fetch(
       "https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/create-payment",
       {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: priceNumber,
+        body:    JSON.stringify({
+          amount:      priceNumber,
           description: `Taxi rit ${from} → ${to}`,
-          ride_id: rideInsert.id
+          ride_id:     rideInsert.id
         })
       }
     );
@@ -554,7 +631,7 @@ async function submitBooking(){
     alert(lang === 'ar' ? "خطأ في الاتصال بالدفع." : "Netwerkfout bij betaling. Probeer opnieuw.");
   }
 
-  mainBtn.disabled = false;
+  mainBtn.disabled  = false;
   mainBtn.innerHTML = "Boeken & betalen ›";
 }
 
@@ -563,24 +640,38 @@ async function submitBooking(){
   ========================= */
 function computeRideHash(ride){
   return JSON.stringify({
-    from: ride.from, to: ride.to, stops: ride.stops,
-    when: ride.when, vehicle: ride.vehicle,
-    passengers: ride.passengers, price: ride.price
+    from:       ride.from,
+    to:         ride.to,
+    stops:      ride.stops,
+    when:       ride.when,
+    vehicle:    ride.vehicle,
+    passengers: ride.passengers,
+    price:      ride.price
   });
 }
 
 function saveRideToHistory(){
-  const from = (document.getElementById('from').value || "").trim();
-  const to = (document.getElementById('to').value || "").trim();
+  const from     = (document.getElementById('from').value || "").trim();
+  const to       = (document.getElementById('to').value   || "").trim();
   const stopVals = stops.ids.map(id => (document.getElementById(id)?.value || "").trim()).filter(Boolean);
-  const when = document.getElementById('when').value;
-  const pax = document.getElementById('pax').value;
-  const car = document.getElementById('car').value;
-  const price = document.getElementById('price').textContent || "—";
+  const when     = document.getElementById('when').value;
+  const pax      = document.getElementById('pax').value;
+  const car      = document.getElementById('car').value;
+  const price    = document.getElementById('price').textContent || "—";
 
   if(!from || !to || !when) return false;
 
-  const ride = { id: cryptoId(), from, to, stops: stopVals, when, vehicle: car, passengers: pax, price, createdAt: new Date().toISOString() };
+  const ride = {
+    id:         cryptoId(),
+    from, to,
+    stops:      stopVals,
+    when,
+    vehicle:    car,
+    passengers: pax,
+    price,
+    createdAt:  new Date().toISOString()
+  };
+
   const currentHash = computeRideHash(ride);
   if(lastSavedRideHash === currentHash) return false;
 
