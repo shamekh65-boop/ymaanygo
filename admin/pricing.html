@@ -4,184 +4,87 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ymaanyGO — Prijsbeheer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --green: #2f7d32;
-    --green2: #3bbf6b;
-    --green-glow: rgba(59,191,107,0.15);
-    --bg: #0a0f0a;
-    --surface: #111711;
-    --surface2: #192119;
-    --border: rgba(59,191,107,0.15);
-    --border2: rgba(59,191,107,0.3);
-    --text: #e8f5e9;
-    --text2: #81c784;
-    --text3: #4a7a4d;
-    --red: #ef5350;
-    --red-bg: rgba(239,83,80,0.1);
-    --amber: #ffa726;
-    --amber-bg: rgba(255,167,38,0.1);
-    --radius: 14px;
-    --radius-sm: 8px;
+    --bg-light: #f6fbf8;
+    --bg-mid:   #e6f3ed;
+    --bg-dark:  #d7ece2;
+    --panel:    rgba(255,255,255,.92);
+    --glass:    rgba(255,255,255,.7);
+    --text:     #0b2e1f;
+    --muted:    #4f7f68;
+    --muted2:   #7aaa90;
+    --line:     rgba(0,0,0,.08);
+    --line2:    rgba(0,0,0,.13);
+    --accent:   #2ecc71;
+    --accent2:  #27ae60;
+    --red:      #e74c3c;
+    --red-bg:   rgba(231,76,60,.08);
+    --amber:    #f39c12;
+    --amber-bg: rgba(243,156,18,.1);
+    --radius:   18px;
+    --radius-sm:12px;
+    --shadow:   0 14px 32px rgba(11,46,31,.10);
+    --shadow-sm:0 4px 14px rgba(11,46,31,.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: linear-gradient(to bottom, var(--bg-light) 0%, var(--bg-mid) 60%, var(--bg-dark) 100%);
+    background-attachment: fixed;
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ── BG PATTERN ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 10% 20%, rgba(47,125,50,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 60% at 90% 80%, rgba(59,191,107,0.06) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ════════════════════
-     LOGIN SCREEN
-  ════════════════════ */
-  #loginScreen {
+  /* ── LOADING SCREEN ── */
+  #loadingScreen {
     position: fixed;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(to bottom, var(--bg-light), var(--bg-mid));
     z-index: 100;
-    background: var(--bg);
   }
 
-  .login-card {
-    width: 100%;
-    max-width: 400px;
-    margin: 20px;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    padding: 44px 36px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .login-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--green), var(--green2));
-  }
-
-  .login-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 2px;
-    color: var(--green2);
-    text-align: center;
-    margin-bottom: 6px;
-  }
-
-  .login-sub {
-    text-align: center;
-    font-size: 13px;
-    color: var(--text3);
-    margin-bottom: 36px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .field-group {
+  .loading-inner {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-bottom: 24px;
+    align-items: center;
+    gap: 18px;
   }
 
-  .field-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .field-wrap {
-    position: relative;
-  }
-
-  .field-wrap input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 13px 16px;
+  .loading-logo {
+    font-size: 28px;
+    font-weight: 900;
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    outline: none;
-    transition: border-color .2s;
+    letter-spacing: -0.5px;
   }
 
-  .field-wrap input:focus {
-    border-color: var(--green2);
+  .loading-logo span { color: var(--accent2); }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid rgba(46,204,113,.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
   }
 
-  .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, var(--green), var(--green2));
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: opacity .2s, transform .1s;
-  }
-
-  .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-
-  .login-err {
-    color: var(--red);
-    font-size: 13px;
-    text-align: center;
-    margin-top: 12px;
-    min-height: 18px;
-  }
-
-  /* ════════════════════
-     MAIN APP
-  ════════════════════ */
-  #app {
-    display: none;
-    position: relative;
-    z-index: 1;
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── HEADER ── */
   header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(10,15,10,0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(to bottom, rgba(245,248,246,.96), rgba(210,232,220,.93));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
     padding: 0 24px;
     height: 64px;
     display: flex;
@@ -189,35 +92,57 @@
     justify-content: space-between;
   }
 
-  .header-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--green2);
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
   }
 
-  .header-logo span {
-    color: var(--text3);
-    font-size: 13px;
-    font-family: 'Outfit', sans-serif;
+  .header-logo-img {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: #fff;
+    padding: 5px;
+    border: 1px solid var(--line);
+    object-fit: contain;
+  }
+
+  .header-name {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
     font-weight: 400;
-    letter-spacing: 1px;
-    margin-left: 10px;
-    text-transform: uppercase;
   }
 
   .header-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  #headerUser {
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 14px;
   }
 
   .btn-logout {
-    background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--text2);
-    font-family: 'Outfit', sans-serif;
+    background: #fff;
+    border: 1px solid var(--line2);
+    color: var(--muted);
+    font-family: inherit;
     font-size: 13px;
+    font-weight: 600;
     padding: 7px 16px;
     border-radius: 999px;
     cursor: pointer;
@@ -230,65 +155,67 @@
     color: var(--red);
   }
 
-  /* ── MAIN LAYOUT ── */
+  /* ── MAIN ── */
+  #app { display: none; }
+
   main {
-    max-width: 1000px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 32px 20px 80px;
+    padding: 32px 18px 100px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
   }
 
   /* ── SURGE BANNER ── */
   .surge-banner {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px 32px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+    box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
-    transition: border-color .3s;
-  }
-
-  .surge-banner.active {
-    border-color: var(--amber);
-    background: linear-gradient(135deg, var(--surface), rgba(255,167,38,0.05));
+    transition: border-color .3s, background .3s;
   }
 
   .surge-banner::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--green), var(--green2));
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
     transition: background .3s;
   }
 
+  .surge-banner.active {
+    border-color: rgba(243,156,18,.35);
+    background: linear-gradient(135deg, #fff, rgba(243,156,18,.04));
+  }
+
   .surge-banner.active::before {
-    background: linear-gradient(90deg, var(--amber), #ff7043);
+    background: linear-gradient(90deg, var(--amber), #e67e22);
   }
 
   .surge-info h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 1px;
+    font-size: 20px;
+    font-weight: 900;
     margin-bottom: 6px;
     color: var(--text);
+    letter-spacing: -0.3px;
   }
 
   .surge-info p {
     font-size: 13px;
-    color: var(--text3);
+    color: var(--muted);
     max-width: 440px;
     line-height: 1.6;
   }
 
-  /* Toggle Switch */
   .surge-toggle-wrap {
     display: flex;
     flex-direction: column;
@@ -299,10 +226,10 @@
 
   .toggle-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--muted2);
     transition: color .3s;
   }
 
@@ -310,8 +237,8 @@
 
   .toggle {
     position: relative;
-    width: 72px;
-    height: 36px;
+    width: 64px;
+    height: 32px;
     cursor: pointer;
   }
 
@@ -320,8 +247,8 @@
   .toggle-track {
     position: absolute;
     inset: 0;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
+    background: #e0e0e0;
+    border: 1px solid var(--line2);
     border-radius: 999px;
     transition: all .3s;
   }
@@ -329,75 +256,89 @@
   .toggle input:checked ~ .toggle-track {
     background: var(--amber);
     border-color: var(--amber);
-    box-shadow: 0 0 16px rgba(255,167,38,0.4);
+    box-shadow: 0 0 14px rgba(243,156,18,.35);
   }
 
   .toggle-thumb {
     position: absolute;
     top: 4px; left: 4px;
-    width: 26px; height: 26px;
+    width: 22px; height: 22px;
     background: #fff;
     border-radius: 50%;
     transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,.18);
   }
 
   .toggle input:checked ~ .toggle-thumb {
-    transform: translateX(36px);
+    transform: translateX(32px);
   }
 
-  /* ── SECTION CARD ── */
+  /* ── CARD ── */
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     overflow: hidden;
+    box-shadow: var(--shadow);
   }
 
   .card-header {
-    padding: 22px 28px;
-    border-bottom: 1px solid var(--border);
+    padding: 20px 26px;
+    border-bottom: 1px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: rgba(255,255,255,.6);
   }
 
   .card-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: 800;
     color: var(--text);
+    letter-spacing: -0.2px;
   }
 
   .card-subtitle {
     font-size: 12px;
-    color: var(--text3);
+    color: var(--muted);
     margin-top: 3px;
   }
 
-  .card-body {
-    padding: 28px;
+  .card-body { padding: 26px; }
+
+  /* ── PREVIEW PILL ── */
+  .preview-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(46,204,113,.08);
+    border: 1px solid rgba(46,204,113,.25);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--accent2);
+    font-weight: 700;
   }
 
   /* ── PRICE GRID ── */
   .price-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 16px;
   }
 
   .price-field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
   }
 
   .price-field label {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
+    font-weight: 700;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text2);
+    color: var(--muted);
   }
 
   .price-input-wrap {
@@ -408,125 +349,152 @@
 
   .price-input-wrap .currency {
     position: absolute;
-    left: 14px;
-    font-size: 15px;
-    color: var(--green2);
-    font-weight: 600;
+    left: 13px;
+    font-size: 14px;
+    color: var(--accent2);
+    font-weight: 700;
     pointer-events: none;
   }
 
   .price-input-wrap input {
     width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    background: #fff;
+    border: 1px solid var(--line2);
     border-radius: var(--radius-sm);
-    padding: 12px 16px 12px 32px;
+    padding: 12px 14px 12px 30px;
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     outline: none;
+    box-shadow: 0 8px 14px -8px rgba(46,204,113,.3);
     transition: border-color .2s, box-shadow .2s;
   }
 
   .price-input-wrap input:focus {
-    border-color: var(--green2);
-    box-shadow: 0 0 0 3px var(--green-glow);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46,204,113,.15), 0 8px 14px -8px rgba(46,204,113,.3);
   }
 
-  /* Tier table */
+  /* ── TIER TABLE ── */
   .tier-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 8px;
   }
 
   .tier-table th {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--muted);
     text-align: left;
     padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--line);
   }
 
   .tier-table td {
     padding: 12px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--line);
     font-size: 14px;
-    color: var(--text2);
+    color: var(--muted);
   }
 
-  .tier-table td:first-child { color: var(--text3); font-size: 13px; }
-
-  .tier-input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 7px 10px 7px 22px;
+  .tier-table td:first-child {
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
     font-weight: 600;
-    outline: none;
-    width: 110px;
-    transition: border-color .2s;
-    position: relative;
   }
 
-  .tier-input:focus { border-color: var(--green2); }
+  .tier-table tr:last-child td { border-bottom: none; }
 
   .tier-cell { position: relative; }
+
   .tier-cell .sym {
     position: absolute;
     left: 24px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 13px;
-    color: var(--green2);
-    font-weight: 600;
+    color: var(--accent2);
+    font-weight: 700;
     pointer-events: none;
   }
 
-  /* ── POSTCODE SECTION ── */
+  .tier-input {
+    background: #fff;
+    border: 1px solid var(--line2);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px 8px 24px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    outline: none;
+    width: 110px;
+    box-shadow: 0 6px 12px -6px rgba(46,204,113,.25);
+    transition: border-color .2s;
+  }
+
+  .tier-input:focus { border-color: var(--accent); }
+
+  /* ── POSTCODE ── */
+  .section-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    background: rgba(46,204,113,.06);
+    border: 1px solid rgba(46,204,113,.18);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+  }
+
   .postcode-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .postcode-row {
     display: grid;
     grid-template-columns: 140px 1fr 1fr auto;
     gap: 10px;
-    align-items: center;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    align-items: end;
+    background: #fff;
+    border: 1px solid var(--line2);
     border-radius: var(--radius-sm);
     padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
     transition: border-color .2s;
     animation: slideIn .25s ease;
   }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-8px); }
+    from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .postcode-row:hover { border-color: var(--border2); }
+  .postcode-row:hover { border-color: rgba(46,204,113,.3); }
+
+  .pc-field-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
 
   .pc-input {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    background: var(--bg-light);
+    border: 1px solid var(--line2);
+    border-radius: 8px;
     padding: 9px 12px;
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 1px;
     outline: none;
     width: 100%;
@@ -534,67 +502,44 @@
     text-transform: uppercase;
   }
 
-  .pc-input:focus { border-color: var(--green2); }
-
-  .pc-input-money {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 9px 10px 9px 28px;
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    outline: none;
-    width: 100%;
-    transition: border-color .2s;
-  }
-
-  .pc-input-money:focus { border-color: var(--green2); }
+  .pc-input:focus { border-color: var(--accent); }
 
   .pc-field { position: relative; }
 
   .pc-field .pc-sym {
     position: absolute;
     left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: calc(50% + 9px);
     font-size: 12px;
-    color: var(--green2);
+    color: var(--accent2);
     font-weight: 700;
     pointer-events: none;
   }
 
-  .pc-label-badge {
-    background: var(--green);
-    color: #fff;
-    font-size: 10px;
+  .pc-input-money {
+    background: var(--bg-light);
+    border: 1px solid var(--line2);
+    border-radius: 8px;
+    padding: 9px 10px 9px 26px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 1px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-    white-space: nowrap;
+    outline: none;
+    width: 100%;
+    transition: border-color .2s;
   }
 
-  .pc-field-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 5px;
-  }
+  .pc-input-money:focus { border-color: var(--accent); }
 
   .btn-remove {
     background: transparent;
-    border: 1px solid rgba(239,83,80,0.2);
+    border: 1px solid rgba(231,76,60,.2);
     color: var(--red);
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -608,12 +553,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: transparent;
-    border: 1px dashed var(--border2);
-    color: var(--green2);
-    font-family: 'Outfit', sans-serif;
+    background: #fff;
+    border: 1px dashed rgba(46,204,113,.4);
+    color: var(--accent2);
+    font-family: inherit;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 700;
     padding: 12px 20px;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -623,133 +568,120 @@
   }
 
   .btn-add-pc:hover {
-    background: var(--green-glow);
-    border-color: var(--green2);
+    background: rgba(46,204,113,.06);
+    border-color: var(--accent);
   }
 
   /* ── SAVE BAR ── */
   .save-bar {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: rgba(10,15,10,0.92);
-    backdrop-filter: blur(16px);
-    border-top: 1px solid var(--border);
+    background: rgba(245,248,246,.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
     padding: 14px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     z-index: 50;
+    box-shadow: 0 -4px 20px rgba(11,46,31,.07);
   }
 
   .save-status {
     font-size: 13px;
-    color: var(--text3);
+    color: var(--muted);
     display: flex;
     align-items: center;
     gap: 8px;
+    font-weight: 500;
   }
 
   .save-status .dot {
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--text3);
+    background: var(--muted2);
     flex-shrink: 0;
   }
 
-  .save-status.saved .dot { background: var(--green2); }
-  .save-status.saved { color: var(--green2); }
+  .save-status.saved .dot { background: var(--accent); }
+  .save-status.saved { color: var(--accent2); }
   .save-status.error .dot { background: var(--red); }
   .save-status.error { color: var(--red); }
 
   .save-bar-right { display: flex; gap: 10px; }
 
   .btn-save {
-    background: linear-gradient(135deg, var(--green), var(--green2));
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
     color: #fff;
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 12px 28px;
     cursor: pointer;
-    letter-spacing: .5px;
+    box-shadow: 0 10px 22px rgba(46,204,113,.3);
     transition: opacity .2s, transform .1s;
   }
 
-  .btn-save:hover { opacity: .9; }
+  .btn-save:hover { opacity: .92; transform: translateY(-1px); }
   .btn-save:active { transform: scale(.98); }
   .btn-save:disabled { opacity: .5; cursor: not-allowed; }
 
   /* ── TOAST ── */
   .toast {
     position: fixed;
-    top: 80px;
-    right: 24px;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 12px;
-    padding: 14px 20px;
+    top: 76px; right: 20px;
+    background: #fff;
+    border: 1px solid var(--line2);
+    border-radius: 14px;
+    padding: 14px 18px;
     font-size: 14px;
+    font-weight: 600;
     color: var(--text);
     z-index: 999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 36px rgba(0,0,0,.12);
     transform: translateX(120%);
     transition: transform .35s cubic-bezier(.34,1.56,.64,1);
     display: flex;
     align-items: center;
     gap: 10px;
-    max-width: 320px;
+    max-width: 300px;
   }
 
   .toast.show { transform: translateX(0); }
-  .toast.success { border-color: var(--green2); }
-  .toast.fail { border-color: var(--red); }
+  .toast.success { border-color: rgba(46,204,113,.4); }
+  .toast.fail { border-color: rgba(231,76,60,.4); }
 
-  .toast-icon { font-size: 18px; }
-
-  /* ── LOADING OVERLAY ── */
+  /* ── LOADING ROW ── */
   .loading {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 200px;
-    color: var(--text3);
+    min-height: 100px;
+    color: var(--muted);
     font-size: 14px;
     gap: 10px;
   }
 
-  .spinner {
-    width: 20px; height: 20px;
-    border: 2px solid var(--border);
-    border-top-color: var(--green2);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
+  .loading .spinner {
+    width: 18px; height: 18px;
+    border-width: 2px;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── PREVIEW PILL ── */
-  .preview-pill {
+  /* ── SURGE ACTIVE PILL ── */
+  #surgeActivePill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: var(--green-glow);
-    border: 1px solid var(--border2);
+    background: var(--amber-bg);
+    border: 1px solid rgba(243,156,18,.3);
     border-radius: 999px;
     padding: 4px 12px;
     font-size: 12px;
-    color: var(--green2);
-    font-weight: 600;
-  }
-
-  /* ── SECTION DIVIDER ── */
-  .section-note {
-    font-size: 12px;
-    color: var(--text3);
-    line-height: 1.6;
-    margin-bottom: 20px;
+    color: var(--amber);
+    font-weight: 700;
   }
 
   @media (max-width: 640px) {
@@ -757,38 +689,38 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: auto auto;
     }
-    .postcode-row > *:last-child {
-      grid-column: 1 / -1;
-      justify-self: end;
-    }
+    .postcode-row > *:last-child { grid-column: 1 / -1; justify-self: end; }
     .surge-banner { flex-direction: column; }
     .card-body { padding: 18px; }
     .price-grid { grid-template-columns: 1fr 1fr; }
+    #headerUser { display: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════
-     MAIN APP
-════════════════════════════════ -->
-<!-- Loading while checking session -->
-<div id="loadingScreen" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0f0a;z-index:100;">
-  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#3bbf6b;">ymaanyGO</div>
-    <div style="width:36px;height:36px;border:3px solid rgba(59,191,107,0.2);border-top-color:#3bbf6b;border-radius:50%;animation:spin .7s linear infinite;"></div>
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="loading-inner">
+    <div class="loading-logo">ymaany<span>GO</span></div>
+    <div class="spinner"></div>
   </div>
 </div>
 
 <div id="app">
 
   <header>
-    <div>
-      <span class="header-logo">ymaanyGO</span>
-      <span class="header-logo" style="font-size:14px;color:var(--text3);font-family:'Outfit',sans-serif;font-weight:400;margin-left:8px;letter-spacing:1px;">PRIJSBEHEER</span>
-    </div>
+    <a class="header-brand" href="#">
+      <img class="header-logo-img"
+           src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg"
+           alt="ymaanyGO">
+      <div>
+        <div class="header-name">ymaanyGO</div>
+        <div class="header-sub">Prijsbeheer</div>
+      </div>
+    </a>
     <div class="header-right">
-      <div id="headerUser" style="font-size:13px;color:var(--text3);"></div>
+      <div id="headerUser"></div>
       <button class="btn-logout" onclick="doLogout()">Uitloggen</button>
     </div>
   </header>
@@ -798,7 +730,7 @@
     <!-- SURGE BANNER -->
     <div class="surge-banner" id="surgeBanner">
       <div class="surge-info">
-        <h2 id="surgeTitle">⚡ SURGE PRICING</h2>
+        <h2 id="surgeTitle">⚡ Surge Pricing</h2>
         <p id="surgeDesc">Schakel surge in om automatisch verhoogde tarieven toe te passen op alle geselecteerde postcodes. Ideaal voor evenementen, oud en nieuw, of drukke periodes.</p>
       </div>
       <div class="surge-toggle-wrap">
@@ -914,19 +846,15 @@
           <div class="card-title">Postcode Toeslagen</div>
           <div class="card-subtitle">Surge wordt toegepast wanneer pickup/bestemming in deze postcode valt</div>
         </div>
-        <div id="surgeActivePill" style="display:none;" class="preview-pill" style="background:rgba(255,167,38,0.1);border-color:var(--amber);color:var(--amber);">
-          ⚡ Actief
-        </div>
+        <div id="surgeActivePill" style="display:none;">⚡ Actief</div>
       </div>
       <div class="card-body">
         <div class="section-note">
-          Voeg postcodes toe waarvoor je een toeslag wilt rekenen. Bij elke postcode kun je een <strong style="color:var(--text2);">percentage</strong> (bijv. 30%) én een <strong style="color:var(--text2);">vast bedrag</strong> (bijv. €5) instellen — beide worden opgeteld bij de normale prijs wanneer surge actief is.
+          Voeg postcodes toe waarvoor je een toeslag wilt rekenen. Bij elke postcode kun je een <strong>percentage</strong> (bijv. 30%) én een <strong>vast bedrag</strong> (bijv. €5) instellen — beide worden opgeteld bij de normale prijs wanneer surge actief is.
         </div>
-
         <div class="postcode-list" id="postcodeList">
           <div class="loading"><div class="spinner"></div> Postcodes laden...</div>
         </div>
-
         <button class="btn-add-pc" onclick="addPostcodeRow()">
           <span style="font-size:18px;">+</span>
           Postcode toevoegen
@@ -953,39 +881,28 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastIcon"></span>
   <span id="toastMsg"></span>
 </div>
 
 <script>
-/* ════════════════════════════════════════
-   SUPABASE CONFIG — verander dit niet
-════════════════════════════════════════ */
 const SUPABASE_URL  = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-/* ════════════════════════════════════════
-   AUTH — gebruikt bestaande admin login
-   https://ymaanygo.nl/admin/login.html
-════════════════════════════════════════ */
 const ADMIN_LOGIN_URL = 'https://ymaanygo.nl/admin/login.html';
 
 async function checkSession(){
   const { data } = await db.auth.getSession();
-
   if(!data?.session?.user){
     window.location.href = ADMIN_LOGIN_URL;
     return;
   }
-
-  // Controleer admin-rol via profiles tabel
   const { data: profile } = await db
     .from('profiles')
     .select('role')
     .eq('email', data.session.user.email)
     .single();
-
   if(profile?.role === 'admin'){
     showApp(data.session.user);
   } else {
@@ -1002,26 +919,19 @@ async function doLogout(){
 function showApp(user){
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('headerUser').textContent = user.email;
+  const userEl = document.getElementById('headerUser');
+  if(userEl) userEl.textContent = user.email;
   loadAll();
 }
 
-/* ════════════════════════════════════════
-   LOAD DATA
-════════════════════════════════════════ */
 async function loadAll(){
   await Promise.all([loadPricing(), loadPostcodes()]);
   setSaveStatus('idle');
 }
 
 async function loadPricing(){
-  const { data, error } = await db
-    .from('pricing_settings')
-    .select('*')
-    .single();
-
+  const { data, error } = await db.from('pricing_settings').select('*').single();
   if(error || !data) return;
-
   document.getElementById('baseStart').value   = data.base_start   ?? 5.00;
   document.getElementById('baseVan').value     = data.per_km_van   ?? 2.50;
   document.getElementById('baseComfort').value = data.comfort_fee  ?? 7.00;
@@ -1030,7 +940,6 @@ async function loadPricing(){
   document.getElementById('tier3').value       = data.tier_20_30   ?? 1.60;
   document.getElementById('tier4').value       = data.tier_30_50   ?? 1.30;
   document.getElementById('tier5').value       = data.tier_50_plus ?? 1.30;
-
   const surgeActive = data.surge_active === true;
   document.getElementById('surgeToggle').checked = surgeActive;
   updateSurgeUI(surgeActive);
@@ -1039,29 +948,16 @@ async function loadPricing(){
 
 async function loadPostcodes(){
   const list = document.getElementById('postcodeList');
-
-  const { data, error } = await db
-    .from('postcode_surcharges')
-    .select('*')
-    .order('postcode');
-
+  const { data, error } = await db.from('postcode_surcharges').select('*').order('postcode');
   list.innerHTML = '';
-
-  if(error || !data || data.length === 0){
-    return;
-  }
-
+  if(error || !data || data.length === 0) return;
   data.forEach(row => addPostcodeRow(row));
 }
 
-/* ════════════════════════════════════════
-   SAVE ALL
-════════════════════════════════════════ */
 async function saveAll(){
   const btn = document.getElementById('saveBtn');
   btn.disabled = true;
   btn.textContent = 'Opslaan...';
-
   try {
     await savePricing();
     await savePostcodes();
@@ -1071,7 +967,6 @@ async function saveAll(){
     setSaveStatus('error');
     showToast('❌', 'Fout bij opslaan: ' + e.message, 'fail');
   }
-
   btn.disabled = false;
   btn.textContent = '💾 Alles opslaan';
 }
@@ -1090,38 +985,24 @@ async function savePricing(){
     surge_active: document.getElementById('surgeToggle').checked,
     updated_at: new Date().toISOString()
   };
-
-  const { error } = await db
-    .from('pricing_settings')
-    .upsert([payload], { onConflict: 'id' });
-
+  const { error } = await db.from('pricing_settings').upsert([payload], { onConflict: 'id' });
   if(error) throw new Error(error.message);
 }
 
 async function savePostcodes(){
-  // Delete all then re-insert
-  const { error: delErr } = await db
-    .from('postcode_surcharges')
-    .delete()
-    .neq('id', 0); // delete all
-
+  const { error: delErr } = await db.from('postcode_surcharges').delete().neq('id', 0);
   if(delErr) throw new Error(delErr.message);
-
   const rows = getPostcodeRows();
   if(rows.length === 0) return;
-
-  const { error } = await db
-    .from('postcode_surcharges')
-    .insert(rows);
-
+  const { error } = await db.from('postcode_surcharges').insert(rows);
   if(error) throw new Error(error.message);
 }
 
 function getPostcodeRows(){
   const rows = [];
   document.querySelectorAll('.postcode-row').forEach(row => {
-    const pc  = row.querySelector('.pc-code')?.value?.trim().toUpperCase();
-    const pct = parseFloat(row.querySelector('.pc-pct')?.value) || 0;
+    const pc   = row.querySelector('.pc-code')?.value?.trim().toUpperCase();
+    const pct  = parseFloat(row.querySelector('.pc-pct')?.value) || 0;
     const flat = parseFloat(row.querySelector('.pc-flat')?.value) || 0;
     const label = row.querySelector('.pc-lbl')?.value?.trim() || '';
     if(pc) rows.push({ postcode: pc, surge_pct: pct, surge_flat: flat, label });
@@ -1129,16 +1010,10 @@ function getPostcodeRows(){
   return rows;
 }
 
-/* ════════════════════════════════════════
-   POSTCODE ROWS
-════════════════════════════════════════ */
 function addPostcodeRow(data = null){
   const list = document.getElementById('postcodeList');
-
-  // Remove loading if present
   const loading = list.querySelector('.loading');
   if(loading) loading.remove();
-
   const row = document.createElement('div');
   row.className = 'postcode-row';
   row.innerHTML = `
@@ -1149,20 +1024,18 @@ function addPostcodeRow(data = null){
     <div class="pc-field">
       <div class="pc-field-label">% Toeslag</div>
       <span class="pc-sym" style="left:10px;top:calc(50% + 9px);">%</span>
-      <input class="pc-input-money pc-pct" type="number" step="5" min="0" max="200" placeholder="0" value="${data?.surge_pct || ''}" style="padding-left:28px;">
+      <input class="pc-input-money pc-pct" type="number" step="5" min="0" max="200" placeholder="0" value="${data?.surge_pct || ''}" style="padding-left:26px;">
     </div>
     <div class="pc-field">
       <div class="pc-field-label">Vast bedrag</div>
       <span class="pc-sym" style="left:10px;top:calc(50% + 9px);">€</span>
-      <input class="pc-input-money pc-flat" type="number" step="0.50" min="0" placeholder="0.00" value="${data?.surge_flat || ''}" style="padding-left:28px;">
+      <input class="pc-input-money pc-flat" type="number" step="0.50" min="0" placeholder="0.00" value="${data?.surge_flat || ''}" style="padding-left:26px;">
     </div>
     <div>
       <div class="pc-field-label" style="opacity:0">x</div>
       <button class="btn-remove" onclick="this.closest('.postcode-row').remove(); setSaveStatus('idle');" title="Verwijderen">✕</button>
     </div>
   `;
-
-  // Add label input as 2nd row inside if label exists
   if(data?.label){
     const lbl = document.createElement('input');
     lbl.className = 'pc-input pc-lbl';
@@ -1171,18 +1044,12 @@ function addPostcodeRow(data = null){
     lbl.style.cssText = 'grid-column:1/-1;margin-top:6px;';
     row.appendChild(lbl);
   }
-
   list.appendChild(row);
-
-  // Track changes
   row.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('input', () => setSaveStatus('idle'));
   });
 }
 
-/* ════════════════════════════════════════
-   SURGE UI
-════════════════════════════════════════ */
 function onSurgeToggle(){
   const active = document.getElementById('surgeToggle').checked;
   updateSurgeUI(active);
@@ -1193,19 +1060,14 @@ function updateSurgeUI(active){
   const banner = document.getElementById('surgeBanner');
   const label  = document.getElementById('surgeLabel');
   const pill   = document.getElementById('surgeActivePill');
-
   banner.classList.toggle('active', active);
   label.textContent = active ? 'AAN' : 'UIT';
   label.classList.toggle('on', active);
   if(pill) pill.style.display = active ? 'inline-flex' : 'none';
 }
 
-/* ════════════════════════════════════════
-   UI HELPERS
-════════════════════════════════════════ */
 function updatePreview(){
   const start = parseFloat(document.getElementById('baseStart').value) || 0;
-  const van   = parseFloat(document.getElementById('baseVan').value)   || 0;
   document.getElementById('previewBase').textContent = `Starttarief €${start.toFixed(2)}`;
 }
 
@@ -1237,13 +1099,6 @@ function showToast(icon, msg, type){
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-/* ════════════════════════════════════════
-   ENTER KEY LOGIN
-════════════════════════════════════════ */
-
-/* ════════════════════════════════════════
-   INIT
-════════════════════════════════════════ */
 checkSession();
 </script>
 </body>
