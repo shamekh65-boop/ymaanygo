@@ -37,10 +37,10 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 .onbtn.on .ondot{background:var(--G4);box-shadow:0 0 7px var(--G4);animation:pulse 2s infinite}
 .onbtn.off .ondot{background:#ef5350}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.pages{flex:1;overflow:hidden;position:relative;touch-action:pan-y}
-.track{display:flex;height:100%;width:300%;will-change:transform;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-.track.nt{transition:none}
-.pg{width:33.333%;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.pages{flex:1;overflow:hidden;position:relative}
+.track{display:contents}
+.pg{display:none;height:100%;flex-direction:column;overflow:hidden;position:absolute;inset:0}
+.pg.active{display:flex}
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .tabs{height:var(--TH);background:var(--W);border-top:1px solid var(--BD);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom,0);flex-shrink:0;box-shadow:0 -2px 12px rgba(0,0,0,.07);z-index:50}
 .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border:none;background:none;color:var(--INK3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;position:relative;transition:color .15s}
@@ -218,7 +218,7 @@ body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);displ
 </header>
 <div class="pages" id="pages">
   <div class="track" id="track">
-    <div class="pg">
+    <div class="pg active">
       <div class="sbar"><button class="sbtn a">Ritten <span class="sbadge" id="badge0">0</span></button></div>
       <div class="scroll"><div class="feed" id="homeFeed"></div></div>
     </div>
@@ -354,11 +354,10 @@ function tOk(m){const e=$("tok");e.textContent=m;e.classList.add("s");setTimeout
 function tErr(m){const e=$("terr");e.textContent=m;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),3500)}
 
 function goPage(i,anim=true){
-  i=Math.max(0,Math.min(2,i)); // Begrenzing 0-2
+  i=Math.max(0,Math.min(2,i));
   curPg=i;
-  const t=$("track");
-  if(!anim){t.classList.add("nt");requestAnimationFrame(()=>t.classList.remove("nt"))}
-  t.style.transform=`translateX(${-i*33.333}%)`;
+  // Show/hide systeem — geen slide, geen conflict met browser swipe
+  document.querySelectorAll(".pg").forEach((pg,n)=>pg.classList.toggle("active",n===i));
   [0,1,2].forEach(n=>$(`tab${n}`).classList.toggle("a",n===i));
   if(i===1)renderAgenda();
   if(i===2)renderAccount();
