@@ -369,7 +369,8 @@ function goPage(i,anim=true){
   p.addEventListener("touchend",e=>{
     if(!moved)return;
     const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)>Math.abs(dy)*1.4&&Math.abs(dx)>44){
+    // Alleen swipe als niet te dicht bij de rand (voorkomt browser back-swipe conflict)
+    if(Math.abs(dx)>Math.abs(dy)*1.4&&Math.abs(dx)>44&&sx>30){
       if(dx<0&&curPg<2)goPage(curPg+1);
       else if(dx>0&&curPg>0)goPage(curPg-1);
     }
