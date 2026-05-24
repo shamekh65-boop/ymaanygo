@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ymaanyGO — Prijsbeheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --green: #2f7d32;
+    --green2: #3bbf6b;
+    --green-glow: rgba(59,191,107,0.15);
+    --bg: #0a0f0a;
+    --surface: #111711;
+    --surface2: #192119;
+    --border: rgba(59,191,107,0.15);
+    --border2: rgba(59,191,107,0.3);
+    --text: #e8f5e9;
+    --text2: #81c784;
+    --text3: #4a7a4d;
+    --red: #ef5350;
+    --red-bg: rgba(239,83,80,0.1);
+    --amber: #ffa726;
+    --amber-bg: rgba(255,167,38,0.1);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BG PATTERN ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 20%, rgba(47,125,50,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 90% 80%, rgba(59,191,107,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ════════════════════
+     LOGIN SCREEN
+  ════════════════════ */
+  #loginScreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    background: var(--bg);
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 44px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--green2));
+  }
+
+  .login-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--green2);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .login-sub {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 36px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field-wrap {
+    position: relative;
+  }
+
+  .field-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .field-wrap input:focus {
+    border-color: var(--green2);
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--green), var(--green2));
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity .2s, transform .1s;
+  }
+
+  .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+  .login-err {
+    color: var(--red);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 12px;
+    min-height: 18px;
+  }
+
+  /* ════════════════════
+     MAIN APP
+  ════════════════════ */
+  #app {
+    display: none;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10,15,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--green2);
+  }
+
+  .header-logo span {
+    color: var(--text3);
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin-left: 10px;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .btn-logout:hover {
+    background: var(--red-bg);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* ── SURGE BANNER ── */
+  .surge-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .3s;
+  }
+
+  .surge-banner.active {
+    border-color: var(--amber);
+    background: linear-gradient(135deg, var(--surface), rgba(255,167,38,0.05));
+  }
+
+  .surge-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--green2));
+    transition: background .3s;
+  }
+
+  .surge-banner.active::before {
+    background: linear-gradient(90deg, var(--amber), #ff7043);
+  }
+
+  .surge-info h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .surge-info p {
+    font-size: 13px;
+    color: var(--text3);
+    max-width: 440px;
+    line-height: 1.6;
+  }
+
+  /* Toggle Switch */
+  .surge-toggle-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .toggle-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    transition: color .3s;
+  }
+
+  .toggle-label.on { color: var(--amber); }
+
+  .toggle {
+    position: relative;
+    width: 72px;
+    height: 36px;
+    cursor: pointer;
+  }
+
+  .toggle input { display: none; }
+
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 999px;
+    transition: all .3s;
+  }
+
+  .toggle input:checked ~ .toggle-track {
+    background: var(--amber);
+    border-color: var(--amber);
+    box-shadow: 0 0 16px rgba(255,167,38,0.4);
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 4px; left: 4px;
+    width: 26px; height: 26px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .toggle input:checked ~ .toggle-thumb {
+    transform: translateX(36px);
+  }
+
+  /* ── SECTION CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 3px;
+  }
+
+  .card-body {
+    padding: 28px;
+  }
+
+  /* ── PRICE GRID ── */
+  .price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .price-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .price-field label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+
+  .price-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .price-input-wrap .currency {
+    position: absolute;
+    left: 14px;
+    font-size: 15px;
+    color: var(--green2);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .price-input-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px 12px 32px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .price-input-wrap input:focus {
+    border-color: var(--green2);
+    box-shadow: 0 0 0 3px var(--green-glow);
+  }
+
+  /* Tier table */
+  .tier-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .tier-table th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tier-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  .tier-table td:first-child { color: var(--text3); font-size: 13px; }
+
+  .tier-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px 7px 22px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    width: 110px;
+    transition: border-color .2s;
+    position: relative;
+  }
+
+  .tier-input:focus { border-color: var(--green2); }
+
+  .tier-cell { position: relative; }
+  .tier-cell .sym {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: var(--green2);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  /* ── POSTCODE SECTION ── */
+  .postcode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .postcode-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    transition: border-color .2s;
+    animation: slideIn .25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .postcode-row:hover { border-color: var(--border2); }
+
+  .pc-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    outline: none;
+    width: 100%;
+    transition: border-color .2s;
+    text-transform: uppercase;
+  }
+
+  .pc-input:focus { border-color: var(--green2); }
+
+  .pc-input-money {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 10px 9px 28px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+    transition: border-color .2s;
+  }
+
+  .pc-input-money:focus { border-color: var(--green2); }
+
+  .pc-field { position: relative; }
+
+  .pc-field .pc-sym {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--green2);
+    font-weight: 700;
+    pointer-events: none;
+  }
+
+  .pc-label-badge {
+    background: var(--green);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .pc-field-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+
+  .btn-remove {
+    background: transparent;
+    border: 1px solid rgba(239,83,80,0.2);
+    color: var(--red);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+
+  .btn-remove:hover { background: var(--red-bg); border-color: var(--red); }
+
+  .btn-add-pc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px dashed var(--border2);
+    color: var(--green2);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .2s;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-add-pc:hover {
+    background: var(--green-glow);
+    border-color: var(--green2);
+  }
+
+  /* ── SAVE BAR ── */
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10,15,10,0.92);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 50;
+  }
+
+  .save-status {
+    font-size: 13px;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .save-status .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+
+  .save-status.saved .dot { background: var(--green2); }
+  .save-status.saved { color: var(--green2); }
+  .save-status.error .dot { background: var(--red); }
+  .save-status.error { color: var(--red); }
+
+  .save-bar-right { display: flex; gap: 10px; }
+
+  .btn-save {
+    background: linear-gradient(135deg, var(--green), var(--green2));
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    cursor: pointer;
+    letter-spacing: .5px;
+    transition: opacity .2s, transform .1s;
+  }
+
+  .btn-save:hover { opacity: .9; }
+  .btn-save:active { transform: scale(.98); }
+  .btn-save:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: var(--text);
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateX(120%);
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 320px;
+  }
+
+  .toast.show { transform: translateX(0); }
+  .toast.success { border-color: var(--green2); }
+  .toast.fail { border-color: var(--red); }
+
+  .toast-icon { font-size: 18px; }
+
+  /* ── LOADING OVERLAY ── */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--text3);
+    font-size: 14px;
+    gap: 10px;
+  }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--green2);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PREVIEW PILL ── */
+  .preview-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-glow);
+    border: 1px solid var(--border2);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--green2);
+    font-weight: 600;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-note {
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .postcode-row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .postcode-row > *:last-child {
+      grid-column: 1 / -1;
+      justify-self: end;
+    }
+    .surge-banner { flex-direction: column; }
+    .card-body { padding: 18px; }
+    .price-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     MAIN APP
+════════════════════════════════ -->
+<!-- Loading while checking session -->
+<div id="loadingScreen" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0f0a;z-index:100;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#3bbf6b;">ymaanyGO</div>
+    <div style="width:36px;height:36px;border:3px solid rgba(59,191,107,0.2);border-top-color:#3bbf6b;border-radius:50%;animation:spin .7s linear infinite;"></div>
+  </div>
+</div>
+
+<div id="app">
+
+  <header>
+    <div>
+      <span class="header-logo">ymaanyGO</span>
+      <span class="header-logo" style="font-size:14px;color:var(--text3);font-family:'Outfit',sans-serif;font-weight:400;margin-left:8px;letter-spacing:1px;">PRIJSBEHEER</span>
+    </div>
+    <div class="header-right">
+      <div id="headerUser" style="font-size:13px;color:var(--text3);"></div>
+      <button class="btn-logout" onclick="doLogout()">Uitloggen</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SURGE BANNER -->
+    <div class="surge-banner" id="surgeBanner">
+      <div class="surge-info">
+        <h2 id="surgeTitle">⚡ SURGE PRICING</h2>
+        <p id="surgeDesc">Schakel surge in om automatisch verhoogde tarieven toe te passen op alle geselecteerde postcodes. Ideaal voor evenementen, oud en nieuw, of drukke periodes.</p>
+      </div>
+      <div class="surge-toggle-wrap">
+        <div class="toggle-label" id="surgeLabel">UIT</div>
+        <label class="toggle">
+          <input type="checkbox" id="surgeToggle" onchange="onSurgeToggle()">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- BASE PRICING -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Basistarieven</div>
+          <div class="card-subtitle">Vaste kosten voor alle ritten</div>
+        </div>
+        <div class="preview-pill">
+          <span>Huidig:</span>
+          <span id="previewBase">laden...</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="price-grid">
+          <div class="price-field">
+            <label>Starttarief</label>
+            <div class="price-input-wrap">
+              <span class="currency">€</span>
+              <input type="number" id="baseStart" step="0.50" min="0" placeholder="5.00">
+            </div>
+          </div>
+          <div class="price-field">
+            <label>Busje (per km)</label>
+            <div class="price-input-wrap">
+              <span class="currency">€</span>
+              <input type="number" id="baseVan" step="0.10" min="0" placeholder="2.50">
+            </div>
+          </div>
+          <div class="price-field">
+            <label>Comfort toeslag</label>
+            <div class="price-input-wrap">
+              <span class="currency">€</span>
+              <input type="number" id="baseComfort" step="0.50" min="0" placeholder="7.00">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KM TIERS -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Tarieven per kilometer</div>
+          <div class="card-subtitle">Automatisch toegepast op basis van afstand</div>
+        </div>
+      </div>
+      <div class="card-body" style="padding-top:12px;">
+        <table class="tier-table">
+          <thead>
+            <tr>
+              <th>Afstand</th>
+              <th>Prijs per km</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0 – 10 km</td>
+              <td class="tier-cell">
+                <span class="sym">€</span>
+                <input class="tier-input" id="tier1" type="number" step="0.05" min="0" style="padding-left:26px;">
+              </td>
+            </tr>
+            <tr>
+              <td>10 – 20 km</td>
+              <td class="tier-cell">
+                <span class="sym">€</span>
+                <input class="tier-input" id="tier2" type="number" step="0.05" min="0" style="padding-left:26px;">
+              </td>
+            </tr>
+            <tr>
+              <td>20 – 30 km</td>
+              <td class="tier-cell">
+                <span class="sym">€</span>
+                <input class="tier-input" id="tier3" type="number" step="0.05" min="0" style="padding-left:26px;">
+              </td>
+            </tr>
+            <tr>
+              <td>30 – 50 km</td>
+              <td class="tier-cell">
+                <span class="sym">€</span>
+                <input class="tier-input" id="tier4" type="number" step="0.05" min="0" style="padding-left:26px;">
+              </td>
+            </tr>
+            <tr>
+              <td>> 50 km</td>
+              <td class="tier-cell">
+                <span class="sym">€</span>
+                <input class="tier-input" id="tier5" type="number" step="0.05" min="0" style="padding-left:26px;">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- POSTCODE SURCHARGES -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Postcode Toeslagen</div>
+          <div class="card-subtitle">Surge wordt toegepast wanneer pickup/bestemming in deze postcode valt</div>
+        </div>
+        <div id="surgeActivePill" style="display:none;" class="preview-pill" style="background:rgba(255,167,38,0.1);border-color:var(--amber);color:var(--amber);">
+          ⚡ Actief
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="section-note">
+          Voeg postcodes toe waarvoor je een toeslag wilt rekenen. Bij elke postcode kun je een <strong style="color:var(--text2);">percentage</strong> (bijv. 30%) én een <strong style="color:var(--text2);">vast bedrag</strong> (bijv. €5) instellen — beide worden opgeteld bij de normale prijs wanneer surge actief is.
+        </div>
+
+        <div class="postcode-list" id="postcodeList">
+          <div class="loading"><div class="spinner"></div> Postcodes laden...</div>
+        </div>
+
+        <button class="btn-add-pc" onclick="addPostcodeRow()">
+          <span style="font-size:18px;">+</span>
+          Postcode toevoegen
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SAVE BAR -->
+  <div class="save-bar">
+    <div class="save-status" id="saveStatus">
+      <div class="dot"></div>
+      <span>Onopgeslagen wijzigingen</span>
+    </div>
+    <div class="save-bar-right">
+      <button class="btn-save" id="saveBtn" onclick="saveAll()">
+        💾 Alles opslaan
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   SUPABASE CONFIG — verander dit niet
+════════════════════════════════════════ */
+const SUPABASE_URL  = "https://lxbfobdczjgqnotwsnki.supabase.co";
+const SUPABASE_ANON = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+/* ════════════════════════════════════════
+   AUTH — gebruikt bestaande admin login
+   https://ymaanygo.nl/admin/login.html
+════════════════════════════════════════ */
+const ADMIN_LOGIN_URL = 'https://ymaanygo.nl/admin/login.html';
+
+async function checkSession(){
+  const { data } = await db.auth.getSession();
+
+  if(!data?.session?.user){
+    window.location.href = ADMIN_LOGIN_URL;
+    return;
+  }
+
+  // Controleer admin-rol via profiles tabel
+  const { data: profile } = await db
+    .from('profiles')
+    .select('role')
+    .eq('email', data.session.user.email)
+    .single();
+
+  if(profile?.role === 'admin'){
+    showApp(data.session.user);
+  } else {
+    await db.auth.signOut();
+    window.location.href = ADMIN_LOGIN_URL;
+  }
+}
+
+async function doLogout(){
+  await db.auth.signOut();
+  window.location.href = ADMIN_LOGIN_URL;
+}
+
+function showApp(user){
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('headerUser').textContent = user.email;
+  loadAll();
+}
+
+/* ════════════════════════════════════════
+   LOAD DATA
+════════════════════════════════════════ */
+async function loadAll(){
+  await Promise.all([loadPricing(), loadPostcodes()]);
+  setSaveStatus('idle');
+}
+
+async function loadPricing(){
+  const { data, error } = await db
+    .from('pricing_settings')
+    .select('*')
+    .single();
+
+  if(error || !data) return;
+
+  document.getElementById('baseStart').value   = data.base_start   ?? 5.00;
+  document.getElementById('baseVan').value     = data.per_km_van   ?? 2.50;
+  document.getElementById('baseComfort').value = data.comfort_fee  ?? 7.00;
+  document.getElementById('tier1').value       = data.tier_0_10    ?? 2.30;
+  document.getElementById('tier2').value       = data.tier_10_20   ?? 1.80;
+  document.getElementById('tier3').value       = data.tier_20_30   ?? 1.60;
+  document.getElementById('tier4').value       = data.tier_30_50   ?? 1.30;
+  document.getElementById('tier5').value       = data.tier_50_plus ?? 1.30;
+
+  const surgeActive = data.surge_active === true;
+  document.getElementById('surgeToggle').checked = surgeActive;
+  updateSurgeUI(surgeActive);
+  updatePreview();
+}
+
+async function loadPostcodes(){
+  const list = document.getElementById('postcodeList');
+
+  const { data, error } = await db
+    .from('postcode_surcharges')
+    .select('*')
+    .order('postcode');
+
+  list.innerHTML = '';
+
+  if(error || !data || data.length === 0){
+    return;
+  }
+
+  data.forEach(row => addPostcodeRow(row));
+}
+
+/* ════════════════════════════════════════
+   SAVE ALL
+════════════════════════════════════════ */
+async function saveAll(){
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Opslaan...';
+
+  try {
+    await savePricing();
+    await savePostcodes();
+    setSaveStatus('saved');
+    showToast('✅', 'Alle wijzigingen opgeslagen!', 'success');
+  } catch(e) {
+    setSaveStatus('error');
+    showToast('❌', 'Fout bij opslaan: ' + e.message, 'fail');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '💾 Alles opslaan';
+}
+
+async function savePricing(){
+  const payload = {
+    id: 1,
+    base_start:   parseFloat(document.getElementById('baseStart').value)   || 5.00,
+    per_km_van:   parseFloat(document.getElementById('baseVan').value)     || 2.50,
+    comfort_fee:  parseFloat(document.getElementById('baseComfort').value) || 7.00,
+    tier_0_10:    parseFloat(document.getElementById('tier1').value)       || 2.30,
+    tier_10_20:   parseFloat(document.getElementById('tier2').value)       || 1.80,
+    tier_20_30:   parseFloat(document.getElementById('tier3').value)       || 1.60,
+    tier_30_50:   parseFloat(document.getElementById('tier4').value)       || 1.30,
+    tier_50_plus: parseFloat(document.getElementById('tier5').value)       || 1.30,
+    surge_active: document.getElementById('surgeToggle').checked,
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await db
+    .from('pricing_settings')
+    .upsert([payload], { onConflict: 'id' });
+
+  if(error) throw new Error(error.message);
+}
+
+async function savePostcodes(){
+  // Delete all then re-insert
+  const { error: delErr } = await db
+    .from('postcode_surcharges')
+    .delete()
+    .neq('id', 0); // delete all
+
+  if(delErr) throw new Error(delErr.message);
+
+  const rows = getPostcodeRows();
+  if(rows.length === 0) return;
+
+  const { error } = await db
+    .from('postcode_surcharges')
+    .insert(rows);
+
+  if(error) throw new Error(error.message);
+}
+
+function getPostcodeRows(){
+  const rows = [];
+  document.querySelectorAll('.postcode-row').forEach(row => {
+    const pc  = row.querySelector('.pc-code')?.value?.trim().toUpperCase();
+    const pct = parseFloat(row.querySelector('.pc-pct')?.value) || 0;
+    const flat = parseFloat(row.querySelector('.pc-flat')?.value) || 0;
+    const label = row.querySelector('.pc-lbl')?.value?.trim() || '';
+    if(pc) rows.push({ postcode: pc, surge_pct: pct, surge_flat: flat, label });
+  });
+  return rows;
+}
+
+/* ════════════════════════════════════════
+   POSTCODE ROWS
+════════════════════════════════════════ */
+function addPostcodeRow(data = null){
+  const list = document.getElementById('postcodeList');
+
+  // Remove loading if present
+  const loading = list.querySelector('.loading');
+  if(loading) loading.remove();
+
+  const row = document.createElement('div');
+  row.className = 'postcode-row';
+  row.innerHTML = `
+    <div>
+      <div class="pc-field-label">Postcode</div>
+      <input class="pc-input pc-code" type="text" maxlength="7" placeholder="1780 AA" value="${data?.postcode || ''}">
+    </div>
+    <div class="pc-field">
+      <div class="pc-field-label">% Toeslag</div>
+      <span class="pc-sym" style="left:10px;top:calc(50% + 9px);">%</span>
+      <input class="pc-input-money pc-pct" type="number" step="5" min="0" max="200" placeholder="0" value="${data?.surge_pct || ''}" style="padding-left:28px;">
+    </div>
+    <div class="pc-field">
+      <div class="pc-field-label">Vast bedrag</div>
+      <span class="pc-sym" style="left:10px;top:calc(50% + 9px);">€</span>
+      <input class="pc-input-money pc-flat" type="number" step="0.50" min="0" placeholder="0.00" value="${data?.surge_flat || ''}" style="padding-left:28px;">
+    </div>
+    <div>
+      <div class="pc-field-label" style="opacity:0">x</div>
+      <button class="btn-remove" onclick="this.closest('.postcode-row').remove(); setSaveStatus('idle');" title="Verwijderen">✕</button>
+    </div>
+  `;
+
+  // Add label input as 2nd row inside if label exists
+  if(data?.label){
+    const lbl = document.createElement('input');
+    lbl.className = 'pc-input pc-lbl';
+    lbl.placeholder = 'Omschrijving (optioneel)';
+    lbl.value = data.label;
+    lbl.style.cssText = 'grid-column:1/-1;margin-top:6px;';
+    row.appendChild(lbl);
+  }
+
+  list.appendChild(row);
+
+  // Track changes
+  row.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => setSaveStatus('idle'));
+  });
+}
+
+/* ════════════════════════════════════════
+   SURGE UI
+════════════════════════════════════════ */
+function onSurgeToggle(){
+  const active = document.getElementById('surgeToggle').checked;
+  updateSurgeUI(active);
+  setSaveStatus('idle');
+}
+
+function updateSurgeUI(active){
+  const banner = document.getElementById('surgeBanner');
+  const label  = document.getElementById('surgeLabel');
+  const pill   = document.getElementById('surgeActivePill');
+
+  banner.classList.toggle('active', active);
+  label.textContent = active ? 'AAN' : 'UIT';
+  label.classList.toggle('on', active);
+  if(pill) pill.style.display = active ? 'inline-flex' : 'none';
+}
+
+/* ════════════════════════════════════════
+   UI HELPERS
+════════════════════════════════════════ */
+function updatePreview(){
+  const start = parseFloat(document.getElementById('baseStart').value) || 0;
+  const van   = parseFloat(document.getElementById('baseVan').value)   || 0;
+  document.getElementById('previewBase').textContent = `Starttarief €${start.toFixed(2)}`;
+}
+
+document.addEventListener('input', e => {
+  if(e.target.closest('#app')) setSaveStatus('idle');
+  if(['baseStart','baseVan','baseComfort'].includes(e.target.id)) updatePreview();
+});
+
+function setSaveStatus(state){
+  const el = document.getElementById('saveStatus');
+  el.className = 'save-status ' + state;
+  if(state === 'saved'){
+    el.innerHTML = '<div class="dot"></div><span>Opgeslagen ✓</span>';
+  } else if(state === 'error'){
+    el.innerHTML = '<div class="dot"></div><span>Fout bij opslaan</span>';
+  } else {
+    el.innerHTML = '<div class="dot"></div><span>Onopgeslagen wijzigingen</span>';
+  }
+}
+
+let toastTimer = null;
+function showToast(icon, msg, type){
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent  = msg;
+  t.className = 'toast ' + type;
+  setTimeout(() => t.classList.add('show'), 10);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ════════════════════════════════════════
+   ENTER KEY LOGIN
+════════════════════════════════════════ */
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+checkSession();
+</script>
+</body>
+</html>
