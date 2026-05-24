@@ -539,6 +539,18 @@ body {
 .view { display:none; }
 .view.active { display:block; }
 
+
+/* ── RLS WARNING ── */
+.rls-warn {
+  background: var(--amber-dim); border: 1px solid rgba(255,167,38,.3);
+  border-radius: var(--r-md); padding: 12px 14px;
+  margin-bottom: 14px; display:none;
+}
+.rls-warn-title { font-size:12px; font-weight:700; color:var(--amber); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.rls-warn-title svg { width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.rls-warn-body { font-size:11px; color:var(--t1); line-height:1.6; }
+.rls-warn code { background:var(--bg); padding:2px 6px; border-radius:4px; font-size:10.5px; color:var(--g2); font-family:monospace; display:block; margin-top:6px; }
+
 /* ── LOADING ── */
 .skeleton {
   background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);
@@ -734,6 +746,16 @@ body {
         Beheer
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
+    </div>
+    <div class="rls-warn" id="rlsWarn">
+      <div class="rls-warn-title">
+        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        RLS blokkeert toegang tot chauffeurs
+      </div>
+      <div class="rls-warn-body">
+        Voer dit SQL-commando uit in Supabase → SQL Editor:
+        <code>CREATE POLICY "admin_read_drivers" ON public.drivers FOR SELECT USING (true);</code>
+      </div>
     </div>
     <div class="drivers-grid" id="allDriversList"></div>
   </div>
@@ -1048,27 +1070,42 @@ function initSwipe(){
 
 /* ── DRIVERS ── */
 function renderAllDrivers(){
-  const el=$("allDriversList"); if(!el) return;
-  if(!allDrivers.length){
-    el.innerHTML=`<div class="empty"><p>Geen chauffeurs</p></div>`; return;
-  }
-  el.innerHTML=allDrivers.map((d,i)=>`
-    <div class="driver-card">
-      <div class="drv-av">${inits(d.name)}</div>
-      <div class="drv-info">
-        <div class="drv-name">${d.name||"–"}</div>
-        <div class="drv-sub">
-          <svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-          ${d.vehicle||"–"}
+  const targets = ["allDriversList","driversList"];
+  targets.forEach(tid=>{
+    const el=document.getElementById(tid); if(!el) return;
+    if(!allDrivers.length){
+      el.innerHTML=`<div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <p>Geen chauffeurs gevonden</p>
+        <p style="font-size:11px;margin-top:6px;color:var(--t3)">Controleer de registratiepagina</p>
+      </div>`; return;
+    }
+    el.innerHTML = allDrivers.map(d=>{
+      const name  = d.name||d.full_name||d.email||"Onbekend";
+      const veh   = d.vehicle||d.car||d.vehicle_type||"–";
+      const phone = d.phone||d.telefoon||"";
+      const cnt   = allRides.filter(r=>r.driver_id==d.id||r.driver_name==name||r.driver_email==d.email).length;
+      const sc = (d.status==="approved"||d.status==="active") ? "var(--g2)" : "var(--amber)";
+      const st = d.status==="approved"?"Actief":d.status==="pending"?"Wachtend":d.status||"–";
+      return `<div class="driver-card">
+        <div class="drv-av">${inits(name)}</div>
+        <div class="drv-info">
+          <div class="drv-name">${name}</div>
+          <div class="drv-sub">
+            <svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            ${veh}${phone?" · "+phone:""}
+          </div>
+          <div style="margin-top:4px"><span style="font-size:10px;font-weight:700;color:${sc};background:${sc}22;padding:2px 8px;border-radius:99px">${st}</span></div>
         </div>
-      </div>
-      <div class="drv-rides">
-        <div class="drv-cnt">${allRides.filter(r=>r.driver_id==d.id||r.driver_name==d.name).length}</div>
-        <div class="drv-lbl">ritten</div>
-      </div>
-    </div>`).join("");
-  $("driversList").innerHTML=$("allDriversList").innerHTML;
+        <div class="drv-rides">
+          <div class="drv-cnt" style="color:var(--g2)">${cnt}</div>
+          <div class="drv-lbl">ritten</div>
+        </div>
+      </div>`;
+    }).join("");
+  });
 }
+
 
 /* ── MAP ── */
 function initMap(containerId, mapKey){
@@ -1187,77 +1224,148 @@ function exportCSV(){
   toast("CSV geëxporteerd");
 }
 
+/* ── LOAD DRIVERS — tries multiple table names ── */
+async function loadDrivers(){
+  // Lees drivers tabel — werkt als RLS policy SELECT toestaat voor ingelogde gebruikers
+  // Als RLS blokkeert: voer in Supabase SQL uit:
+  // CREATE POLICY "admin_read_drivers" ON drivers FOR SELECT USING (true);
+  
+  const {data, error} = await db.from("drivers").select("*");
+  
+  // Toon/verberg RLS waarschuwing
+  const rlsEl = document.getElementById("rlsWarn");
+  if(rlsEl) rlsEl.style.display = (error && error.code==="42501") ? "block" : "none";
+  
+  if(data && data.length > 0){
+    return data;
+  }
+  
+  // Fallback: lees uit profiles tabel als drivers leeg/geblokkeerd is
+  const {data:pd} = await db.from("profiles").select("*");
+  if(!pd) return [];
+  
+  // Filter op chauffeur-rollen of return allen als er geen rol-info is
+  const drvrs = pd.filter(p => {
+    if(!p.role) return false;
+    const r = p.role.toLowerCase();
+    return ["driver","chauffeur","chauffeurs"].includes(r);
+  });
+  
+  const result = (drvrs.length > 0 ? drvrs : []).map(p=>({
+    id:      p.id,
+    name:    p.name || p.full_name || p.email || "Onbekend",
+    vehicle: p.vehicle || p.car || p.voertuig || "–",
+    status:  p.status || "approved",
+    phone:   p.phone || p.telefoon || p.tel || "",
+    email:   p.email || ""
+  }));
+  
+  return result;
+}
+
 /* ── LOAD DATA ── */
 async function loadAll(){
   const ri=$("refreshIcon");
   ri?.classList.add("spin");
+  // Verberg pull-to-refresh indicator
+  $("ptr").classList.remove("active");
   const td=todayStr();
 
-  const [{data:rides},{data:drivers}]=await Promise.all([
+  const [{data:rides}, drivers] = await Promise.all([
     db.from("rides").select("*").order("created_at",{ascending:false}),
-    db.from("drivers").select("*")
+    loadDrivers()
   ]);
 
-  allRides  =rides  ||[];
-  allDrivers=drivers||[];
+  allRides   = rides   || [];
+  allDrivers = drivers || [];
 
-  const todayR =allRides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td);
-  const pending=allRides.filter(r=>!r.status||r.status==="pending");
-  const active =allRides.filter(r=>["accepted","en-route","arrived","in-ride"].includes(r.status));
-  const rev    =todayR.filter(r=>r.payment_status==="paid").reduce((s,r)=>s+pn(r.price),0);
-  const approved=(drivers||[]).filter(d=>d.status==="approved");
+  const todayR  = allRides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td);
+  const pending = allRides.filter(r=>!r.status||r.status==="pending");
+  const active  = allRides.filter(r=>["accepted","en-route","arrived","in-ride"].includes(r.status));
+  const rev     = todayR.filter(r=>r.payment_status==="paid").reduce((s,r)=>s+pn(r.price),0);
 
   const h=new Date().getHours();
-  $("greetTxt").textContent=h<12?"Goedemorgen":h<18?"Goedemiddag":"Goedenavond";
-  $("todayTxt").textContent=new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long"});
+  $("greetTxt").textContent = h<12?"Goedemorgen":h<18?"Goedemiddag":"Goedenavond";
+  $("todayTxt").textContent = new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long"});
 
-  $("kpiToday").textContent  =todayR.length;
-  $("kpiPend").textContent   =pending.length;
-  $("kpiActive").textContent =active.length;
-  $("kpiRev").textContent    =eu(rev);
-  $("kpiDrvrs").textContent  =approved.length||allDrivers.length;
+  $("kpiToday").textContent  = todayR.length;
+  $("kpiPend").textContent   = pending.length;
+  $("kpiActive").textContent = active.length;
+  $("kpiRev").textContent    = eu(rev);
+  $("kpiDrvrs").textContent  = allDrivers.length;
 
-  // notif badge
-  const nb=$("notifDot"); if(nb) nb.style.display=pending.length?"block":"none";
+  // Notif badges
+  const nb=$("notifDot");
+  if(nb) nb.style.display = pending.length ? "block" : "none";
   const navB=$("navBadge");
-  if(navB){ navB.style.display=pending.length?"flex":"none"; navB.textContent=pending.length; }
+  if(navB){
+    navB.style.display = pending.length ? "flex" : "none";
+    navB.textContent   = pending.length;
+  }
 
-  // render
+  // Render juiste view
   renderRidesList("dashRides","dashFilter",5);
-  if(curView==="rides") renderRidesList("allRidesList","ridesFilter");
+  if(curView==="rides")   renderRidesList("allRidesList","ridesFilter");
   if(curView==="drivers") renderAllDrivers();
+  if(curView==="map")     renderAllDrivers();
 
   updateMapMarkers();
 
-  setTimeout(()=>ri?.classList.remove("spin"),400);
+  setTimeout(()=>ri?.classList.remove("spin"), 400);
 }
 
 /* ── PULL TO REFRESH ── */
 (function(){
-  let startY=0; let pulling=false;
-  document.addEventListener("touchstart",e=>{ if(window.scrollY===0) startY=e.touches[0].clientY; },{passive:true});
+  let startY=0, pulling=false;
+  document.addEventListener("touchstart",e=>{
+    if(window.scrollY===0) startY=e.touches[0].clientY;
+  },{passive:true});
   document.addEventListener("touchmove",e=>{
     if(!startY) return;
     const dy=e.touches[0].clientY-startY;
-    if(dy>60&&!pulling){ pulling=true; $("ptr").classList.add("active"); }
+    if(dy>70 && !pulling){ pulling=true; $("ptr").classList.add("active"); }
   },{passive:true});
   document.addEventListener("touchend",()=>{
-    if(pulling){ loadAll(); setTimeout(()=>$("ptr").classList.remove("active"),800); }
+    if(pulling){
+      loadAll();
+      setTimeout(()=>$("ptr").classList.remove("active"), 1200);
+    }
     startY=0; pulling=false;
   });
 })();
 
 /* ── AUTH ── */
 async function init(){
-  const {data:{session}}=await db.auth.getSession();
-  if(!session){window.location.href="/admin/login.html";return;}
-  const {data:p}=await db.from("profiles").select("role").eq("email",session.user.email).single();
-  if(!p||p.role!=="admin"){await db.auth.signOut();window.location.href="/admin/login.html";return;}
+  // Zorg dat Dashboard de startpagina is
+  showView("dashboard");
+
+  const {data:{session}} = await db.auth.getSession();
+  if(!session){
+    window.location.href="/admin/login.html";
+    return;
+  }
+
+  const {data:p} = await db.from("profiles")
+    .select("role,name")
+    .eq("email", session.user.email)
+    .single();
+
+  if(!p || p.role !== "admin"){
+    await db.auth.signOut();
+    window.location.href="/admin/login.html";
+    return;
+  }
 
   await loadAll();
-  initSmallMap();
+
+  // Init kleine kaart na render
+  setTimeout(()=>{
+    initSmallMap();
+    updateMapMarkers();
+  }, 500);
+
   startRealtime();
-  refreshTimer=setInterval(()=>{ loadAll(); updateMapMarkers(); },30000);
+  refreshTimer = setInterval(()=>{ loadAll(); updateMapMarkers(); }, 30000);
 }
 
 init();
