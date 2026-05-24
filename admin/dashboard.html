@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ymaanyGO — Beheer</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0d1f14">
+<meta name="theme-color" content="#f6fbf8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -13,560 +13,587 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --bg:      #0d1a10;
-  --bg1:     #111f15;
-  --bg2:     #162b1a;
-  --bg3:     #1c3421;
-  --s0:      #1e3824;
-  --s1:      #243f2a;
-  --s2:      #2a4830;
-  --b0:      rgba(59,191,107,.08);
-  --b1:      rgba(59,191,107,.14);
-  --b2:      rgba(59,191,107,.22);
-  --t0:      #e8f5e9;
-  --t1:      #81c784;
-  --t2:      #4a7a4d;
-  --t3:      #2e4d31;
-  --g0:      #2f7d32;
-  --g1:      #388e3c;
-  --g2:      #3bbf6b;
-  --g3:      #69d98c;
-  --g-dim:   rgba(59,191,107,.12);
-  --g-glow:  rgba(59,191,107,.22);
-  --g-bdr:   rgba(59,191,107,.28);
-  --amber:   #ffa726;
-  --amber-dim:rgba(255,167,38,.12);
-  --red:     #ef5350;
-  --red-dim: rgba(239,83,80,.12);
-  --blue:    #42a5f5;
-  --blue-dim:rgba(66,165,245,.12);
-  --r:       18px;
-  --r-md:    12px;
-  --r-sm:    8px;
-  --nav-h:   64px;
-  --top-h:   58px;
-  --f:       'Outfit', sans-serif;
-  --shadow:  0 4px 24px rgba(0,0,0,.4);
-  --shadow-sm: 0 2px 12px rgba(0,0,0,.3);
+  --bg:       #f6fbf8;
+  --bg1:      #eef7f2;
+  --bg2:      #ffffff;
+  --bg3:      #f0f7f3;
+  --panel:    rgba(255,255,255,.95);
+  --line:     rgba(0,0,0,.07);
+  --line2:    rgba(0,0,0,.12);
+  --text:     #0b2e1f;
+  --muted:    #4f7f68;
+  --muted2:   #8ab09a;
+  --accent:   #2ecc71;
+  --accent2:  #27ae60;
+  --accent3:  #1e8449;
+  --g-dim:    rgba(46,204,113,.10);
+  --g-bdr:    rgba(46,204,113,.28);
+  --amber:    #f39c12;
+  --amber-dim:rgba(243,156,18,.10);
+  --amber-bdr:rgba(243,156,18,.30);
+  --red:      #e74c3c;
+  --red-dim:  rgba(231,76,60,.10);
+  --red-bdr:  rgba(231,76,60,.28);
+  --blue:     #2980b9;
+  --blue-dim: rgba(41,128,185,.10);
+  --blue-bdr: rgba(41,128,185,.28);
+  --shadow:   0 2px 16px rgba(11,46,31,.08);
+  --shadow-md:0 4px 28px rgba(11,46,31,.12);
+  --shadow-lg:0 8px 48px rgba(11,46,31,.16);
+  --r:        16px;
+  --r-md:     12px;
+  --r-sm:     8px;
+  --nav-h:    68px;
+  --top-h:    60px;
+  --f:        'Outfit', sans-serif;
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
 body {
   font-family: var(--f);
   background: var(--bg);
-  color: var(--t0);
-  min-height: 100vh;
+  color: var(--text);
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  padding-bottom: var(--nav-h);
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
 }
 
-::-webkit-scrollbar { width:3px; height:3px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--s2); border-radius:99px; }
-
-/* ── TOPBAR ── */
+/* ════ TOPBAR ════ */
 .topbar {
-  position: sticky; top:0; z-index:300;
+  position: sticky; top: 0; z-index: 300;
   height: var(--top-h);
-  background: rgba(13,26,16,.92);
+  background: rgba(246,251,248,.96);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--b0);
+  border-bottom: 1px solid var(--line);
   padding: 0 16px;
-  display: flex; align-items: center; gap:10px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 1px 12px rgba(11,46,31,.06);
 }
 
 .tb-brand {
-  display: flex; align-items: center; gap:9px;
-  text-decoration: none; flex:1;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex: 1; min-width: 0;
 }
 .tb-mark {
-  width:34px; height:34px; border-radius:9px; flex-shrink:0;
-  background: linear-gradient(135deg, var(--g0), var(--g2));
-  display:flex; align-items:center; justify-content:center;
-  box-shadow: 0 3px 12px rgba(59,191,107,.3);
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent3), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(46,204,113,.35);
 }
-.tb-mark svg { width:18px; height:18px; stroke:#fff; stroke-width:2; fill:none; }
-.tb-name { font-size:16px; font-weight:800; color:var(--t0); letter-spacing:-.3px; }
-.tb-sub  { font-size:10px; color:var(--t2); letter-spacing:.8px; text-transform:uppercase; }
+.tb-mark svg { width: 19px; height: 19px; stroke: #fff; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.tb-name { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
+.tb-sub  { font-size: 10px; color: var(--muted); letter-spacing: .8px; text-transform: uppercase; font-weight: 500; }
 
-.tb-actions { display:flex; gap:6px; align-items:center; }
+.tb-actions { display: flex; gap: 7px; align-items: center; }
 
 .tb-btn {
-  width:36px; height:36px; border-radius:var(--r-sm);
-  background:var(--s0); border:1px solid var(--b0);
-  color:var(--t1); cursor:pointer; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  transition:.15s; position:relative; font-family:var(--f);
+  width: 36px; height: 36px; border-radius: var(--r-sm);
+  background: var(--bg2); border: 1px solid var(--line2);
+  color: var(--muted); cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: .15s; position: relative; font-family: var(--f);
+  box-shadow: var(--shadow);
 }
-.tb-btn:hover { background:var(--s1); border-color:var(--b1); }
-.tb-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.tb-btn:hover { background: var(--bg1); color: var(--text); }
+.tb-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.tb-surge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 13px; height: 36px; border-radius: var(--r-sm);
+  background: var(--amber-dim); border: 1px solid var(--amber-bdr);
+  color: var(--amber); font-family: var(--f); font-size: 12px; font-weight: 700;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: .15s; box-shadow: var(--shadow);
+}
+.tb-surge:hover { background: rgba(243,156,18,.18); }
+.tb-surge svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
 .notif-dot {
-  position:absolute; top:7px; right:7px;
-  width:7px; height:7px; border-radius:50%;
-  background:var(--red); border:1.5px solid var(--bg);
-  display:none;
+  position: absolute; top: 7px; right: 7px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red); border: 1.5px solid var(--bg2); display: none;
 }
 
-/* surge topbar btn */
-.tb-surge {
-  display:flex; align-items:center; gap:6px;
-  padding:0 12px; height:36px; border-radius:var(--r-sm);
-  background:var(--amber-dim); border:1px solid rgba(255,167,38,.25);
-  color:var(--amber); font-family:var(--f); font-size:12px; font-weight:700;
-  cursor:pointer; text-decoration:none; white-space:nowrap;
-  transition:.15s;
-}
-.tb-surge:hover { background:rgba(255,167,38,.2); }
-.tb-surge svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
-
-/* ── CONTENT ── */
-.content { padding:16px 14px 24px; max-width:700px; margin:0 auto; }
-
-/* ── PULL TO REFRESH ── */
+/* ════ PULL TO REFRESH ════ */
 .ptr {
-  text-align:center; padding:14px; font-size:12px; color:var(--t2);
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  overflow:hidden; height:0; transition:height .3s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 12px; color: var(--muted); height: 0; overflow: hidden;
+  transition: height .3s;
 }
-.ptr.active { height:44px; }
-.ptr svg { width:16px; height:16px; stroke:var(--g2); fill:none; stroke-width:2; stroke-linecap:round; animation:spin .8s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
+.ptr.active { height: 44px; }
+.ptr svg { width: 15px; height: 15px; stroke: var(--accent2); fill: none; stroke-width: 2; stroke-linecap: round; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── GREETING ── */
+/* ════ CONTENT ════ */
+.content { padding: 16px 14px 24px; max-width: 680px; margin: 0 auto; }
+
+/* ════ GREETING ════ */
 .greeting {
-  margin-bottom:18px;
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 18px;
 }
-.greeting-text h2 { font-size:20px; font-weight:800; letter-spacing:-.3px; }
-.greeting-text p  { font-size:12px; color:var(--t2); margin-top:3px; }
+.greeting h2 { font-size: 21px; font-weight: 800; letter-spacing: -.4px; color: var(--text); }
+.greeting p  { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
 .live-pill {
-  display:inline-flex; align-items:center; gap:5px;
-  padding:4px 10px; border-radius:99px;
-  background:var(--g-dim); border:1px solid var(--g-bdr);
-  font-size:11px; font-weight:700; color:var(--g2); white-space:nowrap;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 99px;
+  background: var(--g-dim); border: 1px solid var(--g-bdr);
+  font-size: 11px; font-weight: 700; color: var(--accent2); white-space: nowrap;
 }
-.live-dot { width:5px; height:5px; border-radius:50%; background:var(--g2); animation:pulse 1.6s infinite; }
+.live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-/* ── KPI SCROLL ── */
+/* ════ KPI ROW ════ */
 .kpi-scroll {
-  display:flex; gap:10px; overflow-x:auto; margin:0 -14px; padding:0 14px 4px;
-  scrollbar-width:none; margin-bottom:18px;
+  display: flex; gap: 10px; overflow-x: auto;
+  margin: 0 -14px; padding: 0 14px 4px;
+  scrollbar-width: none; margin-bottom: 20px;
 }
-.kpi-scroll::-webkit-scrollbar { display:none; }
+.kpi-scroll::-webkit-scrollbar { display: none; }
 
 .kpi {
-  flex-shrink:0; width:140px;
-  background:var(--bg2); border:1px solid var(--b0);
-  border-radius:var(--r); padding:14px;
-  position:relative; overflow:hidden;
-  transition:transform .2s, border-color .2s;
+  flex-shrink: 0; width: 130px;
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 14px 14px 12px;
+  box-shadow: var(--shadow); position: relative; overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
 }
-.kpi:active { transform:scale(.97); }
+.kpi:active { transform: scale(.97); }
 
-.kpi-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .kpi-ico {
-  width:30px; height:30px; border-radius:8px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
+  width: 32px; height: 32px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
 }
-.kpi-ico svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.kpi-ico.green { background:var(--g-dim); color:var(--g2); }
-.kpi-ico.amber { background:var(--amber-dim); color:var(--amber); }
-.kpi-ico.blue  { background:var(--blue-dim); color:var(--blue); }
-.kpi-ico.red   { background:var(--red-dim); color:var(--red); }
+.kpi-ico svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kpi-ico.green  { background: var(--g-dim);    color: var(--accent2); }
+.kpi-ico.amber  { background: var(--amber-dim); color: var(--amber); }
+.kpi-ico.blue   { background: var(--blue-dim);  color: var(--blue); }
+.kpi-ico.red    { background: var(--red-dim);   color: var(--red); }
 
-.kpi-val { font-size:26px; font-weight:800; letter-spacing:-.5px; line-height:1; }
-.kpi-lbl { font-size:11px; color:var(--t2); margin-top:4px; }
+.kpi-val { font-size: 26px; font-weight: 800; letter-spacing: -.6px; line-height: 1; color: var(--text); }
+.kpi-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 500; }
 
-.kpi-bar {
-  position:absolute; bottom:0; left:0; right:0; height:2px; border-radius:0 0 var(--r) var(--r);
+.kpi-line {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px; border-radius: 0 0 var(--r) var(--r);
 }
-.kpi.green .kpi-bar { background:linear-gradient(90deg,transparent,var(--g2),transparent); }
-.kpi.amber .kpi-bar { background:linear-gradient(90deg,transparent,var(--amber),transparent); }
-.kpi.blue  .kpi-bar { background:linear-gradient(90deg,transparent,var(--blue),transparent); }
-.kpi.red   .kpi-bar { background:linear-gradient(90deg,transparent,var(--red),transparent); }
+.kpi.green .kpi-line { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.kpi.amber .kpi-line { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+.kpi.blue  .kpi-line { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.kpi.red   .kpi-line { background: linear-gradient(90deg, transparent, var(--red), transparent); }
 
-/* ── MAP SECTION ── */
-.map-card {
-  background:var(--bg2); border:1px solid var(--b0);
-  border-radius:var(--r); overflow:hidden; margin-bottom:18px;
-}
-.map-card-hd {
-  padding:14px 16px; border-bottom:1px solid var(--b0);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.map-card-hd .title { font-size:14px; font-weight:700; }
-.map-card-hd .sub   { font-size:11px; color:var(--t2); margin-top:2px; }
-
-#liveMap { height:240px; width:100%; background:var(--bg3); }
-
-/* Leaflet dark override */
-.leaflet-container { background:#0d1a10 !important; font-family:var(--f) !important; }
-.leaflet-tile { filter:brightness(.7) saturate(.8) hue-rotate(100deg); }
-
-.driver-marker {
-  width:32px; height:32px; border-radius:50%;
-  background:linear-gradient(135deg,var(--g0),var(--g2));
-  border:2px solid rgba(59,191,107,.5);
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 3px 12px rgba(59,191,107,.4);
-  font-size:11px; font-weight:800; color:#fff;
-}
-
-.map-legend {
-  padding:10px 16px; border-top:1px solid var(--b0);
-  display:flex; gap:14px; align-items:center; flex-wrap:wrap;
-}
-.map-leg-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--t2); }
-.map-leg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-
-/* ── SECTION HEADER ── */
+/* ════ SECTION HEADER ════ */
 .sec-hd {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:12px; gap:10px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; gap: 10px;
 }
-.sec-title { font-size:14px; font-weight:700; }
-.sec-action {
-  font-size:12px; color:var(--g2); font-weight:600;
-  background:none; border:none; cursor:pointer; font-family:var(--f);
-  display:flex; align-items:center; gap:4px;
+.sec-title { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -.2px; }
+.sec-link {
+  font-size: 12px; color: var(--accent2); font-weight: 700;
+  display: flex; align-items: center; gap: 3px;
+  text-decoration: none; background: none; border: none;
+  cursor: pointer; font-family: var(--f);
 }
-.sec-action svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.sec-link svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ── FILTER PILLS ── */
-.filter-pills {
-  display:flex; gap:6px; overflow-x:auto; margin:0 -14px; padding:0 14px 4px;
-  scrollbar-width:none; margin-bottom:14px;
+/* ════ FILTER PILLS ════ */
+.filter-row {
+  display: flex; gap: 6px; overflow-x: auto;
+  margin: 0 -14px; padding: 0 14px 4px;
+  scrollbar-width: none; margin-bottom: 14px;
 }
-.filter-pills::-webkit-scrollbar { display:none; }
+.filter-row::-webkit-scrollbar { display: none; }
 
 .pill {
-  flex-shrink:0; padding:6px 14px; border-radius:99px;
-  font-size:12px; font-weight:600; cursor:pointer;
-  background:var(--s0); border:1px solid var(--b0); color:var(--t1);
-  font-family:var(--f); transition:.15s; white-space:nowrap;
+  flex-shrink: 0; padding: 6px 14px; border-radius: 99px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  background: var(--bg2); border: 1px solid var(--line2);
+  color: var(--muted); font-family: var(--f);
+  transition: .15s; white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(11,46,31,.05);
 }
-.pill:hover { border-color:var(--b1); }
-.pill.active { background:var(--g-dim); border-color:var(--g-bdr); color:var(--g2); }
+.pill.active {
+  background: var(--g-dim); border-color: var(--g-bdr);
+  color: var(--accent2);
+}
 
-/* ── RIDE CARDS ── */
-.rides-list { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+/* ════ MAP CARD ════ */
+.map-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow); margin-bottom: 20px;
+}
+.map-hd {
+  padding: 14px 16px; display: flex;
+  align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.map-hd .t { font-size: 14px; font-weight: 700; color: var(--text); }
+.map-hd .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+#liveMap, #fullMap { height: 220px; width: 100%; background: var(--bg1); }
+#fullMap            { height: 360px; }
+.map-leg {
+  padding: 10px 16px; display: flex; gap: 14px; flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+}
+.map-leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); font-weight: 500; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ════ RIDE CARDS ════ */
+.rides-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.ride-wrap { position: relative; overflow: hidden; border-radius: var(--r); }
+
+.swipe-btns {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  display: flex; align-items: stretch;
+  transform: translateX(100%); transition: transform .25s ease;
+  border-radius: 0 var(--r) var(--r) 0;
+  overflow: hidden;
+}
+.swipe-btns.open { transform: translateX(0); }
+
+.sw-btn {
+  width: 62px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; font-size: 10px; font-weight: 700;
+  cursor: pointer; border: none; font-family: var(--f);
+}
+.sw-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sw-btn.wa  { background: #25D366; color: #fff; }
+.sw-btn.del { background: var(--red); color: #fff; }
 
 .ride-card {
-  background:var(--bg2); border:1px solid var(--b0);
-  border-radius:var(--r); overflow:hidden;
-  transition:border-color .2s, transform .15s;
-  animation:slideIn .25s ease both;
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow); position: relative; z-index: 1;
+  transition: box-shadow .2s;
 }
-@keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.ride-card:active { transform:scale(.99); }
-.ride-card:hover  { border-color:var(--b1); }
-
-/* swipe container */
-.swipe-wrap { position:relative; overflow:hidden; border-radius:var(--r); }
-.swipe-actions {
-  position:absolute; top:0; right:0; bottom:0;
-  display:flex; align-items:stretch;
-  transform:translateX(100%); transition:transform .25s ease;
-}
-.swipe-actions.open { transform:translateX(0); }
-.sw-btn {
-  width:64px; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:4px;
-  font-size:10px; font-weight:700; cursor:pointer; border:none; font-family:var(--f);
-}
-.sw-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.sw-btn.wa  { background:#25D366; color:#fff; }
-.sw-btn.del { background:var(--red); color:#fff; }
-
-.ride-card-inner { background:var(--bg2); position:relative; z-index:1; }
+.ride-card:hover { box-shadow: var(--shadow-md); }
 
 .ride-top {
-  padding:12px 14px; display:flex; align-items:center;
-  justify-content:space-between; gap:10px;
+  padding: 12px 14px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 10px;
 }
 .ride-id {
-  font-size:10px; font-weight:700; letter-spacing:.5px;
-  color:var(--g2); background:var(--g-dim);
-  padding:2px 7px; border-radius:4px; font-family:monospace;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .5px;
+  color: var(--accent2); background: var(--g-dim);
+  padding: 3px 8px; border-radius: 5px; font-family: monospace;
 }
-.ride-time { font-size:11px; color:var(--t2); display:flex; align-items:center; gap:4px; }
-.ride-time svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.ride-time-badge {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--muted); font-weight: 500;
+}
+.ride-time-badge svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 .ride-route {
-  padding:0 14px 12px;
-  display:flex; flex-direction:column; gap:6px;
+  padding: 0 14px 12px;
+  display: flex; flex-direction: column; gap: 5px;
 }
-.route-row { display:flex; align-items:flex-start; gap:8px; font-size:13px; line-height:1.3; }
-.route-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:3px; }
-.route-dot.a { background:var(--g2); }
-.route-dot.b { background:var(--red); }
-.route-divider { width:1.5px; height:8px; background:var(--b1); margin-left:3px; flex-shrink:0; }
+.route-row { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.35; color: var(--text); }
+.rdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.rdot.a { background: var(--accent); }
+.rdot.b { background: var(--red); }
+.rdiv   { width: 1.5px; height: 8px; background: var(--line2); margin-left: 3px; flex-shrink: 0; }
 
 .ride-bottom {
-  padding:10px 14px; border-top:1px solid var(--b0);
-  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding: 10px 14px; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--bg3);
 }
-.ride-passenger { display:flex; align-items:center; gap:7px; }
-.ride-av {
-  width:26px; height:26px; border-radius:50%; flex-shrink:0;
-  background:linear-gradient(135deg,var(--g0),var(--g2));
-  display:flex; align-items:center; justify-content:center;
-  font-size:9px; font-weight:800; color:#fff;
+
+.passenger-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+/* AVATAR */
+.av {
+  flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; background: #fff;
+  overflow: hidden; position: relative;
+  border: 2px solid var(--line2);
+  box-shadow: 0 1px 6px rgba(11,46,31,.12);
 }
-.ride-pname { font-size:12px; font-weight:600; }
-.ride-pphone { font-size:10.5px; color:var(--t2); }
+.av img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
+}
+.av span { position: relative; z-index: 1; font-size: 11px; }
+.av.sm { width: 28px; height: 28px; }
+.av.md { width: 42px; height: 42px; }
+.av.lg { width: 48px; height: 48px; }
+/* Avatar color variants */
+.av-0 { color: #27ae60; border-color: rgba(46,204,113,.3); }
+.av-1 { color: #2980b9; border-color: rgba(41,128,185,.3); }
+.av-2 { color: #8e44ad; border-color: rgba(142,68,173,.3); }
+.av-3 { color: #c0392b; border-color: rgba(192,57,43,.3); }
+.av-4 { color: #d35400; border-color: rgba(211,84,0,.3); }
+.av-5 { color: #16a085; border-color: rgba(22,160,133,.3); }
 
-.ride-right { display:flex; align-items:center; gap:8px; }
-.ride-price { font-size:14px; font-weight:800; color:var(--t0); }
+.pname  { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.pphone { font-size: 11px; color: var(--muted); }
 
-/* status badges */
+.ride-price { font-size: 15px; font-weight: 800; color: var(--text); }
+
+/* STATUS BADGES */
 .st {
-  display:inline-flex; align-items:center; gap:4px;
-  padding:3px 8px; border-radius:99px;
-  font-size:10.5px; font-weight:700; white-space:nowrap;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 99px;
+  font-size: 10.5px; font-weight: 700;
 }
-.st-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
-.st-pending   { background:var(--amber-dim); color:var(--amber); }
-.st-pending .st-dot   { background:var(--amber); }
-.st-accepted  { background:var(--blue-dim);  color:var(--blue); }
-.st-accepted .st-dot  { background:var(--blue); animation:pulse 1.4s infinite; }
-.st-enroute   { background:var(--g-dim);     color:var(--g2); }
-.st-enroute .st-dot   { background:var(--g2); animation:pulse 1.2s infinite; }
-.st-inride    { background:rgba(48,180,100,.15); color:#3db870; }
-.st-inride .st-dot    { background:#3db870; animation:pulse .9s infinite; }
-.st-completed { background:var(--s0);        color:var(--t2); }
-.st-completed .st-dot { background:var(--t3); }
-.st-cancelled { background:var(--red-dim);   color:var(--red); }
-.st-cancelled .st-dot { background:var(--red); }
+.st-dot { width: 5px; height: 5px; border-radius: 50%; }
+.st-pending   { background: var(--amber-dim); color: var(--amber);  border: 1px solid var(--amber-bdr); }
+.st-pending .st-dot   { background: var(--amber); }
+.st-accepted  { background: var(--blue-dim);  color: var(--blue);   border: 1px solid var(--blue-bdr); }
+.st-accepted .st-dot  { background: var(--blue); animation: pulse 1.4s infinite; }
+.st-enroute   { background: var(--g-dim);    color: var(--accent2); border: 1px solid var(--g-bdr); }
+.st-enroute .st-dot   { background: var(--accent); animation: pulse 1.2s infinite; }
+.st-inride    { background: rgba(39,174,96,.12); color: #1e8449; border: 1px solid rgba(39,174,96,.3); }
+.st-inride .st-dot    { background: var(--accent2); animation: pulse .9s infinite; }
+.st-completed { background: var(--bg3); color: var(--muted); border: 1px solid var(--line2); }
+.st-completed .st-dot { background: var(--muted2); }
+.st-cancelled { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-bdr); }
+.st-cancelled .st-dot { background: var(--red); }
 
-/* ride card expand */
+/* RIDE DETAIL EXPAND */
 .ride-detail {
-  display:none; padding:12px 14px; border-top:1px solid var(--b0);
-  background:var(--bg3); gap:10px; flex-direction:column;
+  display: none; padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--bg1);
+  flex-direction: column; gap: 10px;
 }
-.ride-detail.open { display:flex; }
+.ride-detail.open { display: flex; }
 
-.detail-row { display:flex; gap:8px; }
-.detail-cell {
-  flex:1; background:var(--s0); border:1px solid var(--b0);
-  border-radius:var(--r-sm); padding:10px;
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.d-cell {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: 10px 12px;
 }
-.detail-lbl { font-size:9.5px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:4px; }
-.detail-val { font-size:13px; font-weight:600; }
+.d-lbl { font-size: 9.5px; font-weight: 700; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.d-val { font-size: 13px; font-weight: 600; color: var(--text); }
 
-.ride-actions { display:flex; gap:6px; }
-.ra-btn {
-  flex:1; padding:10px 8px; border-radius:var(--r-sm);
-  font-size:12px; font-weight:700; cursor:pointer; border:none;
-  font-family:var(--f); display:flex; align-items:center;
-  justify-content:center; gap:5px; transition:.15s;
+.ride-acts { display: flex; gap: 7px; }
+.ra {
+  flex: 1; padding: 10px 8px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 700; cursor: pointer; border: none;
+  font-family: var(--f); display: flex; align-items: center;
+  justify-content: center; gap: 5px; transition: .15s;
 }
-.ra-btn svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.ra-btn.wa    { background:#25D366; color:#fff; }
-.ra-btn.done  { background:var(--g-dim); border:1px solid var(--g-bdr); color:var(--g2); }
-.ra-btn.cancel{ background:var(--red-dim); border:1px solid rgba(239,83,80,.2); color:var(--red); }
+.ra svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ra.wa   { background: #25D366; color: #fff; }
+.ra.done { background: var(--g-dim); border: 1px solid var(--g-bdr); color: var(--accent2); }
+.ra.del  { background: var(--red-dim); border: 1px solid var(--red-bdr); color: var(--red); }
 
-/* ── BOTTOM NAV ── */
+/* ════ DRIVER CARDS ════ */
+.drivers-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.driver-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow); transition: box-shadow .2s;
+}
+.driver-card:hover { box-shadow: var(--shadow-md); }
+
+.drv-info { flex: 1; min-width: 0; }
+.drv-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.drv-meta {
+  font-size: 11.5px; color: var(--muted); margin-top: 3px;
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+}
+.drv-meta svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.drv-badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 99px;
+  font-size: 10px; font-weight: 700; margin-top: 5px;
+}
+.drv-badge.active   { background: var(--g-dim);    color: var(--accent2); border: 1px solid var(--g-bdr); }
+.drv-badge.pending  { background: var(--amber-dim); color: var(--amber);   border: 1px solid var(--amber-bdr); }
+.drv-badge.inactive { background: var(--bg3);       color: var(--muted);   border: 1px solid var(--line2); }
+
+.drv-stats { text-align: right; flex-shrink: 0; }
+.drv-cnt { font-size: 22px; font-weight: 800; color: var(--accent2); line-height: 1; }
+.drv-lbl { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+/* ════ EMPTY STATE ════ */
+.empty {
+  text-align: center; padding: 44px 20px; color: var(--muted);
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--shadow);
+}
+.empty svg { width: 40px; height: 40px; stroke: currentColor; fill: none; stroke-width: 1.4; opacity: .3; margin: 0 auto 12px; display: block; stroke-linecap: round; stroke-linejoin: round; }
+.empty p { font-size: 13px; font-weight: 600; }
+.empty small { font-size: 11px; color: var(--muted2); display: block; margin-top: 4px; }
+
+/* ════ SKELETON ════ */
+.skel {
+  background: linear-gradient(90deg, var(--bg1) 25%, var(--bg3) 50%, var(--bg1) 75%);
+  background-size: 200% 100%; animation: shim 1.4s infinite;
+  border-radius: var(--r); margin-bottom: 10px;
+}
+@keyframes shim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ════ BOTTOM NAV ════ */
 .bottom-nav {
-  position:fixed; bottom:0; left:0; right:0; z-index:400;
-  height:var(--nav-h);
-  background: rgba(13,26,16,.96);
-  backdrop-filter:blur(20px);
-  border-top:1px solid var(--b0);
-  display:flex; align-items:stretch;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 400;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -2px 16px rgba(11,46,31,.08);
+  height: var(--nav-h);
+  display: flex; align-items: stretch;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.nav-item {
-  flex:1; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:4px;
-  cursor:pointer; color:var(--t3);
-  border:none; background:none; font-family:var(--f);
-  transition:.15s; position:relative; padding-top:4px;
-  text-decoration:none;
+
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; color: var(--muted2);
+  border: none; background: none; font-family: var(--f);
+  transition: .15s; position: relative; text-decoration: none;
 }
-.nav-item.active { color:var(--g2); }
-.nav-item svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-.nav-lbl { font-size:9.5px; font-weight:600; letter-spacing:.3px; }
+.nav-btn.active { color: var(--accent2); }
+.nav-btn svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.nav-lbl { font-size: 9.5px; font-weight: 600; }
 .nav-badge {
-  position:absolute; top:6px; right:calc(50% - 14px);
-  min-width:16px; height:16px; border-radius:99px;
-  background:var(--red); color:#fff;
-  font-size:8.5px; font-weight:800; padding:0 4px;
-  display:flex; align-items:center; justify-content:center;
-  border:1.5px solid var(--bg); display:none;
+  position: absolute; top: 5px; right: calc(50% - 16px);
+  min-width: 16px; height: 16px; border-radius: 99px;
+  background: var(--red); color: #fff;
+  font-size: 8.5px; font-weight: 800; padding: 0 4px;
+  display: none; align-items: center; justify-content: center;
+  border: 1.5px solid var(--bg2);
 }
 
-/* nav FAB center */
 .nav-fab {
-  flex:1; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:4px;
-  cursor:pointer; border:none; background:none; font-family:var(--f);
-  padding-top:4px;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; border: none; background: none;
+  font-family: var(--f); padding-bottom: 2px;
 }
-.fab-circle {
-  width:46px; height:46px; border-radius:50%; margin-top:-18px;
-  background:linear-gradient(135deg,var(--g0),var(--g2));
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 4px 18px rgba(59,191,107,.4);
-  transition:.15s;
+.fab {
+  width: 48px; height: 48px; border-radius: 50%; margin-top: -20px;
+  background: linear-gradient(135deg, var(--accent3), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(46,204,113,.45);
+  transition: transform .15s, box-shadow .15s;
 }
-.fab-circle:active { transform:scale(.92); }
-.fab-circle svg { width:22px; height:22px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; }
-.nav-fab .nav-lbl { font-size:9.5px; font-weight:600; color:var(--t2); }
+.fab:active { transform: scale(.92); box-shadow: 0 2px 10px rgba(46,204,113,.35); }
+.fab svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.nav-fab .nav-lbl { font-size: 9.5px; font-weight: 600; color: var(--muted); }
 
-/* ── EMPTY STATE ── */
-.empty {
-  text-align:center; padding:48px 20px; color:var(--t2);
-}
-.empty svg { width:40px; height:40px; stroke:currentColor; fill:none; stroke-width:1.4; opacity:.3; margin:0 auto 12px; display:block; stroke-linecap:round; stroke-linejoin:round; }
-.empty p { font-size:13px; }
+/* ════ VIEWS ════ */
+.view { display: none; }
+.view.active { display: block; }
 
-/* ── MODAL ── */
+/* ════ MODAL ════ */
 .modal-bg {
-  position:fixed; inset:0; z-index:600;
-  background:rgba(0,0,0,.8); backdrop-filter:blur(10px);
-  display:flex; align-items:flex-end; justify-content:center;
-  padding:0; opacity:0; pointer-events:none; transition:opacity .25s;
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(11,46,31,.35);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
 }
-.modal-bg.open { opacity:1; pointer-events:all; }
+.modal-bg.open { opacity: 1; pointer-events: all; }
 
 .modal {
-  background:var(--bg2); border:1px solid var(--b1);
-  border-radius:24px 24px 0 0; width:100%; max-width:600px;
-  max-height:90dvh; overflow-y:auto;
-  transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);
-  padding-bottom:env(safe-area-inset-bottom);
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: 22px 22px 0 0; width: 100%; max-width: 600px;
+  max-height: 92dvh; overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: var(--shadow-lg);
 }
-.modal-bg.open .modal { transform:translateY(0); }
+.modal-bg.open .modal { transform: translateY(0); }
 
 .modal-handle {
-  width:36px; height:4px; border-radius:99px;
-  background:var(--b2); margin:12px auto 0;
+  width: 38px; height: 4px; border-radius: 99px;
+  background: var(--line2); margin: 12px auto 0;
 }
-
 .modal-hd {
-  padding:16px 18px; display:flex;
-  align-items:center; justify-content:space-between;
-  border-bottom:1px solid var(--b0);
+  padding: 16px 18px; display: flex;
+  align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
 }
-.modal-title { font-size:16px; font-weight:800; }
+.modal-title { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
 .modal-x {
-  width:30px; height:30px; border-radius:8px;
-  background:var(--s0); border:1px solid var(--b0);
-  color:var(--t1); cursor:pointer; display:flex;
-  align-items:center; justify-content:center; font-family:var(--f);
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--bg1); border: 1px solid var(--line2);
+  color: var(--muted); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; font-family: var(--f);
+  transition: .15s;
 }
-.modal-x svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
-.modal-body { padding:16px 18px; display:flex; flex-direction:column; gap:14px; }
+.modal-x:hover { background: var(--red-dim); color: var(--red); }
+.modal-x svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.modal-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
 
-/* form */
-.f-group { display:flex; flex-direction:column; gap:5px; }
-.f-label { font-size:11.5px; font-weight:700; color:var(--t1); letter-spacing:.3px; }
+/* FORM */
+.f-sec {
+  background: var(--bg1); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: 14px;
+}
+.f-sec-title {
+  font-size: 9.5px; font-weight: 800; color: var(--muted2);
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+}
+.f-stack { display: flex; flex-direction: column; gap: 10px; }
+.f-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.f-group { display: flex; flex-direction: column; gap: 5px; }
+.f-lbl   { font-size: 12px; font-weight: 700; color: var(--text); }
 .f-input {
-  background:var(--s0); border:1px solid var(--b1);
-  border-radius:var(--r-sm); padding:11px 13px;
-  font-family:var(--f); font-size:14px; color:var(--t0);
-  outline:none; width:100%; transition:.15s;
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: var(--r-sm); padding: 11px 13px;
+  font-family: var(--f); font-size: 14px; color: var(--text);
+  outline: none; width: 100%; transition: .15s;
+  box-shadow: 0 1px 4px rgba(11,46,31,.05);
 }
-.f-input:focus { border-color:var(--g-bdr); box-shadow:0 0 0 3px var(--g-dim); }
-.f-input::placeholder { color:var(--t3); }
-.f-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-.f-section {
-  background:var(--bg3); border:1px solid var(--b0);
-  border-radius:var(--r-md); padding:13px;
-}
-.f-section-title {
-  font-size:9.5px; font-weight:800; color:var(--t3);
-  text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;
-}
+.f-input:focus { border-color: var(--g-bdr); box-shadow: 0 0 0 3px var(--g-dim); }
+.f-input::placeholder { color: var(--muted2); }
 
 .btn-submit {
-  width:100%; padding:13px; border-radius:var(--r-md);
-  background:linear-gradient(135deg,var(--g0),var(--g2));
-  color:#fff; font-family:var(--f); font-size:15px; font-weight:800;
-  cursor:pointer; border:none;
-  box-shadow:0 4px 16px rgba(59,191,107,.3);
-  transition:.15s;
+  width: 100%; padding: 14px; border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--accent3), var(--accent));
+  color: #fff; font-family: var(--f); font-size: 15px; font-weight: 800;
+  cursor: pointer; border: none;
+  box-shadow: 0 4px 18px rgba(46,204,113,.35);
+  transition: .15s; letter-spacing: -.2px;
 }
-.btn-submit:hover { opacity:.9; }
-.btn-submit:active { transform:scale(.98); }
+.btn-submit:hover  { opacity: .92; transform: translateY(-1px); }
+.btn-submit:active { transform: scale(.98); }
 
-/* ── TOAST ── */
+/* ════ TOAST ════ */
 .toast {
-  position:fixed; bottom:calc(var(--nav-h) + 12px); left:14px; right:14px;
-  z-index:999; background:var(--s1); border:1px solid var(--b2);
-  border-radius:var(--r-md); padding:12px 16px;
-  font-size:13px; font-weight:600;
-  display:flex; align-items:center; gap:8px;
-  box-shadow:var(--shadow); max-width:500px; margin:0 auto;
-  transform:translateY(10px); opacity:0; pointer-events:none;
-  transition:.25s ease;
+  position: fixed; z-index: 999;
+  bottom: calc(var(--nav-h) + 12px);
+  left: 14px; right: 14px; max-width: 560px; margin: 0 auto;
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 9px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(8px); opacity: 0; pointer-events: none;
+  transition: .25s ease;
 }
-.toast.show { transform:none; opacity:1; }
-.toast.ok  { border-color:var(--g-bdr); }
-.toast.err { border-color:rgba(239,83,80,.3); }
-.toast svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.toast.show { transform: none; opacity: 1; }
+.toast.ok  { border-color: var(--g-bdr); }
+.toast.err { border-color: var(--red-bdr); }
+.toast svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.toast.ok  svg { color: var(--accent2); }
+.toast.err svg { color: var(--red); }
 
-/* ── DRIVERS SECTION ── */
-.drivers-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
-.driver-card {
-  background:var(--bg2); border:1px solid var(--b0);
-  border-radius:var(--r-md); padding:12px 14px;
-  display:flex; align-items:center; gap:12px;
-}
-.drv-av {
-  width:38px; height:38px; border-radius:50%; flex-shrink:0;
-  background:linear-gradient(135deg,var(--g0),var(--g2));
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; font-weight:800; color:#fff;
-  box-shadow:0 2px 10px rgba(59,191,107,.25);
-}
-.drv-info { flex:1; }
-.drv-name { font-size:13px; font-weight:700; }
-.drv-sub  { font-size:11px; color:var(--t2); margin-top:2px; display:flex; align-items:center; gap:4px; }
-.drv-sub svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.drv-rides { text-align:right; }
-.drv-cnt { font-size:18px; font-weight:800; color:var(--g2); }
-.drv-lbl { font-size:10px; color:var(--t2); }
-
-/* ── VIEWS ── */
-.view { display:none; }
-.view.active { display:block; }
-
-
-
-/* ── AVATAR COLORS ── */
-.av-c0 { background:#fff; color:#2f7d32; }
-.av-c1 { background:#fff; color:#1565c0; }
-.av-c2 { background:#fff; color:#6a1b9a; }
-.av-c3 { background:#fff; color:#c62828; }
-.av-c4 { background:#fff; color:#e65100; }
-.av-c5 { background:#fff; color:#00695c; }
-
-/* ── RLS WARNING ── */
+/* ════ RLS WARNING ════ */
 .rls-warn {
-  background: var(--amber-dim); border: 1px solid rgba(255,167,38,.3);
-  border-radius: var(--r-md); padding: 12px 14px;
-  margin-bottom: 14px; display:none;
+  background: var(--amber-dim); border: 1px solid var(--amber-bdr);
+  border-radius: var(--r-md); padding: 12px 14px; margin-bottom: 14px; display: none;
 }
-.rls-warn-title { font-size:12px; font-weight:700; color:var(--amber); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
-.rls-warn-title svg { width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-.rls-warn-body { font-size:11px; color:var(--t1); line-height:1.6; }
-.rls-warn code { background:var(--bg); padding:2px 6px; border-radius:4px; font-size:10.5px; color:var(--g2); font-family:monospace; display:block; margin-top:6px; }
-
-/* ── LOADING ── */
-.skeleton {
-  background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);
-  background-size:200% 100%; animation:shimmer 1.5s infinite;
-  border-radius:var(--r-md); height:110px; margin-bottom:10px;
-}
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.rls-title { font-size: 12px; font-weight: 700; color: var(--amber); display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.rls-title svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.rls-body { font-size: 11px; color: var(--text); line-height: 1.6; }
+.rls-body code { background: rgba(255,255,255,.7); padding: 2px 7px; border-radius: 4px; font-size: 10.5px; color: var(--accent3); display: block; margin-top: 6px; font-family: monospace; }
 </style>
 </head>
 <body>
@@ -588,7 +615,7 @@ body {
       Surge
     </a>
     <button class="tb-btn" onclick="loadAll()" title="Verversen">
-      <svg id="refreshIcon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      <svg id="refreshIco" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
     </button>
     <button class="tb-btn" title="Meldingen">
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
@@ -606,12 +633,10 @@ body {
 <!-- CONTENT -->
 <div class="content">
 
-  <!-- VIEW: DASHBOARD -->
+  <!-- ── DASHBOARD ── -->
   <div class="view active" id="view-dashboard">
-
-    <!-- Greeting -->
     <div class="greeting">
-      <div class="greeting-text">
+      <div>
         <h2 id="greetTxt">Goedemorgen</h2>
         <p id="todayTxt">–</p>
       </div>
@@ -619,180 +644,155 @@ body {
     </div>
 
     <!-- KPIs -->
-    <div class="kpi-scroll" id="kpiScroll">
+    <div class="kpi-scroll">
       <div class="kpi green">
-        <div class="kpi-top">
-          <div class="kpi-ico green">
-            <svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiToday">–</div>
+        <div class="kpi-ico green"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+        <div class="kpi-val" id="kToday">–</div>
         <div class="kpi-lbl">Vandaag</div>
-        <div class="kpi-bar"></div>
+        <div class="kpi-line"></div>
       </div>
       <div class="kpi amber">
-        <div class="kpi-top">
-          <div class="kpi-ico amber">
-            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiPend">–</div>
+        <div class="kpi-ico amber"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="kpi-val" id="kPend">–</div>
         <div class="kpi-lbl">Wachtend</div>
-        <div class="kpi-bar"></div>
+        <div class="kpi-line"></div>
       </div>
       <div class="kpi blue">
-        <div class="kpi-top">
-          <div class="kpi-ico blue">
-            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiActive">–</div>
+        <div class="kpi-ico blue"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="kpi-val" id="kActive">–</div>
         <div class="kpi-lbl">Actief</div>
-        <div class="kpi-bar"></div>
+        <div class="kpi-line"></div>
       </div>
       <div class="kpi green">
-        <div class="kpi-top">
-          <div class="kpi-ico green">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M9.5 9.5A2.5 2.5 0 0112 8c1.38 0 2.5.9 2.5 2s-1.12 2-2.5 2-2.5.9-2.5 2 1.12 2 2.5 2 2.5-.9 2.5-2"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiRev">€–</div>
+        <div class="kpi-ico green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M9.5 9.5A2.5 2.5 0 0112 8c1.38 0 2.5.9 2.5 2s-1.12 2-2.5 2-2.5.9-2.5 2 1.12 2 2.5 2 2.5-.9 2.5-2"/></svg></div>
+        <div class="kpi-val" id="kRev">€–</div>
         <div class="kpi-lbl">Omzet</div>
-        <div class="kpi-bar"></div>
+        <div class="kpi-line"></div>
       </div>
       <div class="kpi green">
-        <div class="kpi-top">
-          <div class="kpi-ico green">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiDrvrs">–</div>
+        <div class="kpi-ico green"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div class="kpi-val" id="kDrvrs">–</div>
         <div class="kpi-lbl">Chauffeurs</div>
-        <div class="kpi-bar"></div>
+        <div class="kpi-line"></div>
       </div>
     </div>
 
-    <!-- Live Map -->
+    <!-- Map -->
     <div class="map-card">
-      <div class="map-card-hd">
-        <div>
-          <div class="title">Live Chauffeurs</div>
-          <div class="sub" id="mapSub">Locaties laden...</div>
-        </div>
-        <div class="live-pill"><span class="live-dot"></span><span id="driverCount">0</span> actief</div>
+      <div class="map-hd">
+        <div><div class="t">Live Locaties</div><div class="s" id="mapSub">Laden...</div></div>
+        <div class="live-pill"><span class="live-dot"></span><span id="drvCount">0</span> actief</div>
       </div>
       <div id="liveMap"></div>
-      <div class="map-legend">
-        <div class="map-leg-item"><div class="map-leg-dot" style="background:var(--g2)"></div>Beschikbaar</div>
-        <div class="map-leg-item"><div class="map-leg-dot" style="background:var(--amber)"></div>In rit</div>
-        <div class="map-leg-item"><div class="map-leg-dot" style="background:var(--t3)"></div>Offline</div>
+      <div class="map-leg">
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Beschikbaar</div>
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--amber)"></div>In rit</div>
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--muted2)"></div>Offline</div>
       </div>
     </div>
 
-    <!-- Rides -->
+    <!-- Recent rides -->
     <div class="sec-hd">
       <div class="sec-title">Recente ritten</div>
-      <button class="sec-action" onclick="showView('rides')">
-        Alle ritten
-        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <button class="sec-link" onclick="showView('rides')">
+        Alle ritten <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
-
-    <!-- Filter -->
-    <div class="filter-pills" id="dashFilter">
-      <button class="pill active" data-f="all" onclick="setFilter('all',this,'dashFilter')">Alles</button>
-      <button class="pill" data-f="pending" onclick="setFilter('pending',this,'dashFilter')">Wachtend</button>
-      <button class="pill" data-f="accepted" onclick="setFilter('accepted',this,'dashFilter')">Actief</button>
-      <button class="pill" data-f="completed" onclick="setFilter('completed',this,'dashFilter')">Voltooid</button>
+    <div class="filter-row" id="df">
+      <button class="pill active" data-f="all"       onclick="setPill(this,'df')">Alles</button>
+      <button class="pill"        data-f="pending"   onclick="setPill(this,'df')">Wachtend</button>
+      <button class="pill"        data-f="accepted"  onclick="setPill(this,'df')">Actief</button>
+      <button class="pill"        data-f="completed" onclick="setPill(this,'df')">Voltooid</button>
     </div>
-
     <div class="rides-list" id="dashRides">
-      <div class="skeleton"></div>
-      <div class="skeleton" style="height:90px"></div>
+      <div class="skel" style="height:110px"></div>
+      <div class="skel" style="height:90px"></div>
     </div>
+  </div>
 
-  </div><!-- /view-dashboard -->
-
-  <!-- VIEW: RIDES -->
+  <!-- ── RITTEN ── -->
   <div class="view" id="view-rides">
     <div class="sec-hd" style="margin-bottom:14px">
       <div class="sec-title">Alle ritten</div>
-      <button class="sec-action" onclick="exportCSV()">
+      <button class="sec-link" onclick="exportCSV()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         Export
       </button>
     </div>
-    <div class="filter-pills" id="ridesFilter">
-      <button class="pill active" data-f="all" onclick="setFilter('all',this,'ridesFilter')">Alles</button>
-      <button class="pill" data-f="pending" onclick="setFilter('pending',this,'ridesFilter')">Wachtend</button>
-      <button class="pill" data-f="accepted" onclick="setFilter('accepted',this,'ridesFilter')">Geaccepteerd</button>
-      <button class="pill" data-f="en-route" onclick="setFilter('en-route',this,'ridesFilter')">Onderweg</button>
-      <button class="pill" data-f="in-ride" onclick="setFilter('in-ride',this,'ridesFilter')">In rit</button>
-      <button class="pill" data-f="completed" onclick="setFilter('completed',this,'ridesFilter')">Voltooid</button>
-      <button class="pill" data-f="cancelled" onclick="setFilter('cancelled',this,'ridesFilter')">Geannuleerd</button>
+    <div class="filter-row" id="rf">
+      <button class="pill active" data-f="all"       onclick="setPill(this,'rf')">Alles</button>
+      <button class="pill"        data-f="pending"   onclick="setPill(this,'rf')">Wachtend</button>
+      <button class="pill"        data-f="accepted"  onclick="setPill(this,'rf')">Geaccepteerd</button>
+      <button class="pill"        data-f="en-route"  onclick="setPill(this,'rf')">Onderweg</button>
+      <button class="pill"        data-f="in-ride"   onclick="setPill(this,'rf')">In rit</button>
+      <button class="pill"        data-f="completed" onclick="setPill(this,'rf')">Voltooid</button>
+      <button class="pill"        data-f="cancelled" onclick="setPill(this,'rf')">Geannuleerd</button>
     </div>
-    <div class="rides-list" id="allRidesList"></div>
+    <div class="rides-list" id="allRides"></div>
   </div>
 
-  <!-- VIEW: MAP -->
+  <!-- ── KAART ── -->
   <div class="view" id="view-map">
     <div class="sec-hd" style="margin-bottom:14px">
       <div class="sec-title">Live Kaart</div>
       <div class="live-pill"><span class="live-dot"></span>Realtime</div>
     </div>
-    <div class="map-card" style="margin-bottom:14px">
-      <div id="fullMap" style="height:400px;width:100%;background:var(--bg3)"></div>
+    <div class="map-card" style="margin-bottom:16px">
+      <div id="fullMap"></div>
+      <div class="map-leg">
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Beschikbaar</div>
+        <div class="map-leg-item"><div class="leg-dot" style="background:var(--amber)"></div>In rit</div>
+      </div>
     </div>
-    <div class="sec-hd"><div class="sec-title">Chauffeurs online</div></div>
-    <div class="drivers-grid" id="driversList"></div>
+    <div class="sec-hd"><div class="sec-title">Chauffeurs</div></div>
+    <div class="drivers-list" id="mapDrivers"></div>
   </div>
 
-  <!-- VIEW: DRIVERS -->
+  <!-- ── CHAUFFEURS ── -->
   <div class="view" id="view-drivers">
     <div class="sec-hd" style="margin-bottom:14px">
       <div class="sec-title">Chauffeurs</div>
-      <a class="sec-action" href="/admin/driver/chauffeurs-registratie.html">
-        Beheer
-        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <a class="sec-link" href="/admin/driver/chauffeurs-registratie.html">
+        Registratie <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
     </div>
     <div class="rls-warn" id="rlsWarn">
-      <div class="rls-warn-title">
+      <div class="rls-title">
         <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        RLS blokkeert toegang tot chauffeurs
+        Supabase RLS blokkeert toegang
       </div>
-      <div class="rls-warn-body">
-        Voer dit SQL-commando uit in Supabase → SQL Editor:
-        <code>CREATE POLICY "admin_read_drivers" ON public.drivers FOR SELECT USING (true);</code>
+      <div class="rls-body">
+        Voer dit uit in Supabase → SQL Editor:
+        <code>CREATE POLICY "read_drivers" ON public.drivers FOR SELECT USING (true);</code>
       </div>
     </div>
-    <div class="drivers-grid" id="allDriversList"></div>
+    <div class="drivers-list" id="driversList"></div>
   </div>
 
 </div><!-- /content -->
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')">
+  <button class="nav-btn active" id="nav-dashboard" onclick="showView('dashboard')">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     <span class="nav-lbl">Dashboard</span>
     <span class="nav-badge" id="navBadge"></span>
   </button>
-  <button class="nav-item" id="nav-rides" onclick="showView('rides')">
+  <button class="nav-btn" id="nav-rides" onclick="showView('rides')">
     <svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
     <span class="nav-lbl">Ritten</span>
   </button>
   <button class="nav-fab" onclick="openModal('addModal')">
-    <div class="fab-circle">
+    <div class="fab">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </div>
     <span class="nav-lbl">Nieuw</span>
   </button>
-  <button class="nav-item" id="nav-map" onclick="showView('map')">
+  <button class="nav-btn" id="nav-map" onclick="showView('map')">
     <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
     <span class="nav-lbl">Kaart</span>
   </button>
-  <button class="nav-item" id="nav-drivers" onclick="showView('drivers')">
+  <button class="nav-btn" id="nav-drivers" onclick="showView('drivers')">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
     <span class="nav-lbl">Chauffeurs</span>
   </button>
@@ -809,47 +809,47 @@ body {
       </button>
     </div>
     <div class="modal-body">
-      <div class="f-section">
-        <div class="f-section-title">Passagier</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="f-sec">
+        <div class="f-sec-title">Passagier</div>
+        <div class="f-stack">
           <div class="f-row">
-            <div class="f-group"><label class="f-label">Naam</label><input class="f-input" id="f_name" placeholder="Volledige naam"></div>
-            <div class="f-group"><label class="f-label">Telefoon</label><input class="f-input" id="f_phone" placeholder="+31 6 ..."></div>
+            <div class="f-group"><label class="f-lbl">Naam</label><input class="f-input" id="fn" placeholder="Volledige naam"></div>
+            <div class="f-group"><label class="f-lbl">Telefoon</label><input class="f-input" id="fp" placeholder="+31 6 ..."></div>
           </div>
         </div>
       </div>
-      <div class="f-section">
-        <div class="f-section-title">Route</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div class="f-group"><label class="f-label">Van</label><input class="f-input" id="f_from" placeholder="Ophaallocatie"></div>
-          <div class="f-group"><label class="f-label">Naar</label><input class="f-input" id="f_to" placeholder="Bestemming"></div>
+      <div class="f-sec">
+        <div class="f-sec-title">Route</div>
+        <div class="f-stack">
+          <div class="f-group"><label class="f-lbl">Van</label><input class="f-input" id="ff" placeholder="Ophaallocatie"></div>
+          <div class="f-group"><label class="f-lbl">Naar</label><input class="f-input" id="ft" placeholder="Bestemming"></div>
         </div>
       </div>
-      <div class="f-section">
-        <div class="f-section-title">Details</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="f-sec">
+        <div class="f-sec-title">Details</div>
+        <div class="f-stack">
           <div class="f-row">
-            <div class="f-group"><label class="f-label">Datum & tijd</label><input class="f-input" type="datetime-local" id="f_time"></div>
-            <div class="f-group"><label class="f-label">Prijs (€)</label><input class="f-input" type="number" id="f_price" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="f-group"><label class="f-lbl">Datum &amp; tijd</label><input class="f-input" type="datetime-local" id="fdt"></div>
+            <div class="f-group"><label class="f-lbl">Prijs (€)</label><input class="f-input" type="number" id="fpr" placeholder="0.00" min="0" step="0.01"></div>
           </div>
           <div class="f-row">
-            <div class="f-group"><label class="f-label">Voertuig</label>
-              <select class="f-input" id="f_vehicle">
+            <div class="f-group"><label class="f-lbl">Voertuig</label>
+              <select class="f-input" id="fv">
                 <option value="sedan">Standaard</option>
                 <option value="electric">Elektrisch</option>
                 <option value="minibus">Minibus</option>
                 <option value="business">Zakelijk</option>
               </select>
             </div>
-            <div class="f-group"><label class="f-label">Betaling</label>
-              <select class="f-input" id="f_pay">
+            <div class="f-group"><label class="f-lbl">Betaling</label>
+              <select class="f-input" id="fpm">
                 <option value="cash">Contant</option>
                 <option value="pin">Pin</option>
                 <option value="online">Online</option>
               </select>
             </div>
           </div>
-          <div class="f-group"><label class="f-label">Notities</label><input class="f-input" id="f_notes" placeholder="Bagage, rolstoel, vlucht..."></div>
+          <div class="f-group"><label class="f-lbl">Notities</label><input class="f-input" id="fnt" placeholder="Bagage, rolstoel, vlucht..."></div>
         </div>
       </div>
       <button class="btn-submit" onclick="submitRide()">Rit aanmaken</button>
@@ -859,259 +859,251 @@ body {
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <svg id="toastIco" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toastMsg">–</span>
+  <svg id="toastIco" viewBox="0 0 24 24"></svg>
+  <span id="toastMsg"></span>
 </div>
 
 <script>
+/* ════ CONFIG ════ */
 const SB_URL  = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SB_ANON = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SB_URL, SB_ANON);
 
+const BUCKETS    = ["avatars","drivers","driver-photos","profile-photos","driver-images","photos"];
+const SB_STORAGE = SB_URL + "/storage/v1/object/public/";
+
 let allRides   = [];
 let allDrivers = [];
-let activeFilter = { dashFilter:'all', ridesFilter:'all' };
-let maps = {};
-let driverMarkers = {};
-let realtimeChannel = null;
-let refreshTimer = null;
-let curView = 'dashboard';
+let photoCache = {};
+let maps       = {};
+let markers    = {};
+let channel    = null;
+let timer      = null;
+let curView    = "dashboard";
+let filters    = { df:"all", rf:"all" };
 
-/* ── UTILS ── */
-const $ = id => document.getElementById(id);
-const eu = n => "€" + Number(n||0).toFixed(2);
-const pn = p => Number(String(p||"0").replace(/[€\s,]/g,"")) || 0;
-const todayStr = () => new Date().toISOString().slice(0,10);
-const inits = n => n ? n.split(" ").map(w=>w[0]||"").join("").slice(0,2).toUpperCase() : "?";
+/* ════ UTILS ════ */
+const $   = id => document.getElementById(id);
+const eu  = n  => "€" + Number(n||0).toFixed(2);
+const pn  = p  => Number(String(p||"0").replace(/[€\s,]/g,"")) || 0;
+const td  = () => new Date().toISOString().slice(0,10);
+const ini = n  => n ? n.trim().split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase() : "?";
+const avc = n  => "av-" + ((n||"A").charCodeAt(0) % 6);
 
 function fmtDate(s){ if(!s) return "–"; const d=new Date(s); return isNaN(d)?"–":d.toLocaleDateString("nl-NL",{day:"2-digit",month:"short"}); }
 function fmtTime(s){ if(!s) return "–"; const d=new Date(s); return isNaN(d)?"–":d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}); }
+function isLong(r){ const t=`${r.from_address||""} ${r.to_address||""}`.toLowerCase(); return ["schiphol","airport","brussel","düsseldorf","dusseldorf"].some(k=>t.includes(k))||pn(r.price)>=80; }
 
-function isLong(r){
-  const t=`${r.from_address||""} ${r.to_address||""}`.toLowerCase();
-  return ["schiphol","airport","brussel","brussels","düsseldorf","dusseldorf"].some(k=>t.includes(k))||pn(r.price)>=80;
-}
-
-/* ── TOAST ── */
+/* ════ TOAST ════ */
 function toast(msg, type="ok"){
-  const el=$("toast"); const ico=$("toastIco");
-  if(type==="ok") ico.innerHTML=`<polyline points="20 6 9 17 4 12"/>`;
-  else ico.innerHTML=`<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>`;
-  $("toastMsg").textContent=msg;
-  el.className=`toast ${type} show`;
-  setTimeout(()=>el.classList.remove("show"),3200);
+  const ok = type==="ok";
+  $("toastIco").innerHTML = ok
+    ? `<polyline points="20 6 9 17 4 12"/>`
+    : `<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>`;
+  $("toastMsg").textContent = msg;
+  const el = $("toast");
+  el.className = `toast ${type} show`;
+  setTimeout(() => el.classList.remove("show"), 3500);
 }
 
-/* ── VIEWS ── */
+/* ════ VIEWS ════ */
 function showView(v){
-  curView=v;
-  document.querySelectorAll(".view").forEach(el=>el.classList.remove("active"));
-  document.querySelectorAll(".nav-item,.nav-fab").forEach(el=>el.classList.remove("active"));
+  curView = v;
+  document.querySelectorAll(".view").forEach(e => e.classList.remove("active"));
+  document.querySelectorAll(".nav-btn,.nav-fab").forEach(e => e.classList.remove("active"));
   $("view-"+v)?.classList.add("active");
-  const ni=$("nav-"+v); if(ni) ni.classList.add("active");
+  const nb = $("nav-"+v); if(nb) nb.classList.add("active");
 
-  if(v==="map" && !maps.full){ initFullMap(); }
-  if(v==="drivers"){ renderAllDrivers(); }
-  if(v==="rides"){ renderRidesList("allRidesList","ridesFilter"); }
+  if(v==="map"     && !maps.full){ setTimeout(initFullMap, 100); }
+  if(v==="drivers" || v==="map") renderDrivers();
+  if(v==="rides")  renderRides("allRides","rf");
 }
 
-/* ── MODALS ── */
-function openModal(id){ $(id).classList.add("open"); }
+/* ════ MODALS ════ */
+function openModal(id) { $(id).classList.add("open"); }
 function closeModal(id){ $(id).classList.remove("open"); }
-document.querySelectorAll(".modal-bg").forEach(m=>{
-  m.addEventListener("click",e=>{ if(e.target===m) m.classList.remove("open"); });
-});
+document.querySelectorAll(".modal-bg").forEach(m =>
+  m.addEventListener("click", e => { if(e.target===m) m.classList.remove("open"); })
+);
 
-/* ── FILTER ── */
-function setFilter(f,el,containerId){
-  activeFilter[containerId]=f;
-  document.querySelectorAll(`#${containerId} .pill`).forEach(p=>p.classList.toggle("active",p===el));
-  if(containerId==="dashFilter") renderRidesList("dashRides","dashFilter",4);
-  else renderRidesList("allRidesList","ridesFilter");
+/* ════ PILLS / FILTER ════ */
+function setPill(el, gid){
+  document.querySelectorAll(`#${gid} .pill`).forEach(p => p.classList.toggle("active", p===el));
+  filters[gid] = el.dataset.f;
+  if(gid==="df") renderRides("dashRides","df",5);
+  else           renderRides("allRides","rf");
 }
 
-/* ── STATUS BADGE ── */
+/* ════ STATUS BADGE ════ */
 function stBadge(s){
-  const m={
-    pending:  ["st-pending","Wachtend"],
-    accepted: ["st-accepted","Geaccepteerd"],
-    "en-route":["st-enroute","Onderweg"],
-    arrived:  ["st-enroute","Gearriveerd"],
-    "in-ride":["st-inride","In rit"],
-    completed:["st-completed","Voltooid"],
-    cancelled:["st-cancelled","Geannuleerd"]
+  const m = {
+    pending:   ["st-pending",  "Wachtend"],
+    accepted:  ["st-accepted", "Geaccepteerd"],
+    "en-route":["st-enroute",  "Onderweg"],
+    arrived:   ["st-enroute",  "Gearriveerd"],
+    "in-ride": ["st-inride",   "In rit"],
+    completed: ["st-completed","Voltooid"],
+    cancelled: ["st-cancelled","Geannuleerd"]
   };
-  const[cls,lbl]=m[s]||m.pending;
+  const [cls,lbl] = m[s] || m.pending;
   return `<span class="st ${cls}"><span class="st-dot"></span>${lbl}</span>`;
 }
 
-/* ── RENDER RIDES ── */
-function filteredRides(filterId){
-  const f=activeFilter[filterId]||"all";
-  if(f==="all") return allRides;
-  return allRides.filter(r=>(r.status||"pending")===f);
+/* ════ AVATAR HTML ════ */
+function avHtml(name, size="sm", photo=null){
+  const cls = `av ${size} ${avc(name)}`;
+  const img = photo ? `<img src="${photo}" alt="${name}" onerror="this.remove()">` : "";
+  return `<div class="${cls}">${img}<span>${ini(name)}</span></div>`;
 }
 
-function rideCardHTML(r){
-  const ts=r.pickup_time||r.created_at;
-  const av=inits(r.customer_name);
-  const id=String(r.id).slice(-6).padStart(6,"0");
-  const ph=String(r.customer_phone||"").replace(/\D/g,"");
-  const waMsg=encodeURIComponent(`Hallo ${r.customer_name||""}! Uw ymaanyGO rit is bevestigd. Van: ${r.from_address||"–"} naar: ${r.to_address||"–"}. Prijs: ${r.price||"–"}. Bedankt!`);
+/* ════ RENDER RIDES ════ */
+function getFiltered(gid){
+  const f = filters[gid] || "all";
+  return f==="all" ? allRides : allRides.filter(r=>(r.status||"pending")===f);
+}
 
-  return `
-  <div class="swipe-wrap" id="card-${r.id}">
-    <div class="swipe-actions" id="sw-${r.id}">
-      <button class="sw-btn wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank')">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        WA
-      </button>
-      <button class="sw-btn del" onclick="cancelRide(${r.id})">
-        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-        Weg
-      </button>
-    </div>
-    <div class="ride-card-inner">
-      <div class="ride-card" onclick="toggleCard(${r.id})">
+function renderRides(containerId, filterId, limit=null){
+  const el = $(containerId); if(!el) return;
+  let rides = getFiltered(filterId);
+  if(limit) rides = rides.slice(0, limit);
+
+  if(!rides.length){
+    el.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <p>Geen ritten gevonden</p>
+      <small>Probeer een ander filter</small>
+    </div>`; return;
+  }
+
+  el.innerHTML = rides.map(r => {
+    const ts  = r.pickup_time || r.created_at;
+    const ph  = String(r.customer_phone||"").replace(/\D/g,"");
+    const id6 = String(r.id).slice(-6).padStart(6,"0");
+    const wam = encodeURIComponent(`Hallo ${r.customer_name||""}! Uw ymaanyGO rit is bevestigd.\nVan: ${r.from_address||"–"}\nNaar: ${r.to_address||"–"}\nPrijs: ${r.price||"–"}\nBedankt!`);
+    const photo = photoCache[r.customer_id] || null;
+
+    return `
+    <div class="ride-wrap" id="rw-${r.id}">
+      <div class="swipe-btns" id="sb-${r.id}">
+        <button class="sw-btn wa"  onclick="window.open('https://wa.me/${ph}?text=${wam}','_blank')">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WA
+        </button>
+        <button class="sw-btn del" onclick="cancelRide(${r.id})">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Weg
+        </button>
+      </div>
+      <div class="ride-card" onclick="toggleDetail(${r.id})">
         <div class="ride-top">
-          <span class="ride-id">#${id}</span>
+          <span class="ride-id">#${id6}</span>
           <div style="display:flex;align-items:center;gap:8px">
             ${stBadge(r.status||"pending")}
-            <span class="ride-time">
+            <span class="ride-time-badge">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               ${fmtTime(ts)}
             </span>
           </div>
         </div>
         <div class="ride-route">
-          <div class="route-row"><span class="route-dot a"></span>${r.from_address||"–"}</div>
-          <div class="route-divider"></div>
-          <div class="route-row"><span class="route-dot b"></span>${r.to_address||"–"}</div>
+          <div class="route-row"><span class="rdot a"></span>${r.from_address||"–"}</div>
+          <div class="rdiv"></div>
+          <div class="route-row"><span class="rdot b"></span>${r.to_address||"–"}</div>
         </div>
         <div class="ride-bottom">
-          <div class="ride-passenger">
-            <div class="ride-av">${av}</div>
+          <div class="passenger-row">
+            ${avHtml(r.customer_name||"?","sm",photo)}
             <div>
-              <div class="ride-pname">${r.customer_name||"–"}</div>
-              <div class="ride-pphone">${r.customer_phone||"–"}</div>
+              <div class="pname">${r.customer_name||"–"}</div>
+              <div class="pphone">${r.customer_phone||"–"}</div>
             </div>
           </div>
-          <div class="ride-right">
-            <div class="ride-price">${r.price||"–"}</div>
-          </div>
+          <div class="ride-price">${r.price||"–"}</div>
         </div>
-        <div class="ride-detail" id="detail-${r.id}">
-          <div class="detail-row">
-            <div class="detail-cell">
-              <div class="detail-lbl">Datum</div>
-              <div class="detail-val">${fmtDate(ts)} ${fmtTime(ts)}</div>
-            </div>
-            <div class="detail-cell">
-              <div class="detail-lbl">Voertuig</div>
-              <div class="detail-val">${r.vehicle_type||"Standaard"}</div>
-            </div>
+        <div class="ride-detail" id="rd-${r.id}">
+          <div class="detail-grid">
+            <div class="d-cell"><div class="d-lbl">Datum</div><div class="d-val">${fmtDate(ts)} ${fmtTime(ts)}</div></div>
+            <div class="d-cell"><div class="d-lbl">Voertuig</div><div class="d-val">${r.vehicle_type||"Standaard"}</div></div>
+            <div class="d-cell"><div class="d-lbl">Betaling</div><div class="d-val">${r.payment_method||"–"}</div></div>
+            <div class="d-cell"><div class="d-lbl">Status</div><div class="d-val">${r.payment_status||"onbetaald"}</div></div>
+            ${r.notes?`<div class="d-cell" style="grid-column:1/-1"><div class="d-lbl">Notities</div><div class="d-val">${r.notes}</div></div>`:""}
           </div>
-          <div class="detail-row">
-            <div class="detail-cell">
-              <div class="detail-lbl">Betaling</div>
-              <div class="detail-val">${r.payment_method||"–"} · ${r.payment_status||"onbetaald"}</div>
-            </div>
-            <div class="detail-cell">
-              <div class="detail-lbl">Prijs</div>
-              <div class="detail-val" style="color:var(--g2);font-size:16px">${r.price||"–"}</div>
-            </div>
-          </div>
-          ${r.notes?`<div class="detail-row"><div class="detail-cell" style="flex:1"><div class="detail-lbl">Notities</div><div class="detail-val" style="font-size:12px">${r.notes}</div></div></div>`:""}
-          <div class="ride-actions">
-            <button class="ra-btn wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank');event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-              WhatsApp
+          <div class="ride-acts">
+            <button class="ra wa" onclick="window.open('https://wa.me/${ph}?text=${wam}','_blank');event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WhatsApp
             </button>
-            <button class="ra-btn done" onclick="markDone(${r.id});event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Voltooid
+            <button class="ra done" onclick="markDone(${r.id});event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Voltooid
             </button>
-            <button class="ra-btn cancel" onclick="cancelRide(${r.id});event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Annuleer
+            <button class="ra del" onclick="cancelRide(${r.id});event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Annuleer
             </button>
           </div>
         </div>
       </div>
-    </div>
-  </div>`;
-}
+    </div>`;
+  }).join("");
 
-function toggleCard(id){
-  const d=$("detail-"+id);
-  if(d) d.classList.toggle("open");
-}
-
-function renderRidesList(containerId, filterId, limit=null){
-  const el=$(containerId); if(!el) return;
-  let rides=filteredRides(filterId);
-  if(limit) rides=rides.slice(0,limit);
-  if(!rides.length){
-    el.innerHTML=`<div class="empty">
-      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-      <p>Geen ritten gevonden</p>
-    </div>`; return;
-  }
-  el.innerHTML=rides.map(rideCardHTML).join("");
   initSwipe();
 }
 
-/* ── SWIPE ACTIONS ── */
+function toggleDetail(id){
+  const d = $("rd-"+id); if(d) d.classList.toggle("open");
+}
+
+/* ════ SWIPE ════ */
 function initSwipe(){
-  document.querySelectorAll(".swipe-wrap").forEach(wrap=>{
-    let startX=0, moved=false;
-    const sw=wrap.querySelector(".swipe-actions");
+  document.querySelectorAll(".ride-wrap").forEach(wrap => {
+    let sx=0, moved=false;
+    const sw = wrap.querySelector(".swipe-btns");
     if(!sw) return;
-    wrap.addEventListener("touchstart",e=>{ startX=e.touches[0].clientX; moved=false; },{passive:true});
-    wrap.addEventListener("touchmove",e=>{
-      const dx=e.touches[0].clientX-startX;
-      if(Math.abs(dx)>15) moved=true;
-      if(dx<-40) sw.classList.add("open");
+    wrap.addEventListener("touchstart", e => { sx=e.touches[0].clientX; moved=false; },{passive:true});
+    wrap.addEventListener("touchmove",  e => {
+      const dx = e.touches[0].clientX - sx;
+      if(Math.abs(dx)>12) moved=true;
+      if(dx<-50)  sw.classList.add("open");
       else if(dx>20) sw.classList.remove("open");
     },{passive:true});
   });
 }
 
-/* ── DRIVERS ── */
-function renderAllDrivers(){
-  const targets = ["allDriversList","driversList"];
-  targets.forEach(tid=>{
-    const el=document.getElementById(tid); if(!el) return;
+/* ════ RENDER DRIVERS ════ */
+function renderDrivers(){
+  const targets = ["driversList","mapDrivers"];
+  const warn    = $("rlsWarn");
+
+  targets.forEach(tid => {
+    const el=$(tid); if(!el) return;
     if(!allDrivers.length){
       el.innerHTML=`<div class="empty">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         <p>Geen chauffeurs gevonden</p>
-        <p style="font-size:11px;margin-top:6px;color:var(--t3)">Controleer de registratiepagina</p>
+        <small>Controleer Supabase RLS policies</small>
       </div>`; return;
     }
-    el.innerHTML = allDrivers.map(d=>{
+    el.innerHTML = allDrivers.map(d => {
       const name  = d.name||d.full_name||d.email||"Onbekend";
-      const veh   = d.vehicle||d.car||d.vehicle_type||"–";
+      const veh   = d.vehicle||d.car||d.voertuig||"–";
       const phone = d.phone||d.telefoon||"";
-      const cnt   = allRides.filter(r=>r.driver_id==d.id||r.driver_name==name||r.driver_email==d.email).length;
-      const sc = (d.status==="approved"||d.status==="active") ? "var(--g2)" : "var(--amber)";
-      const st = d.status==="approved"?"Actief":d.status==="pending"?"Wachtend":d.status||"–";
-      const photo = photoCache[d.id];
-      const avHtml = photo
-        ? `<div class="drv-av"><img src="${photo}" alt="${name}" onerror="this.style.display='none'"><span class="av-initials ${avColor(name)}" style="background:transparent">${inits(name)}</span></div>`
-        : `<div class="drv-av ${avColor(name)}"><span class="av-initials">${inits(name)}</span></div>`;
-      return `<div class="driver-card">
-        ${avHtml}
+      const cnt   = allRides.filter(r=>r.driver_id==d.id||r.driver_name==name).length;
+      const photo = photoCache["drv_"+d.id] || null;
+      const sOk   = d.status==="approved"||d.status==="active"||!d.status;
+      const sBadge= sOk
+        ? `<span class="drv-badge active">Actief</span>`
+        : `<span class="drv-badge ${d.status==="pending"?"pending":"inactive"}">${d.status||"–"}</span>`;
+
+      return `
+      <div class="driver-card">
+        ${avHtml(name,"md",photo)}
         <div class="drv-info">
           <div class="drv-name">${name}</div>
-          <div class="drv-sub">
+          <div class="drv-meta">
             <svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-            ${veh}${phone?" · "+phone:""}
+            ${veh}
+            ${phone?`· ${phone}`:""}
           </div>
-          <div style="margin-top:4px"><span style="font-size:10px;font-weight:700;color:${sc};background:${sc}22;padding:2px 8px;border-radius:99px">${st}</span></div>
+          ${sBadge}
         </div>
-        <div class="drv-rides">
-          <div class="drv-cnt" style="color:var(--g2)">${cnt}</div>
+        <div class="drv-stats">
+          <div class="drv-cnt">${cnt}</div>
           <div class="drv-lbl">ritten</div>
         </div>
       </div>`;
@@ -1119,80 +1111,101 @@ function renderAllDrivers(){
   });
 }
 
-
-/* ── MAP ── */
-function initMap(containerId, mapKey){
-  if(maps[mapKey]) return;
-  const center=[52.7, 4.9]; // Noord-Holland center
-  const m=L.map(containerId,{
-    center, zoom:9, zoomControl:false,
-    attributionControl:false
-  });
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    maxZoom:19
-  }).addTo(m);
-  L.control.zoom({position:"bottomright"}).addTo(m);
-  maps[mapKey]=m;
-  return m;
+/* ════ PHOTOS FROM SUPABASE STORAGE ════ */
+async function fetchPhoto(key, idOrName){
+  if(photoCache[key] !== undefined) return photoCache[key];
+  const tries = [
+    `${idOrName}.jpg`,`${idOrName}.png`,`${idOrName}.webp`,
+    `${idOrName.toString().replace(/\s+/g,"-").toLowerCase()}.jpg`
+  ];
+  for(const bucket of BUCKETS){
+    for(const file of tries){
+      try {
+        const url = `${SB_STORAGE}${bucket}/${file}`;
+        const r   = await fetch(url,{method:"HEAD"});
+        if(r.ok){ photoCache[key]=url; return url; }
+      } catch(e){}
+    }
+  }
+  photoCache[key] = null;
+  return null;
 }
 
-function initSmallMap(){ initMap("liveMap","small"); }
-function initFullMap() { initMap("fullMap","full"); setTimeout(()=>{ maps.full?.invalidateSize(); updateMapMarkers(); },300); }
+async function loadPhotos(){
+  // Check driver photo_url columns first
+  allDrivers.forEach(d => {
+    const url = d.photo_url||d.avatar_url||d.image_url||d.photo;
+    if(url) photoCache["drv_"+d.id] = url;
+  });
+  // Try storage for drivers without URL
+  const missing = allDrivers.filter(d => photoCache["drv_"+d.id]===undefined);
+  await Promise.all(missing.map(d => fetchPhoto("drv_"+d.id, d.id)));
+}
 
-function updateMapMarkers(){
-  // Clear old markers
-  Object.values(driverMarkers).forEach(m=>{ m.small?.remove(); m.full?.remove(); });
-  driverMarkers={};
+/* ════ MAP ════ */
+function makeMap(id){
+  if(maps[id]) return maps[id];
+  const m = L.map(id, {
+    center:[52.7,4.9], zoom:9,
+    zoomControl:false, attributionControl:false
+  });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(m);
+  L.control.zoom({position:"bottomright"}).addTo(m);
+  maps[id]=m; return m;
+}
 
-  // Demo drivers in Noord-Holland region if no real GPS data
-  const demoLocations=[
-    {id:"d1",name:"Demo Driver 1",lat:52.63,lng:4.75,status:"available"},
-    {id:"d2",name:"Demo Driver 2",lat:52.87,lng:5.03,status:"in-ride"},
-    {id:"d3",name:"Demo Driver 3",lat:52.47,lng:4.61,status:"available"},
+function initSmallMap(){ makeMap("liveMap");  updateMarkers(); }
+function initFullMap() { makeMap("fullMap"); setTimeout(()=>{ maps.fullMap?.invalidateSize(); updateMarkers(); },300); }
+
+function updateMarkers(){
+  // Clear
+  Object.values(markers).forEach(ms=>Object.values(ms).forEach(m=>m.remove()));
+  markers={};
+
+  const demo=[
+    {id:"d1",name:"Shamekh N.",  lat:52.63,lng:4.75,status:"available"},
+    {id:"d2",name:"Osama",       lat:52.87,lng:5.03,status:"in-ride"},
+    {id:"d3",name:"Nabil A.",    lat:52.47,lng:4.61,status:"available"},
+    {id:"d4",name:"Mohammed A.", lat:52.72,lng:4.88,status:"available"},
   ];
 
-  // Try real driver locations from Supabase
   db.from("driver_locations").select("*").then(({data})=>{
-    const locs = (data&&data.length) ? data : demoLocations;
-    const count=locs.length;
-    $("driverCount").textContent=count;
-    $("mapSub").textContent=`${count} chauffeur${count!==1?"s":""} actief in Noord-Holland`;
+    const locs = (data&&data.length) ? data : demo;
+    $("drvCount").textContent = locs.length;
+    $("mapSub").textContent   = `${locs.length} chauffeur${locs.length!==1?"s":""} actief`;
 
     locs.forEach(loc=>{
       if(!loc.lat||!loc.lng) return;
-      const color = loc.status==="in-ride" ? "#ffa726" : "#3bbf6b";
-      const n=loc.name||inits("D"+(loc.driver_id||loc.id||""));
+      const color  = loc.status==="in-ride" ? "#f39c12" : "#27ae60";
+      const name   = loc.name||ini("D"+(loc.driver_id||loc.id||""));
+      const initials = ini(name);
+      const photo  = photoCache["drv_"+(loc.driver_id||loc.id)];
+      const imgHtml= photo
+        ? `style="background:url('${photo}') center/cover;color:transparent"`
+        : `style="background:#fff;color:${color}"`;
+
       const icon=L.divIcon({
         className:"",
-        html:`<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,${color}aa,${color});border:2px solid ${color}66;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px ${color}44;font-size:10px;font-weight:800;color:#fff;font-family:Outfit,sans-serif">${inits(n)}</div>`,
-        iconSize:[32,32], iconAnchor:[16,16]
+        html:`<div ${imgHtml} style="width:34px;height:34px;border-radius:50%;border:2.5px solid ${color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;font-family:Outfit,sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.2);overflow:hidden">${photo?"":initials}</div>`,
+        iconSize:[34,34], iconAnchor:[17,17]
       });
-      ["small","full"].forEach(k=>{
+
+      markers[loc.id]={};
+      ["liveMap","fullMap"].forEach(k=>{
         if(!maps[k]) return;
-        const marker=L.marker([loc.lat,loc.lng],{icon})
+        markers[loc.id][k] = L.marker([loc.lat,loc.lng],{icon})
           .addTo(maps[k])
-          .bindPopup(`<b style="color:#0d1a10">${n}</b><br><small>${loc.status||"beschikbaar"}</small>`);
-        if(!driverMarkers[loc.id]) driverMarkers[loc.id]={};
-        driverMarkers[loc.id][k]=marker;
+          .bindPopup(`<b style="color:var(--text)">${name}</b><br><small style="color:var(--muted)">${loc.status==="in-ride"?"In rit":"Beschikbaar"}</small>`);
       });
     });
   });
 }
 
-/* ── SUPABASE REALTIME ── */
-function startRealtime(){
-  if(realtimeChannel) db.removeChannel(realtimeChannel);
-  realtimeChannel=db.channel("admin-realtime")
-    .on("postgres_changes",{event:"*",schema:"public",table:"rides"},()=>loadAll())
-    .on("postgres_changes",{event:"*",schema:"public",table:"driver_locations"},()=>updateMapMarkers())
-    .subscribe();
-}
-
-/* ── ACTIONS ── */
+/* ════ ACTIONS ════ */
 async function markDone(id){
   const {error}=await db.from("rides").update({status:"completed"}).eq("id",id);
   if(error){toast("Fout: "+error.message,"err");return;}
-  toast("Rit voltooid");
+  toast("Rit gemarkeerd als voltooid");
   loadAll();
 }
 
@@ -1205,24 +1218,22 @@ async function cancelRide(id){
 }
 
 async function submitRide(){
-  const name=$("f_name").value.trim();
-  const phone=$("f_phone").value.trim();
-  const from=$("f_from").value.trim();
-  const to=$("f_to").value.trim();
-  if(!name||!phone||!from||!to){toast("Vul alle velden in","err");return;}
+  const name=$("fn").value.trim(), phone=$("fp").value.trim();
+  const from=$("ff").value.trim(), to=$("ft").value.trim();
+  if(!name||!phone||!from||!to){toast("Vul alle verplichte velden in","err");return;}
   const {error}=await db.from("rides").insert([{
     customer_name:name, customer_phone:phone,
-    from_address:from, to_address:to,
-    pickup_time:$("f_time").value||new Date().toISOString(),
-    price:$("f_price").value?"€"+Number($("f_price").value).toFixed(2):null,
-    payment_method:$("f_pay").value, payment_status:"unpaid",
-    vehicle_type:$("f_vehicle").value, status:"pending",
-    notes:$("f_notes").value.trim()||null
+    from_address:from,  to_address:to,
+    pickup_time:$("fdt").value||new Date().toISOString(),
+    price:$("fpr").value?"€"+Number($("fpr").value).toFixed(2):null,
+    payment_method:$("fpm").value, payment_status:"unpaid",
+    vehicle_type:$("fv").value, status:"pending",
+    notes:$("fnt").value.trim()||null
   }]);
   if(error){toast("Fout: "+error.message,"err");return;}
   toast("Rit aangemaakt");
   closeModal("addModal");
-  ["f_name","f_phone","f_from","f_to","f_time","f_price","f_notes"].forEach(i=>$(i).value="");
+  ["fn","fp","ff","ft","fdt","fpr","fnt"].forEach(i=>$(i).value="");
   loadAll();
 }
 
@@ -1232,57 +1243,35 @@ function exportCSV(){
   const csv=rows.map(r=>r.map(v=>`"${v||""}"`).join(",")).join("\n");
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  a.download=`ymaanygo-${todayStr()}.csv`;
-  a.click();
-  toast("CSV geëxporteerd");
+  a.download=`ymaanygo-${td()}.csv`;
+  a.click(); toast("CSV geëxporteerd");
 }
 
-/* ── LOAD DRIVERS — tries multiple table names ── */
+/* ════ LOAD DRIVERS ════ */
 async function loadDrivers(){
-  // Lees drivers tabel — werkt als RLS policy SELECT toestaat voor ingelogde gebruikers
-  // Als RLS blokkeert: voer in Supabase SQL uit:
-  // CREATE POLICY "admin_read_drivers" ON drivers FOR SELECT USING (true);
-  
-  const {data, error} = await db.from("drivers").select("*");
-  
-  // Toon/verberg RLS waarschuwing
-  const rlsEl = document.getElementById("rlsWarn");
-  if(rlsEl) rlsEl.style.display = (error && error.code==="42501") ? "block" : "none";
-  
-  if(data && data.length > 0){
-    return data;
+  const {data,error} = await db.from("drivers").select("*");
+  if(error && $("rlsWarn")){
+    $("rlsWarn").style.display = error.code==="42501" ? "block" : "none";
   }
-  
-  // Fallback: lees uit profiles tabel als drivers leeg/geblokkeerd is
+  if(data&&data.length) return data;
+
+  // Fallback: profiles tabel
   const {data:pd} = await db.from("profiles").select("*");
   if(!pd) return [];
-  
-  // Filter op chauffeur-rollen of return allen als er geen rol-info is
-  const drvrs = pd.filter(p => {
-    if(!p.role) return false;
-    const r = p.role.toLowerCase();
-    return ["driver","chauffeur","chauffeurs"].includes(r);
-  });
-  
-  const result = (drvrs.length > 0 ? drvrs : []).map(p=>({
-    id:      p.id,
-    name:    p.name || p.full_name || p.email || "Onbekend",
-    vehicle: p.vehicle || p.car || p.voertuig || "–",
-    status:  p.status || "approved",
-    phone:   p.phone || p.telefoon || p.tel || "",
-    email:   p.email || ""
+  const drv = pd.filter(p=>["driver","chauffeur","chauffeurs"].includes((p.role||"").toLowerCase()));
+  return (drv.length?drv:pd).map(p=>({
+    id:p.id, name:p.name||p.full_name||p.email||"–",
+    vehicle:p.vehicle||p.car||"–", status:p.status||"approved",
+    phone:p.phone||p.telefoon||"", email:p.email,
+    photo_url:p.photo_url||p.avatar_url||null
   }));
-  
-  return result;
 }
 
-/* ── LOAD DATA ── */
+/* ════ MAIN LOAD ════ */
 async function loadAll(){
-  const ri=$("refreshIcon");
+  const ri=$("refreshIco");
   ri?.classList.add("spin");
-  // Verberg pull-to-refresh indicator
   $("ptr").classList.remove("active");
-  const td=todayStr();
 
   const [{data:rides}, drivers] = await Promise.all([
     db.from("rides").select("*").order("created_at",{ascending:false}),
@@ -1291,99 +1280,78 @@ async function loadAll(){
 
   allRides   = rides   || [];
   allDrivers = drivers || [];
-  
-  // Laad chauffeur foto's op de achtergrond
-  loadDriverPhotos(allDrivers).then(()=>{
-    renderAllDrivers();
-  });
 
-  const todayR  = allRides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td);
+  // Load photos
+  await loadPhotos();
+
+  const today   = allRides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td());
   const pending = allRides.filter(r=>!r.status||r.status==="pending");
   const active  = allRides.filter(r=>["accepted","en-route","arrived","in-ride"].includes(r.status));
-  const rev     = todayR.filter(r=>r.payment_status==="paid").reduce((s,r)=>s+pn(r.price),0);
+  const rev     = today.filter(r=>r.payment_status==="paid").reduce((s,r)=>s+pn(r.price),0);
 
+  // Greeting
   const h=new Date().getHours();
   $("greetTxt").textContent = h<12?"Goedemorgen":h<18?"Goedemiddag":"Goedenavond";
   $("todayTxt").textContent = new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"2-digit",month:"long"});
 
-  $("kpiToday").textContent  = todayR.length;
-  $("kpiPend").textContent   = pending.length;
-  $("kpiActive").textContent = active.length;
-  $("kpiRev").textContent    = eu(rev);
-  $("kpiDrvrs").textContent  = allDrivers.length;
+  // KPIs
+  $("kToday").textContent  = today.length;
+  $("kPend").textContent   = pending.length;
+  $("kActive").textContent = active.length;
+  $("kRev").textContent    = eu(rev);
+  $("kDrvrs").textContent  = allDrivers.length;
 
-  // Notif badges
-  const nb=$("notifDot");
-  if(nb) nb.style.display = pending.length ? "block" : "none";
-  const navB=$("navBadge");
-  if(navB){
-    navB.style.display = pending.length ? "flex" : "none";
-    navB.textContent   = pending.length;
-  }
+  // Badges
+  const nd=$("notifDot"), nb=$("navBadge");
+  if(nd) nd.style.display = pending.length?"block":"none";
+  if(nb){ nb.style.display=pending.length?"flex":"none"; nb.textContent=pending.length; }
 
-  // Render juiste view
-  renderRidesList("dashRides","dashFilter",5);
-  if(curView==="rides")   renderRidesList("allRidesList","ridesFilter");
-  if(curView==="drivers") renderAllDrivers();
-  if(curView==="map")     renderAllDrivers();
+  // Render
+  renderRides("dashRides","df",5);
+  if(curView==="rides")           renderRides("allRides","rf");
+  if(curView==="drivers"||curView==="map") renderDrivers();
 
-  updateMapMarkers();
-
-  setTimeout(()=>ri?.classList.remove("spin"), 400);
+  updateMarkers();
+  setTimeout(()=>ri?.classList.remove("spin"),400);
 }
 
-/* ── PULL TO REFRESH ── */
+/* ════ REALTIME ════ */
+function startRealtime(){
+  if(channel) db.removeChannel(channel);
+  channel = db.channel("rt")
+    .on("postgres_changes",{event:"*",schema:"public",table:"rides"},()=>loadAll())
+    .on("postgres_changes",{event:"*",schema:"public",table:"driver_locations"},()=>updateMarkers())
+    .subscribe();
+}
+
+/* ════ PULL TO REFRESH ════ */
 (function(){
-  let startY=0, pulling=false;
-  document.addEventListener("touchstart",e=>{
-    if(window.scrollY===0) startY=e.touches[0].clientY;
-  },{passive:true});
+  let sy=0, pulling=false;
+  document.addEventListener("touchstart",e=>{ if(window.scrollY===0) sy=e.touches[0].clientY; },{passive:true});
   document.addEventListener("touchmove",e=>{
-    if(!startY) return;
-    const dy=e.touches[0].clientY-startY;
-    if(dy>70 && !pulling){ pulling=true; $("ptr").classList.add("active"); }
+    if(!sy) return;
+    if(e.touches[0].clientY-sy>70&&!pulling){ pulling=true; $("ptr").classList.add("active"); }
   },{passive:true});
   document.addEventListener("touchend",()=>{
-    if(pulling){
-      loadAll();
-      setTimeout(()=>$("ptr").classList.remove("active"), 1200);
-    }
-    startY=0; pulling=false;
+    if(pulling){ loadAll(); setTimeout(()=>$("ptr").classList.remove("active"),1200); }
+    sy=0; pulling=false;
   });
 })();
 
-/* ── AUTH ── */
+/* ════ AUTH + INIT ════ */
 async function init(){
-  // Zorg dat Dashboard de startpagina is
   showView("dashboard");
 
   const {data:{session}} = await db.auth.getSession();
-  if(!session){
-    window.location.href="/admin/login.html";
-    return;
-  }
+  if(!session){ window.location.href="/admin/login.html"; return; }
 
-  const {data:p} = await db.from("profiles")
-    .select("role,name")
-    .eq("email", session.user.email)
-    .single();
-
-  if(!p || p.role !== "admin"){
-    await db.auth.signOut();
-    window.location.href="/admin/login.html";
-    return;
-  }
+  const {data:p} = await db.from("profiles").select("role").eq("email",session.user.email).single();
+  if(!p||p.role!=="admin"){ await db.auth.signOut(); window.location.href="/admin/login.html"; return; }
 
   await loadAll();
-
-  // Init kleine kaart na render
-  setTimeout(()=>{
-    initSmallMap();
-    updateMapMarkers();
-  }, 500);
-
+  setTimeout(initSmallMap, 600);
   startRealtime();
-  refreshTimer = setInterval(()=>{ loadAll(); updateMapMarkers(); }, 30000);
+  timer = setInterval(()=>{ loadAll(); updateMarkers(); }, 30000);
 }
 
 init();
