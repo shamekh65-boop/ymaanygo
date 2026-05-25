@@ -27,181 +27,90 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{
-  font-family:var(--f);background:var(--bg);color:var(--text);
-  min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
-  padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom));
-}
-
-/* TOPBAR */
-.topbar{
-  position:sticky;top:0;z-index:300;height:var(--top);
-  background:rgba(244,249,246,.97);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--line);padding:0 15px;
-  display:flex;align-items:center;gap:9px;
-  box-shadow:0 1px 10px rgba(11,46,31,.06);
-}
+body{font-family:var(--f);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
+.topbar{position:sticky;top:0;z-index:300;height:var(--top);background:rgba(244,249,246,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:0 15px;display:flex;align-items:center;gap:9px;box-shadow:0 1px 10px rgba(11,46,31,.06)}
 .tb-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex:1}
-.tb-mark{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent3),var(--accent2));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 10px rgba(46,204,113,.35);
-}
+.tb-mark{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--accent3),var(--accent2));display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(46,204,113,.35)}
 .tb-mark svg{width:19px;height:19px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .tb-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px}
 .tb-sub{font-size:10px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;font-weight:500}
 .tb-acts{display:flex;gap:7px;align-items:center}
-.tb-btn{
-  width:36px;height:36px;border-radius:var(--r-sm);
-  background:var(--bg2);border:1px solid var(--line2);
-  color:var(--muted);cursor:pointer;display:flex;align-items:center;
-  justify-content:center;transition:.15s;position:relative;font-family:var(--f);
-  box-shadow:var(--shadow);
-}
+.tb-btn{width:36px;height:36px;border-radius:var(--r-sm);background:var(--bg2);border:1px solid var(--line2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;position:relative;font-family:var(--f);box-shadow:var(--shadow)}
 .tb-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.surge-btn{
-  display:flex;align-items:center;gap:6px;padding:0 12px;height:36px;
-  border-radius:var(--r-sm);background:var(--amber-d);border:1px solid var(--amber-b);
-  color:var(--amber);font-family:var(--f);font-size:12px;font-weight:700;
-  cursor:pointer;text-decoration:none;white-space:nowrap;transition:.15s;
-  box-shadow:var(--shadow);
-}
+.surge-btn{display:flex;align-items:center;gap:6px;padding:0 12px;height:36px;border-radius:var(--r-sm);background:var(--amber-d);border:1px solid var(--amber-b);color:var(--amber);font-family:var(--f);font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;transition:.15s;box-shadow:var(--shadow)}
 .surge-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg2);display:none}
-
-/* PTR */
 .ptr{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--muted);height:0;overflow:hidden;transition:height .3s}
 .ptr.on{height:44px}
 .ptr svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* CONTENT */
 .content{padding:16px 14px 20px;max-width:680px;margin:0 auto}
-
-/* VIEWS */
-.view{display:none}
-.view.active{display:block}
-
-/* GREETING */
+.view{display:none}.view.active{display:block}
 .greeting{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
 .greeting h2{font-size:21px;font-weight:800;letter-spacing:-.4px}
 .greeting p{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
-.live-pill{
-  display:inline-flex;align-items:center;gap:5px;padding:5px 11px;
-  border-radius:99px;background:var(--g-dim);border:1px solid var(--g-bdr);
-  font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0
-}
+.live-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;background:var(--g-dim);border:1px solid var(--g-bdr);font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--accent2);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* KPIs */
 .kpi-row{display:flex;gap:10px;overflow-x:auto;margin:0 -14px;padding:0 14px 2px;scrollbar-width:none;margin-bottom:18px}
 .kpi-row::-webkit-scrollbar{display:none}
-.kpi{
-  flex-shrink:0;width:128px;background:var(--bg2);border:1px solid var(--line);
-  border-radius:var(--r);padding:14px 14px 12px;box-shadow:var(--shadow);
-  position:relative;overflow:hidden;transition:transform .2s;
-}
+.kpi{flex-shrink:0;width:128px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 12px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s}
 .kpi:active{transform:scale(.97)}
 .kpi-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
 .kpi-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ki-g{background:var(--g-dim);color:var(--accent)}
-.ki-a{background:var(--amber-d);color:var(--amber)}
-.ki-b{background:var(--blue-d);color:var(--blue)}
-.ki-r{background:var(--red-d);color:var(--red)}
+.ki-g{background:var(--g-dim);color:var(--accent)}.ki-a{background:var(--amber-d);color:var(--amber)}.ki-b{background:var(--blue-d);color:var(--blue)}.ki-r{background:var(--red-d);color:var(--red)}
 .kpi-val{font-size:26px;font-weight:800;letter-spacing:-.6px;line-height:1;color:var(--text)}
 .kpi-lbl{font-size:11px;color:var(--muted);margin-top:4px;font-weight:500}
 .kpi-bar{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--r) var(--r)}
 .kpi.kg .kpi-bar{background:linear-gradient(90deg,transparent,var(--accent2),transparent)}
 .kpi.ka .kpi-bar{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
 .kpi.kb .kpi-bar{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
-
-/* SECTION */
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
 .sec-title{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.2px}
 .sec-link{font-size:12px;color:var(--accent);font-weight:700;display:flex;align-items:center;gap:3px;text-decoration:none;background:none;border:none;cursor:pointer;font-family:var(--f)}
 .sec-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-
-/* FILTERS */
 .pills{display:flex;gap:6px;overflow-x:auto;margin:0 -14px;padding:0 14px 4px;scrollbar-width:none;margin-bottom:14px}
 .pills::-webkit-scrollbar{display:none}
-.pill{
-  flex-shrink:0;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;
-  cursor:pointer;background:var(--bg2);border:1px solid var(--line2);color:var(--muted);
-  font-family:var(--f);transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(11,46,31,.05);
-}
+.pill{flex-shrink:0;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg2);border:1px solid var(--line2);color:var(--muted);font-family:var(--f);transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(11,46,31,.05)}
 .pill.on{background:var(--g-dim);border-color:var(--g-bdr);color:var(--accent)}
-
-/* MAP */
 .map-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
 .map-hd{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-.map-hd .t{font-size:14px;font-weight:700}
-.map-hd .s{font-size:11px;color:var(--muted);margin-top:2px}
+.map-hd .t{font-size:14px;font-weight:700}.map-hd .s{font-size:11px;color:var(--muted);margin-top:2px}
 #liveMap,#fullMap{width:100%;background:var(--bg1)}
-#liveMap{height:230px}
-#fullMap{height:380px}
+#liveMap{height:230px}#fullMap{height:380px}
 .map-leg{padding:10px 15px;display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line)}
 .ml{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
 .mld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* RIDE CARDS */
 .rides-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .ride-wrap{position:relative;overflow:hidden;border-radius:var(--r)}
-.swipe-acts{
-  position:absolute;top:0;right:0;bottom:0;display:flex;align-items:stretch;
-  transform:translateX(100%);transition:transform .25s ease;overflow:hidden;
-  border-radius:0 var(--r) var(--r) 0;
-}
+.swipe-acts{position:absolute;top:0;right:0;bottom:0;display:flex;align-items:stretch;transform:translateX(100%);transition:transform .25s ease;overflow:hidden;border-radius:0 var(--r) var(--r) 0}
 .swipe-acts.on{transform:translateX(0)}
 .sw{width:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:700;cursor:pointer;border:none;font-family:var(--f)}
 .sw svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.sw.wa{background:#25D366;color:#fff}
-.sw.del{background:var(--red);color:#fff}
-
-.ride-card{
-  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);
-  overflow:hidden;box-shadow:var(--shadow);position:relative;z-index:1;cursor:pointer;
-}
+.sw.wa{background:#25D366;color:#fff}.sw.del{background:var(--red);color:#fff}
+.ride-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);position:relative;z-index:1;cursor:pointer}
 .ride-top{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .rid{font-size:10.5px;font-weight:700;color:var(--accent);background:var(--g-dim);padding:3px 8px;border-radius:5px;font-family:monospace}
 .rtb{display:flex;align-items:center;gap:8px}
 .rtime{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
 .rtime svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
 .ride-route{padding:0 14px 12px;display:flex;flex-direction:column;gap:5px}
 .rr{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.35;color:var(--text)}
 .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
-.rdot.a{background:var(--accent2)}
-.rdot.b{background:var(--red)}
+.rdot.a{background:var(--accent2)}.rdot.b{background:var(--red)}
 .rdiv{width:1.5px;height:8px;background:var(--line2);margin-left:3px}
-
-.ride-btm{
-  padding:10px 14px;border-top:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg3)
-}
+.ride-btm{padding:10px 14px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg3)}
 .pass-row{display:flex;align-items:center;gap:8px;min-width:0}
-.pname{font-size:12.5px;font-weight:700;color:var(--text)}
-.pphone{font-size:11px;color:var(--muted)}
+.pname{font-size:12.5px;font-weight:700;color:var(--text)}.pphone{font-size:11px;color:var(--muted)}
 .rprice{font-size:15px;font-weight:800;color:var(--text)}
-
-/* STATUS */
 .st{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:10.5px;font-weight:700}
 .std{width:5px;height:5px;border-radius:50%}
-.st-pending  {background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
-.st-pending .std{background:var(--amber)}
-.st-accepted {background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}
-.st-accepted .std{background:var(--blue);animation:pulse 1.4s infinite}
-.st-enroute  {background:var(--g-dim);color:var(--accent);border:1px solid var(--g-bdr)}
-.st-enroute .std{background:var(--accent2);animation:pulse 1.2s infinite}
-.st-inride   {background:rgba(39,174,96,.12);color:#1a7a44;border:1px solid rgba(39,174,96,.28)}
-.st-inride .std{background:var(--accent);animation:pulse .9s infinite}
-.st-completed{background:var(--bg3);color:var(--muted);border:1px solid var(--line2)}
-.st-completed .std{background:var(--muted2)}
-.st-cancelled{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
-.st-cancelled .std{background:var(--red)}
-
-/* DETAIL EXPAND */
+.st-pending{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}.st-pending .std{background:var(--amber)}
+.st-accepted{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}.st-accepted .std{background:var(--blue);animation:pulse 1.4s infinite}
+.st-enroute{background:var(--g-dim);color:var(--accent);border:1px solid var(--g-bdr)}.st-enroute .std{background:var(--accent2);animation:pulse 1.2s infinite}
+.st-inride{background:rgba(39,174,96,.12);color:#1a7a44;border:1px solid rgba(39,174,96,.28)}.st-inride .std{background:var(--accent);animation:pulse .9s infinite}
+.st-completed{background:var(--bg3);color:var(--muted);border:1px solid var(--line2)}.st-completed .std{background:var(--muted2)}
+.st-cancelled{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}.st-cancelled .std{background:var(--red)}
 .ride-detail{display:none;padding:12px 14px;border-top:1px solid var(--line);background:var(--bg1);flex-direction:column;gap:10px}
 .ride-detail.on{display:flex}
 .d-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -211,34 +120,16 @@ body{
 .acts{display:flex;gap:7px}
 .act{flex:1;padding:10px 8px;border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:var(--f);display:flex;align-items:center;justify-content:center;gap:5px;transition:.15s}
 .act svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.act.wa  {background:#25D366;color:#fff}
-.act.done{background:var(--g-dim);border:1px solid var(--g-bdr);color:var(--accent)}
-.act.del {background:var(--red-d);border:1px solid var(--red-b);color:var(--red)}
-
-/* AVATAR */
-.av{
-  flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-weight:800;background:#fff;overflow:hidden;position:relative;
-  border:2px solid var(--line2);box-shadow:0 1px 6px rgba(11,46,31,.10);
-}
+.act.wa{background:#25D366;color:#fff}.act.done{background:var(--g-dim);border:1px solid var(--g-bdr);color:var(--accent)}.act.del{background:var(--red-d);border:1px solid var(--red-b);color:var(--red)}
+.av{flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;background:#fff;overflow:hidden;position:relative;border:2px solid var(--line2);box-shadow:0 1px 6px rgba(11,46,31,.10)}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
 .av span{position:relative;z-index:1}
 .av.sm{width:28px;height:28px}.av.sm span{font-size:10px}
 .av.md{width:44px;height:44px}.av.md span{font-size:13px}
-/* colors */
-.avc0{color:#27ae60;border-color:rgba(46,204,113,.3)}
-.avc1{color:#2980b9;border-color:rgba(41,128,185,.3)}
-.avc2{color:#8e44ad;border-color:rgba(142,68,173,.3)}
-.avc3{color:#c0392b;border-color:rgba(192,57,43,.3)}
-.avc4{color:#d35400;border-color:rgba(211,84,0,.3)}
-.avc5{color:#16a085;border-color:rgba(22,160,133,.3)}
-
-/* DRIVER CARDS */
+.avc0{color:#27ae60;border-color:rgba(46,204,113,.3)}.avc1{color:#2980b9;border-color:rgba(41,128,185,.3)}.avc2{color:#8e44ad;border-color:rgba(142,68,173,.3)}.avc3{color:#c0392b;border-color:rgba(192,57,43,.3)}.avc4{color:#d35400;border-color:rgba(211,84,0,.3)}.avc5{color:#16a085;border-color:rgba(22,160,133,.3)}
 .drv-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.drv-card{
-  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);
-  padding:14px 16px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow)
-}
+.drv-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow)}
+.drv-card.pending-card{border-color:var(--amber-b);background:var(--amber-d)}
 .drv-info{flex:1;min-width:0}
 .drv-name{font-size:14px;font-weight:700;color:var(--text)}
 .drv-meta{font-size:11.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -247,37 +138,24 @@ body{
 .db-ok{background:var(--g-dim);color:var(--accent);border:1px solid var(--g-bdr)}
 .db-wait{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
 .db-off{background:var(--bg3);color:var(--muted);border:1px solid var(--line2)}
+.db-rej{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
 .drv-loc{display:flex;align-items:center;gap:4px;font-size:10.5px;margin-top:4px;font-weight:600}
 .drv-loc svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.loc-on{color:var(--accent)}
-.loc-off{color:var(--muted2)}
+.loc-on{color:var(--accent)}.loc-off{color:var(--muted2)}
 .drv-stats{text-align:right;flex-shrink:0}
 .drv-cnt{font-size:22px;font-weight:800;color:var(--accent);line-height:1}
 .drv-lbl{font-size:10px;color:var(--muted);font-weight:500}
-
-/* EMPTY */
+.drv-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.dact{padding:6px 12px;border-radius:var(--r-sm);font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:var(--f);transition:.15s}
+.dact.approve{background:var(--g-dim);color:var(--accent);border:1px solid var(--g-bdr)}
+.dact.reject{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
 .empty{text-align:center;padding:44px 20px;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .empty svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.4;opacity:.25;margin:0 auto 12px;display:block;stroke-linecap:round;stroke-linejoin:round}
-.empty p{font-size:13px;font-weight:600}
-.empty small{font-size:11px;color:var(--muted2);display:block;margin-top:4px}
-
-/* SKELETON */
+.empty p{font-size:13px;font-weight:600}.empty small{font-size:11px;color:var(--muted2);display:block;margin-top:4px}
 .skel{background:linear-gradient(90deg,var(--bg1) 25%,var(--bg3) 50%,var(--bg1) 75%);background-size:200% 100%;animation:shim 1.4s infinite;border-radius:var(--r);margin-bottom:10px}
 @keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* BOTTOM NAV */
-.bnav{
-  position:fixed;bottom:0;left:0;right:0;z-index:400;
-  background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
-  border-top:1px solid var(--line);box-shadow:0 -2px 14px rgba(11,46,31,.08);
-  height:var(--nav);display:flex;align-items:stretch;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-.nv{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;cursor:pointer;color:var(--muted2);border:none;background:none;
-  font-family:var(--f);transition:.15s;position:relative;text-decoration:none;
-}
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:400;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-top:1px solid var(--line);box-shadow:0 -2px 14px rgba(11,46,31,.08);height:var(--nav);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom)}
+.nv{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted2);border:none;background:none;font-family:var(--f);transition:.15s;position:relative;text-decoration:none}
 .nv.on{color:var(--accent)}
 .nv svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .nv-lbl{font-size:9.5px;font-weight:600}
@@ -287,21 +165,9 @@ body{
 .fab:active{transform:scale(.92)}
 .fab svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round}
 .nv-fab .nv-lbl{font-size:9.5px;font-weight:600;color:var(--muted)}
-
-/* MODAL */
-.modal-bg{
-  position:fixed;inset:0;z-index:600;
-  background:rgba(11,46,31,.3);backdrop-filter:blur(8px);
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .25s;
-}
+.modal-bg{position:fixed;inset:0;z-index:600;background:rgba(11,46,31,.3);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-bg.on{opacity:1;pointer-events:all}
-.modal{
-  background:var(--bg2);border:1px solid var(--line2);border-radius:22px 22px 0 0;
-  width:100%;max-width:600px;max-height:92dvh;overflow-y:auto;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-  padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 48px rgba(11,46,31,.16);
-}
+.modal{background:var(--bg2);border:1px solid var(--line2);border-radius:22px 22px 0 0;width:100%;max-width:600px;max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 48px rgba(11,46,31,.16)}
 .modal-bg.on .modal{transform:translateY(0)}
 .m-handle{width:38px;height:4px;border-radius:99px;background:var(--line2);margin:12px auto 0}
 .m-hd{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
@@ -315,41 +181,20 @@ body{
 .f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .f-g{display:flex;flex-direction:column;gap:5px}
 .f-lbl{font-size:12px;font-weight:700;color:var(--text)}
-.f-inp{
-  background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r-sm);
-  padding:11px 13px;font-family:var(--f);font-size:14px;color:var(--text);
-  outline:none;width:100%;transition:.15s;box-shadow:0 1px 4px rgba(11,46,31,.04);
-}
+.f-inp{background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r-sm);padding:11px 13px;font-family:var(--f);font-size:14px;color:var(--text);outline:none;width:100%;transition:.15s;box-shadow:0 1px 4px rgba(11,46,31,.04)}
 .f-inp:focus{border-color:var(--g-bdr);box-shadow:0 0 0 3px var(--g-dim)}
 .f-inp::placeholder{color:var(--muted2)}
-.btn-sub{
-  width:100%;padding:14px;border-radius:var(--r-md);
-  background:linear-gradient(135deg,var(--accent3),var(--accent2));
-  color:#fff;font-family:var(--f);font-size:15px;font-weight:800;
-  cursor:pointer;border:none;box-shadow:0 4px 16px rgba(46,204,113,.35);transition:.15s;
-}
+.btn-sub{width:100%;padding:14px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--accent3),var(--accent2));color:#fff;font-family:var(--f);font-size:15px;font-weight:800;cursor:pointer;border:none;box-shadow:0 4px 16px rgba(46,204,113,.35);transition:.15s}
 .btn-sub:active{transform:scale(.98)}
-
-/* TOAST */
-.toast{
-  position:fixed;z-index:999;bottom:calc(var(--nav) + 12px);
-  left:14px;right:14px;max-width:560px;margin:0 auto;
-  background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r-md);
-  padding:12px 16px;font-size:13px;font-weight:600;color:var(--text);
-  display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-md);
-  transform:translateY(8px);opacity:0;pointer-events:none;transition:.25s ease;
-}
+.toast{position:fixed;z-index:999;bottom:calc(var(--nav) + 12px);left:14px;right:14px;max-width:560px;margin:0 auto;background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r-md);padding:12px 16px;font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-md);transform:translateY(8px);opacity:0;pointer-events:none;transition:.25s ease}
 .toast.on{transform:none;opacity:1}
 .toast svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .toast.ok{border-color:var(--g-bdr)}.toast.ok svg{color:var(--accent)}
 .toast.err{border-color:var(--red-b)}.toast.err svg{color:var(--red)}
-
-/* RLS notice */
-.rls-box{background:var(--amber-d);border:1px solid var(--amber-b);border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px;display:none}
-.rls-t{font-size:12px;font-weight:700;color:var(--amber);display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.rls-t svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.rls-b{font-size:11px;color:var(--text);line-height:1.6}
-.rls-b code{background:rgba(255,255,255,.8);padding:3px 8px;border-radius:4px;font-size:10.5px;color:var(--accent3);display:block;margin-top:6px;font-family:monospace;word-break:break-all}
+.pending-banner{background:var(--amber-d);border:1px solid var(--amber-b);border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.pending-banner svg{width:16px;height:16px;stroke:var(--amber);fill:none;stroke-width:2;flex-shrink:0}
+.pending-banner-t{font-size:13px;font-weight:700;color:var(--amber);flex:1}
+.pending-banner-c{font-size:20px;font-weight:900;color:var(--amber)}
 </style>
 </head>
 <body>
@@ -368,7 +213,7 @@ body{
     <button class="tb-btn" onclick="loadAll()" title="Verversen">
       <svg id="refreshIco" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
     </button>
-    <button class="tb-btn">
+    <button class="tb-btn" onclick="showView('drivers')">
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span class="notif-dot" id="notifDot"></span>
     </button>
@@ -388,6 +233,14 @@ body{
       <div><h2 id="greetTxt">Goedemorgen</h2><p id="todayTxt">–</p></div>
       <div class="live-pill"><span class="live-dot"></span>Live</div>
     </div>
+
+    <!-- Pending drivers banner -->
+    <div class="pending-banner" id="pendingBanner" style="display:none" onclick="showView('drivers')">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="pending-banner-t">Nieuwe chauffeurs wachten op goedkeuring</div>
+      <div class="pending-banner-c" id="pendingDrvCount">0</div>
+    </div>
+
     <div class="kpi-row">
       <div class="kpi kg"><div class="kpi-ico ki-g"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><div class="kpi-val" id="kToday">–</div><div class="kpi-lbl">Vandaag</div><div class="kpi-bar"></div></div>
       <div class="kpi ka"><div class="kpi-ico ki-a"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="kpi-val" id="kPend">–</div><div class="kpi-lbl">Wachtend</div><div class="kpi-bar"></div></div>
@@ -459,12 +312,15 @@ body{
   <div class="view" id="view-drivers">
     <div class="sec-hd" style="margin-bottom:14px">
       <div class="sec-title">Chauffeurs</div>
-      <a class="sec-link" href="/admin/driver/chauffeurs-registratie.html">Registratie <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <a class="sec-link" href="/admin/driver/chauffeurs-registratie.html">+ Registratie <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
     </div>
-    <div class="rls-box" id="rlsBox">
-      <div class="rls-t"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>RLS blokkeert toegang</div>
-      <div class="rls-b">Voer dit uit in Supabase → SQL Editor:<code>CREATE POLICY "read_all_drivers" ON public.drivers FOR SELECT USING (true);</code></div>
+    <!-- Pending section -->
+    <div id="pendingSection" style="display:none;margin-bottom:18px">
+      <div class="sec-title" style="margin-bottom:10px;color:var(--amber)">⏳ Wachten op goedkeuring</div>
+      <div class="drv-list" id="pendingDriversList"></div>
     </div>
+    <!-- Approved section -->
+    <div class="sec-title" style="margin-bottom:10px">✅ Actieve chauffeurs</div>
     <div class="drv-list" id="driversList"></div>
   </div>
 
@@ -492,6 +348,7 @@ body{
   <button class="nv" id="nav-drivers" onclick="showView('drivers')">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
     <span class="nv-lbl">Chauffeurs</span>
+    <span class="nv-badge" id="drvBadge"></span>
   </button>
 </nav>
 
@@ -519,11 +376,9 @@ const SB_URL  = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SB_ANON = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
 const db = supabase.createClient(SB_URL, SB_ANON);
 const SB_STORE = SB_URL + "/storage/v1/object/public/";
-const BUCKETS  = ["avatars","drivers","driver-photos","profile-photos","photos"];
 
 let rides=[], drivers=[], locs=[], photos={}, maps={}, markers={}, rtChan=null, autoTimer=null, curView="dashboard", fil={df:"all",rf:"all"};
 
-// ── UTILS ──
 const $ = id => document.getElementById(id);
 const eu = n => "€"+Number(n||0).toFixed(2);
 const pn = p => Number(String(p||"0").replace(/[€\s,]/g,""))||0;
@@ -533,17 +388,13 @@ const avc = n => "avc"+((n||"A").charCodeAt(0)%6);
 const fmtDate = s => { if(!s)return"–"; const d=new Date(s); return isNaN(d)?"–":d.toLocaleDateString("nl-NL",{day:"2-digit",month:"short"}); };
 const fmtTime = s => { if(!s)return"–"; const d=new Date(s); return isNaN(d)?"–":d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}); };
 
-// ── TOAST ──
 function toast(msg,type="ok"){
-  $("toastIco").innerHTML = type==="ok"
-    ? `<polyline points="20 6 9 17 4 12"/>`
-    : `<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>`;
+  $("toastIco").innerHTML = type==="ok" ? `<polyline points="20 6 9 17 4 12"/>` : `<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/>`;
   $("toastMsg").textContent=msg;
   const el=$("toast"); el.className=`toast ${type} on`;
   setTimeout(()=>el.classList.remove("on"),3500);
 }
 
-// ── VIEWS ──
 function showView(v){
   curView=v;
   document.querySelectorAll(".view").forEach(e=>e.classList.remove("active"));
@@ -555,33 +406,28 @@ function showView(v){
   if(v==="rides") renderRides("allRides","rf");
 }
 
-// ── MODALS ──
 function openModal(id){$(id).classList.add("on")}
 function closeModal(id){$(id).classList.remove("on")}
 document.querySelectorAll(".modal-bg").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
 
-// ── PILLS ──
 function setPill(el,gid){
   document.querySelectorAll(`#${gid} .pill`).forEach(p=>p.classList.toggle("on",p===el));
   fil[gid]=el.dataset.f;
   gid==="df"?renderRides("dashRides","df",5):renderRides("allRides","rf");
 }
 
-// ── STATUS ──
 function stBadge(s){
   const m={pending:["st-pending","Wachtend"],accepted:["st-accepted","Geaccepteerd"],"en-route":["st-enroute","Onderweg"],arrived:["st-enroute","Gearriveerd"],"in-ride":["st-inride","In rit"],completed:["st-completed","Voltooid"],cancelled:["st-cancelled","Geannuleerd"]};
   const[cls,lbl]=m[s]||m.pending;
   return `<span class="st ${cls}"><span class="std"></span>${lbl}</span>`;
 }
 
-// ── AVATAR ──
 function avHTML(name,size,photo){
   const cls=`av ${size} ${avc(name)}`;
   const img=photo?`<img src="${photo}" alt="" onerror="this.remove()">`:"";
   return `<div class="${cls}">${img}<span>${ini(name)}</span></div>`;
 }
 
-// ── RENDER RIDES ──
 function getFiltered(gid){
   const f=fil[gid]||"all";
   return f==="all"?rides:rides.filter(r=>(r.status||"pending")===f);
@@ -604,30 +450,13 @@ function renderRides(cid,fid,limit=null){
     return `
     <div class="ride-wrap" id="rw-${r.id}">
       <div class="swipe-acts" id="sa-${r.id}">
-        <button class="sw wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank')">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WA
-        </button>
-        <button class="sw del" onclick="cancelRide(${r.id})">
-          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Weg
-        </button>
+        <button class="sw wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WA</button>
+        <button class="sw del" onclick="cancelRide('${r.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Weg</button>
       </div>
-      <div class="ride-card" onclick="toggleDetail(${r.id})">
-        <div class="ride-top">
-          <span class="rid">#${id6}</span>
-          <div class="rtb">${stBadge(r.status||"pending")}<span class="rtime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${fmtTime(ts)}</span></div>
-        </div>
-        <div class="ride-route">
-          <div class="rr"><span class="rdot a"></span>${r.from_address||"–"}</div>
-          <div class="rdiv"></div>
-          <div class="rr"><span class="rdot b"></span>${r.to_address||"–"}</div>
-        </div>
-        <div class="ride-btm">
-          <div class="pass-row">
-            ${avHTML(r.customer_name||"?","sm",photo)}
-            <div><div class="pname">${r.customer_name||"–"}</div><div class="pphone">${r.customer_phone||"–"}</div></div>
-          </div>
-          <div class="rprice">${r.price||"–"}</div>
-        </div>
+      <div class="ride-card" onclick="toggleDetail('${r.id}')">
+        <div class="ride-top"><span class="rid">#${id6}</span><div class="rtb">${stBadge(r.status||"pending")}<span class="rtime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${fmtTime(ts)}</span></div></div>
+        <div class="ride-route"><div class="rr"><span class="rdot a"></span>${r.from_address||"–"}</div><div class="rdiv"></div><div class="rr"><span class="rdot b"></span>${r.to_address||"–"}</div></div>
+        <div class="ride-btm"><div class="pass-row">${avHTML(r.customer_name||"?","sm",photo)}<div><div class="pname">${r.customer_name||"–"}</div><div class="pphone">${r.customer_phone||"–"}</div></div></div><div class="rprice">${r.price||"–"}</div></div>
         <div class="ride-detail" id="rd-${r.id}">
           <div class="d-grid">
             <div class="dc"><div class="dl">Datum</div><div class="dv">${fmtDate(ts)} ${fmtTime(ts)}</div></div>
@@ -637,15 +466,9 @@ function renderRides(cid,fid,limit=null){
             ${r.notes?`<div class="dc" style="grid-column:1/-1"><div class="dl">Notities</div><div class="dv">${r.notes}</div></div>`:""}
           </div>
           <div class="acts">
-            <button class="act wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank');event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WhatsApp
-            </button>
-            <button class="act done" onclick="markDone(${r.id});event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Voltooid
-            </button>
-            <button class="act del" onclick="cancelRide(${r.id});event.stopPropagation()">
-              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Annuleer
-            </button>
+            <button class="act wa" onclick="window.open('https://wa.me/${ph}?text=${waMsg}','_blank');event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WhatsApp</button>
+            <button class="act done" onclick="markDone('${r.id}');event.stopPropagation()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Voltooid</button>
+            <button class="act del" onclick="cancelRide('${r.id}');event.stopPropagation()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Annuleer</button>
           </div>
         </div>
       </div>
@@ -656,80 +479,95 @@ function renderRides(cid,fid,limit=null){
 
 function toggleDetail(id){$("rd-"+id)?.classList.toggle("on")}
 
-// ── SWIPE ──
 function initSwipe(){
   document.querySelectorAll(".ride-wrap").forEach(w=>{
     let sx=0;
     const sa=w.querySelector(".swipe-acts"); if(!sa)return;
     w.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
-    w.addEventListener("touchmove",e=>{
-      const dx=e.touches[0].clientX-sx;
-      if(dx<-50) sa.classList.add("on");
-      else if(dx>20) sa.classList.remove("on");
-    },{passive:true});
+    w.addEventListener("touchmove",e=>{const dx=e.touches[0].clientX-sx;if(dx<-50)sa.classList.add("on");else if(dx>20)sa.classList.remove("on");},{passive:true});
   });
 }
 
-// ── RENDER DRIVERS ──
+/* ── DRIVER RENDER — pending منفصل + approve/reject ── */
 function renderDrivers(){
+  const pending = drivers.filter(d => d.status === "pending");
+  const approved = drivers.filter(d => !d.status || d.status === "approved" || d.status === "active");
+
+  // Pending section
+  const ps = $("pendingSection");
+  if(ps) ps.style.display = pending.length ? "block" : "none";
+
+  const renderCard = (d, isPending) => {
+    const name=d.name||d.full_name||d.email||"Onbekend";
+    const veh=d.vehicle_type||d.vehicle||"–";
+    const plate=d.license_plate||"";
+    const phone=d.phone||"";
+    const cnt=rides.filter(r=>r.driver_id==d.id).length;
+    const photo=photos["drv_"+d.id]||null;
+    const drvLoc=locs.find(l=>l.driver_id==d.id);
+    const locHtml=drvLoc
+      ?`<div class="drv-loc loc-on"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>GPS actief · ${fmtTime(drvLoc.updated_at)}</div>`
+      :`<div class="drv-loc loc-off"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Geen GPS</div>`;
+    const approveRow = isPending ? `<div class="drv-acts"><button class="dact approve" onclick="approveDriver('${d.id}')">✓ Goedkeuren</button><button class="dact reject" onclick="rejectDriver('${d.id}')">✗ Afwijzen</button></div>` : "";
+    return `
+    <div class="drv-card${isPending?" pending-card":""}">
+      ${avHTML(name,"md",photo)}
+      <div class="drv-info">
+        <div class="drv-name">${name}</div>
+        <div class="drv-meta"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>${veh}${plate?" · "+plate:""}${phone?" · "+phone:""}</div>
+        ${isPending?'<span class="drv-badge db-wait">⏳ Wachtend</span>':'<span class="drv-badge db-ok">✓ Actief</span>'}
+        ${locHtml}
+        ${approveRow}
+      </div>
+      <div class="drv-stats"><div class="drv-cnt">${cnt}</div><div class="drv-lbl">ritten</div></div>
+    </div>`;
+  };
+
+  ["pendingDriversList"].forEach(tid=>{
+    const el=$(tid); if(!el)return;
+    el.innerHTML = pending.length ? pending.map(d=>renderCard(d,true)).join("") : "";
+  });
+
   ["driversList","mapDrivers"].forEach(tid=>{
     const el=$(tid); if(!el)return;
-    if(!drivers.length){
-      el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><p>Geen chauffeurs</p><small>Controleer Supabase RLS</small></div>`;
+    if(!approved.length){
+      el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><p>Geen actieve chauffeurs</p></div>`;
       return;
     }
-    el.innerHTML=drivers.map(d=>{
-      const name=d.name||d.full_name||d.email||"Onbekend";
-      const veh=d.vehicle||d.car||d.voertuig||"–";
-      const phone=d.phone||d.telefoon||"";
-      const cnt=rides.filter(r=>r.driver_id==d.id||r.driver_name==name).length;
-      const photo=photos["drv_"+d.id]||null;
-      const sOk=!d.status||d.status==="approved"||d.status==="active";
-      const sCls=sOk?"db-ok":d.status==="pending"?"db-wait":"db-off";
-      const sTxt=sOk?"Actief":d.status==="pending"?"Wachtend":d.status||"–";
-      // Check if driver has realtime location
-      const drvLoc=locs.find(l=>l.driver_id==d.id||l.driver_name==name);
-      const locHtml=drvLoc
-        ?`<div class="drv-loc loc-on"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>GPS actief · ${fmtTime(drvLoc.updated_at)}</div>`
-        :`<div class="drv-loc loc-off"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Geen GPS</div>`;
-      return `
-      <div class="drv-card">
-        ${avHTML(name,"md",photo)}
-        <div class="drv-info">
-          <div class="drv-name">${name}</div>
-          <div class="drv-meta"><svg viewBox="0 0 24 24"><path d="M5 11l1.5-5h11L19 11"/><rect x="2" y="11" width="20" height="7" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>${veh}${phone?" · "+phone:""}</div>
-          <span class="drv-badge ${sCls}">${sTxt}</span>
-          ${locHtml}
-        </div>
-        <div class="drv-stats"><div class="drv-cnt">${cnt}</div><div class="drv-lbl">ritten</div></div>
-      </div>`;
-    }).join("");
+    el.innerHTML = approved.map(d=>renderCard(d,false)).join("");
   });
 }
 
-// ── PHOTOS — driver-avatars/{id}/profile.jpeg ──
-function driverPhotoUrl(id){
-  // Probeer eerst profile.jpeg, dan profile.jpg
-  return `${SB_STORE}driver-avatars/${id}/profile.jpeg`;
+/* ── APPROVE / REJECT ── */
+async function approveDriver(id){
+  const{error}=await db.from("drivers").update({status:"approved"}).eq("id",id);
+  if(error){toast("Fout: "+error.message,"err");return;}
+  // Update ook profiles
+  await db.from("profiles").update({role:"driver"}).eq("id",id);
+  toast("✓ Chauffeur goedgekeurd!"); loadAll();
 }
+async function rejectDriver(id){
+  if(!confirm("Chauffeur afwijzen?"))return;
+  const{error}=await db.from("drivers").update({status:"rejected"}).eq("id",id);
+  if(error){toast("Fout: "+error.message,"err");return;}
+  toast("Chauffeur afgewezen"); loadAll();
+}
+
+function driverPhotoUrl(id){return `${SB_STORE}driver-avatars/${id}/profile.jpeg`}
 
 async function loadPhotos(){
-  // Check eerst photo_url kolom in drivers tabel
   drivers.forEach(d=>{
-    const u=d.photo_url||d.avatar_url||d.image_url;
-    if(u){ photos["drv_"+d.id]=u; return; }
-    // Gebruik driver-avatars bucket met driver id
-    photos["drv_"+d.id] = driverPhotoUrl(d.id);
+    const u=d.photo_url||d.avatar_url||d.profile_photo;
+    if(u){photos["drv_"+d.id]=u;return;}
+    photos["drv_"+d.id]=driverPhotoUrl(d.id);
   });
 }
 
-// ── MAP ──
 function makeMap(id){
   if(maps[id])return maps[id];
   const m=L.map(id,{center:[52.7,4.9],zoom:9,zoomControl:false,attributionControl:false});
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(m);
   L.control.zoom({position:"bottomright"}).addTo(m);
-  // Custom attrib
   L.control.attribution({prefix:'© OpenStreetMap'}).addTo(m);
   maps[id]=m; return m;
 }
@@ -738,38 +576,20 @@ function initSmallMap(){makeMap("liveMap"); updateMarkers();}
 function initFullMap(){makeMap("fullMap"); setTimeout(()=>{maps["fullMap"]?.invalidateSize(); updateMarkers();},300);}
 
 function updateMarkers(){
-  // Clear old
   Object.values(markers).forEach(ms=>Object.values(ms).forEach(m=>m.remove()));
   markers={};
-
-  const activeLocs=locs.length>0?locs:[];
+  const activeLocs=locs.filter(l=>l.lat&&l.lng&&l.status!=="offline");
   $("drvCount").textContent=activeLocs.length;
-  $("mapSub").textContent=activeLocs.length
-    ?`${activeLocs.length} chauffeur${activeLocs.length!==1?"s":""} actief in Noord-Holland`
-    :"Geen GPS data — voer setup SQL uit";
-
+  $("mapSub").textContent=activeLocs.length?`${activeLocs.length} chauffeur${activeLocs.length!==1?"s":""} actief`:"Geen GPS data";
   if(!activeLocs.length) return;
-
   const bounds=[];
   activeLocs.forEach(loc=>{
-    if(!loc.lat||!loc.lng) return;
     bounds.push([loc.lat,loc.lng]);
-    const color=loc.status==="in-ride"?"#e67e22":loc.status==="offline"?"#95a5a6":"#27ae60";
+    const color=loc.status==="in-ride"?"#e67e22":"#27ae60";
     const name=loc.driver_name||"?";
-    const photoUrl = driverPhotoUrl(loc.driver_id);
-    const fallback = ini(name);
-    const iconHtml = `
-      <div style="width:38px;height:38px;border-radius:50%;background:#fff;border:2.5px solid ${color};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,0,0,.22);overflow:hidden;position:relative">
-        <img src="${photoUrl}" 
-             style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%"
-             onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-        <span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:Outfit,sans-serif;color:${color};background:#fff">${fallback}</span>
-      </div>`;
-    const icon=L.divIcon({
-      className:"",
-      html: iconHtml,
-      iconSize:[38,38],iconAnchor:[19,19]
-    });
+    const photoUrl=driverPhotoUrl(loc.driver_id);
+    const iconHtml=`<div style="width:38px;height:38px;border-radius:50%;background:#fff;border:2.5px solid ${color};display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,0,0,.22);overflow:hidden;position:relative"><img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:Outfit,sans-serif;color:${color};background:#fff">${ini(name)}</span></div>`;
+    const icon=L.divIcon({className:"",html:iconHtml,iconSize:[38,38],iconAnchor:[19,19]});
     markers[loc.driver_id]={};
     ["liveMap","fullMap"].forEach(k=>{
       if(!maps[k])return;
@@ -778,47 +598,33 @@ function updateMarkers(){
       markers[loc.driver_id][k]=m;
     });
   });
-
-  // Fit map to markers
-  if(bounds.length>0){
-    ["liveMap","fullMap"].forEach(k=>{
-      if(maps[k]) maps[k].fitBounds(bounds,{padding:[30,30],maxZoom:12});
-    });
-  }
+  if(bounds.length>0){["liveMap","fullMap"].forEach(k=>{if(maps[k])maps[k].fitBounds(bounds,{padding:[30,30],maxZoom:12});})}
 }
 
-// ── REALTIME ──
 function startRealtime(){
   if(rtChan) db.removeChannel(rtChan);
   rtChan=db.channel("admin-rt")
     .on("postgres_changes",{event:"*",schema:"public",table:"rides"},()=>loadAll())
-    .on("postgres_changes",{event:"*",schema:"public",table:"drivers"}, payload=>{
-      // Nieuwe chauffeur geregistreerd — herlaad alles
+    .on("postgres_changes",{event:"*",schema:"public",table:"drivers"},payload=>{
       if(payload.eventType==="INSERT"){
-        toast("Nieuwe chauffeur: "+( payload.new?.name||"–"));
+        toast("🆕 Nieuwe chauffeur aanmelding: "+(payload.new?.name||"–"));
         loadAll();
-      }
+      } else loadAll();
     })
     .on("postgres_changes",{event:"*",schema:"public",table:"driver_locations"},payload=>{
-      const newLoc=payload.new;
-      if(!newLoc) return;
+      const newLoc=payload.new; if(!newLoc) return;
       const idx=locs.findIndex(l=>l.driver_id===newLoc.driver_id);
       if(idx>=0) locs[idx]=newLoc; else locs.push(newLoc);
-      // Voeg nieuwe driver toe aan lijst als niet bekend
-      if(!drivers.find(d=>d.id===newLoc.driver_id)){
-        loadAll(); return;
-      }
-      updateMarkers();
-      renderDrivers();
+      if(!drivers.find(d=>d.id===newLoc.driver_id)){loadAll();return;}
+      updateMarkers(); renderDrivers();
     })
     .subscribe(status=>console.log("Realtime:",status));
 }
 
-// ── ACTIONS ──
 async function markDone(id){
   const{error}=await db.from("rides").update({status:"completed"}).eq("id",id);
   if(error){toast("Fout: "+error.message,"err");return;}
-  toast("Rit gemarkeerd als voltooid"); loadAll();
+  toast("Rit voltooid"); loadAll();
 }
 async function cancelRide(id){
   if(!confirm("Rit annuleren?"))return;
@@ -829,17 +635,9 @@ async function cancelRide(id){
 async function submitRide(){
   const name=$("fn").value.trim(),phone=$("fp").value.trim(),from=$("ff").value.trim(),to=$("ft").value.trim();
   if(!name||!phone||!from||!to){toast("Vul alle verplichte velden in (*)","err");return;}
-  const{error}=await db.from("rides").insert([{
-    customer_name:name,customer_phone:phone,from_address:from,to_address:to,
-    pickup_time:$("fdt").value||new Date().toISOString(),
-    price:$("fpr").value?"€"+Number($("fpr").value).toFixed(2):null,
-    payment_method:$("fpm").value,payment_status:"unpaid",
-    vehicle_type:$("fv").value,status:"pending",
-    notes:$("fnt").value.trim()||null
-  }]);
+  const{error}=await db.from("rides").insert([{customer_name:name,customer_phone:phone,from_address:from,to_address:to,pickup_time:$("fdt").value||new Date().toISOString(),price:$("fpr").value?"€"+Number($("fpr").value).toFixed(2):null,payment_method:$("fpm").value,payment_status:"unpaid",vehicle_type:$("fv").value,status:"pending",notes:$("fnt").value.trim()||null}]);
   if(error){toast("Fout: "+error.message,"err");return;}
-  toast("Rit aangemaakt");
-  closeModal("addModal");
+  toast("Rit aangemaakt"); closeModal("addModal");
   ["fn","fp","ff","ft","fdt","fpr","fnt"].forEach(i=>$(i).value="");
   loadAll();
 }
@@ -853,51 +651,32 @@ function exportCSV(){
   toast("CSV geëxporteerd");
 }
 
-// ── LOAD DRIVERS ──
 async function loadDrivers(){
-  const{data,error}=await db.from("drivers").select("*");
-  const rls=$("rlsBox");
-  if(rls) rls.style.display=(error&&error.code==="42501")?"block":"none";
-  if(data&&data.length>0) return data;
-  // Fallback: profiles
-  const{data:pd}=await db.from("profiles").select("*");
-  if(!pd) return [];
-  const drv=pd.filter(p=>["driver","chauffeur","chauffeurs"].includes((p.role||"").toLowerCase()));
-  return (drv.length?drv:pd).map(p=>({
-    id:p.id,name:p.name||p.full_name||p.email||"–",
-    vehicle:p.vehicle||"–",status:p.status||"approved",
-    phone:p.phone||p.telefoon||"",email:p.email,
-    photo_url:p.photo_url||p.avatar_url||null
-  }));
+  const{data,error}=await db.from("drivers").select("*").order("created_at",{ascending:false});
+  if(error) console.warn("Drivers error:",error.message);
+  return data||[];
 }
 
-// ── LOAD LOCATIONS ──
 async function loadLocations(){
   const{data}=await db.from("driver_locations").select("*").order("updated_at",{ascending:false});
   locs=data||[];
 }
 
-// ── MAIN LOAD ──
 async function loadAll(){
   const ri=$("refreshIco"); ri?.classList.add("spin");
-  $("ptr").classList.remove("on");
-
   const[{data:r},drv]=await Promise.all([
     db.from("rides").select("*").order("created_at",{ascending:false}),
     loadDrivers()
   ]);
   await loadLocations();
-
-  rides=r||[];
-  drivers=drv||[];
-
-  // Load photos in background
-  loadPhotos().then(()=>{renderRides("dashRides","df",5);if(curView==="rides")renderRides("allRides","rf");if(curView==="drivers"||curView==="map")renderDrivers();});
+  rides=r||[]; drivers=drv||[];
+  await loadPhotos();
 
   const today=rides.filter(r=>String(r.pickup_time||r.created_at||"").slice(0,10)===td());
   const pending=rides.filter(r=>!r.status||r.status==="pending");
   const active=rides.filter(r=>["accepted","en-route","arrived","in-ride"].includes(r.status));
   const rev=today.filter(r=>r.payment_status==="paid").reduce((s,r)=>s+pn(r.price),0);
+  const pendingDrvs=drivers.filter(d=>d.status==="pending");
 
   const h=new Date().getHours();
   $("greetTxt").textContent=h<12?"Goedemorgen":h<18?"Goedemiddag":"Goedenavond";
@@ -906,11 +685,17 @@ async function loadAll(){
   $("kPend").textContent=pending.length;
   $("kActive").textContent=active.length;
   $("kRev").textContent=eu(rev);
-  $("kDrvrs").textContent=drivers.length;
+  $("kDrvrs").textContent=drivers.filter(d=>!d.status||d.status==="approved").length;
 
-  const nd=$("notifDot"),nb=$("navBadge");
-  if(nd) nd.style.display=pending.length?"block":"none";
+  // Pending drivers banner
+  const banner=$("pendingBanner");
+  if(banner){banner.style.display=pendingDrvs.length?"flex":"none";$("pendingDrvCount").textContent=pendingDrvs.length;}
+
+  // Notification dots
+  const nd=$("notifDot"),nb=$("navBadge"),db2=$("drvBadge");
+  if(nd) nd.style.display=(pending.length||pendingDrvs.length)?"block":"none";
   if(nb){nb.style.display=pending.length?"flex":"none";nb.textContent=pending.length;}
+  if(db2){db2.style.display=pendingDrvs.length?"flex":"none";db2.textContent=pendingDrvs.length;}
 
   renderRides("dashRides","df",5);
   if(curView==="rides") renderRides("allRides","rf");
@@ -919,7 +704,6 @@ async function loadAll(){
   setTimeout(()=>ri?.classList.remove("spin"),400);
 }
 
-// ── PULL TO REFRESH ──
 (function(){
   let sy=0,pulling=false;
   document.addEventListener("touchstart",e=>{if(window.scrollY===0)sy=e.touches[0].clientY},{passive:true});
@@ -927,17 +711,16 @@ async function loadAll(){
   document.addEventListener("touchend",()=>{if(pulling){loadAll();setTimeout(()=>$("ptr").classList.remove("on"),1200);}sy=0;pulling=false;},{passive:true});
 })();
 
-// ── AUTH + INIT ──
 async function init(){
   showView("dashboard");
   const{data:{session}}=await db.auth.getSession();
   if(!session){window.location.href="/admin/login.html";return;}
-  const{data:p}=await db.from("profiles").select("role").eq("email",session.user.email).single();
+  const{data:p}=await db.from("profiles").select("role").eq("id",session.user.id).single();
   if(!p||p.role!=="admin"){await db.auth.signOut();window.location.href="/admin/login.html";return;}
   await loadAll();
   setTimeout(initSmallMap,700);
   startRealtime();
-  autoTimer=setInterval(()=>{loadAll();},30000);
+  autoTimer=setInterval(()=>loadAll(),30000);
 }
 
 init();
