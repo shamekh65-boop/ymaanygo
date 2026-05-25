@@ -1,143 +1,125 @@
 /* =========================
-   MAP + GEO + PICKER - FAST VERSION
+   MAP + GEO + PICKER
 ========================= */
 const API = {
   NOMINATIM: "https://nominatim.openstreetmap.org",
   OSRM: "https://router.project-osrm.org"
 };
+const SHORTCUTS = {
+  sch:["Schiphol Airport","Schagen","Schoolstraat"],
+  schi:["Schiphol Airport"],
 
+  den:["Den Helder","Den Helder Station","Den Helder Centrum"],
+  alk:["Alkmaar","Alkmaar Station","Alkmaar Centrum"],
+  hoo:["Hoorn","Hoorn Station"],
+  schag:["Schagen","Schagen Station"],
+  heer:["Heerhugowaard","Heerhugowaard Station"],
+  anna:["Anna Paulowna"],
+  jul:["Julianadorp"],
+  tex:["Texel"],
+  hrl:["Haarlem"],
+  ams:["Amsterdam","Amsterdam Centraal"],
+  zaa:["Zaandam"],
+  pur:["Purmerend"],
+  hil:["Hilversum"],
+  eind:["Eindhoven Airport"],
+  rot:["Rotterdam Airport"],
+  duss:["Düsseldorf Airport"],
+  bru:["Brussels Airport"],
+  utr:["Utrecht Centraal"],
+
+  hos:["Hospital","Noordwest Ziekenhuis Alkmaar"],
+  air:["Schiphol Airport","Eindhoven Airport","Rotterdam Airport"],
+
+  sta:["Station"],
+  cen:["Centrum"]
+};
 let map = null;
 let myMarker = null;
 let pickMap = null;
-let activeField = "from";
+let activeField = 'from';
 let pickerUpdating = false;
-
-let mapStarted = false;
-let reverseTimer = null;
-let lastReverseKey = "";
-const reverseCache = new Map();
+let suggestTimer = null;
+let pickerTimer = null;
 
 async function geocode(q){
-  const url =
-    API.NOMINATIM +
-    "/search?format=json&limit=1&countrycodes=nl&addressdetails=1&accept-language=nl&q=" +
-    encodeURIComponent(q);
+  const url = API.NOMINATIM + "/search?format=json&limit=1&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
+  const res = await fetch(url, { headers:{ "Accept":"application/json" }});
+  const data = await res.json();
 
-  try{
-    const res = await fetch(url, { headers:{ "Accept":"application/json" }});
-    const data = await res.json();
+  if(!data?.[0]) return null;
 
-    if(!data?.[0]) return null;
-
-    return {
-      lat: parseFloat(data[0].lat),
-      lon: parseFloat(data[0].lon)
-    };
-  }catch(e){
-    console.warn("geocode error", e);
-    return null;
-  }
-}
-
-async function reverseFast(lat, lon){
-  const key = `${lat.toFixed(5)},${lon.toFixed(5)}`;
-
-  if(reverseCache.has(key)){
-    return reverseCache.get(key);
-  }
-
-  const url =
-    API.NOMINATIM +
-    `/reverse?format=json&zoom=18&lat=${lat}&lon=${lon}&addressdetails=1&accept-language=nl`;
-
-  try{
-    const res = await fetch(url, { headers:{ "Accept":"application/json" }});
-    const data = await res.json();
-    const a = data?.address || {};
-
-    const road = a.road || a.pedestrian || a.footway || "";
-    const house = a.house_number || "";
-    const city = a.city || a.town || a.village || a.municipality || "";
-    const postcode = a.postcode || "";
-
-    let result = null;
-
-    if(road && city){
-      const line = `${road} ${house}`.trim();
-      result = `${line}, ${postcode ? postcode + " " : ""}${city}, Nederland`
-        .replace(/\s+/g, " ")
-        .trim();
-    }else{
-      result = data?.display_name || null;
-    }
-
-    reverseCache.set(key, result);
-    return result;
-  }catch(e){
-    console.warn("reverse error", e);
-    return null;
-  }
+  return {
+    lat: parseFloat(data[0].lat),
+    lon: parseFloat(data[0].lon)
+  };
 }
 
 async function reverse(lat, lon){
-  return reverseFast(lat, lon);
+  const url = API.NOMINATIM + `/reverse?format=json&zoom=18&lat=${lat}&lon=${lon}&addressdetails=1`;
+  const res = await fetch(url, { headers:{ "Accept":"application/json" }});
+  const data = await res.json();
+  const a = data?.address || {};
+
+  const road = a.road || a.pedestrian || "";
+  const house = a.house_number || "";
+  const city = a.city || a.town || a.village || "";
+  const postcode = a.postcode || "";
+
+  if(!road || !city) return data?.display_name || null;
+
+  const line = `${road} ${house}`.trim();
+  return `${line}, ${postcode ? postcode + " " : ""}${city}, Nederland`.replace(/\s+/g, ' ').trim();
 }
 
 async function suggest(q){
-  let searchText = q.trim();
 
-  if(searchText.length <= 4 && !searchText.includes(" ")){
-    searchText = searchText + " Nederland";
+  const key = q.trim().toLowerCase();
+
+  if(SHORTCUTS[key]){
+
+    return SHORTCUTS[key].map(item => ({
+      display_name:item,
+      address:{
+        road:item
+      }
+    }));
+
   }
+
+  const searchText =
+    q.length <= 4 && !q.includes(" ")
+      ? q + " Nederland"
+      : q;
 
   const url =
     API.NOMINATIM +
-    "/search?format=json" +
-    "&limit=8" +
-    "&countrycodes=nl" +
-    "&addressdetails=1" +
-    "&dedupe=1" +
-    "&accept-language=nl" +
-    "&q=" + encodeURIComponent(searchText);
+    "/search?format=json&limit=6&countrycodes=nl&addressdetails=1&q=" +
+    encodeURIComponent(searchText);
 
   try{
-    const res = await fetch(url, { headers:{ "Accept":"application/json" }});
+    const res = await fetch(url,{
+      headers:{
+        "Accept":"application/json"
+      }
+    });
+
     const data = await res.json();
 
-    if(!Array.isArray(data)) return [];
+    return Array.isArray(data)
+      ? data
+      : [];
 
-    return data.filter(x => {
-      const cls = x.class || "";
-      const type = x.type || "";
-
-      return (
-        cls === "highway" ||
-        cls === "place" ||
-        cls === "amenity" ||
-        type === "residential" ||
-        type === "tertiary" ||
-        type === "secondary" ||
-        type === "primary" ||
-        type === "house" ||
-        type === "yes" ||
-        x.address?.road ||
-        x.address?.house_number ||
-        x.address?.city ||
-        x.address?.town ||
-        x.address?.village
-      );
-    });
   }catch(e){
-    console.warn("suggest error", e);
+    console.warn(e);
     return [];
   }
 }
-
 function formatSug(it){
   const a = it.address || {};
   const road = a.road || a.pedestrian || a.footway || "";
   const house = a.house_number || "";
-  const city = a.city || a.town || a.village || a.municipality || "";
+  const city = a.city || a.town || a.village || "";
   const postcode = a.postcode || "";
 
   const line1 = `${road} ${house}`.trim() || (it.display_name || "").split(",")[0];
@@ -150,33 +132,27 @@ function setInputValue(fieldId, it){
   const a = it.address || {};
   const road = a.road || a.pedestrian || a.footway || "";
   const house = a.house_number || "";
-  const city = a.city || a.town || a.village || a.municipality || "";
+  const city = a.city || a.town || a.village || "";
   const postcode = a.postcode || "";
 
-  let line = "";
-
-  if(road || city){
-    line = `${(road + " " + house).trim()}, ${postcode ? postcode + " " : ""}${city}, Nederland`;
-  }else{
-    line = it.display_name || "";
-  }
-
-  document.getElementById(fieldId).value = line
-    .replace(/\s+/g, " ")
+  const line = `${(road + " " + house).trim()}, ${postcode ? postcode + " " : ""}${city}, Nederland`
+    .replace(/\s+/g," ")
     .replace(/^,\s*/, "")
     .trim();
+
+  document.getElementById(fieldId).value = line || it.display_name || "";
 }
 
 function getSuggestBox(fieldId){
-  if(fieldId === "from") return document.getElementById("fromSuggest");
-  if(fieldId === "to") return document.getElementById("toSuggest");
-  return document.getElementById(fieldId + "Suggest");
+  if(fieldId === 'from') return document.getElementById('fromSuggest');
+  if(fieldId === 'to') return document.getElementById('toSuggest');
+  return document.getElementById(fieldId + 'Suggest');
 }
 
 function hideSuggest(fieldId){
   const box = getSuggestBox(fieldId);
   if(!box) return;
-  box.classList.add("hidden");
+  box.classList.add('hidden');
   box.innerHTML = "";
 }
 
@@ -213,15 +189,15 @@ function showSuggest(fieldId, favItems, nomItems){
   }
 
   box.innerHTML = parts.join("");
-  box.classList.remove("hidden");
+  box.classList.remove('hidden');
 
-  box.querySelectorAll(".s-item").forEach(el => {
-    el.onmousedown = e => e.preventDefault();
+  box.querySelectorAll('.s-item').forEach(el => {
+    el.addEventListener('mousedown', e => e.preventDefault());
 
-    el.onclick = () => {
+    el.addEventListener('click', () => {
       const kind = el.dataset.kind;
 
-      if(kind === "fav"){
+      if(kind === 'fav'){
         const addr = el.dataset.addr || "";
         document.getElementById(fieldId).value = addr;
         hideSuggest(fieldId);
@@ -230,7 +206,7 @@ function showSuggest(fieldId, favItems, nomItems){
         return;
       }
 
-      if(kind === "nom"){
+      if(kind === 'nom'){
         const idx = Number(el.dataset.i);
         const it = nomItems[idx];
         setInputValue(fieldId, it);
@@ -238,7 +214,7 @@ function showSuggest(fieldId, favItems, nomItems){
         updateFooterButtons();
         autoCalc(true);
       }
-    };
+    });
   });
 }
 
@@ -246,46 +222,59 @@ function bindSuggestInput(fieldId){
   const input = document.getElementById(fieldId);
   if(!input) return;
 
-  const run = debounce(async () => {
-    const q = input.value.trim();
+  input.addEventListener('input', () => {
+    clearTimeout(suggestTimer);
 
-    if(q.length < 2){
-      hideSuggest(fieldId);
-      return;
-    }
+    suggestTimer = setTimeout(async () => {
+      const q = input.value.trim();
 
-    const favs = getFavs()
-      .filter(f => {
-        const s = (f.name + " " + f.addr).toLowerCase();
-        return s.includes(q.toLowerCase());
-      })
-      .slice(0, 3);
+      if(q.length < 3){
+        hideSuggest(fieldId);
+        return;
+      }
 
-    const items = await suggest(q);
-    showSuggest(fieldId, favs, items);
-  }, 450);
+      const favs = getFavs()
+        .filter(f => {
+          const s = (f.name + " " + f.addr).toLowerCase();
+          return s.includes(q.toLowerCase());
+        })
+        .slice(0, 3);
 
-  input.oninput = () => {
-    run();
+      const items = await suggest(q);
+      showSuggest(fieldId, favs, items);
+    }, 700);
+
     updateFooterButtons();
-    autoCalc(false);
-  };
+  });
 
-  input.onfocus = () => {
+  input.addEventListener('focus', () => {
     const q = input.value.trim();
-    if(q.length >= 2) run();
-  };
+    if(q.length >= 3){
+      clearTimeout(suggestTimer);
+      suggestTimer = setTimeout(async () => {
+        const favs = getFavs()
+          .filter(f => {
+            const s = (f.name + " " + f.addr).toLowerCase();
+            return s.includes(q.toLowerCase());
+          })
+          .slice(0, 3);
 
-  input.onblur = () => setTimeout(() => hideSuggest(fieldId), 160);
+        const items = await suggest(q);
+        showSuggest(fieldId, favs, items);
+      }, 500);
+    }
+  });
 
-  input.onkeydown = e => {
-    if(e.key === "Escape") hideSuggest(fieldId);
-  };
+  input.addEventListener('blur', () => setTimeout(() => hideSuggest(fieldId), 160));
+
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Escape') hideSuggest(fieldId);
+  });
 }
 
 function swapFT(){
-  const a = document.getElementById("from");
-  const b = document.getElementById("to");
+  const a = document.getElementById('from');
+  const b = document.getElementById('to');
 
   const t = a.value;
   a.value = b.value;
@@ -296,35 +285,28 @@ function swapFT(){
 }
 
 function initMap(){
-  if(mapStarted || map) return;
-  mapStarted = true;
+  if(map) return;
 
-  map = L.map("map", {
-    zoomControl:false,
-    preferCanvas:true
-  });
+  map = L.map('map', { zoomControl:false });
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution:"",
-    maxZoom:18,
-    updateWhenIdle:true,
-    keepBuffer:1
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; CartoDB'
   }).addTo(map);
 
-  map.setView([52.3702, 4.8952], 12);
-
-  map.on("click", () => {
-    if(document.getElementById("homeSheet")?.getAttribute("aria-hidden") === "true"){
+  map.on('click', () => {
+    if(document.getElementById('homeSheet').getAttribute('aria-hidden') === 'true'){
       openHomeSheet();
     }
   });
 
+  map.setView([52.3702, 4.8952], 12);
+
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(async pos => {
-      if(!map) return;
-
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
+
+      if(!map) return;
 
       map.setView([lat, lon], 15);
 
@@ -332,22 +314,20 @@ function initMap(){
         myMarker = L.circleMarker([lat, lon], {
           radius:8,
           weight:2,
-          color:"#007bff",
-          fillColor:"#007bff",
-          fillOpacity:0.8,
-          renderer:L.canvas()
+          color:'#007bff',
+          fillColor:'#007bff',
+          fillOpacity:0.8
         }).addTo(map);
       }else{
         myMarker.setLatLng([lat, lon]);
       }
 
-      const from = document.getElementById("from");
-      if(from && !from.value.trim()){
-        const addr = await reverseFast(lat, lon);
-        if(addr){
+      const addr = await reverse(lat, lon);
+      if(addr){
+        const from = document.getElementById('from');
+        if(from && !from.value.trim()){
           from.value = addr;
           updateFooterButtons();
-          autoCalc(true);
         }
       }
     }, () => {}, {
@@ -361,9 +341,9 @@ function initMap(){
 async function useMyLocationAsFrom(){
   if(!navigator.geolocation){
     alert(
-      getLang() === "ar"
+      getLang() === 'ar'
         ? "المتصفح لا يدعم الموقع."
-        : (getLang() === "en" ? "Geolocation not supported." : "Locatie niet ondersteund.")
+        : (getLang() === 'en' ? "Geolocation not supported." : "Locatie niet ondersteund.")
     );
     return;
   }
@@ -374,18 +354,18 @@ async function useMyLocationAsFrom(){
 
     if(map) map.setView([lat, lon], 16);
 
-    const addr = await reverseFast(lat, lon);
+    const addr = await reverse(lat, lon);
 
     if(addr){
-      document.getElementById("from").value = addr;
+      document.getElementById('from').value = addr;
       updateFooterButtons();
       autoCalc(true);
     }
   }, () => {
     alert(
-      getLang() === "ar"
+      getLang() === 'ar'
         ? "تم رفض إذن الموقع."
-        : (getLang() === "en" ? "Location permission denied." : "Locatietoegang geweigerd.")
+        : (getLang() === 'en' ? "Location permission denied." : "Locatietoegang geweigerd.")
     );
   }, {
     enableHighAccuracy:false,
@@ -397,20 +377,20 @@ async function useMyLocationAsFrom(){
 function openPicker(fieldId){
   activeField = fieldId;
 
-  document.getElementById("picked").textContent = "—";
-  document.getElementById("pickSearch").value = "";
+  document.getElementById('picked').textContent = "—";
+  document.getElementById('pickSearch').value = "";
 
   const T = i18n[getLang()] || i18n.nl;
 
   const confirmText =
-    fieldId === "from" ? T.pickFrom :
-    fieldId === "to" ? T.pickTo :
+    fieldId === 'from' ? T.pickFrom :
+    fieldId === 'to' ? T.pickTo :
     T.pickStop;
 
-  document.getElementById("pickConfirm").textContent = confirmText;
+  document.getElementById('pickConfirm').textContent = confirmText;
 
-  document.getElementById("overlay").classList.add("show");
-  document.getElementById("pickModal").classList.add("open");
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('pickModal').classList.add('open');
 
   setTimeout(async () => {
     if(pickMap){
@@ -418,19 +398,13 @@ function openPicker(fieldId){
       pickMap = null;
     }
 
-    pickMap = L.map("pickMap", {
-      zoomControl:false,
-      preferCanvas:true
-    });
+    pickMap = L.map('pickMap', { zoomControl:false });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution:"",
-      maxZoom:18,
-      updateWhenIdle:true,
-      keepBuffer:1
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; CartoDB'
     }).addTo(pickMap);
 
-    pickMap.on("moveend zoomend", pickerOnMoveEnd);
+    pickMap.on('moveend', pickerOnMoveEnd);
 
     pickMap.invalidateSize();
     setTimeout(() => {
@@ -441,32 +415,29 @@ function openPicker(fieldId){
 
     if(val){
       const p = await geocode(val);
-      if(p && pickMap){
+      if(p){
         pickMap.setView([p.lat, p.lon], 17);
         await pickerOnMoveEnd();
         return;
       }
     }
 
-    if(map && pickMap){
+    if(map){
       const c = map.getCenter();
       pickMap.setView([c.lat, c.lng], Math.max(13, map.getZoom()));
       await pickerOnMoveEnd();
       return;
     }
 
-    if(pickMap){
-      pickMap.setView([52.3702, 4.8952], 14);
-      await pickerOnMoveEnd();
-    }
-  }, 80);
+    pickMap.setView([52.3702, 4.8952], 14);
+    await pickerOnMoveEnd();
+  }, 60);
 }
 
 function closePicker(){
-  document.getElementById("pickModal").classList.remove("open");
+  document.getElementById('pickModal').classList.remove('open');
 
-  clearTimeout(reverseTimer);
-  lastReverseKey = "";
+  clearTimeout(pickerTimer);
 
   if(pickMap){
     pickMap.off();
@@ -475,19 +446,19 @@ function closePicker(){
   }
 
   setTimeout(() => {
-    const anyOpen = document.querySelector(".sheet.open");
-    const favOpen = document.getElementById("favModal")?.style.display === "flex";
-    const homeOpen = document.getElementById("homeSheet")?.getAttribute("aria-hidden") === "false";
+    const anyOpen = document.querySelector('.sheet.open');
+    const favOpen = document.getElementById('favModal')?.style.display === 'flex';
+    const homeOpen = document.getElementById('homeSheet').getAttribute('aria-hidden') === 'false';
 
     if(!anyOpen && !favOpen && !homeOpen){
-      document.getElementById("overlay").classList.remove("show");
+      document.getElementById('overlay').classList.remove('show');
     }
   }, 30);
 }
 
 function getPinLatLng(){
-  const mapEl = document.getElementById("pickMap");
-  const pinEl = document.querySelector("#pickModal .pin");
+  const mapEl = document.getElementById('pickMap');
+  const pinEl = document.querySelector('#pickModal .pin');
 
   const mr = mapEl.getBoundingClientRect();
   const pr = pinEl.getBoundingClientRect();
@@ -499,55 +470,41 @@ function getPinLatLng(){
 }
 
 async function pickerOnMoveEnd(){
-  if(!pickMap) return;
+  clearTimeout(pickerTimer);
 
-  clearTimeout(reverseTimer);
-
-  reverseTimer = setTimeout(async () => {
+  pickerTimer = setTimeout(async () => {
     if(!pickMap || pickerUpdating) return;
 
     pickerUpdating = true;
 
     const p = getPinLatLng();
-    const key = `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`;
+    const addr = await reverse(p.lat, p.lng);
 
-    if(key === lastReverseKey){
-      pickerUpdating = false;
-      return;
-    }
-
-    lastReverseKey = key;
-
-    const addr = await reverseFast(p.lat, p.lng);
-
-    const picked = document.getElementById("picked");
-    if(picked){
-      picked.textContent =
-        addr ||
-        (
-          getLang() === "ar"
-            ? "حرّك الخريطة للحصول على عنوان دقيق."
-            : (getLang() === "en"
-              ? "Move map for an exact address."
-              : "Verplaats de kaart voor een exact adres.")
-        );
-    }
+    document.getElementById('picked').textContent =
+      addr ||
+      (
+        getLang() === 'ar'
+          ? "حرّك الخريطة للحصول على عنوان دقيق."
+          : (getLang() === 'en'
+            ? "Move map for an exact address."
+            : "Verplaats de kaart voor een exact adres.")
+      );
 
     pickerUpdating = false;
-  }, 450);
+  }, 800);
 }
 
 async function pickerSearch(){
-  const q = (document.getElementById("pickSearch").value || "").trim();
+  const q = (document.getElementById('pickSearch').value || "").trim();
   if(!q) return;
 
   const p = await geocode(q);
 
   if(!p){
     alert(
-      getLang() === "ar"
+      getLang() === 'ar'
         ? "لم يتم العثور على العنوان."
-        : (getLang() === "en" ? "Address not found." : "Adres niet gevonden.")
+        : (getLang() === 'en' ? "Address not found." : "Adres niet gevonden.")
     );
     return;
   }
@@ -562,13 +519,13 @@ async function pickerConfirm(){
   if(!pickMap) return;
 
   const p = getPinLatLng();
-  const addr = await reverseFast(p.lat, p.lng);
+  const addr = await reverse(p.lat, p.lng);
 
   if(!addr){
     alert(
-      getLang() === "ar"
+      getLang() === 'ar'
         ? "العنوان غير واضح. حرّك الخريطة وحاول."
-        : (getLang() === "en"
+        : (getLang() === 'en'
           ? "Address not accurate. Move map and try again."
           : "Adres niet nauwkeurig. Verplaats en probeer opnieuw.")
     );
