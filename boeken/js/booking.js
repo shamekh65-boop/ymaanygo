@@ -28,16 +28,22 @@ async function loadPricingFromDB(){
 
   // Fallback als Supabase niet bereikbaar is
   if(!_pricing){
-    _pricing = {
-      base_start:   5.00,
-      per_km_van:   2.50,
-      comfort_fee:  7.00,
-      tier_0_10:    2.30,
-      tier_10_20:   1.80,
-      tier_20_30:   1.60,
-      tier_30_50:   1.30,
-      tier_50_plus: 1.30,
-      surge_active: false
+_pricing = {
+      base_start:    5.00,
+      per_km_van:    2.50,
+      comfort_fee:   7.00,
+      tier_0_10:     2.30,
+      tier_10_20:    1.80,
+      tier_20_30:    1.60,
+      tier_30_40:    1.40,
+      tier_40_50:    1.30,
+      tier_50_60:    1.20,
+      tier_60_70:    1.15,
+      tier_70_80:    1.10,
+      tier_80_90:    1.05,
+      tier_90_100:   1.00,
+      tier_100_plus: 1.00,
+      surge_active:  false
     };
   }
 }
@@ -55,12 +61,19 @@ function isSurgeActive() { return _pricing?.surge_active === true; }
 
 function getPricePerKm(km){
   if(!_pricing) return 2.30;
-  if(km <= 10)  return parseFloat(_pricing.tier_0_10)    || 2.30;
-  if(km <= 20)  return parseFloat(_pricing.tier_10_20)   || 1.80;
-  if(km <= 30)  return parseFloat(_pricing.tier_20_30)   || 1.60;
-  if(km <= 50)  return parseFloat(_pricing.tier_30_50)   || 1.30;
-  return parseFloat(_pricing.tier_50_plus) || 1.30;
+  if(km <= 10)  return parseFloat(_pricing.tier_0_10)     || 2.30;
+  if(km <= 20)  return parseFloat(_pricing.tier_10_20)    || 1.80;
+  if(km <= 30)  return parseFloat(_pricing.tier_20_30)    || 1.60;
+  if(km <= 40)  return parseFloat(_pricing.tier_30_40)    || 1.40;
+  if(km <= 50)  return parseFloat(_pricing.tier_40_50)    || 1.30;
+  if(km <= 60)  return parseFloat(_pricing.tier_50_60)    || 1.20;
+  if(km <= 70)  return parseFloat(_pricing.tier_60_70)    || 1.15;
+  if(km <= 80)  return parseFloat(_pricing.tier_70_80)    || 1.10;
+  if(km <= 90)  return parseFloat(_pricing.tier_80_90)    || 1.05;
+  if(km <= 100) return parseFloat(_pricing.tier_90_100)   || 1.00;
+  return parseFloat(_pricing.tier_100_plus) || 1.00;
 }
+
 
 /**
  * Zoekt de hoogste surge voor de opgegeven adressen.
