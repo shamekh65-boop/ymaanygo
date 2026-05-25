@@ -803,7 +803,8 @@
               <td>0 – 10 km</td>
               <td class="tier-cell">
                 <span class="sym">€</span>
-                <input class="tier-input" id="tier1" type="number" step="0.05" min="0" style="padding-left:26px;">
+                <input class="tier-input" id="tier_0_10"
+ type="number" step="0.05" min="0" style="padding-left:26px;">
               </td>
             </tr>
             <tr>
@@ -820,7 +821,6 @@
                 <input class="tier-input" id="tier3" type="number" step="0.05" min="0" style="padding-left:26px;">
               </td>
             </tr>
-            <tr>
              <tr><td>30 – 40 km</td><td class="tier-cell"><span class="sym">€</span><input class="tier-input" id="tier_30_40" type="number" step="0.05" min="0" style="padding-left:26px;"></td></tr>
 <tr><td>40 – 50 km</td><td class="tier-cell"><span class="sym">€</span><input class="tier-input" id="tier_40_50" type="number" step="0.05" min="0" style="padding-left:26px;"></td></tr>
 <tr><td>50 – 60 km</td><td class="tier-cell"><span class="sym">€</span><input class="tier-input" id="tier_50_60" type="number" step="0.05" min="0" style="padding-left:26px;"></td></tr>
@@ -931,9 +931,9 @@ async function loadPricing(){
   document.getElementById('baseStart').value   = data.base_start   ?? 5.00;
   document.getElementById('baseVan').value     = data.per_km_van   ?? 2.50;
   document.getElementById('baseComfort').value = data.comfort_fee  ?? 7.00;
-  document.getElementById('tier1').value       = data.tier_0_10    ?? 2.30;
-  document.getElementById('tier2').value       = data.tier_10_20   ?? 1.80;
-  document.getElementById('tier3').value       = data.tier_20_30   ?? 1.60;
+  document.getElementById('tier_0_10').value   = data.tier_0_10    ?? 2.30;
+  document.getElementById('tier_10_20').value  = data.tier_10_20   ?? 1.80;
+  document.getElementById('tier_20_30').value  = data.tier_20_30   ?? 1.60;
   document.getElementById('tier_30_40').value    = data.tier_30_40    ?? 1.40;
   document.getElementById('tier_40_50').value    = data.tier_40_50    ?? 1.30;
   document.getElementById('tier_50_60').value    = data.tier_50_60    ?? 1.20;
@@ -980,9 +980,10 @@ async function savePricing(){
     base_start:   parseFloat(document.getElementById('baseStart').value)   || 5.00,
     per_km_van:   parseFloat(document.getElementById('baseVan').value)     || 2.50,
     comfort_fee:  parseFloat(document.getElementById('baseComfort').value) || 7.00,
-    tier_0_10:    parseFloat(document.getElementById('tier1').value)       || 2.30,
-    tier_10_20:   parseFloat(document.getElementById('tier2').value)       || 1.80,
-    tier_20_30:   parseFloat(document.getElementById('tier3').value)       || 1.60,
+    tier_0_10:    parseFloat(document.getElementById('tier_0_10').value)   || 2.30,
+    tier_10_20:   parseFloat(document.getElementById('tier_10_20').value)  || 1.80,
+    tier_20_30:   parseFloat(document.getElementById('tier_20_30').value)  || 1.60,
+
     tier_30_40:    parseFloat(document.getElementById('tier_30_40').value)    || 1.40,
     tier_40_50:    parseFloat(document.getElementById('tier_40_50').value)    || 1.30,
     tier_50_60:    parseFloat(document.getElementById('tier_50_60').value)    || 1.20,
