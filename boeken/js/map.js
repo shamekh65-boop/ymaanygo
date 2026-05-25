@@ -5,6 +5,7 @@ const API = {
   NOMINATIM: "https://nominatim.openstreetmap.org",
   OSRM: "https://router.project-osrm.org"
 };
+
 const SHORTCUTS = {
   sch:["Schiphol Airport","Schagen","Schoolstraat"],
   schi:["Schiphol Airport"],
@@ -34,6 +35,7 @@ const SHORTCUTS = {
   sta:["Station"],
   cen:["Centrum"]
 };
+
 let map = null;
 let myMarker = null;
 let pickMap = null;
@@ -73,18 +75,18 @@ async function reverse(lat, lon){
 }
 
 async function suggest(q){
-
   const key = q.trim().toLowerCase();
 
   if(SHORTCUTS[key]){
-
     return SHORTCUTS[key].map(item => ({
       display_name:item,
       address:{
-        road:item
+        road:item,
+        city:"",
+        town:"",
+        village:""
       }
     }));
-
   }
 
   const searchText =
@@ -99,22 +101,18 @@ async function suggest(q){
 
   try{
     const res = await fetch(url,{
-      headers:{
-        "Accept":"application/json"
-      }
+      headers:{ "Accept":"application/json" }
     });
 
     const data = await res.json();
-
-    return Array.isArray(data)
-      ? data
-      : [];
+    return Array.isArray(data) ? data : [];
 
   }catch(e){
     console.warn(e);
     return [];
   }
 }
+
 function formatSug(it){
   const a = it.address || {};
   const road = a.road || a.pedestrian || a.footway || "";
@@ -130,17 +128,25 @@ function formatSug(it){
 
 function setInputValue(fieldId, it){
   const a = it.address || {};
+
   const road = a.road || a.pedestrian || a.footway || "";
   const house = a.house_number || "";
   const city = a.city || a.town || a.village || "";
   const postcode = a.postcode || "";
 
-  const line = `${(road + " " + house).trim()}, ${postcode ? postcode + " " : ""}${city}, Nederland`
-    .replace(/\s+/g," ")
-    .replace(/^,\s*/, "")
-    .trim();
+  let line = "";
 
-  document.getElementById(fieldId).value = line || it.display_name || "";
+  if(city){
+    line = `${(road + " " + house).trim()}, ${postcode ? postcode + " " : ""}${city}, Nederland`;
+  }else{
+    line = it.display_name || road || "";
+  }
+
+  document.getElementById(fieldId).value =
+    line
+      .replace(/\s+/g," ")
+      .replace(/^,\s*/,"")
+      .trim();
 }
 
 function getSuggestBox(fieldId){
@@ -249,8 +255,10 @@ function bindSuggestInput(fieldId){
 
   input.addEventListener('focus', () => {
     const q = input.value.trim();
+
     if(q.length >= 3){
       clearTimeout(suggestTimer);
+
       suggestTimer = setTimeout(async () => {
         const favs = getFavs()
           .filter(f => {
@@ -323,8 +331,10 @@ function initMap(){
       }
 
       const addr = await reverse(lat, lon);
+
       if(addr){
         const from = document.getElementById('from');
+
         if(from && !from.value.trim()){
           from.value = addr;
           updateFooterButtons();
@@ -407,6 +417,7 @@ function openPicker(fieldId){
     pickMap.on('moveend', pickerOnMoveEnd);
 
     pickMap.invalidateSize();
+
     setTimeout(() => {
       if(pickMap) pickMap.invalidateSize();
     }, 250);
@@ -415,6 +426,7 @@ function openPicker(fieldId){
 
     if(val){
       const p = await geocode(val);
+
       if(p){
         pickMap.setView([p.lat, p.lon], 17);
         await pickerOnMoveEnd();
