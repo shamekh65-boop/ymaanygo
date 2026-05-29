@@ -1,1129 +1,952 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="favicon.ico">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ymaanyGO – Taxi Noord-Holland</title>
+<meta name="description" content="Betrouwbare taxi in Noord-Holland. Vaste prijs, direct boeken.">
+<link rel="icon" href="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#fff;color:#1a1a1a;font-size:15px;line-height:1.55}
+a{text-decoration:none;color:inherit}
+img{display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
 
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+/* ── HEADER ── */
+header{border-bottom:1px solid #e5e7eb;background:#fff;position:sticky;top:0;z-index:100}
+.hdr{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-img{width:34px;height:34px;border-radius:8px;object-fit:contain}
+.logo-name{font-size:17px;font-weight:700;color:#1a1a1a;letter-spacing:-.3px}
+.logo-name span{color:#16a34a}
+.hdr-nav{display:flex;gap:4px}
+.hdr-nav a{padding:7px 13px;border-radius:6px;font-size:13.5px;font-weight:500;color:#6b7280;transition:background .12s,color .12s}
+.hdr-nav a:hover{background:#f3f4f6;color:#1a1a1a}
+.hdr-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;white-space:nowrap}
+.btn-outline{border:1.5px solid #d1d5db;background:#fff;color:#374151}
+.btn-outline:hover{border-color:#9ca3af;background:#f9fafb}
+.btn-green{background:#16a34a;color:#fff}
+.btn-green:hover{background:#15803d;transform:translateY(-1px)}
+.user-pill{display:flex;align-items:center;gap:7px;padding:6px 14px 6px 6px;border:1.5px solid #d1d5db;border-radius:99px;cursor:pointer;font-size:13.5px;font-weight:500;transition:border-color .12s}
+.user-pill:hover{border-color:#16a34a}
+.u-av{width:26px;height:26px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700}
+.menu-btn{width:36px;height:36px;border-radius:7px;border:1.5px solid #d1d5db;background:#fff;cursor:pointer;display:none;place-items:center;flex-shrink:0}
+.menu-btn svg{display:block}
 
-  <title>Taxi boeken</title>
+/* ── DRAWER ── */
+.drw-ov{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+.drw-ov.open{opacity:1;pointer-events:all}
+.drw{position:fixed;top:0;left:0;height:100%;width:300px;max-width:85vw;background:#fff;z-index:201;transform:translateX(-105%);transition:transform .24s;box-shadow:0 0 40px rgba(0,0,0,.12);display:flex;flex-direction:column;padding:20px 16px;gap:4px}
+.drw.open{transform:translateX(0)}
+.drw-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.drw-logo{font-size:18px;font-weight:700}
+.drw-logo span{color:#16a34a}
+.drw-close{width:32px;height:32px;border-radius:6px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;font-size:17px;display:grid;place-items:center}
+.drw-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;font-size:14px;font-weight:500;color:#374151;cursor:pointer;transition:background .12s}
+.drw-item:hover{background:#f3f4f6}
+.drw-div{height:1px;background:#e5e7eb;margin:6px 0}
+.drw-footer{margin-top:auto;padding-top:14px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;line-height:1.6}
 
-  <style>
-    :root{
-      --bg:#f6f6f6;
-      --card:#fff;
-      --text:#111;
-      --muted:rgba(0,0,0,.62);
-      --border:rgba(0,0,0,.10);
-      --shadow:0 10px 24px rgba(0,0,0,.08);
-      --radius:18px;
-      --green:#2f7d32;
-      --field:#ffffff;
-      --fieldBorder:rgba(0,0,0,.12);
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 50%,#f0fdf4 100%);padding:60px 0 56px;border-bottom:1px solid #e5e7eb}
+.hero-inner{display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #d1fae5;border-radius:99px;padding:5px 14px;font-size:12.5px;font-weight:600;color:#16a34a;margin-bottom:20px}
+.hero-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-.5px;line-height:1.1;color:#111827;margin-bottom:14px}
+.hero h1 span{color:#16a34a}
+.hero-sub{font-size:16px;color:#6b7280;font-weight:400;max-width:480px;margin-bottom:36px;line-height:1.65}
 
-      /* ✅ one place to tune heights */
-      --control-h:30px;
-      --control-radius:14px;
-      --control-font:16px;
-    }
+/* ── BOOKING CARD ── */
+.book-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;padding:28px;width:100%;max-width:580px;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.book-card-title{font-size:16px;font-weight:700;color:#111827;margin-bottom:20px;display:flex;align-items:center;gap:8px}
 
-    *{box-sizing:border-box}
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg);
-      margin:0;
-      color:var(--text);
-      /* ✅ buttons are no longer floating */
-      padding-bottom:0;
-    }
-    a{color:inherit;text-decoration:none}
-    .hidden{display:none !important}
+/* Steps indicator */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.step-item{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step-num.done{background:#16a34a;color:#fff}
+.step-num.active{background:#16a34a;color:#fff;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+.step-num.idle{background:#f3f4f6;color:#9ca3af}
+.step-lbl{font-size:12.5px;font-weight:500;color:#6b7280;transition:color .2s}
+.step-lbl.active{color:#16a34a;font-weight:600}
+.step-line{flex:1;height:1.5px;background:#e5e7eb;margin:0 6px}
+.step-line.done{background:#16a34a}
 
-    /* Top bar */
-    .topbar{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--border);padding:10px 12px;}
-    .topbar-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:10px;}
-    .icon-btn{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:#fff;cursor:pointer;display:grid;place-items:center;}
-    .icon-btn:active{transform:translateY(1px)}
-    .brand-pill{flex:1;display:flex;align-items:center;justify-content:center;}
-    .brand-pill span{border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-weight:700;background:#fff;font-size:14px;}
-    .hamburger{width:18px;height:12px;position:relative;}
-    .hamburger::before,.hamburger::after,.hamburger div{content:"";position:absolute;left:0;right:0;height:2px;background:#111;border-radius:2px;}
-    .hamburger::before{top:0}
-    .hamburger div{top:5px}
-    .hamburger::after{bottom:0}
-    .search-ico{width:18px;height:18px;border:2px solid #111;border-radius:50%;position:relative;}
-    .search-ico::after{content:"";position:absolute;width:9px;height:2px;background:#111;right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px;}
+/* Fields */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field label{font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px}
+.inp-wrap{position:relative}
+.inp-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;z-index:1}
+.inp{width:100%;padding:12px 12px 12px 40px;border:1.5px solid #d1d5db;border-radius:9px;font-family:'Inter',sans-serif;font-size:14px;color:#111827;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+.inp:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.inp::placeholder{color:#d1d5db}
+.inp-noico{padding-left:12px}
+.sel{width:100%;padding:12px;border:1.5px solid #d1d5db;border-radius:9px;font-family:'Inter',sans-serif;font-size:14px;color:#111827;background:#fff;outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;transition:border-color .15s}
+.sel:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-    /* Drawer */
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.30);z-index:60;display:none;}
-    .drawer{
-      position:fixed;top:0;left:0;height:100%;width:320px;max-width:86vw;
-      background:#fff;z-index:61;transform:translateX(-110%);
-      transition:transform .22s ease;box-shadow:var(--shadow);
-      padding:16px;display:flex;flex-direction:column;gap:12px;
-    }
-    .drawer.open{transform:translateX(0)}
-    .overlay.open{display:block}
-    .drawer-head{display:flex;align-items:center;justify-content:space-between}
-    .drawer-title{font-weight:800}
-    .close-x{width:40px;height:40px;border-radius:14px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:18px;line-height:1;}
-    .menu-item{border:1px solid var(--border);border-radius:14px;padding:12px;font-weight:700;background:#fff;}
-    .small{font-size:12px;color:rgba(0,0,0,.65)}
+/* Suggest */
+.sug{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:300;max-height:200px;overflow-y:auto;display:none}
+.sug.show{display:block}
+.sug-row{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f3f4f6;transition:background .1s}
+.sug-row:last-child{border-bottom:none}
+.sug-row:hover{background:#f0fdf4}
+.sug-main{font-size:13.5px;font-weight:500;color:#111827}
+.sug-sub{font-size:12px;color:#9ca3af;margin-top:1px}
 
-    /* Page */
-    .wrap{max-width:820px;margin:16px auto;padding:0 12px 28px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;}
-    .logo{display:flex;justify-content:center;margin:8px 0 10px;}
-    .logo img{height:44px;max-width:100%;object-fit:contain}
-    h1{margin:0 0 12px;font-size:28px}
+/* Price box */
+.price-box{background:#f0fdf4;border:1.5px solid #d1fae5;border-radius:10px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.price-box-val{font-size:20px;font-weight:800;color:#15803d}
+.price-box-meta{font-size:12px;color:#6b7280;text-align:right}
 
-    .grid{display:grid;gap:12px}
-    .row{display:grid;gap:10px}
-    @media(min-width:760px){.row.two{grid-template-columns:1fr 1fr}}
-    label{display:block;font-size:13px;font-weight:800;margin:0 0 6px}
+/* Submit */
+.submit{width:100%;padding:14px;border-radius:9px;background:#16a34a;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit:hover{background:#15803d;transform:translateY(-1px);box-shadow:0 4px 14px rgba(22,163,74,.28)}
+.submit:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.back-btn{background:none;border:none;font-family:'Inter',sans-serif;font-size:13px;color:#6b7280;cursor:pointer;padding:0 0 14px;display:flex;align-items:center;gap:4px}
+.back-btn:hover{color:#111827}
 
-    input,select{
-      width:100%;
-      height:var(--control-h);
-      padding:0 12px;
-      border-radius:var(--control-radius);
-      border:1px solid rgba(0,0,0,.16);
-      background:#fff;outline:none;
-      font-size:var(--control-font);
-    }
-    input:focus,select:focus{border-color:#111}
+/* Hero stats */
+.hero-stats{display:flex;gap:32px;margin-top:28px}
+.hs-item{text-align:center}
+.hs-num{font-size:22px;font-weight:800;color:#111827}
+.hs-lbl{font-size:11.5px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
 
-    .inline{
-      display:flex;align-items:center;gap:10px;
-      padding:10px 12px;border:1px solid var(--border);
-      border-radius:14px;background:#fff;
-      height:var(--control-h);
-    }
-    .inline input{width:auto;height:auto;padding:0;border:0}
+/* ── SECTIONS ── */
+section.pad{padding:64px 0}
+.sec-hd{margin-bottom:40px}
+.sec-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#16a34a;margin-bottom:6px}
+.sec-title{font-size:clamp(24px,3.5vw,36px);font-weight:800;letter-spacing:-.3px;line-height:1.15;color:#111827}
+.sec-sub{font-size:15px;color:#6b7280;margin-top:8px;max-width:460px;line-height:1.65}
 
-    /* ✅ old buttons row hidden (we use the styled buttons below, in-form) */
-    .actions{display:none !important;}
+/* ── SERVICES ── */
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.srv{border:1.5px solid #e5e7eb;border-radius:14px;padding:24px 20px;background:#fff;transition:border-color .18s,transform .18s,box-shadow .18s}
+.srv:hover{border-color:#16a34a;transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.07)}
+.srv-ico{width:44px;height:44px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.srv-name{font-size:15px;font-weight:700;color:#111827;margin-bottom:6px}
+.srv-desc{font-size:13.5px;color:#6b7280;line-height:1.6;margin-bottom:12px}
+.srv-tag{display:inline-block;background:#f0fdf4;color:#15803d;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid #d1fae5}
 
-    .btn{padding:12px 14px;border-radius:14px;border:0;cursor:pointer;background:#111;color:#fff;font-weight:900;}
-    .btn.secondary{background:#f2f2f2;color:#111;border:1px solid rgba(0,0,0,.12)}
-    .price{font-size:18px;font-weight:900}
-    .note{font-size:12px;color:var(--muted);margin-top:8px}
-    .meta{font-size:13px;color:rgba(0,0,0,.70);margin-top:8px}
+/* ── COVERAGE ── */
+.cov{background:#f9fafb}
+.area-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.area{border:1.5px solid #e5e7eb;border-radius:11px;padding:16px 12px;text-align:center;background:#fff;transition:border-color .15s}
+.area:hover{border-color:#16a34a}
+.area-ico{font-size:20px;margin-bottom:5px}
+.area-name{font-size:13.5px;font-weight:600;color:#111827}
+.area-sub{font-size:11.5px;color:#9ca3af;margin-top:2px}
+.ap-bar{background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ap-left{display:flex;align-items:center;gap:14px}
+.ap-ico{width:44px;height:44px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ap-title{font-size:15px;font-weight:700;color:#111827}
+.ap-sub{font-size:13px;color:#6b7280;margin-top:2px}
 
-    /* Route panel */
-    .route-panel{background:#efefef;border-radius:18px;padding:12px;}
-    .route-title{text-align:center;font-size:24px;font-weight:900;margin:0 0 10px;}
+/* ── WHY ── */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.why{border:1.5px solid #e5e7eb;border-radius:12px;padding:20px;display:flex;gap:14px;background:#fff;transition:border-color .15s}
+.why:hover{border-color:#16a34a}
+.why-ico{width:40px;height:40px;background:#f0fdf4;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.why h4{font-size:14px;font-weight:700;color:#111827;margin-bottom:3px}
+.why p{font-size:13px;color:#6b7280;line-height:1.55}
 
-    .route-box{
-      position:relative;border:2px solid var(--green);border-radius:20px;background:#fff;
-      padding:6px;display:grid;gap:6px;
-    }
-    .route-row{display:flex;align-items:center;gap:8px;}
-    .route-dot{width:10px;height:10px;border-radius:50%;flex:0 0 12px;background:#bbb;border:1px solid #eee;}
-    .route-dot.start{background:#5b5bff;}
-    .route-dot.end{background:#21a366;}
+/* ── AUTH ── */
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.auth-card{border:1.5px solid #e5e7eb;border-radius:14px;padding:28px;background:#fff}
+.auth-title{font-size:17px;font-weight:700;color:#111827;margin-bottom:18px}
+.f-label{font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px}
+.f-inp{width:100%;padding:11px 13px;border:1.5px solid #d1d5db;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:#111827;background:#fff;outline:none;margin-bottom:12px;transition:border-color .15s,box-shadow .15s}
+.f-inp:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.f-btn{width:100%;padding:12px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;border:none;background:#16a34a;color:#fff;transition:all .15s;margin-top:2px}
+.f-btn:hover{background:#15803d}
+.f-btn:disabled{opacity:.55;cursor:not-allowed}
+.f-msg{margin-top:10px;padding:9px 13px;border-radius:8px;font-size:13px;display:none}
+.f-msg.ok{background:#f0fdf4;color:#15803d;border:1px solid #d1fae5;display:block}
+.f-msg.err{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;display:block}
+.f-or{display:flex;align-items:center;gap:8px;margin:14px 0;color:#d1d5db;font-size:13px}
+.f-or::before,.f-or::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.ghost-btn{width:100%;padding:11px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;background:#fff;color:#374151;border:1.5px solid #d1d5db;cursor:pointer;transition:all .15s}
+.ghost-btn:hover{border-color:#9ca3af}
 
-    .field{
-      flex:1;
-      display:flex;align-items:center;gap:8px;
-      border:1px solid var(--fieldBorder);
-      background:var(--field);
-      border-radius:var(--control-radius);
-      padding:0 8px;
-      height:var(--control-h);
-      min-width:0;
-      position:relative;
-    }
-    .field .glass{
-      width:18px;height:18px;border:2px solid #111;border-radius:50%;
-      position:relative;flex:0 0 18px;opacity:.85;
-    }
-    .field .glass::after{
-      content:"";position:absolute;width:9px;height:2px;background:#111;
-      right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px;
-    }
-    .field input{
-      border:0 !important;
-      padding:0 !important;
-      outline:none !important;
-      background:transparent;
-      height:100%;
-      font-size:var(--control-font);
-    }
+/* ── DASHBOARD ── */
+.dash{padding:64px 0;display:none}
+.dash-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.kpi{border:1.5px solid #e5e7eb;border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:12px;background:#fff}
+.kpi-ico{width:40px;height:40px;background:#f0fdf4;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.kpi-num{font-size:24px;font-weight:800;color:#111827;line-height:1}
+.kpi-lbl{font-size:12px;color:#6b7280}
+.rides-box{border:1.5px solid #e5e7eb;border-radius:14px;padding:24px;background:#fff}
+.rides-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.rides-title{font-size:16px;font-weight:700;color:#111827}
+.tab-wrap{display:flex;gap:4px;background:#f3f4f6;padding:3px;border-radius:8px;margin-bottom:16px}
+.tab{flex:1;padding:7px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;border:none;background:transparent;color:#9ca3af;cursor:pointer;transition:all .12s}
+.tab.on{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.ride-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:border-color .12s}
+.ride-row:hover{border-color:#16a34a}
+.ride-badge{padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;flex-shrink:0;text-transform:uppercase;letter-spacing:.3px}
+.ride-info{flex:1;min-width:0}
+.ride-info b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ride-info small{font-size:12px;color:#9ca3af}
+.empty{text-align:center;padding:36px;color:#9ca3af;font-size:14px}
+.empty span{font-size:38px;display:block;margin-bottom:8px}
 
-    .icon-square{
-      width:var(--control-h);height:var(--control-h);
-      border-radius:11px;border:1px solid rgba(0,0,0,.14);
-      background:#f3f3f3;cursor:pointer;
-      display:grid;place-items:center;font-size:14px;
-      flex:0 0 var(--control-h);
-    }
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:auto 1fr;gap:24px}
+.contact-links{display:flex;flex-direction:column;gap:10px}
+.contact-link{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1.5px solid #e5e7eb;border-radius:12px;background:#fff;transition:border-color .15s;min-width:260px}
+.contact-link:hover{border-color:#16a34a}
+.cl-ico{width:38px;height:38px;background:#f0fdf4;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.cl-lbl{font-size:11.5px;color:#9ca3af}
+.cl-val{font-size:14px;font-weight:600;color:#111827}
+.cf{border:1.5px solid #e5e7eb;border-radius:14px;padding:24px;background:#fff}
+.cf-title{font-size:15px;font-weight:700;color:#111827;margin-bottom:14px}
+.cf-inp{width:100%;padding:11px 13px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:#111827;background:#f9fafb;outline:none;margin-bottom:10px;transition:border-color .15s,background .15s}
+.cf-inp:focus{border-color:#16a34a;background:#fff;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.cf-btn{width:100%;padding:12px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:#111827;color:#fff;transition:background .15s}
+.cf-btn:hover{background:#16a34a}
 
-    .side-buttons{display:flex;flex-direction:column;gap:-8px;margin-left:-10px;}
+/* ── MAP PICKER ── */
+#pm{position:fixed;inset:0;z-index:500;background:#fff;display:none;flex-direction:column}
+#pm.open{display:flex}
+.pm-top{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #e5e7eb;flex-shrink:0}
+.pm-back{width:34px;height:34px;border-radius:7px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;font-size:18px;display:grid;place-items:center}
+.pm-inp{flex:1;padding:10px 13px;border:1.5px solid #d1d5db;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;outline:none}
+.pm-inp:focus{border-color:#16a34a}
+.pm-sb{padding:9px 16px;border-radius:8px;border:1.5px solid #d1d5db;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:#fff;transition:all .12s}
+.pm-sb:hover{background:#16a34a;color:#fff;border-color:#16a34a}
+.pm-map{flex:1;position:relative}
+#pmMap{width:100%;height:100%}
+.pm-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:34px;z-index:10;pointer-events:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.25))}
+.pm-bot{padding:14px 18px;border-top:1px solid #e5e7eb;flex-shrink:0;background:#fff}
+.pm-addr{font-size:14px;font-weight:500;color:#111827;min-height:20px;margin-bottom:11px}
+.pm-ok{width:100%;padding:13px;border-radius:8px;border:none;background:#16a34a;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.pm-ok:hover{background:#15803d}
 
-    .swap-float{
-      position:absolute;right:-35px;top:50%;transform:translateY(-50%);
-      width:38px;height:38px;border-radius:16px;border:1px solid rgba(0,0,0,.14);
-      background:#fff;cursor:pointer;box-shadow:0 10px 18px rgba(0,0,0,.12);font-size:16px;
-    }
+/* ── FOOTER ── */
+footer{background:#111827;padding:48px 0 24px}
+.ft{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.ft-brand{font-size:18px;font-weight:700;color:#fff;margin-bottom:8px}
+.ft-brand span{color:#4ade80}
+.ft-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:200px}
+.ft-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.3);margin-bottom:12px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-col a{font-size:13.5px;color:rgba(255,255,255,.5);transition:color .12s}
+.ft-col a:hover{color:#fff}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12.5px;color:rgba(255,255,255,.25)}
 
-    /* ✅ Autocomplete dropdown */
-    .suggest-wrap{ position:relative; flex:1; min-width:0; }
-    .suggest-list{
-      position:absolute;left:0;right:0;top:calc(var(--control-h) + 6px);
-      background:#fff;border:1px solid rgba(0,0,0,.14);border-radius:14px;
-      box-shadow:0 14px 28px rgba(0,0,0,.14);
-      overflow:hidden;z-index:9999;max-height:240px;overflow-y:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .suggest-item{padding:10px 12px;font-size:14px;cursor:pointer;border-top:1px solid rgba(0,0,0,.08);}
-    .suggest-item:first-child{border-top:0;}
-    .suggest-item:hover{background:#f4f4f4;}
-    .suggest-muted{opacity:.7;font-size:12px;margin-top:2px;}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:#111827;color:#fff;padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:500;z-index:9999;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#15803d}
 
-    /* ✅ Bolt-style Map Modal */
-    .modal-backdrop{
-      position:fixed;inset:0;background:#fff;z-index:200;
-      display:none;flex-direction:column;
-    }
-    .modal-backdrop.open{display:flex;}
-
-    .picker-top{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;}
-    .picker-back{
-      width:44px;height:44px;border-radius:22px;border:0;background:#fff;
-      box-shadow:0 10px 20px rgba(0,0,0,.10);
-      cursor:pointer;font-size:20px;
-    }
-
-    .picker-search{
-      flex:1;display:flex;align-items:center;gap:10px;
-      background:#fff;border:2px solid #0f6c3b;border-radius:18px;padding:10px 12px;
-      box-shadow:0 10px 18px rgba(0,0,0,.10);max-width:520px;
-    }
-    .picker-search .glass{width:18px;height:18px;border:2px solid #111;border-radius:50%;position:relative;flex:0 0 18px;opacity:.9;}
-    .picker-search .glass::after{content:"";position:absolute;width:9px;height:2px;background:#111;right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px;}
-    .picker-search input{border:0 !important;outline:none !important;background:transparent !important;padding:0 !important;font-size:18px;width:100%;height:auto;}
-    .picker-search .search-btn{width:38px;height:38px;border-radius:14px;border:0;background:#f2f2f2;cursor:pointer;display:grid;place-items:center;font-size:18px;}
-
-    .picker-map-wrap{position:relative;flex:1;display:flex;min-height:0;}
-    #pickerMap{width:100%;height:100%;min-height:0;}
-
-    .center-pin{
-      position:absolute;left:50%;top:50%;
-      width:26px;height:44px;
-      transform:translate(-50%,-100%);
-      z-index:500;pointer-events:none;
-    }
-    .center-pin::before{
-      content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);
-      width:26px;height:26px;border-radius:50%;
-      background:#1f7a3a;box-shadow:0 12px 22px rgba(0,0,0,.25);
-    }
-    .center-pin::after{
-      content:"";position:absolute;left:50%;top:22px;transform:translateX(-50%);
-      width:6px;height:22px;border-radius:0 0 6px 6px;background:#1f7a3a;
-    }
-    .center-pin span{
-      position:absolute;left:50%;top:8px;transform:translateX(-50%);
-      width:10px;height:10px;border-radius:50%;background:#fff;
-    }
-
-    .picker-bottom{padding:12px 14px 18px;background:#fff;box-shadow:0 -16px 30px rgba(0,0,0,.10);}
-    .picked-address{font-size:20px;font-weight:900;margin:6px 0 10px;}
-    .confirm-btn{
-      width:100%;border:0;border-radius:18px;padding:16px 16px;
-      background:#2f7d32;color:#fff;font-weight:900;font-size:18px;cursor:pointer;
-    }
-    .confirm-btn:active{transform:translateY(1px)}
-
-    .whatsapp-note{color:red;}
-
-    /* ✅ SAME GLASS BUTTON LOOK, BUT FIXED INSIDE FORM */
-    .floating-actions{
-      position:static;           /* ✅ was fixed */
-      left:auto; right:auto;
-      bottom:auto;
-      padding:0;
-      display:flex;
-      gap:12px;
-      z-index:auto;
-      margin-top:6px;           /* ✅ small spacing under checkbox */
-    }
-    .fab{
-      flex:1;
-      height:56px;
-      border-radius:28px;
-      font-size:17px;
-      font-weight:800;
-      border:0;
-      cursor:pointer;
-      backdrop-filter: blur(12px) saturate(140%);
-      -webkit-backdrop-filter: blur(12px) saturate(140%);
-      box-shadow:
-        0 12px 24px rgba(0,0,0,.18),
-        inset 0 1px 0 rgba(255,255,255,.35);
-    }
-    .fab.primary{
-      background:linear-gradient(180deg,#3bbf6b,#2f7d32);
-      color:#fff;
-    }
-    .fab.secondary{
-      background:rgba(255,255,255,.85);
-      color:#111;
-      border:1px solid rgba(0,0,0,.12);
-    }
-    .fab:active{transform:translateY(1px) scale(.98);}
-
-    /* ✅ Glass/Water alert modal (NO browser dialogs) */
-    .app-alert{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.18);
-      backdrop-filter: blur(14px) saturate(140%);
-      -webkit-backdrop-filter: blur(14px) saturate(140%);
-      z-index:99999;
-      display:flex; align-items:center; justify-content:center;
-      padding:18px;
-    }
-    .app-alert.hidden{display:none !important;}
-    .app-alert-card{
-      width:min(520px, 100%);
-      border-radius:22px;
-      background:rgba(255,255,255,.78);
-      backdrop-filter: blur(18px) saturate(160%);
-      -webkit-backdrop-filter: blur(18px) saturate(160%);
-      border:1px solid rgba(255,255,255,.55);
-      box-shadow:
-        0 24px 70px rgba(0,0,0,.22),
-        0 10px 24px rgba(0,0,0,.12),
-        inset 0 1px 0 rgba(255,255,255,.55);
-      padding:16px;
-    }
-    .app-alert-head{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom:10px;
-    }
-    .app-alert-title{font-weight:900; font-size:18px; color:rgba(0,0,0,.88);}
-    .app-alert-x{
-      width:42px; height:42px; border-radius:16px;
-      border:1px solid rgba(0,0,0,.08);
-      background:rgba(255,255,255,.65);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      cursor:pointer; font-size:20px; line-height:1;
-    }
-    .app-alert-msg{
-      font-size:15px; line-height:1.45;
-      color:rgba(0,0,0,.82);
-      padding:8px 2px 14px;
-      white-space:pre-line;
-    }
-    .app-alert-ok{
-      width:100%;
-      border:0; border-radius:18px;
-      padding:14px 16px;
-      background:#2f7d32; color:#fff;
-      font-weight:900; font-size:16px;
-      cursor:pointer;
-      box-shadow:0 10px 18px rgba(0,0,0,.12);
-    }
-    .app-alert-ok:active{transform:translateY(1px)}
-  </style>
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .menu-btn{display:grid}
+  .hdr-nav,.hdr-actions .btn:not(.btn-green){display:none}
+  .srv-grid{grid-template-columns:1fr 1fr}
+  .area-grid{grid-template-columns:repeat(2,1fr)}
+  .why-grid{grid-template-columns:1fr}
+  .auth-grid{grid-template-columns:1fr}
+  .dash-kpis{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .contact-links{flex-direction:row;flex-wrap:wrap}
+  .contact-link{min-width:unset;flex:1}
+  .ft{grid-template-columns:1fr 1fr;gap:24px}
+}
+@media(max-width:600px){
+  .srv-grid{grid-template-columns:1fr}
+  .area-grid{grid-template-columns:repeat(2,1fr)}
+  .dash-kpis{grid-template-columns:1fr}
+  .ft{grid-template-columns:1fr}
+  .hero-stats{gap:20px}
+}
+</style>
 </head>
-
 <body>
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="topbar-inner">
-      <button class="icon-btn" type="button" aria-label="Menu" onclick="openMenu()">
-        <span class="hamburger"><div></div></span>
-      </button>
-      <div class="brand-pill"><span>YmaanyGo</span></div>
-      <button class="icon-btn" type="button" aria-label="Zoeken" onclick="goSearch()">
-        <span class="search-ico"></span>
-      </button>
-    </div>
+
+<div class="toast" id="toast"></div>
+<div id="drwOv" class="drw-ov" onclick="closeMenu()"></div>
+
+<!-- DRAWER -->
+<nav id="drw" class="drw">
+  <div class="drw-head">
+    <div class="drw-logo">ymaany<span>GO</span></div>
+    <button class="drw-close" onclick="closeMenu()">×</button>
   </div>
+  <a class="drw-item" href="boeken/index.html" onclick="closeMenu()">🚖 Taxi boeken</a>
+  <a class="drw-item" id="dLogin" href="#auth" onclick="closeMenu();scrollAuth()">👤 Inloggen</a>
+  <a class="drw-item" id="dLogout" style="display:none" href="#" onclick="doLogout();closeMenu()">🚪 Uitloggen</a>
+  <div class="drw-div"></div>
+  <a class="drw-item" href="over-ons.html" onclick="closeMenu()">ℹ️ Over ons</a>
+  <a class="drw-item" href="contact.html" onclick="closeMenu()">💬 Contact</a>
+  <a class="drw-item" href="faq.html" onclick="closeMenu()">❓ FAQ</a>
+  <a class="drw-item" href="voorwaarden-en-privacy.html" onclick="closeMenu()">📄 Voorwaarden</a>
+  <div class="drw-div"></div>
+  <a class="drw-item" href="https://ymaanygo.nl/chauffeur/dashboard.html" onclick="closeMenu()">🚗 Chauffeurs login</a>
+  <div class="drw-footer">ymaanyGO · Noord-Holland<br>+31 6 33 33 71 84</div>
+</nav>
 
-  <!-- Drawer -->
-  <div id="overlay" class="overlay" onclick="closeMenu()"></div>
-  <aside id="drawer" class="drawer" aria-hidden="true">
-    <div class="drawer-head">
-      <div class="drawer-title">Menu</div>
-      <button class="close-x" type="button" onclick="closeMenu()">×</button>
-    </div>
-    <a class="menu-item" href="klant-login.html" onclick="closeMenu()">Inloggen</a>
-    <a class="menu-item" href="index.html" onclick="closeMenu()">Home</a>
-    <a class="menu-item" href="taxi.html" onclick="closeMenu()">Taxi boeken</a>
-    <a class="menu-item" href="over-ons.html" onclick="closeMenu()">Over ons</a>
-    <a class="menu-item" href="contact.html" onclick="closeMenu()">contact</a>
-    <a class="menu-item" href="voorwaarden-en-privacy.html" onclick="closeMenu()">Voorwaarden & Privacy</a>
-     <a class="menu-item" href="driver-login.html" onclick="closeMenu()">Chauffeurs login</a>
-    <div class="small" style="margin-top:auto;">Indicatieve prijs. Definitieve bevestiging via WhatsApp.</div>
-  </aside>
-
-  <!-- Page -->
+<!-- HEADER -->
+<header>
   <div class="wrap">
-    <div id="taxi" class="card">
-      <div class="logo"><img src="./logo.jpeg" alt="YmaanyGo logo"></div>
-      <h1>Taxi boeken</h1>
-
-      <!-- Route UI -->
-      <div class="route-panel">
-        <div class="route-title">Waar wil je heen?</div>
-
-        <div class="route-box">
-          <div class="route-row">
-            <div class="route-dot start"></div>
-
-            <div class="field">
-              <span class="glass"></span>
-
-              <div class="suggest-wrap">
-                <input id="from" type="text" placeholder="Ophaallocatie" autocomplete="off" required>
-                <div id="from-suggest" class="suggest-list hidden"></div>
-              </div>
-
-              <button class="icon-square" type="button" title="Pin (Ophaal)" onclick="openPicker('from')">📍</button>
-            </div>
-
-            <div class="side-buttons">
-              <button class="icon-square" type="button" title="Extra stop (later)" onclick="showAlert('Deze functie komt binnenkort.', 'Binnenkort');">＋</button>
-            </div>
-          </div>
-
-          <div class="route-row">
-            <div class="route-dot end"></div>
-
-            <div class="field">
-              <span class="glass"></span>
-
-              <div class="suggest-wrap">
-                <input id="to" type="text" placeholder="Bestemming" autocomplete="off" required>
-                <div id="to-suggest" class="suggest-list hidden"></div>
-              </div>
-
-              <button class="icon-square" type="button" title="Pin (Bestemming)" onclick="openPicker('to')">📍</button>
-            </div>
-
-            <div class="side-buttons">
-              <button class="icon-square" type="button" title="Route" onclick="openRoute()">🧭</button>
-            </div>
-          </div>
-
-          <button class="swap-float" type="button" title="Omwisselen" onclick="swapRoute()">⇅</button>
+    <div class="hdr">
+      <button class="menu-btn" onclick="openMenu()">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 1h16M1 7h16M1 13h16" stroke="#374151" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://raw.githubusercontent.com/shamekh65-boop/ymaanygo/main/favicon.svg" alt="ymaanyGO">
+        <div class="logo-name">ymaany<span>GO</span></div>
+      </div>
+      <nav class="hdr-nav">
+        <a href="#services">Diensten</a>
+        <a href="#coverage">Werkgebied</a>
+        <a href="#why">Voordelen</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="hdr-actions">
+        <a href="tel:+31633337184" class="btn btn-outline">📞 Bel ons</a>
+        <div id="hOut" style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="scrollAuth()">Inloggen</button>
+          <a href="boeken/index.html" class="btn btn-green">Taxi boeken →</a>
         </div>
-
-        <!-- Huidige locatie -->
-        <div style="margin-top:10px;">
-          <button type="button"
-                  onclick="useCurrentAsFrom()"
-                  style="display:flex;align-items:center;gap:10px;background:transparent;border:0;
-                         font-size:16px;font-weight:800;color:#111;cursor:pointer;">
-            <span style="font-size:20px;">📍</span>
-            Huidige locatie
-          </button>
+        <div id="hIn" style="display:none">
+          <div class="user-pill" onclick="scrollDash()">
+            <div class="u-av" id="hAv">?</div>
+            <span id="hName">...</span>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+</header>
 
-      <form id="taxi-form" class="grid" onsubmit="return false;" style="margin-top:12px;">
-        <div class="row two">
-          <div>
-            <label for="naam">Naam</label>
-            <input type="text" id="naam" placeholder="Volledige naam" required>
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="hero-dot"></span>Vaste tarieven · Geen verrassingen</div>
+      <h1>Taxi in <span>Noord-Holland</span><br>— altijd op tijd</h1>
+      <p class="hero-sub">Betrouwbaar taxivervoer van Den Helder tot Schiphol. Gecertificeerde chauffeurs, vaste prijs, 24/7 beschikbaar.</p>
+
+      <!-- BOOKING CARD -->
+      <div class="book-card">
+        <div class="book-card-title">🚖 Boek een rit</div>
+
+        <!-- Steps indicator -->
+        <div class="steps">
+          <div class="step-item">
+            <div class="step-num active" id="sn1">1</div>
+            <div class="step-lbl active" id="sl1">Adres</div>
           </div>
-          <div>
-            <label for="telefoon">Telefoonnummer</label>
-            <input type="tel" id="telefoon" placeholder="06..." inputmode="tel" required>
+          <div class="step-line" id="sl12"></div>
+          <div class="step-item">
+            <div class="step-num idle" id="sn2">2</div>
+            <div class="step-lbl" id="sl2">Voertuig</div>
+          </div>
+          <div class="step-line" id="sl23"></div>
+          <div class="step-item">
+            <div class="step-num idle" id="sn3">3</div>
+            <div class="step-lbl" id="sl3">Tijd</div>
           </div>
         </div>
 
-        <div class="row two">
-          <div>
-            <label for="tijd">Ophaalmoment</label>
-            <input type="datetime-local" id="tijd" required>
-          </div>
-          <div>
-            <label for="auto">Voertuig</label>
-            <select id="auto">
-              <option value="Standaard">Standaard</option>
-              <option value="Comfort">Comfort</option>
-              <option value="Busje">Busje (8 pers.)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row two">
-          <div>
-            <label for="reizigers">Aantal reizigers</label>
-            <select id="reizigers">
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-              <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-            </select>
-          </div>
-          <div>
-            <label>&nbsp;</label>
-            <div class="inline">
-              <input type="checkbox" id="retour" onchange="toggleRetour()">
-              <strong>Retour</strong>
+        <!-- Step 1 -->
+        <div id="s1">
+          <div class="field">
+            <label>Ophaallocatie</label>
+            <div class="inp-wrap">
+              <span class="inp-ico">📍</span>
+              <input class="inp" id="bFrom" type="text" placeholder="Straat en huisnummer, stad" autocomplete="off">
+              <div class="sug" id="bFS"></div>
             </div>
           </div>
-        </div>
-
-        <div id="retourBlock" class="row hidden">
-          <div>
-            <label for="retour_tijd">Retour datum & tijd</label>
-            <input type="datetime-local" id="retour_tijd">
+          <div class="field">
+            <label>Bestemming</label>
+            <div class="inp-wrap">
+              <span class="inp-ico">🏁</span>
+              <input class="inp" id="bTo" type="text" placeholder="Straat en huisnummer, stad" autocomplete="off">
+              <div class="sug" id="bTS"></div>
+            </div>
           </div>
+          <button class="submit" onclick="goStep(2)">Volgende stap →</button>
         </div>
 
-        <div class="row">
-          <div class="inline">
-            <input type="checkbox" id="luchthaven" onchange="toggleLuchthaven()">
-            <strong>Vanuit luchthaven?</strong>
+        <!-- Step 2 -->
+        <div id="s2" style="display:none">
+          <button class="back-btn" onclick="goStep(1)">← Terug</button>
+          <div class="field-row" style="margin-bottom:12px">
+            <div class="field" style="margin-bottom:0">
+              <label>Voertuig</label>
+              <select class="sel" id="bVeh" onchange="calcPrice()">
+                <option value="Standaard">🚗 GO – max 4 pers.</option>
+                <option value="Comfort">⭐ Comfort – max 4 pers.</option>
+                <option value="Busje">🚐 XL – max 8 pers.</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Passagiers</label>
+              <select class="sel" id="bPax" onchange="calcPrice()">
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+              </select>
+            </div>
           </div>
-        </div>
-
-        <!-- ✅ الأزرار ثابتة هنا تحت Vanuit luchthaven? -->
-        <div class="floating-actions" aria-label="Acties">
-          <button class="fab secondary" type="button" onclick="berekenPrijs()">Bereken mijn ritprijs</button>
-          <button class="fab primary" type="button" onclick="whatsappBoeking()">WhatsApp boeking</button>
-        </div>
-
-        <div id="flightBlock" class="row hidden">
-          <div>
-            <label for="vluchtnummer">Vluchtnummer</label>
-            <input type="text" id="vluchtnummer" placeholder="Bijv. KL1234">
+          <div class="price-box">
+            <div class="price-box-val" id="bPriceVal">Berekenen…</div>
+            <div class="price-box-meta" id="bPriceMeta">Vul adressen in</div>
           </div>
+          <button class="submit" onclick="goStep(3)">Volgende stap →</button>
         </div>
 
-        <!-- (actions hidden) -->
-        <div class="actions">
-          <button class="btn" type="button" onclick="berekenPrijs()">Bereken mijn ritprijs</button>
-          <button class="btn secondary" type="button" onclick="whatsappBoeking()">WhatsApp boeking</button>
+        <!-- Step 3 -->
+        <div id="s3" style="display:none">
+          <button class="back-btn" onclick="goStep(2)">← Terug</button>
+          <div class="field-row" style="margin-bottom:14px">
+            <div class="field" style="margin-bottom:0">
+              <label>Datum</label>
+              <input class="inp inp-noico" id="bDate" type="date">
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Tijd</label>
+              <input class="inp inp-noico" id="bTime" type="time" value="08:00">
+            </div>
+          </div>
+          <button class="submit" id="bSub" onclick="submitBooking()">✓ Bevestigen & betalen</button>
         </div>
 
-        <!-- ✅ ONLY ONE prijs element (fixed duplicate id bug) -->
-        <span id="prijs" class="price"></span>
-        <div id="afstand" class="meta"></div>
+        <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:10px">Veilig betalen via Mollie · Geen extra kosten</p>
+      </div>
 
-        <div class="note whatsapp-note">
-          Indicatieve prijs. Definitieve bevestiging via WhatsApp.
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Fullscreen Picker -->
-  <div id="modalBackdrop" class="modal-backdrop">
-    <div class="picker-top">
-      <button class="picker-back" type="button" onclick="closePicker()">←</button>
-
-      <div class="picker-search">
-        <span class="glass"></span>
-        <input id="pickerSearchInput" type="text" placeholder="Zoek een adres..." />
-        <button class="search-btn" type="button" onclick="pickerSearch()">🔎</button>
+      <div class="hero-stats">
+        <div class="hs-item"><div class="hs-num">24/7</div><div class="hs-lbl">Beschikbaar</div></div>
+        <div class="hs-item"><div class="hs-num">4+</div><div class="hs-lbl">Steden</div></div>
+        <div class="hs-item"><div class="hs-num">⚡</div><div class="hs-lbl">Elektrisch</div></div>
+        <div class="hs-item"><div class="hs-num">Vast</div><div class="hs-lbl">Tarief</div></div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="picker-map-wrap">
-      <div id="pickerMap"></div>
-      <div class="center-pin" aria-hidden="true"><span></span></div>
+<!-- SERVICES -->
+<section class="pad" id="services">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Diensten</div>
+      <div class="sec-title">Wat wij aanbieden</div>
+      <p class="sec-sub">Vaste tarieven, moderne voertuigen en professionele chauffeurs.</p>
     </div>
-
-    <div class="picker-bottom">
-      <div id="pickedAddress" class="picked-address">—</div>
-      <button id="confirmBtn" class="confirm-btn" type="button" onclick="pickerConfirm()">Bevestigen</button>
+    <div class="srv-grid">
+      <div class="srv"><div class="srv-ico">🏙️</div><div class="srv-name">Stadsrit</div><p class="srv-desc">Binnen Den Helder, Alkmaar, Hoorn en omgeving. Snel, comfortabel en op tijd.</p><span class="srv-tag">Vaste prijs</span></div>
+      <div class="srv"><div class="srv-ico">✈️</div><div class="srv-name">Luchthaven transfer</div><p class="srv-desc">Schiphol, Düsseldorf en Brussel. Vluchttracking inbegrepen, altijd op tijd.</p><span class="srv-tag">All-in tarief</span></div>
+      <div class="srv"><div class="srv-ico">🚐</div><div class="srv-name">Groepsvervoer</div><p class="srv-desc">Minibus voor groepen tot 8 personen. Ideaal voor uitjes of evenementen.</p><span class="srv-tag">Per groep</span></div>
     </div>
   </div>
+</section>
 
-  <!-- ✅ Custom Alert Modal -->
-  <div id="appAlert" class="app-alert hidden" role="dialog" aria-modal="true" aria-labelledby="appAlertTitle">
-    <div class="app-alert-card">
-      <div class="app-alert-head">
-        <div id="appAlertTitle" class="app-alert-title">Melding</div>
-        <button class="app-alert-x" type="button" onclick="hideAlert()">×</button>
+<!-- COVERAGE -->
+<section class="pad cov" id="coverage">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Werkgebied</div>
+      <div class="sec-title">Heel Noord-Holland</div>
+      <p class="sec-sub">Van de kust tot de stad — wij rijden door de hele provincie.</p>
+    </div>
+    <div class="area-grid">
+      <div class="area"><div class="area-ico">🏖️</div><div class="area-name">Den Helder</div><div class="area-sub">Hoofdstad</div></div>
+      <div class="area"><div class="area-ico">🏙️</div><div class="area-name">Alkmaar</div><div class="area-sub">Volledig</div></div>
+      <div class="area"><div class="area-ico">⛵</div><div class="area-name">Hoorn</div><div class="area-sub">Volledig</div></div>
+      <div class="area"><div class="area-ico">🌊</div><div class="area-name">Texel</div><div class="area-sub">Via veerboot</div></div>
+      <div class="area"><div class="area-ico">🌷</div><div class="area-name">Enkhuizen</div><div class="area-sub">Volledig</div></div>
+      <div class="area"><div class="area-ico">🏘️</div><div class="area-name">Schagen</div><div class="area-sub">Volledig</div></div>
+      <div class="area"><div class="area-ico">🏡</div><div class="area-name">Medemblik</div><div class="area-sub">Volledig</div></div>
+      <div class="area"><div class="area-ico">＋</div><div class="area-name">& meer</div><div class="area-sub">Op aanvraag</div></div>
+    </div>
+    <div class="ap-bar">
+      <div class="ap-left">
+        <div class="ap-ico">✈️</div>
+        <div><div class="ap-title">Vluchttransfers</div><div class="ap-sub">Schiphol · Düsseldorf · Brussel — vaste all-in prijs</div></div>
       </div>
-      <div id="appAlertMsg" class="app-alert-msg"></div>
-      <button class="app-alert-ok" type="button" onclick="hideAlert()">OK</button>
+      <a href="boeken/index.html" class="btn btn-green">Boek transfer →</a>
     </div>
   </div>
+</section>
 
-  <script>
-    // ✅ Replace alert() with in-app modal
-    function showAlert(msg, title = "Melding"){
-      const box = document.getElementById("appAlert");
-      document.getElementById("appAlertTitle").textContent = title;
-      document.getElementById("appAlertMsg").textContent = msg;
-      box.classList.remove("hidden");
-    }
-    function hideAlert(){
-      document.getElementById("appAlert").classList.add("hidden");
-    }
-    document.addEventListener("click", (e) => {
-      const box = document.getElementById("appAlert");
-      if(box && !box.classList.contains("hidden") && e.target === box) hideAlert();
-    });
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "Escape"){
-        const box = document.getElementById("appAlert");
-        if(box && !box.classList.contains("hidden")) hideAlert();
-      }
-    });
+<!-- WHY -->
+<section class="pad" id="why">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Voordelen</div>
+      <div class="sec-title">Waarom ymaanyGO?</div>
+    </div>
+    <div class="why-grid">
+      <div class="why"><div class="why-ico">💰</div><div><h4>Vaste prijzen</h4><p>Geen meters. U weet de prijs vooraf — geen verrassingen.</p></div></div>
+      <div class="why"><div class="why-ico">⏰</div><div><h4>24/7 beschikbaar</h4><p>Dag en nacht, 365 dagen. Vroege vluchten? Geen probleem.</p></div></div>
+      <div class="why"><div class="why-ico">⚡</div><div><h4>Elektrische voertuigen</h4><p>Milieuvriendelijk rijden in moderne elektrische auto's.</p></div></div>
+      <div class="why"><div class="why-ico">🛡️</div><div><h4>Professioneel & veilig</h4><p>Gecertificeerde chauffeurs, verzekerde ritten.</p></div></div>
+    </div>
+  </div>
+</section>
 
-    // ===== MENU =====
-    function openMenu(){
-      document.getElementById('overlay').classList.add('open');
-      document.getElementById('drawer').classList.add('open');
-      document.getElementById('drawer').setAttribute('aria-hidden','false');
-    }
-    function closeMenu(){
-      document.getElementById('overlay').classList.remove('open');
-      document.getElementById('drawer').classList.remove('open');
-      document.getElementById('drawer').setAttribute('aria-hidden','true');
-    }
-    function goSearch(){
-      closeMenu();
-      document.getElementById('taxi').scrollIntoView({behavior:'smooth', block:'start'});
-      setTimeout(()=>document.getElementById('from').focus(), 250);
-    }
+<!-- AUTH -->
+<section class="pad" id="auth" style="background:#f9fafb">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Account</div>
+      <div class="sec-title">Inloggen of registreren</div>
+    </div>
+    <div class="auth-grid">
+      <div class="auth-card">
+        <div class="auth-title">Inloggen</div>
+        <label class="f-label">E-mailadres</label>
+        <input class="f-inp" type="email" id="lE" placeholder="uw@email.nl">
+        <label class="f-label">Wachtwoord</label>
+        <input class="f-inp" type="password" id="lP" placeholder="••••••••">
+        <button class="f-btn" id="lBtn" onclick="doLogin()">Inloggen →</button>
+        <div class="f-msg" id="lMsg"></div>
+        <div class="f-or">of</div>
+        <button class="ghost-btn" onclick="doMagic()">📧 Inloggen met magische link</button>
+      </div>
+      <div class="auth-card">
+        <div class="auth-title">Nieuw account aanmaken</div>
+        <label class="f-label">Naam</label>
+        <input class="f-inp" type="text" id="rN" placeholder="Uw naam">
+        <label class="f-label">E-mailadres</label>
+        <input class="f-inp" type="email" id="rE" placeholder="uw@email.nl">
+        <label class="f-label">Telefoonnummer</label>
+        <input class="f-inp" type="tel" id="rT" placeholder="+31 6 ...">
+        <label class="f-label">Wachtwoord</label>
+        <input class="f-inp" type="password" id="rP" placeholder="Minimaal 8 tekens">
+        <button class="f-btn" id="rBtn" onclick="doRegister()">Account aanmaken →</button>
+        <div class="f-msg" id="rMsg"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // ===== Helpers =====
-    function pad2(n){ return String(n).padStart(2,'0'); }
-    function toLocalDateTimeValue(d){
-      return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()) +
-             "T" + pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-    }
+<!-- DASHBOARD -->
+<section class="dash" id="dash">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Mijn account</div>
+      <div class="sec-title" id="dGreet">Welkom terug</div>
+    </div>
+    <div class="dash-kpis">
+      <div class="kpi"><div class="kpi-ico">🚖</div><div><div class="kpi-num" id="dT">—</div><div class="kpi-lbl">Ritten</div></div></div>
+      <div class="kpi"><div class="kpi-ico">⏳</div><div><div class="kpi-num" id="dP">—</div><div class="kpi-lbl">In behandeling</div></div></div>
+      <div class="kpi"><div class="kpi-ico">✅</div><div><div class="kpi-num" id="dD">—</div><div class="kpi-lbl">Afgerond</div></div></div>
+    </div>
+    <div class="rides-box">
+      <div class="rides-hd">
+        <div class="rides-title">Mijn ritten</div>
+        <a href="boeken/index.html" class="btn btn-green" style="font-size:13px;padding:8px 16px">+ Nieuwe rit</a>
+      </div>
+      <div class="tab-wrap">
+        <button class="tab on" id="tUp" onclick="setTab('up')">Aankomend</button>
+        <button class="tab" id="tPast" onclick="setTab('past')">Geweest</button>
+      </div>
+      <div id="rList"></div>
+    </div>
+  </div>
+</section>
 
-    function parseLocalDateTime(v){
-      if(!v) return null;
-      const d = new Date(v);
-      return isNaN(d.getTime()) ? null : d;
-    }
-    function isPastPickup(tijdValue, bufferMinutes = 15){
-      const d = parseLocalDateTime(tijdValue);
-      if(!d) return true;
-      const now = new Date();
-      now.setMinutes(now.getMinutes() + bufferMinutes);
-      return d.getTime() < now.getTime();
-    }
+<!-- CONTACT -->
+<section class="pad" id="contact" style="background:#f9fafb">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl">Contact</div>
+      <div class="sec-title">Neem contact op</div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-links">
+        <a href="https://wa.me/31633337184" target="_blank" class="contact-link">
+          <div class="cl-ico">💬</div><div><div class="cl-lbl">WhatsApp</div><div class="cl-val">+31 6 33 33 71 84</div></div>
+        </a>
+        <a href="tel:+31633337184" class="contact-link">
+          <div class="cl-ico">📞</div><div><div class="cl-lbl">Bellen</div><div class="cl-val">+31 6 33 33 71 84</div></div>
+        </a>
+        <a href="mailto:info@ymaanygo.nl" class="contact-link">
+          <div class="cl-ico">✉️</div><div><div class="cl-lbl">E-mail</div><div class="cl-val">info@ymaanygo.nl</div></div>
+        </a>
+      </div>
+      <div class="cf">
+        <div class="cf-title">Stuur een bericht</div>
+        <input class="cf-inp" type="text" placeholder="Uw naam">
+        <input class="cf-inp" type="tel" placeholder="Telefoonnummer">
+        <textarea class="cf-inp" rows="4" style="resize:vertical" placeholder="Uw bericht of boekingsdetails..."></textarea>
+        <button class="cf-btn" onclick="toast('WhatsApp openen…');window.open('https://wa.me/31633337184','_blank')">Verstuur via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function setMinDateTimes(){
-      const now = new Date();
-      now.setMinutes(now.getMinutes() + 15);
-      const minVal = toLocalDateTimeValue(now);
-      document.getElementById('tijd').min = minVal;
-      document.getElementById('retour_tijd').min = minVal;
-    }
-    setMinDateTimes();
-    window.addEventListener("focus", setMinDateTimes);
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div>
+        <div class="ft-brand">ymaany<span>GO</span></div>
+        <p class="ft-sub">Betrouwbaar taxivervoer in Noord-Holland. Vaste tarieven, 24/7 beschikbaar.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Diensten</h4>
+        <ul>
+          <li><a href="boeken/index.html">Taxi boeken</a></li>
+          <li><a href="taxi-zakelijk.html">Zakelijke taxi</a></li>
+          <li><a href="taxi-alkmaar.html">Taxi Alkmaar</a></li>
+          <li><a href="taxi-den-helder.html">Taxi Den Helder</a></li>
+          <li><a href="taxi-hoorn.html">Taxi Hoorn</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Klanten</h4>
+        <ul>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="annuleren-wijzigen.html">Annuleren</a></li>
+          <li><a href="deel-app.html">Deel app</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Bedrijf</h4>
+        <ul>
+          <li><a href="over-ons.html">Over ons</a></li>
+          <li><a href="voorwaarden-en-privacy.html">Voorwaarden</a></li>
+          <li><a href="cookies.html">Cookies</a></li>
+          <li><a href="https://ymaanygo.nl/chauffeur/dashboard.html">Chauffeurs login</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2025 ymaanyGO Taxi – Noord-Holland</span>
+      <span>+31 6 33 33 71 84 · info@ymaanygo.nl</span>
+    </div>
+  </div>
+</footer>
 
-    // ===== Toggles =====
-    function toggleRetour(){
-      const on = document.getElementById('retour').checked;
-      const block = document.getElementById('retourBlock');
-      const field = document.getElementById('retour_tijd');
-      if(on){ block.classList.remove('hidden'); field.required = true; }
-      else { block.classList.add('hidden'); field.required = false; field.value=""; }
-    }
-    function toggleLuchthaven(){
-      const on = document.getElementById('luchthaven').checked;
-      const block = document.getElementById('flightBlock');
-      const field = document.getElementById('vluchtnummer');
-      if(on){ block.classList.remove('hidden'); field.required = true; }
-      else { block.classList.add('hidden'); field.required = false; field.value=""; }
-    }
+<!-- MAP PICKER -->
+<div id="pm">
+  <div class="pm-top">
+    <button class="pm-back" onclick="closePicker()">←</button>
+    <input class="pm-inp" id="pmSearch" type="text" placeholder="Zoek een adres...">
+    <button class="pm-sb" onclick="pmSearch()">Zoeken</button>
+  </div>
+  <div class="pm-map">
+    <div id="pmMap"></div>
+    <div class="pm-pin">📍</div>
+  </div>
+  <div class="pm-bot">
+    <div class="pm-addr" id="pmAddr">—</div>
+    <button class="pm-ok" id="pmOk" onclick="pmConfirm()">Bevestigen</button>
+  </div>
+</div>
 
-    // ===== Swap =====
-    function swapRoute(){
-      const a = document.getElementById('from');
-      const b = document.getElementById('to');
-      const tmp = a.value;
-      a.value = b.value;
-      b.value = tmp;
-    }
+<script>
+/* ══ SUPABASE ══ */
+const DB = supabase.createClient(
+  "https://lxbfobdczjgqnotwsnki.supabase.co",
+  "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp"
+);
+const LSK = {profile:'ymaanygo_profile_v1',favs:'ymaanygo_favs_v2'};
+const NOM = "https://nominatim.openstreetmap.org";
+const OSRM = "https://router.project-osrm.org";
 
-    // ===== Geocode / Reverse (Nominatim) =====
-    const NOMINATIM_BASE = "https://nominatim.openstreetmap.org";
-    const NOMINATIM_EMAIL = "";
+/* ══ HELPERS ══ */
+function toast(msg,ok=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(ok?' ok':'');
+  setTimeout(()=>t.className='toast',3000);
+}
+function setMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='f-msg '+type;}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+function getProfile(){try{return Object.assign({name:'Klant',phone:'',email:''},JSON.parse(localStorage.getItem(LSK.profile)||'{}'));}catch{return{name:'Klant',phone:'',email:''};}}
+function getFavs(){try{const a=JSON.parse(localStorage.getItem(LSK.favs)||'[]');return Array.isArray(a)?a:[];}catch{return[];}}
 
-    async function geocode(q){
-      const url = NOMINATIM_BASE + "/search?format=json&limit=1&countrycodes=nl&addressdetails=1" +
-                  (NOMINATIM_EMAIL ? ("&email=" + encodeURIComponent(NOMINATIM_EMAIL)) : "") +
-                  "&q=" + encodeURIComponent(q);
-      const res = await fetch(url, { headers: { "Accept":"application/json" }});
-      const data = await res.json();
-      if(!data || !data[0]) return null;
-      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-    }
+/* ══ MENU ══ */
+function openMenu(){document.getElementById('drwOv').classList.add('open');document.getElementById('drw').classList.add('open');}
+function closeMenu(){document.getElementById('drwOv').classList.remove('open');document.getElementById('drw').classList.remove('open');}
+function scrollAuth(){document.getElementById('auth').scrollIntoView({behavior:'smooth'});}
+function scrollDash(){document.getElementById('dash').scrollIntoView({behavior:'smooth'});}
 
-    async function reverseGeocode(lat, lon){
-      const url = NOMINATIM_BASE + `/reverse?format=json&zoom=18&lat=${lat}&lon=${lon}&addressdetails=1` +
-                  (NOMINATIM_EMAIL ? ("&email=" + encodeURIComponent(NOMINATIM_EMAIL)) : "");
-      const res = await fetch(url, { headers: { "Accept":"application/json" }});
-      const data = await res.json();
-      if(!data || !data.address) return null;
+/* ══ STEPS ══ */
+function goStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('s'+i).style.display=i===n?'':'none';
+    const num=document.getElementById('sn'+i),lbl=document.getElementById('sl'+i);
+    if(i<n){num.className='step-num done';num.textContent='✓';lbl.classList.remove('active');}
+    else if(i===n){num.className='step-num active';num.textContent=i;lbl.classList.add('active');}
+    else{num.className='step-num idle';num.textContent=i;lbl.classList.remove('active');}
+  });
+  if(n>=2){document.getElementById('sl12').classList.toggle('done',n>=2);}
+  if(n>=3){document.getElementById('sl23').classList.toggle('done',n>=3);}
+  if(n===2) calcPrice();
+  if(n===3) document.getElementById('bDate').value=new Date().toISOString().split('T')[0];
+}
 
-      const a = data.address;
-      const road = a.road || a.pedestrian || "";
-      const house = a.house_number || "";
-      const city = a.city || a.town || a.village || "";
-      const postcode = a.postcode || "";
+/* ══ PRICING ══ */
+let pricing=null;
+async function loadPricing(){
+  if(pricing) return;
+  try{const {data}=await DB.from('pricing_settings').select('*').single();pricing=data||null;}catch{}
+  if(!pricing) pricing={base_start:5,per_km_van:2.5,comfort_fee:7,tier_0_10:2.3,tier_10_20:1.8,tier_20_30:1.6,tier_30_40:1.4};
+}
+function perKm(km){
+  if(!pricing) return 2.3;
+  if(km<=10) return +pricing.tier_0_10||2.3;
+  if(km<=20) return +pricing.tier_10_20||1.8;
+  if(km<=30) return +pricing.tier_20_30||1.6;
+  return +pricing.tier_30_40||1.4;
+}
+async function geocode(q){
+  try{
+    const d=await fetch(NOM+'/search?format=json&limit=1&countrycodes=nl&addressdetails=1&q='+encodeURIComponent(q),{headers:{Accept:'application/json'}}).then(r=>r.json());
+    if(!d?.[0]) return null;
+    return{lat:+d[0].lat,lon:+d[0].lon};
+  }catch{return null;}
+}
+async function calcPrice(){
+  const from=(document.getElementById('bFrom').value||'').trim();
+  const to=(document.getElementById('bTo').value||'').trim();
+  const pv=document.getElementById('bPriceVal'),pm=document.getElementById('bPriceMeta');
+  if(!from||!to){pv.textContent='—';pm.textContent='Vul adressen in';return;}
+  pv.textContent='…';pm.textContent='Berekenen…';
+  await loadPricing();
+  try{
+    const [A,B]=await Promise.all([geocode(from),geocode(to)]);
+    if(!A||!B){pv.textContent='—';pm.textContent='Adres niet gevonden';return;}
+    const r=await fetch(`${OSRM}/route/v1/driving/${A.lon},${A.lat};${B.lon},${B.lat}?overview=false`).then(r=>r.json());
+    if(!r.routes?.[0]){pv.textContent='—';pm.textContent='Route niet beschikbaar';return;}
+    const km=r.routes[0].distance/1000,min=Math.round(r.routes[0].duration/60);
+    const car=document.getElementById('bVeh').value;
+    const base=+pricing.base_start||5;
+    let p=base+(km*(car==='Busje'?(+pricing.per_km_van||2.5):perKm(km)));
+    if(car==='Comfort') p+=(+pricing.comfort_fee||7);
+    pv.textContent='€ '+p.toFixed(2);
+    pm.textContent=km.toFixed(1)+' km · '+min+' min · Indicatief';
+    document.getElementById('bDate').dataset.price=p.toFixed(2);
+  }catch{pv.textContent='—';pm.textContent='Fout bij berekenen';}
+}
 
-      if(!road || !city) return null;
+/* ══ SUBMIT ══ */
+async function submitBooking(){
+  const from=(document.getElementById('bFrom').value||'').trim();
+  const to=(document.getElementById('bTo').value||'').trim();
+  const date=document.getElementById('bDate').value;
+  const time=document.getElementById('bTime').value;
+  const veh=document.getElementById('bVeh').value;
+  const pax=document.getElementById('bPax').value;
+  const price=document.getElementById('bDate').dataset.price||'0';
+  if(!from||!to||!date||!time){toast('Vul alle velden in.');return;}
+  const btn=document.getElementById('bSub');
+  btn.disabled=true;btn.textContent='Bezig…';
+  const {data:{user}}=await DB.auth.getUser();
+  if(!user){btn.disabled=false;btn.textContent='✓ Bevestigen & betalen';toast('Log eerst in om te boeken.');scrollAuth();return;}
+  const profile=getProfile();
+  const {data:ride,error}=await DB.from('rides').insert([{
+    customer_id:user.id,customer_name:profile.name||user.email,
+    customer_email:profile.email||user.email,customer_phone:profile.phone||'',
+    from_address:from,to_address:to,vehicle:veh,passengers:+pax,
+    pickup_time:new Date(date+'T'+time).toISOString(),
+    price:'€ '+price,status:'awaiting_payment',payment_status:'unpaid'
+  }]).select().single();
+  btn.disabled=false;btn.textContent='✓ Bevestigen & betalen';
+  if(error){toast('Fout: '+error.message);return;}
+  try{
+    const pay=await fetch('https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/create-payment',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({amount:+price,description:`Taxi ${from} → ${to}`,ride_id:ride.id})
+    }).then(r=>r.json());
+    if(pay.checkoutUrl){window.location.href=pay.checkoutUrl;return;}
+  }catch{}
+  toast('Rit opgeslagen!',true);
+  await loadRides(user.id);scrollDash();
+}
 
-      const line = `${road} ${house}`.trim();
-      const full = `${line}, ${postcode ? postcode + " " : ""}${city}, Nederland`
-        .trim().replace(/\s+/g,' ');
-      return full;
-    }
-
-    // ===== Distance (OSRM) =====
-    async function routeDistanceKm(a, b){
-      const url = `https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`;
-      const res = await fetch(url, { headers: { "Accept":"application/json" }});
-      const data = await res.json();
-      if(!data || data.code !== "Ok" || !data.routes || !data.routes[0]) return null;
-      return { km: data.routes[0].distance/1000, minutes: data.routes[0].duration/60 };
-    }
-
-    // ===== Pricing =====
-    const START_TARIEF = 5.00;
-    const PER_KM_STANDAARD = 2.00;
-    const PER_KM_BUSJE = 2.50;
-    const COMFORT_TOESLAG = 7.00;
-
-    async function berekenPrijs(){
-      const van = document.getElementById('from').value.trim();
-      const naar = document.getElementById('to').value.trim();
-      const voertuig = document.getElementById('auto').value;
-      const retour = document.getElementById('retour').checked;
-
-      const tijd = document.getElementById('tijd').value;
-      if(isPastPickup(tijd, 15)){
-        showAlert(
-          "Controleer de vertrektijd. Boeken in het verleden is niet mogelijk. Kies een tijdstip minimaal 15 minuten vanaf nu.",
-          "Ongeldige tijd"
-        );
-        document.getElementById('prijs').innerText = "";
-        document.getElementById('afstand').innerText = "";
-        return;
-      }
-
-      if(retour){
-        const retourTijd = document.getElementById('retour_tijd').value;
-        const td  = parseLocalDateTime(tijd);
-        const rtd = parseLocalDateTime(retourTijd);
-        if(!rtd || rtd.getTime() <= td.getTime()){
-          showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
-          return;
-        }
-      }
-
-      if(!van || !naar){
-        showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
-        return;
-      }
-      if(retour && !document.getElementById('retour_tijd').value){
-        showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens");
-        return;
-      }
-      if(document.getElementById('luchthaven').checked && !document.getElementById('vluchtnummer').value.trim()){
-        showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens");
-        return;
-      }
-
-      document.getElementById('prijs').innerText = "Bezig...";
-      document.getElementById('afstand').innerText = "";
-
-      const A = await geocode(van);
-      const B = await geocode(naar);
-      if(!A || !B){
-        showAlert("Het adres is onduidelijk. Plaats de pin 📍 handmatig op de kaart.", "Adres probleem");
-        document.getElementById('prijs').innerText = "";
-        return;
-      }
-
-      const r = await routeDistanceKm(A, B);
-      if(!r){
-        showAlert("De afstand kon niet worden berekend. Probeer opnieuw.", "Route probleem");
-        document.getElementById('prijs').innerText = "";
-        return;
-      }
-
-      const perKm = (voertuig === "Busje") ? PER_KM_BUSJE : PER_KM_STANDAARD;
-
-      let prijs = START_TARIEF + (r.km * perKm);
-      if (voertuig === "Comfort") prijs += COMFORT_TOESLAG;
-      if (retour) prijs = prijs * 2;
-
-      document.getElementById('prijs').innerText = "€ " + prijs.toFixed(2);
-      document.getElementById('afstand').innerText =
-        `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.minutes)} min`;
-    }
-
-    // ===== Validation =====
-    function isValidNLPhone(v){
-      const s = v.replace(/\s+/g,'').trim();
-      return /^(0\d{9}|\+31\d{9})$/.test(s);
-    }
-
-    // ===== WhatsApp booking =====
-    function whatsappBoeking(){
-      const naam = document.getElementById('naam').value.trim();
-      const tel = document.getElementById('telefoon').value.trim();
-      const tijd = document.getElementById('tijd').value;
-
-      const van = document.getElementById('from').value.trim();
-      const naar = document.getElementById('to').value.trim();
-
-      const voertuig = document.getElementById('auto').value;
-      const reizigers = document.getElementById('reizigers').value;
-      const retour = document.getElementById('retour').checked;
-      const luchthaven = document.getElementById('luchthaven').checked;
-
-      const retourTijd = document.getElementById('retour_tijd').value;
-      const vluchtnummer = document.getElementById('vluchtnummer').value.trim();
-
-      const prijs = document.getElementById('prijs').innerText || "Nog niet berekend";
-      const afstandInfo = document.getElementById('afstand').innerText || "";
-
-      if(isPastPickup(tijd, 15)){
-        showAlert(
-          "Controleer de vertrektijd. Boeken in het verleden is niet mogelijk. Kies een tijdstip minimaal 15 minuten vanaf nu.",
-          "Ongeldige tijd"
-        );
-        return;
-      }
-
-      if(retour){
-        const td  = parseLocalDateTime(tijd);
-        const rtd = parseLocalDateTime(retourTijd);
-        if(!rtd || rtd.getTime() <= td.getTime()){
-          showAlert("De retourtijd moet later zijn dan de vertrektijd.", "Ongeldige retourtijd");
-          return;
-        }
-      }
-
-      if(!naam || !tel || !tijd || !van || !naar){
-        showAlert("Vul alle verplichte velden in.", "Ontbrekende gegevens");
-        return;
-      }
-      if(!isValidNLPhone(tel)){
-        showAlert("Telefoonnummer is ongeldig. Gebruik 06xxxxxxxx of +31xxxxxxxxx.", "Telefoonnummer");
-        return;
-      }
-      if(retour && !retourTijd){
-        showAlert("Vul Retour datum & tijd in.", "Ontbrekende gegevens");
-        return;
-      }
-      if(luchthaven && !vluchtnummer){
-        showAlert("Vul het vluchtnummer in.", "Ontbrekende gegevens");
-        return;
-      }
-
-      const bericht =
-`Nieuwe taxi boeking:
-Naam: ${naam}
-Telefoon: ${tel}
-Van: ${van}
-Naar: ${naar}
-Ophaalmoment: ${tijd}
-Voertuig: ${voertuig}
-Aantal reizigers: ${reizigers}
-Retour: ${retour ? "Ja" : "Nee"}
-${retour ? "Retour datum & tijd: " + retourTijd : ""}
-Luchthaven: ${luchthaven ? "Ja" : "Nee"}
-${luchthaven ? "Vluchtnummer: " + vluchtnummer : ""}
-${afstandInfo ? afstandInfo : ""}
-Prijs: ${prijs}`;
-
-      const whatsappNummer = "31633337184";
-      const url = "https://wa.me/" + whatsappNummer + "?text=" + encodeURIComponent(bericht);
-      window.open(url, "_blank");
-    }
-
-    // ===== Open route =====
-    async function openRoute(){
-      const origin = document.getElementById('from').value.trim();
-      const destination = document.getElementById('to').value.trim();
-      if(!origin || !destination){
-        showAlert("Vul Ophaallocatie en Bestemming in.", "Ontbrekende gegevens");
-        return;
-      }
-
-      const A = await geocode(origin);
-      const B = await geocode(destination);
-      if(!A || !B){
-        showAlert("Het adres is onduidelijk. Plaats de pin handmatig op de kaart.", "Adres probleem");
-        return;
-      }
-
-      const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
-
-      if(isApple){
-        window.open(
-          "https://maps.apple.com/?saddr=" + encodeURIComponent(origin) +
-          "&daddr=" + encodeURIComponent(destination) +
-          "&dirflg=d",
-          "_blank"
-        );
-      } else {
-        window.open(
-          "https://www.google.com/maps/dir/?api=1" +
-          "&origin=" + encodeURIComponent(origin) +
-          "&destination=" + encodeURIComponent(destination) +
-          "&travelmode=driving",
-          "_blank"
-        );
-      }
-    }
-
-    // ===== Set From = GPS =====
-    async function useCurrentAsFrom(){
-      if(!navigator.geolocation){
-        showAlert("Uw browser ondersteunt geen locatievoorzieningen.", "Locatie");
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-
-        const addr = await reverseGeocode(lat, lon);
-        if(!addr){
-          showAlert("Het adres kon niet worden herkend.", "Adres probleem");
-          return;
-        }
-        document.getElementById('from').value = addr;
-      }, () => {
-        showAlert("Locatietoegang is geweigerd.", "Locatie");
+/* ══ SUGGEST ══ */
+function bindSuggest(inId,boxId){
+  const inp=document.getElementById(inId),box=document.getElementById(boxId);
+  if(!inp||!box) return;
+  let t;
+  inp.addEventListener('input',()=>{
+    clearTimeout(t);t=setTimeout(async()=>{
+      const q=inp.value.trim();
+      if(q.length<3){box.classList.remove('show');return;}
+      const favs=getFavs().filter(f=>(f.name+' '+f.addr).toLowerCase().includes(q.toLowerCase())).slice(0,2);
+      let items=[];
+      try{items=await fetch(NOM+'/search?format=json&limit=5&countrycodes=nl&addressdetails=1&q='+encodeURIComponent(q),{headers:{Accept:'application/json'}}).then(r=>r.json());}catch{}
+      const parts=[];
+      favs.forEach(f=>parts.push(`<div class="sug-row" data-v="${esc(f.addr)}"><div class="sug-main">★ ${esc(f.name)}</div><div class="sug-sub">${esc(f.addr)}</div></div>`));
+      items.forEach(it=>{
+        const a=it.address||{},rd=a.road||a.pedestrian||'',hn=a.house_number||'';
+        const city=a.city||a.town||a.village||'',pc=a.postcode||'';
+        const l1=`${rd} ${hn}`.trim()||(it.display_name||'').split(',')[0];
+        const l2=`${pc?pc+' ':''}${city}`.trim();
+        const v=city?`${l1}, ${pc?pc+' ':''}${city}, Nederland`:it.display_name;
+        parts.push(`<div class="sug-row" data-v="${esc(v)}"><div class="sug-main">${esc(l1)}</div>${l2?`<div class="sug-sub">${esc(l2)}</div>`:''}</div>`);
       });
-    }
-
-    // ===== Autocomplete =====
-    function debounce(fn, ms){
-      let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), ms); };
-    }
-
-    async function suggestAddresses(q){
-      const url = NOMINATIM_BASE + "/search?format=json&limit=6&countrycodes=nl&addressdetails=1&q=" + encodeURIComponent(q);
-      const res = await fetch(url, { headers: { "Accept":"application/json" }});
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    }
-
-    function formatSuggestion(it){
-      const a = it.address || {};
-      const road = a.road || a.pedestrian || a.footway || "";
-      const house = a.house_number || "";
-      const city = a.city || a.town || a.village || "";
-      const postcode = a.postcode || "";
-
-      const line1 = `${road} ${house}`.trim() || (it.display_name || "").split(",")[0];
-      const line2 = `${postcode ? postcode + " " : ""}${city}`.trim();
-      return { line1, line2 };
-    }
-
-    function setInputFromNominatim(fieldId, it){
-      const a = it.address || {};
-      const road = a.road || a.pedestrian || a.footway || "";
-      const house = a.house_number || "";
-      const city = a.city || a.town || a.village || "";
-      const postcode = a.postcode || "";
-
-      const line = `${(road + " " + house).trim()}, ${postcode ? postcode + " " : ""}${city}, Nederland`
-        .replace(/\s+/g," ").trim();
-
-      document.getElementById(fieldId).value = line || it.display_name || "";
-    }
-
-    function hideSuggest(fieldId){
-      const box = document.getElementById(fieldId + "-suggest");
-      if(!box) return;
-      box.classList.add("hidden");
-      box.innerHTML = "";
-    }
-
-    function showSuggest(fieldId, items){
-      const box = document.getElementById(fieldId + "-suggest");
-      if(!box) return;
-
-      if(!items.length){ hideSuggest(fieldId); return; }
-
-      box.innerHTML = items.map((it, idx) => {
-        const t = formatSuggestion(it);
-        const line2 = t.line2 ? `<div class="suggest-muted">${t.line2}</div>` : "";
-        return `<div class="suggest-item" data-i="${idx}">
-                  <div>${t.line1}</div>
-                  ${line2}
-                </div>`;
-      }).join("");
-
-      box.classList.remove("hidden");
-
-      box.querySelectorAll(".suggest-item").forEach(el=>{
-        el.addEventListener("mousedown", (e)=>{ e.preventDefault(); });
-        el.addEventListener("click", ()=>{
-          const it = items[Number(el.dataset.i)];
-          setInputFromNominatim(fieldId, it);
-          hideSuggest(fieldId);
-        });
+      if(!parts.length){box.classList.remove('show');return;}
+      box.innerHTML=parts.join('');box.classList.add('show');
+      box.querySelectorAll('.sug-row').forEach(el=>{
+        el.addEventListener('mousedown',e=>e.preventDefault());
+        el.addEventListener('click',()=>{inp.value=el.dataset.v;box.classList.remove('show');});
       });
-    }
+    },380);
+  });
+  inp.addEventListener('blur',()=>setTimeout(()=>box.classList.remove('show'),160));
+}
 
-    function bindAutocomplete(fieldId){
-      const input = document.getElementById(fieldId);
-      const box = document.getElementById(fieldId + "-suggest");
-      if(!input || !box) return;
+/* ══ AUTH ══ */
+async function doLogin(){
+  const email=document.getElementById('lE').value.trim(),pw=document.getElementById('lP').value;
+  if(!email||!pw){setMsg('lMsg','Vul alle velden in.','err');return;}
+  document.getElementById('lBtn').disabled=true;document.getElementById('lBtn').textContent='Even geduld…';
+  const {data,error}=await DB.auth.signInWithPassword({email,password:pw});
+  document.getElementById('lBtn').disabled=false;document.getElementById('lBtn').textContent='Inloggen →';
+  if(error){setMsg('lMsg',error.message==='Invalid login credentials'?'Onjuiste inloggegevens.':error.message,'err');return;}
+  setMsg('lMsg','✓ Ingelogd!','ok');toast('Welkom terug! 👋',true);await loadUser(data.user);
+}
+async function doMagic(){
+  const email=document.getElementById('lE').value.trim();
+  if(!email){setMsg('lMsg','Voer uw e-mailadres in.','err');return;}
+  const {error}=await DB.auth.signInWithOtp({email});
+  setMsg('lMsg',error?error.message:'📧 Magische link verstuurd! Check uw inbox.',error?'err':'ok');
+}
+async function doRegister(){
+  const name=document.getElementById('rN').value.trim(),email=document.getElementById('rE').value.trim();
+  const phone=document.getElementById('rT').value.trim(),pw=document.getElementById('rP').value;
+  if(!name||!email||!pw){setMsg('rMsg','Vul verplichte velden in.','err');return;}
+  if(pw.length<8){setMsg('rMsg','Wachtwoord minimaal 8 tekens.','err');return;}
+  document.getElementById('rBtn').disabled=true;document.getElementById('rBtn').textContent='Even geduld…';
+  const {data,error}=await DB.auth.signUp({email,password:pw,options:{data:{full_name:name,phone}}});
+  document.getElementById('rBtn').disabled=false;document.getElementById('rBtn').textContent='Account aanmaken →';
+  if(error){setMsg('rMsg',error.message,'err');return;}
+  localStorage.setItem(LSK.profile,JSON.stringify({name,phone,email}));
+  setMsg('rMsg','✓ Account aangemaakt! Check uw e-mail.','ok');toast('Welkom! Check uw inbox.',true);
+}
+async function doLogout(){await DB.auth.signOut();localStorage.removeItem(LSK.profile);showOut();toast('Uitgelogd.');}
 
-      const run = debounce(async ()=>{
-        const q = input.value.trim();
-        if(q.length < 3){ hideSuggest(fieldId); return; }
-        const items = await suggestAddresses(q);
-        showSuggest(fieldId, items);
-      }, 250);
+/* ══ USER STATE ══ */
+async function loadUser(user){
+  if(!user){showOut();return;}
+  const name=(user.user_metadata?.full_name)||user.email.split('@')[0];
+  document.getElementById('hOut').style.display='none';
+  document.getElementById('hIn').style.display='flex';
+  document.getElementById('hAv').textContent=name[0].toUpperCase();
+  document.getElementById('hName').textContent=name.split(' ')[0];
+  document.getElementById('dLogin').style.display='none';
+  document.getElementById('dLogout').style.display='flex';
+  document.getElementById('auth').style.display='none';
+  document.getElementById('dash').style.display='block';
+  document.getElementById('dGreet').textContent='Welkom, '+name.split(' ')[0];
+  await loadRides(user.id);
+}
+function showOut(){
+  document.getElementById('hOut').style.display='flex';
+  document.getElementById('hIn').style.display='none';
+  document.getElementById('dLogin').style.display='flex';
+  document.getElementById('dLogout').style.display='none';
+  document.getElementById('auth').style.display='';
+  document.getElementById('dash').style.display='none';
+}
 
-      input.addEventListener("input", run);
-      input.addEventListener("blur", ()=>{ setTimeout(()=>hideSuggest(fieldId), 150); });
-      input.addEventListener("focus", ()=>{ if(input.value.trim().length >= 3) run(); });
-      input.addEventListener("keydown", (e)=>{ if(e.key === "Escape") hideSuggest(fieldId); });
-    }
+/* ══ RIDES ══ */
+let cachedRides=[],rTab='up';
+function setTab(t){
+  rTab=t;
+  document.getElementById('tUp').classList.toggle('on',t==='up');
+  document.getElementById('tPast').classList.toggle('on',t==='past');
+  renderRides();
+}
+async function loadRides(uid){
+  const {data,error}=await DB.from('rides').select('*').eq('customer_id',uid).order('pickup_time',{ascending:true});
+  cachedRides=error?[]:(data||[]);
+  document.getElementById('dT').textContent=cachedRides.length;
+  document.getElementById('dP').textContent=cachedRides.filter(r=>r.status==='pending').length;
+  document.getElementById('dD').textContent=cachedRides.filter(r=>r.status==='completed').length;
+  renderRides();
+}
+function renderRides(){
+  const now=Date.now();
+  const list=cachedRides.filter(r=>{
+    const ts=new Date(r.pickup_time).getTime();
+    if(isNaN(ts)) return rTab==='up';
+    return rTab==='up'?ts>=now&&r.status!=='completed'&&r.status!=='cancelled':ts<now||r.status==='completed'||r.status==='cancelled';
+  });
+  const el=document.getElementById('rList');
+  if(!list.length){el.innerHTML='<div class="empty"><span>🚖</span>Nog geen ritten. Boek uw eerste rit!</div>';return;}
+  const sc={pending:'#d97706',accepted:'#2563eb',on_the_way:'#7c3aed',arrived:'#16a34a',completed:'#16a34a',cancelled:'#dc2626',awaiting_payment:'#6b7280'};
+  const sl={pending:'In behandeling',accepted:'Geaccepteerd',on_the_way:'Onderweg',arrived:'Aangekomen',completed:'Voltooid',cancelled:'Geannuleerd',awaiting_payment:'Wacht betaling'};
+  el.innerHTML=list.map(r=>{
+    const c=sc[r.status]||'#6b7280',l=sl[r.status]||r.status;
+    const when=r.pickup_time?new Date(r.pickup_time).toLocaleString('nl-NL',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+    return `<div class="ride-row">
+      <span class="ride-badge" style="background:${c}15;color:${c}">${l}</span>
+      <div class="ride-info">
+        <b>📍 ${esc(r.from_address||'—')} → 🏁 ${esc(r.to_address||'—')}</b>
+        <small>${when} · ${esc(r.vehicle||'Standaard')} · ${r.passengers||1} pax</small>
+      </div>
+      ${r.price?`<span style="font-weight:700;color:#15803d;white-space:nowrap">${esc(r.price)}</span>`:''}
+    </div>`;
+  }).join('');
+}
 
-    // ===== Picker Logic =====
-    let pickerMap = null;
-    let activeFieldId = "from";
-    let updating = false;
+/* ══ MAP PICKER ══ */
+let pMap=null,pField='bFrom',pBusy=false;
+function openPicker(f){
+  pField=f;document.getElementById('pm').classList.add('open');
+  document.getElementById('pmAddr').textContent='—';document.getElementById('pmSearch').value='';
+  document.getElementById('pmOk').textContent=f==='bFrom'?'Ophaallocatie bevestigen':'Bestemming bevestigen';
+  setTimeout(async()=>{
+    if(pMap){pMap.remove();pMap=null;}
+    pMap=L.map('pmMap',{zoomControl:false});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(pMap);
+    pMap.on('moveend',pME);pMap.invalidateSize();setTimeout(()=>pMap&&pMap.invalidateSize(),250);
+    const v=(document.getElementById(pField)?.value||'').trim();
+    if(v){const p=await geocode(v);if(p){pMap.setView([p.lat,p.lon],17);await pME();return;}}
+    pMap.setView([52.9563,4.8028],13);await pME();
+  },60);
+}
+function closePicker(){document.getElementById('pm').classList.remove('open');if(pMap){pMap.off();pMap.remove();pMap=null;}}
+async function pME(){
+  if(!pMap||pBusy) return;pBusy=true;
+  try{
+    const c=pMap.getCenter();
+    const d=await fetch(NOM+`/reverse?format=json&zoom=18&lat=${c.lat}&lon=${c.lng}&addressdetails=1`,{headers:{Accept:'application/json'}}).then(r=>r.json());
+    const a=d?.address||{},rd=a.road||a.pedestrian||'',hn=a.house_number||'';
+    const city=a.city||a.town||a.village||'',pc=a.postcode||'';
+    document.getElementById('pmAddr').textContent=rd&&city?`${rd} ${hn}`.trim()+`, ${pc?pc+' ':''}${city}, Nederland`:d?.display_name||'—';
+  }finally{pBusy=false;}
+}
+async function pmSearch(){
+  const q=(document.getElementById('pmSearch').value||'').trim();if(!q)return;
+  const p=await geocode(q);if(!p){toast('Adres niet gevonden.');return;}
+  pMap.setView([p.lat,p.lon],17);await pME();
+}
+async function pmConfirm(){
+  const addr=document.getElementById('pmAddr').textContent;
+  if(!addr||addr==='—'){toast('Verplaats de kaart voor een adres.');return;}
+  const f=document.getElementById(pField);if(f) f.value=addr;
+  closePicker();
+}
 
-    function getPinLatLng(){
-      const mapEl = document.getElementById('pickerMap');
-      const pinEl = document.querySelector('.center-pin');
-      const mapRect = mapEl.getBoundingClientRect();
-      const pinRect = pinEl.getBoundingClientRect();
-
-      const x = (pinRect.left + pinRect.width/2) - mapRect.left;
-      const y = (pinRect.top + pinRect.height) - mapRect.top;
-
-      return pickerMap.containerPointToLatLng([x, y]);
-    }
-
-    function openPicker(fieldId){
-      activeFieldId = fieldId;
-
-      const btn = document.getElementById('confirmBtn');
-      btn.textContent = (fieldId === "from") ? "Ophaallocatie bevestigen" : "Bestemming bevestigen";
-
-      document.getElementById('pickedAddress').textContent = "—";
-      document.getElementById('pickerSearchInput').value = "";
-
-      document.getElementById('modalBackdrop').classList.add('open');
-
-      setTimeout(async () => {
-        if(!pickerMap){
-          pickerMap = L.map('pickerMap', { zoomControl: false });
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap' }).addTo(pickerMap);
-          pickerMap.on('moveend', onMapMoveEnd);
-        }
-
-        pickerMap.invalidateSize();
-        setTimeout(()=>pickerMap.invalidateSize(), 300);
-
-        const val = document.getElementById(activeFieldId).value.trim();
-        if(val){
-          const p = await geocode(val);
-          if(p){
-            pickerMap.setView([p.lat, p.lon], 17);
-            await onMapMoveEnd();
-            return;
-          }
-        }
-
-        if(navigator.geolocation){
-          navigator.geolocation.getCurrentPosition(async (pos) => {
-            pickerMap.setView([pos.coords.latitude, pos.coords.longitude], 17);
-            await onMapMoveEnd();
-          }, async () => {
-            pickerMap.setView([52.3702, 4.8952], 14);
-            await onMapMoveEnd();
-          });
-        } else {
-          pickerMap.setView([52.3702, 4.8952], 14);
-          await onMapMoveEnd();
-        }
-      }, 60);
-    }
-
-    function closePicker(){
-      document.getElementById('modalBackdrop').classList.remove('open');
-    }
-
-    async function onMapMoveEnd(){
-      if(!pickerMap || updating) return;
-      updating = true;
-
-      const p = getPinLatLng();
-      const addr = await reverseGeocode(p.lat, p.lng);
-
-      document.getElementById('pickedAddress').textContent = addr || "Adres niet exact — verplaats de kaart.";
-      updating = false;
-    }
-
-    async function pickerSearch(){
-      const q = document.getElementById('pickerSearchInput').value.trim();
-      if(!q){ return; }
-      const p = await geocode(q);
-      if(!p){
-        showAlert("Adres niet gevonden. Pas de invoer aan of verplaats de kaart.", "Adres probleem");
-        return;
-      }
-      pickerMap.setView([p.lat, p.lon], 17);
-      await onMapMoveEnd();
-    }
-
-    async function pickerConfirm(){
-      if(!pickerMap){ closePicker(); return; }
-
-      const p = getPinLatLng();
-      const addr = await reverseGeocode(p.lat, p.lng);
-
-      if(!addr){
-        showAlert("Adres onvoldoende nauwkeurig. Verplaats de kaart en probeer opnieuw.", "Adres probleem");
-        return;
-      }
-      document.getElementById(activeFieldId).value = addr;
-      closePicker();
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' && document.getElementById('modalBackdrop').classList.contains('open')){
-        e.preventDefault();
-        pickerSearch();
-      }
-    });
-    // ===== Auto switch & lock Busje if passengers > 4 =====
-document.getElementById('reizigers').addEventListener('change', function () {
-  const aantal = parseInt(this.value, 10);
-  const autoSelect = document.getElementById('auto');
-
-  if (aantal > 4) {
-    autoSelect.value = 'Busje';
-    autoSelect.disabled = true;
-  } else {
-    autoSelect.disabled = false;
-  }
-});
-
-    bindAutocomplete("from");
-    bindAutocomplete("to");
-  </script>
+/* ══ INIT ══ */
+async function init(){
+  const {data:{session}}=await DB.auth.getSession();
+  if(session?.user) await loadUser(session.user);
+  DB.auth.onAuthStateChange(async(_,s)=>{if(s?.user) await loadUser(s.user);else showOut();});
+  bindSuggest('bFrom','bFS');
+  bindSuggest('bTo','bTS');
+  document.getElementById('bDate').value=new Date().toISOString().split('T')[0];
+}
+init();
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
