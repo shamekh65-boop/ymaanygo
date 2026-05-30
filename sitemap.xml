@@ -1,165 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<url>
-<loc>https://ymaanygo.nl/</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>1.0</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/</loc><lastmod>2026-05-30</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
 
-<url>
-<loc>https://ymaanygo.nl/taxi.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/boeken/</loc><lastmod>2026-05-30</lastmod><changefreq>daily</changefreq><priority>0.95</priority></url>
 
-<url>
-<loc>https://ymaanygo.nl/taxi-alkmaar.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-alkmaar.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-den-helder.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-hoorn.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.92</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-schagen.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.92</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-heerhugowaard.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.90</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-heiloo.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.90</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-bergen.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.88</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-julianadorp.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.88</priority></url>
+  <url><loc>https://ymaanygo.nl/taxicentrales/taxi-anna-paulowna.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.88</priority></url>
 
-<url>
-<loc>https://ymaanygo.nl/taxi-anna-paulowna.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/pags/taxi-zakelijk.html</loc><lastmod>2026-05-30</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/contact.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/faq.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/over-ons.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.70</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/annuleren-wijzigen.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/zakelijk-factuur.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/deel-app.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.55</priority></url>
 
-<url>
-<loc>https://ymaanygo.nl/taxi-bergen.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/chauffeur/login.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.45</priority></url>
+  <url><loc>https://ymaanygo.nl/chauffeur/nieuw-chauffeur-registreren.html</loc><lastmod>2026-05-30</lastmod><changefreq>monthly</changefreq><priority>0.55</priority></url>
 
-<url>
-<loc>https://ymaanygo.nl/taxi-den-helder.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-heerhugowaard.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-heiloo.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-hoorn.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-julianadorp.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-schagen.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.9</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/taxi-zakelijk.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/contact.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.7</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/faq.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/over-ons.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/deel-app.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/annuleren-wijzigen.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/registreren.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/klant-login.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/driver-login.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/zakelijk-factuur.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/cookies.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>yearly</changefreq>
-<priority>0.3</priority>
-</url>
-
-<url>
-<loc>https://ymaanygo.nl/voorwaarden-en-privacy.html</loc>
-<lastmod>2026-03-08</lastmod>
-<changefreq>yearly</changefreq>
-<priority>0.3</priority>
-</url>
+  <url><loc>https://ymaanygo.nl/pags/voorwaarden-en-privacy.html</loc><lastmod>2026-05-30</lastmod><changefreq>yearly</changefreq><priority>0.30</priority></url>
+  <url><loc>https://ymaanygo.nl/pags/cookies.html</loc><lastmod>2026-05-30</lastmod><changefreq>yearly</changefreq><priority>0.25</priority></url>
 
 </urlset>
