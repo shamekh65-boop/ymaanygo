@@ -1,0 +1,18 @@
+User-agent: *
+
+Allow: /
+
+Disallow: /admin/
+Disallow: /driver/
+Disallow: /chauffeur/dashboard.html
+Disallow: /chauffeur/test.html
+Disallow: /klant-dashboard.html
+Disallow: /klant_dashboard.html
+Disallow: /klant-login.html
+Disallow: /test.html
+Disallow: /test2.html
+Disallow: /testtest/
+Disallow: /boeken/delete-account.html
+Disallow: /boeken/payment-success.html
+
+Sitemap: https://ymaanygo.nl/sitemap.xml
