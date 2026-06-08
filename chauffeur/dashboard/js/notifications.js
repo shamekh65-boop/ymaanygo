@@ -1,4 +1,15 @@
 /* ── notifications.js ── */
+
+function getCity(address) {
+  if (!address) return "-";
+  const parts = address.split(",").map(p => p.trim());
+  if (parts.length >= 2) {
+    const cityPart = parts[parts.length - 2];
+    return cityPart.replace(/^\d{4}\s?[A-Z]{2}\s+/, "").trim();
+  }
+  return parts[0];
+}
+
 async function registerPush(){
   if(!("serviceWorker" in navigator)||!("PushManager" in window))return;
   if(Notification.permission!=="granted")return;
@@ -21,12 +32,18 @@ function askNotifPermission(){
 }
 
 function stuurNotificatie(r){
-  const van=(r.from_address||"-").split(",")[0].trim();
-  const naar=(r.to_address||"-").split(",")[0].trim();
+  const van=getCity(r.from_address);
+  const naar=getCity(r.to_address);
   const dt=r.pickup_time?new Date(r.pickup_time):null;
-  const delen=[dt?dt.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"}):"",tT(r.pickup_time),r.price?`rit prijs ${r.price}`:"",r.passengers?`${r.passengers} Passagiers`:""].filter(Boolean);
+  const delen=[
+    dt?dt.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"}):"",
+    tT(r.pickup_time),
+    r.distance?`${r.distance}km`:"",
+    r.price?`Rit prijs € ${r.price}`:"",
+    r.passengers?`${r.passengers} Passagier${r.passengers>1?"s":""}`:""
+  ].filter(Boolean);
   const titel=`${van} → ${naar}`;
-  const tekst=delen.join(" · ");
+  const tekst=delen.join(". ")+".";
   notifRid=r.id;
   speelGeluid();
   if("vibrate" in navigator)navigator.vibrate([300,100,300,100,500]);
@@ -38,11 +55,11 @@ function stuurNotificatie(r){
       if(navigator.serviceWorker&&navigator.serviceWorker.controller){
         navigator.serviceWorker.ready.then(reg=>{
           if(reg.active){
-            reg.active.postMessage({type:"SHOW_NOTIFICATION",title:"🚖 Nieuwe rit! — "+titel,body:tekst,rideId:r.id});
+            reg.active.postMessage({type:"SHOW_NOTIFICATION",title:`🚖 ${titel}`,body:tekst,rideId:r.id});
           }
         });
       }else{
-        const n=new Notification("🚖 Nieuwe rit! — "+titel,{body:tekst,icon:"/favicon.ico",tag:"rit-"+r.id,requireInteraction:true});
+        const n=new Notification(`🚖 ${titel}`,{body:tekst,icon:"/favicon.ico",tag:"rit-"+r.id,requireInteraction:true});
         n.onclick=()=>{window.focus();n.close();notifRid=r.id;goPage(0);setTimeout(()=>openDetail(r.id),300);};
       }
     }catch(e){console.warn(e);}
