@@ -3,9 +3,9 @@
 function getCity(address) {
   if (!address) return "-";
   const parts = address.split(",").map(p => p.trim());
-  if (parts.length >= 2) {
-    const cityPart = parts[parts.length - 2];
-    return cityPart.replace(/^\d{4}\s?[A-Z]{2}\s+/, "").trim();
+  for (let i = parts.length - 2; i >= 0; i--) {
+    const clean = parts[i].replace(/^\d{4}\s?[A-Z]{2}\s+/, "").trim();
+    if (clean && !/^\d{4}\s?[A-Z]{2}$/.test(clean)) return clean;
   }
   return parts[0];
 }
@@ -39,7 +39,7 @@ function stuurNotificatie(r){
     dt?dt.toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"}):"",
     tT(r.pickup_time),
     r.distance?`${r.distance}km`:"",
-    r.price?`Rit prijs € ${r.price}`:"",
+    r.price?`Rit prijs ${r.price}`:"",
     r.passengers?`${r.passengers} Passagier${r.passengers>1?"s":""}`:""
   ].filter(Boolean);
   const titel=`${van} → ${naar}`;
