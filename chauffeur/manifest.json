@@ -1,7 +1,7 @@
 {
   "name": "ymaanyGO Driver",
   "short_name": "ymaanyGO",
-  "start_url": "/chauffeur/dashboard.html",
+  "start_url": "/chauffeur/dashboard/index.html",
   "display": "standalone",
   "background_color": "#f5c800",
   "theme_color": "#1b5e20",
