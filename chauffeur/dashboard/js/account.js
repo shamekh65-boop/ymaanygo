@@ -50,7 +50,8 @@ async function testMelding(){
    const res=await fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/bright-service",{
      method:"POST",
      headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmZvYmRjempncW5vdHdzbmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NjY4MzUsImV4cCI6MjA5NDQ0MjgzNX0.EdRuFd8QRUeWp5I-2ojGR7kS0Bgu6iaXbOdcuy1yNgA"},
-     body:JSON.stringify({title:"Den Helder → Amsterdam",body:"woensdag 10 jun. 12:00. Rit prijs € 77.39. 1 Passagier.",rideId:null})
+body:JSON.stringify({title:"Test melding",body:"Dit is een test melding",rideId:null})
+
    });
    if(res.ok){
      tOk("✅ Test melding verzonden!");
