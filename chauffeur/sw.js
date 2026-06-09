@@ -17,7 +17,7 @@ self.addEventListener("push", e => {
    requireInteraction:true,
    silent:false,
    vibrate:[300,100,300,100,500],
-   data:{ rideId:data.rideId, url:"/chauffeur/dashboard.html" }
+   data:{ rideId:data.rideId, url:"/chauffeur/dashboard/index.html" }
  };
 
  e.waitUntil(self.registration.showNotification(title, options));
@@ -27,7 +27,7 @@ self.addEventListener("push", e => {
 self.addEventListener("notificationclick", e => {
  e.notification.close();
  const rideId=e.notification.data?.rideId;
- const url=e.notification.data?.url||"/chauffeur/dashboard.html";
+ const url=e.notification.data?.url||"/chauffeur/dashboard/index.html";
 
  e.waitUntil(
    self.clients.matchAll({type:"window",includeUncontrolled:true}).then(clients=>{
@@ -52,7 +52,8 @@ self.addEventListener("message", e => {
      tag:"rit-"+Date.now(),
      requireInteraction:true,
      vibrate:[300,100,300,100,500],
-     data:{ rideId:e.data.rideId, url:"/chauffeur/dashboard.html" }
+     data:{ rideId:e.data.rideId, url:"/chauffeur/dashboard/index
+   .html" }
    });
  }
 });
