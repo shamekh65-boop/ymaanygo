@@ -56,8 +56,8 @@ async function testMelding(){
      tOk("✅ Test melding verzonden!");
      stuurNotificatie({
        id:"test-"+Date.now(),
-       from_address:"Jan in 't Veltstraat 92, 1781 SL Den Helder, Nederland",
-       to_address:"Museumplein, 1071 CX Amsterdam, Nederland",
+       from_address:"Test melding ",
+       to_address:"dat is een test melding",
        pickup_time:new Date().toISOString(),
        price:"77.39",
        passengers:1
