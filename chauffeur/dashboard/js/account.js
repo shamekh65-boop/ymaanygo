@@ -57,11 +57,13 @@ body:JSON.stringify({title:"Test melding",body:"Dit is een test melding",rideId:
      tOk("✅ Test melding verzonden!");
      stuurNotificatie({
        id:"test-"+Date.now(),
-       from_address:"Test melding ",
-       to_address:"dat is een test melding",
-       pickup_time:new Date().toISOString(),
-       price:"77.39",
-       passengers:1
+       // ✅ بعد
+from_address:"Test, 1234 AB Test, Nederland",
+to_address:"Test, 1234 AB Test, Nederland",
+pickup_time:new Date().toISOString(),
+price:"0.00",
+passengers:1
+
      });
    }else{tErr("❌ Fout bij verzenden");}
  }catch(e){tErr("❌ "+e.message);}
