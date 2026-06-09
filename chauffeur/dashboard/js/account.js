@@ -44,3 +44,14 @@ async function saveProfile(){
 
 function setNav(a){navApp=a;localStorage.setItem("nav",a);updRadios();}
 function updRadios(){["waze","google","apple"].forEach(a=>{const e=$("nr-"+a);if(e)e.classList.toggle("on",navApp===a);});}
+async function testMelding(){
+  try{
+    const res=await fetch("https://lxbfobdczjgqnotwsnki.supabase.co/functions/v1/bright-service",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmZvYmRjempncW5vdHdzbmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NjY4MzUsImV4cCI6MjA5NDQ0MjgzNX0.EdRuFd8QRUeWp5I-2ojGR7kS0Bgu6iaXbOdcuy1yNgA"},
+      body:JSON.stringify({title:"Test melding",body:"Dit is een testbericht van ymaanyGO Driver.",rideId:null})
+    });
+    if(res.ok){tOk("✅ Test melding verzonden!");}
+    else{tErr("❌ Fout bij verzenden");}
+  }catch(e){tErr("❌ "+e.message);}
+}
