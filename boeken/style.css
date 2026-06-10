@@ -1047,7 +1047,7 @@ body.dark #routeMapWrap {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.5);
   backdrop-filter: blur(6px);
-  z-index: 300;
+  z-index: 130;
   display: none;
   align-items: flex-end;
   justify-content: center;
