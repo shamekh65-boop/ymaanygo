@@ -41,14 +41,32 @@
 
       <div class="pill">
         <button class="icon-btn" type="button" aria-label="Favorites" onclick="openFavManager()">⭐</button>
-        <button class="icon-btn" type="button" aria-label="Language" onclick="cycleLang()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M2 12h20"></path>
-            <path d="M12 2a15 15 0 0 1 0 20"></path>
-            <path d="M12 2a15 15 0 0 0 0 20"></path>
-          </svg>
-        </button>
+               <div class="lang-wrap" id="langWrap">
+          <button class="lang-btn" onclick="toggleLangDrop()">
+            <span class="lang-code" id="curLangCode">NL</span>
+            <span class="lang-flag" id="curLangFlag">🇳🇱</span>
+            <svg class="lang-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="lang-drop" id="langDrop">
+            <button class="lang-opt selected" id="lopt-nl" onclick="pickLang(this,'🇳🇱','NL','nl')">
+              <div class="opt-check"></div>
+              <div class="opt-info"><div class="opt-name">Nederlands</div><div class="opt-native">Dutch</div></div>
+              <span class="opt-flag">🇳🇱</span>
+            </button>
+            <button class="lang-opt" id="lopt-en" onclick="pickLang(this,'🇬🇧','EN','en')">
+              <div class="opt-check"></div>
+              <div class="opt-info"><div class="opt-name">English</div><div class="opt-native">Engels</div></div>
+              <span class="opt-flag">🇬🇧</span>
+            </button>
+            <button class="lang-opt" id="lopt-ar" onclick="pickLang(this,'🇸🇦','AR','ar')">
+              <div class="opt-check"></div>
+              <div class="opt-info"><div class="opt-name">العربية</div><div class="opt-native">Arabisch</div></div>
+              <span class="opt-flag">🇸🇦</span>
+            </button>
+          </div>
+        </div>
        <label class="theme-toggle" title="Toggle theme">
   <input type="checkbox" id="themeToggleChk" onchange="setTheme(this.checked ? 'dark' : 'light')">
   <div class="tt-track">
