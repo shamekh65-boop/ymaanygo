@@ -1167,6 +1167,7 @@ body.dark .tp-ios-track { background: rgba(255,255,255,.15); }
 .tp-ios-sw input:checked ~ .tp-ios-track .tp-ios-knob { transform: translateX(20px); }
 .tp-flex-chips {
   display: none; grid-template-columns: repeat(4,1fr); gap: 7px;
+  margin-bottom: 6px;
 }
 .tp-flex-chips.show { display: grid; }
 
