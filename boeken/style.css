@@ -1141,7 +1141,7 @@ body.dark .tp-dtinput::-webkit-calendar-picker-indicator { filter: invert(1) opa
   border: 1.5px solid var(--border);
   border-radius: 13px; padding: 11px 13px;
   transition: border-color 0.2s, background 0.2s;
-  margin-top: 14px;
+  margin-top: 8px;
 }
 body.dark .tp-flex-row { background: rgba(255,255,255,.04); }
 .tp-flex-row.active {
