@@ -407,7 +407,11 @@ function applyTheme(){
   setActiveRadio('themeLight', t === 'light');
   setActiveRadio('themeDark',  t === 'dark');
   setActiveRadio('themeAuto',  t === 'auto');
+
+  const chk = document.getElementById('themeToggleChk');
+  if(chk) chk.checked = dark;
 }
+
 
 function applyLang(){
   const lang = getLang();
