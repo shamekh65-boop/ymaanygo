@@ -1044,15 +1044,19 @@ body.dark #routeMapWrap {
 
 /* ══ TP Overlay & Modal ══ */
 .tp-overlay {
-  position: fixed; inset: 0;
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  top: 0;
   background: rgba(0,0,0,.5);
   backdrop-filter: blur(6px);
-  z-index: 130;
+  z-index: 250;
   display: none;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 12px 32px;
+  padding: 0 12px 80px;
 }
+
 .tp-overlay.open { display: flex; }
 .tp-modal {
   background: var(--card);
