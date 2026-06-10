@@ -480,7 +480,8 @@ window.openHomeSheet = openHomeSheet;
 window.goBack = goBack;
 window.handleMainAction = handleMainAction;
 window.setStep = setStep;
-/* ══ Time & Pax Modals ══ */
+
+/* ══ Time & Pax — inline steps ══ */
 function tpNow(plusMin) {
   const d = new Date();
   d.setMinutes(d.getMinutes() + plusMin);
@@ -493,106 +494,58 @@ function tpToVal(d) {
 function tpFormat(d) {
   return d.toLocaleString('nl-NL', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
 }
-function tpBgClose(e, id, fn) {
-  if(e.target === document.getElementById(id)) fn();
-}
 
-/* TIME */
-function openTimeModal() {
-  document.getElementById('tpDtInput').value = tpToVal(tpNow(15));
-  document.getElementById('timeOverlay').classList.add('open');
+/* البطاقتان تفتحان step داخل الـ sheet */
+function openTimeModal() { setStep('3b'); }
+function openPaxModal()  { setStep('3c'); }
+
+/* Step 3b — Time */
+let s3bFlexMin = 0;
+function s3bPick(min, el) {
+  document.querySelectorAll('[id^="s3b_"]:not([id^="s3b_fx"])').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('s3bDtInput').value = tpToVal(tpNow(min));
 }
-function closeTimeModal() {
-  document.getElementById('timeOverlay').classList.remove('open');
-  document.getElementById('timeOverlay').style.display = 'none';
-  setTimeout(() => {
-    document.getElementById('timeOverlay').style.display = '';
-  }, 50);
+function s3bFocusCustom() {
+  document.querySelectorAll('[id^="s3b_"]:not([id^="s3b_fx"])').forEach(c => c.classList.remove('selected'));
+  document.getElementById('s3b_custom').classList.add('selected');
+  document.getElementById('s3bDtInput').focus();
 }
-function tpClearChips() {
-  document.querySelectorAll('.tp-chip:not([id^="pc_"]):not([id^="fx_"])').forEach(c => c.classList.remove('selected'));
+function s3bOnCustom() {
+  document.querySelectorAll('[id^="s3b_"]:not([id^="s3b_fx"])').forEach(c => c.classList.remove('selected'));
+  document.getElementById('s3b_custom').classList.add('selected');
 }
-function tpQuickPick(min, el) {
-  tpClearChips(); el.classList.add('selected');
-  document.getElementById('tpDtInput').value = tpToVal(tpNow(min));
-}
-function tpFocusCustom() {
-  tpClearChips();
-  document.getElementById('chip_custom').classList.add('selected');
-  document.getElementById('tpDtInput').focus();
-}
-function tpOnCustom() {
-  tpClearChips();
-  document.getElementById('chip_custom').classList.add('selected');
-}
-let tpFlexMin = 0;
-function tpToggleFlex(on) {
-  document.getElementById('tpFlexRow').classList.toggle('active', on);
-  document.getElementById('tpFlexChips').classList.toggle('show', on);
+function s3bToggleFlex(on) {
+  document.getElementById('s3bFlexRow').classList.toggle('active', on);
+  document.getElementById('s3bFlexChips').classList.toggle('show', on);
   if(!on) {
-    tpFlexMin = 0;
-    document.querySelectorAll('[id^="fx_"]').forEach(c => c.classList.remove('selected'));
-    document.getElementById('tpFlexSub').textContent = 'Ik mag later opgehaald worden';
+    s3bFlexMin = 0;
+    document.querySelectorAll('[id^="s3b_fx"]').forEach(c => c.classList.remove('selected'));
+    document.getElementById('s3bFlexSub').textContent = 'Ik mag later opgehaald worden';
   }
 }
-function tpPickFlex(min, el) {
-  document.querySelectorAll('[id^="fx_"]').forEach(c => c.classList.remove('selected'));
+function s3bPickFlex(min, el) {
+  document.querySelectorAll('[id^="s3b_fx"]').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  tpFlexMin = min;
-  document.getElementById('tpFlexSub').textContent = `Tot ${min} min later`;
-}
-function confirmTimeModal() {
-  const val = document.getElementById('tpDtInput').value;
-  if(!val) return;
-  const d = new Date(val);
-  document.getElementById('timeCardVal').textContent = tpFormat(d);
-  document.getElementById('when').value = val;
-  document.getElementById('timeCard').classList.add('active-card');
-  closeTimeModal();
+  s3bFlexMin = min;
+  document.getElementById('s3bFlexSub').textContent = `Tot ${min} min later`;
 }
 
-/* PAX */
-let tpSelectedPax = 1;
-function openPaxModal() {
-  document.getElementById('paxOverlay').classList.add('open');
-}
-function closePaxModal() {
-  document.getElementById('paxOverlay').classList.remove('open');
-  document.getElementById('paxOverlay').style.display = 'none';
-  setTimeout(() => {
-    document.getElementById('paxOverlay').style.display = '';
-  }, 50);
-}
-
-function tpQuickPax(n, el) {
-  document.querySelectorAll('[id^="pc_"]').forEach(c => c.classList.remove('selected'));
+/* Step 3c — Pax */
+function s3cPax(n, el) {
+  document.querySelectorAll('[id^="s3c_"]').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  tpSelectedPax = n;
-}
-function confirmPaxModal() {
-  document.getElementById('paxCardVal').textContent = tpSelectedPax;
-  document.getElementById('pax').value = tpSelectedPax;
+  document.getElementById('paxCardVal').textContent = n;
+  document.getElementById('pax').value = n;
   document.getElementById('paxCard').classList.add('active-card');
-  closePaxModal();
+  setStep(3);
 }
 
 window.openTimeModal  = openTimeModal;
-window.closeTimeModal = closeTimeModal;
 window.openPaxModal   = openPaxModal;
-window.closePaxModal  = closePaxModal;
-window.tpBgClose      = tpBgClose;
-window.tpQuickPick    = tpQuickPick;
-window.tpFocusCustom  = tpFocusCustom;
-window.tpOnCustom     = tpOnCustom;
-window.tpToggleFlex   = tpToggleFlex;
-window.tpPickFlex     = tpPickFlex;
-window.confirmTimeModal = confirmTimeModal;
-window.tpQuickPax     = tpQuickPax;
-window.confirmPaxModal  = confirmPaxModal;
-
-// init
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('tpDtInput');
-  if(inp) inp.value = tpToVal(tpNow(15));
-});
-
+window.s3bPick        = s3bPick;
+window.s3bFocusCustom = s3bFocusCustom;
+window.s3bOnCustom    = s3bOnCustom;
+window.s3bToggleFlex  = s3bToggleFlex;
+window.s3bPickFlex    = s3bPickFlex;
+window.s3cPax         = s3cPax;
