@@ -1181,3 +1181,122 @@ body.dark .tp-ios-track { background: rgba(255,255,255,.15); }
   box-shadow: 0 8px 20px rgba(59,191,107,.3);
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
+/* ══ Language Dropdown ══ */
+.lang-wrap {
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
+}
+.lang-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 13px 7px 10px;
+  border-radius: 50px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  cursor: pointer;
+  direction: ltr;
+  transition: transform 0.15s, background 0.3s, border-color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-btn:active { transform: scale(0.94); }
+body.dark .lang-btn {
+  background: rgba(20,20,20,.72);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+.lang-flag { font-size: 18px; line-height: 1; }
+.lang-code {
+  font-size: 12px; font-weight: 800;
+  color: #1b5e20; letter-spacing: 0.4px;
+  transition: color 0.3s;
+}
+body.dark .lang-code { color: #3bbf6b; }
+.lang-arrow {
+  width: 13px; height: 13px;
+  stroke: #1b5e20;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), stroke 0.3s;
+  flex-shrink: 0;
+}
+body.dark .lang-arrow { stroke: #3bbf6b; }
+.lang-wrap.open .lang-arrow { transform: rotate(180deg); }
+.lang-drop {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 54px);
+  right: 12px;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.14);
+  border: 1px solid rgba(0,0,0,.06);
+  overflow: hidden;
+  min-width: 175px;
+  transform-origin: top right;
+  transform: scale(0.85) translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.2s ease;
+  z-index: 300;
+}
+.lang-wrap.open .lang-drop {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+body.dark .lang-drop {
+  background: rgba(16,26,16,.97);
+  border-color: rgba(255,255,255,.09);
+  box-shadow: 0 12px 48px rgba(0,0,0,.65);
+}
+.lang-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 15px;
+  cursor: pointer; border: none;
+  background: transparent; width: 100%;
+  direction: ltr;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-opt + .lang-opt { border-top: 1px solid rgba(0,0,0,.05); }
+body.dark .lang-opt + .lang-opt { border-top-color: rgba(255,255,255,.06); }
+.lang-opt:active { background: rgba(27,94,32,.06); }
+body.dark .lang-opt:active { background: rgba(59,191,107,.08); }
+.lang-opt.selected { background: rgba(27,94,32,.07); }
+body.dark .lang-opt.selected { background: rgba(59,191,107,.09); }
+.opt-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
+.opt-info { flex: 1; text-align: left; }
+.opt-name {
+  font-size: 14px; font-weight: 800; color: #0f2211;
+  transition: color 0.3s;
+}
+body.dark .opt-name { color: #fff; }
+.lang-opt.selected .opt-name { color: #1b5e20; }
+body.dark .lang-opt.selected .opt-name { color: #3bbf6b; }
+.opt-native { font-size: 11px; color: #8e8e93; margin-top: 1px; }
+body.dark .opt-native { color: rgba(255,255,255,.3); }
+.opt-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+}
+body.dark .opt-check { border-color: rgba(255,255,255,.2); }
+.lang-opt.selected .opt-check {
+  background: #1b5e20; border-color: #1b5e20;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(27,94,32,.35);
+}
+body.dark .lang-opt.selected .opt-check {
+  background: #3bbf6b; border-color: #3bbf6b;
+  box-shadow: 0 0 10px rgba(59,191,107,.4);
+}
+.lang-opt.selected .opt-check::after {
+  content: '';
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #fff; display: block;
+}
+
