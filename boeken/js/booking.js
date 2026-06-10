@@ -131,8 +131,16 @@ function setStep(n){
     autoCalc(true);
   }
 
-  if(n === 2){
-    setTimeout(() => initRouteMap(), 150);
+    if(n === 2){
+    const sheet = document.getElementById('homeSheet');
+    const h = window.innerHeight;
+    setTimeout(() => {
+      setTranslateY(sheet, Math.round(h * 0.55));
+      if(typeof map !== 'undefined' && map){
+        map.invalidateSize();
+        setTimeout(() => drawRouteOnMainMap(), 300);
+      }
+    }, 150);
   }
 }
 
@@ -663,7 +671,52 @@ function computeRideHash(ride){
   });
 }
 
+async function drawRouteOnMainMap(){
+  if(!map) return;
+  const from = (document.getElementById('from').value || '').trim();
+  const to   = (document.getElementById('to').value   || '').trim();
+  if(!from || !to) return;
+
+  const [pA, pB] = await Promise.all([geocode(from), geocode(to)]);
+  if(!pA || !pB) return;
+
+  const A = [pA.lat, pA.lon];
+  const B = [pB.lat, pB.lon];
+
+  if(window._routeLayers){
+    window._routeLayers.forEach(l => map.removeLayer(l));
+  }
+  window._routeLayers = [];
+
+  const mkA = L.divIcon({
+    className:'',
+    html:`<div style="width:14px;height:14px;border-radius:50%;background:#2f7d32;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.4)"></div>`,
+    iconSize:[14,14], iconAnchor:[7,7]
+  });
+  const mkB = L.divIcon({
+    className:'',
+    html:`<div style="width:14px;height:14px;border-radius:3px;background:#fff;border:3px solid #2f7d32;box-shadow:0 2px 10px rgba(0,0,0,.4)"></div>`,
+    iconSize:[14,14], iconAnchor:[7,7]
+  });
+
+  window._routeLayers.push(L.marker(A, { icon:mkA }).addTo(map));
+  window._routeLayers.push(L.marker(B, { icon:mkB }).addTo(map));
+
+  try{
+    const url  = `${API.OSRM}/route/v1/driving/${pA.lon},${pA.lat};${pB.lon},${pB.lat}?overview=full&geometries=geojson`;
+    const data = await (await fetch(url)).json();
+    if(data?.routes?.[0]?.geometry){
+      const coords = data.routes[0].geometry.coordinates.map(c => [c[1],c[0]]);
+      const line = L.polyline(coords,{color:'#2f7d32',weight:5,opacity:.9}).addTo(map);
+      window._routeLayers.push(line);
+    }
+  }catch(e){}
+
+  map.fitBounds([A, B],{padding:[60,60]});
+}
+
 function saveRideToHistory(){
+
   const from     = (document.getElementById('from').value || "").trim();
   const to       = (document.getElementById('to').value   || "").trim();
   const stopVals = stops.ids.map(id => (document.getElementById(id)?.value || "").trim()).filter(Boolean);
