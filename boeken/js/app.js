@@ -504,6 +504,10 @@ function openTimeModal() {
 }
 function closeTimeModal() {
   document.getElementById('timeOverlay').classList.remove('open');
+  document.getElementById('timeOverlay').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('timeOverlay').style.display = '';
+  }, 50);
 }
 function tpClearChips() {
   document.querySelectorAll('.tp-chip:not([id^="pc_"]):not([id^="fx_"])').forEach(c => c.classList.remove('selected'));
@@ -554,7 +558,12 @@ function openPaxModal() {
 }
 function closePaxModal() {
   document.getElementById('paxOverlay').classList.remove('open');
+  document.getElementById('paxOverlay').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('paxOverlay').style.display = '';
+  }, 50);
 }
+
 function tpQuickPax(n, el) {
   document.querySelectorAll('[id^="pc_"]').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
