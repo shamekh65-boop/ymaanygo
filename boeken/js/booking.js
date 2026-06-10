@@ -12,7 +12,7 @@ let _pricing    = null;
 let _surcharges = null;
 
 async function loadPricingFromDB(){
-  if(_pricing) return; // al geladen
+  if(_pricing) return;
 
   try{
     const [priceRes, surchargeRes] = await Promise.all([
@@ -26,9 +26,8 @@ async function loadPricingFromDB(){
     console.warn('Pricing laden mislukt, fallback gebruikt.', e);
   }
 
-  // Fallback als Supabase niet bereikbaar is
   if(!_pricing){
-_pricing = {
+    _pricing = {
       base_start:    5.00,
       per_km_van:    2.50,
       comfort_fee:   7.00,
@@ -53,7 +52,6 @@ function resetPricingCache(){
   _surcharges = null;
 }
 
-/* helpers */
 function getBaseStart()  { return parseFloat(_pricing?.base_start)  || 5.00; }
 function getVanPerKm()   { return parseFloat(_pricing?.per_km_van)  || 2.50; }
 function getComfortFee() { return parseFloat(_pricing?.comfort_fee) || 7.00; }
@@ -74,11 +72,6 @@ function getPricePerKm(km){
   return parseFloat(_pricing.tier_100_plus) || 1.00;
 }
 
-
-/**
- * Zoekt de hoogste surge voor de opgegeven adressen.
- * Vergelijkt postcode (cijfers + letters zonder spatie) met het adres.
- */
 function getSurge(fromAddress, toAddress){
   if(!isSurgeActive() || !_surcharges || _surcharges.length === 0){
     return { pct: 0, flat: 0 };
@@ -100,9 +93,6 @@ function getSurge(fromAddress, toAddress){
   return { pct: maxPct, flat: maxFlat };
 }
 
-/**
- * Prijs + (prijs * pct/100) + flat
- */
 function applySurge(price, surge){
   if(!surge || (surge.pct === 0 && surge.flat === 0)) return price;
   return price + (price * surge.pct / 100) + surge.flat;
@@ -119,20 +109,34 @@ function setStep(n){
   document.getElementById('step1').classList.toggle('hidden', n !== 1);
   document.getElementById('step2').classList.toggle('hidden', n !== 2);
   document.getElementById('step3').classList.toggle('hidden', n !== 3);
+  document.getElementById('step3b').classList.toggle('hidden', n !== '3b');
+  document.getElementById('step3c').classList.toggle('hidden', n !== '3c');
 
   document.getElementById('stepChip1').classList.toggle('active', n === 1);
   document.getElementById('stepChip2').classList.toggle('active', n === 2);
-  document.getElementById('stepChip3').classList.toggle('active', n === 3);
+  document.getElementById('stepChip3').classList.toggle('active', n === 3 || n === '3b' || n === '3c');
 
   updateFooterButtons();
 
-  if(n === 2 || n === 3){
+  if(n === 2 || n === 3 || n === '3b' || n === '3c'){
     setMinTime();
     autoCalc(true);
   }
 
   if(n === 2){
     setTimeout(() => initRouteMap(), 150);
+  }
+
+  if(n === '3b'){
+    const inp = document.getElementById('s3bDtInput');
+    if(inp) inp.value = tpToVal(tpNow(15));
+    const sheet = document.getElementById('homeSheet');
+    if(sheet) setTranslateY(sheet, snapPositions().expanded);
+  }
+
+  if(n === '3c'){
+    const sheet = document.getElementById('homeSheet');
+    if(sheet) setTranslateY(sheet, snapPositions().expanded);
   }
 }
 
@@ -151,6 +155,12 @@ function updateFooterButtons(){
   }else if(step === 2){
     mainBtn.innerHTML = `${T.next} ›`;
     mainBtn.disabled = !(document.getElementById('car').value || "").trim();
+  }else if(step === '3b'){
+    mainBtn.innerHTML = `Bevestigen ›`;
+    mainBtn.disabled = false;
+  }else if(step === '3c'){
+    mainBtn.innerHTML = `‹ Terug`;
+    mainBtn.disabled = false;
   }else{
     mainBtn.innerHTML = `Boeken & betalen ›`;
     const when = document.getElementById('when').value;
@@ -159,6 +169,10 @@ function updateFooterButtons(){
 }
 
 function goBack(){
+  if(step === '3b' || step === '3c'){
+    setStep(3);
+    return;
+  }
   if(step === 1){
     closeHomeSheet();
     return;
@@ -167,6 +181,21 @@ function goBack(){
 }
 
 function handleMainAction(){
+  if(step === '3b'){
+    const val = document.getElementById('s3bDtInput').value;
+    if(val){
+      const d = new Date(val);
+      document.getElementById('timeCardVal').textContent = tpFormat(d);
+      document.getElementById('when').value = val;
+      document.getElementById('timeCard').classList.add('active-card');
+    }
+    setStep(3);
+    return;
+  }
+  if(step === '3c'){
+    setStep(3);
+    return;
+  }
   if(step === 1 || step === 2){
     setStep(step + 1);
   }else{
@@ -440,7 +469,6 @@ async function calc(force){
 
   document.getElementById('meta').textContent = "Berekenen...";
 
-  // Prijzen laden vanuit Supabase (met cache)
   await loadPricingFromDB();
 
   const stopVals = stops.ids
@@ -475,19 +503,16 @@ async function calc(force){
 
   if(car === "Comfort") price += getComfortFee();
 
-  // Surge toepassen
   price = applySurge(price, surge);
 
   document.getElementById('price').textContent = "€ " + price.toFixed(2);
 
-  // Meta tekst
   let meta = `Afstand: ${r.km.toFixed(1)} km • Duur: ${Math.round(r.min)} min`;
   if(isSurgeActive() && (surge.pct > 0 || surge.flat > 0)){
     meta += ` ⚡ +${surge.pct}%${surge.flat > 0 ? ' +€' + surge.flat.toFixed(2) : ''}`;
   }
   document.getElementById('meta').textContent = meta;
 
-  // Voertuigkaarten bijwerken
   updateVehiclePrices(r.km, surge);
 }
 
@@ -560,7 +585,6 @@ async function submitBooking(){
     customerPhone = otherPhone;
   }
 
-  // Surge info opslaan in rit
   const surge = getSurge(from, to);
 
   const rideData = {
