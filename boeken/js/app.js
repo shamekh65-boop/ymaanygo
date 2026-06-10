@@ -340,6 +340,7 @@ function sheetPointerUp(e){
 
 function openHomeSheet(){
   const sheet = document.getElementById('homeSheet');
+  const sp = snapPositions();
 
   document.getElementById('overlay').classList.add('show');
 
@@ -347,16 +348,8 @@ function openHomeSheet(){
   sheet.style.pointerEvents = 'auto';
   sheet.setAttribute('aria-hidden', 'false');
 
-  document.body.classList.add('home-visible');
-
-  const h = window.innerHeight;
-  setTranslateY(sheet, Math.round(h * 0.40));
-
-  if(typeof map !== 'undefined' && map){
-    setTimeout(() => map.invalidateSize(), 100);
-  }
+  setTranslateY(sheet, sp.mid);
 }
-
 
 function closeHomeSheet(forceNoAnim){
   const sheet = document.getElementById('homeSheet');
@@ -487,5 +480,3 @@ window.openHomeSheet = openHomeSheet;
 window.goBack = goBack;
 window.handleMainAction = handleMainAction;
 window.setStep = setStep;
-window.drawRouteOnMainMap = drawRouteOnMainMap;
-
