@@ -668,12 +668,63 @@
 
           </div>
 
-          <!-- hidden inputs used by booking.js -->
+                    <!-- hidden inputs used by booking.js -->
           <input type="hidden" id="when" value="">
           <input type="hidden" id="pax" value="1">
           <div class="helper" id="timeHint" style="margin-top:6px">Minimaal 15 minuten vanaf nu.</div>
           <div class="helper" id="paxHint" style="display:none">>4 zet automatisch Busje.</div>
         </section>
+
+        <!-- STEP 3b: TIME PICKER -->
+        <section id="step3b" class="hidden">
+          <div class="block">
+            <div class="lbl">Ophaalmoment</div>
+            <div class="tp-chips" style="margin-bottom:10px">
+              <div class="tp-chip selected" id="s3b_15" onclick="s3bPick(15,this)"><div class="tp-cmain">+ 15 min</div><div class="tp-csub">Zo snel mogelijk</div></div>
+              <div class="tp-chip" id="s3b_30" onclick="s3bPick(30,this)"><div class="tp-cmain">+ 30 min</div><div class="tp-csub">Straks</div></div>
+              <div class="tp-chip" id="s3b_60" onclick="s3bPick(60,this)"><div class="tp-cmain">+ 1 uur</div><div class="tp-csub">Later vandaag</div></div>
+              <div class="tp-chip" id="s3b_120" onclick="s3bPick(120,this)"><div class="tp-cmain">+ 2 uur</div><div class="tp-csub">Vanavond</div></div>
+              <div class="tp-chip" id="s3b_1440" onclick="s3bPick(1440,this)"><div class="tp-cmain">Morgen</div><div class="tp-csub">Zelfde tijd</div></div>
+              <div class="tp-chip" id="s3b_custom" onclick="s3bFocusCustom()"><div class="tp-cmain">Eigen tijd</div><div class="tp-csub">Kies datum</div></div>
+            </div>
+            <input type="datetime-local" class="tp-dtinput" id="s3bDtInput" oninput="s3bOnCustom()">
+            <div style="height:10px"></div>
+            <div class="tp-flex-row" id="s3bFlexRow">
+              <div class="tp-flex-info">
+                <div class="tp-flex-title">Ik ben flexibel</div>
+                <div class="tp-flex-sub" id="s3bFlexSub">Ik mag later opgehaald worden</div>
+              </div>
+              <label class="tp-ios-sw" onclick="event.stopPropagation()">
+                <input type="checkbox" id="s3bFlexChk" onchange="s3bToggleFlex(this.checked)">
+                <div class="tp-ios-track"><div class="tp-ios-knob"></div></div>
+              </label>
+            </div>
+            <div class="tp-flex-chips" id="s3bFlexChips">
+              <div class="tp-chip" id="s3b_fx15" onclick="s3bPickFlex(15,this)"><div class="tp-cmain">15 min</div></div>
+              <div class="tp-chip" id="s3b_fx30" onclick="s3bPickFlex(30,this)"><div class="tp-cmain">30 min</div></div>
+              <div class="tp-chip" id="s3b_fx45" onclick="s3bPickFlex(45,this)"><div class="tp-cmain">45 min</div></div>
+              <div class="tp-chip" id="s3b_fx60" onclick="s3bPickFlex(60,this)"><div class="tp-cmain">1 uur</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3c: PAX PICKER -->
+        <section id="step3c" class="hidden">
+          <div class="block">
+            <div class="lbl">Aantal reizigers</div>
+            <div class="tp-chips tp-chips-4">
+              <div class="tp-chip selected" id="s3c_1" onclick="s3cPax(1,this)"><div class="tp-cmain">1</div><div class="tp-csub">passagier</div></div>
+              <div class="tp-chip" id="s3c_2" onclick="s3cPax(2,this)"><div class="tp-cmain">2</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_3" onclick="s3cPax(3,this)"><div class="tp-cmain">3</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_4" onclick="s3cPax(4,this)"><div class="tp-cmain">4</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_5" onclick="s3cPax(5,this)"><div class="tp-cmain">5</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_6" onclick="s3cPax(6,this)"><div class="tp-cmain">6</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_7" onclick="s3cPax(7,this)"><div class="tp-cmain">7</div><div class="tp-csub">passagiers</div></div>
+              <div class="tp-chip" id="s3c_8" onclick="s3cPax(8,this)"><div class="tp-cmain">8</div><div class="tp-csub">passagiers</div></div>
+            </div>
+          </div>
+        </section>
+
 
         <!-- TIME MODAL -->
         <div class="tp-overlay" id="timeOverlay" onclick="tpBgClose(event,'timeOverlay',closeTimeModal)">
