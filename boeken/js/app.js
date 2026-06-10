@@ -437,6 +437,7 @@ bindInputs();
 bindPaxRule();
 applyTheme();
 applyLang();
+syncLangBtn();
 
 setRideFor('me');
 setStep(1);
@@ -540,6 +541,41 @@ function s3cPax(n, el) {
   document.getElementById('paxCard').classList.add('active-card');
   setStep(3);
 }
+/* ══ Language Dropdown ══ */
+function toggleLangDrop() {
+  document.getElementById('langWrap').classList.toggle('open');
+}
+
+function pickLang(el, flag, code, lang) {
+  document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('curLangFlag').textContent = flag;
+  document.getElementById('curLangCode').textContent = code;
+  setTimeout(() => document.getElementById('langWrap').classList.remove('open'), 160);
+  setLang(lang);
+}
+
+function syncLangBtn() {
+  const l = getLang();
+  const map = { nl: ['🇳🇱','NL'], en: ['🇬🇧','EN'], ar: ['🇸🇦','AR'] };
+  const [flag, code] = map[l] || map.nl;
+  const flagEl = document.getElementById('curLangFlag');
+  const codeEl = document.getElementById('curLangCode');
+  if(flagEl) flagEl.textContent = flag;
+  if(codeEl) codeEl.textContent = code;
+  document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('selected'));
+  const opt = document.getElementById('lopt-' + l);
+  if(opt) opt.classList.add('selected');
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('langWrap');
+  if(wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
+window.toggleLangDrop = toggleLangDrop;
+window.pickLang = pickLang;
+
 
 window.openTimeModal  = openTimeModal;
 window.openPaxModal   = openPaxModal;
