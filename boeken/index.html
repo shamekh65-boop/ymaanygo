@@ -620,7 +620,7 @@
 
         </section>
 
-        <!-- STEP 3 -->
+             <!-- STEP 3 -->
         <section id="step3" class="hidden">
           <div class="block">
             <div class="lbl" id="rideForLbl">Voor wie is de rit?</div>
@@ -628,7 +628,6 @@
               <button id="forMeBtn" class="active" type="button" onclick="setRideFor('me')">Voor mij</button>
               <button id="forOtherBtn" type="button" onclick="setRideFor('other')">Voor iemand anders</button>
             </div>
-
             <div id="otherPersonBlock" class="hidden" style="margin-top:12px">
               <div class="lbl" id="otherNameLbl">Naam van passagier</div>
               <input id="otherName" class="ctrl" type="text" />
@@ -640,28 +639,111 @@
 
           <div style="height:12px"></div>
 
-          <div class="grid2">
-            <div class="block">
-              <div class="lbl" id="timeLbl">Ophaalmoment</div>
-              <input id="when" class="ctrl" type="datetime-local" />
-              <div class="helper" id="timeHint">Minimaal 15 minuten vanaf nu.</div>
+          <!-- Time & Pax cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+            <div class="tp-card" id="timeCard" onclick="openTimeModal()">
+              <div class="tp-top">
+                <div class="tp-icon">
+                  <img src="https://ymaanygo.nl/boeken/Photoroom_20260610_133543.png" style="width:34px;height:34px;object-fit:contain;">
+                </div>
+                <div>
+                  <div class="tp-label" id="timeLbl">Ophaalmoment</div>
+                  <div class="tp-value" id="timeCardVal">Nu + 15 min</div>
+                </div>
+              </div>
             </div>
-            <div class="block">
-              <div class="lbl" id="paxLbl">Aantal reizigers</div>
-              <select id="pax" class="ctrl">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-              </select>
-              <div class="helper" id="paxHint">>4 zet automatisch Busje.</div>
+
+            <div class="tp-card" id="paxCard" onclick="openPaxModal()">
+              <div class="tp-top">
+                <div class="tp-icon">
+                  <img src="https://ymaanygo.nl/boeken/84C2626C-3BE3-4519-9C49-56509F239977.png" style="width:34px;height:34px;object-fit:contain;">
+                </div>
+                <div>
+                  <div class="tp-label" id="paxLbl">Reizigers</div>
+                  <div class="tp-value accent" id="paxCardVal">1</div>
+                </div>
+              </div>
             </div>
+
           </div>
+
+          <!-- hidden inputs used by booking.js -->
+          <input type="hidden" id="when" value="">
+          <input type="hidden" id="pax" value="1">
+          <div class="helper" id="timeHint" style="margin-top:6px">Minimaal 15 minuten vanaf nu.</div>
+          <div class="helper" id="paxHint" style="display:none">>4 zet automatisch Busje.</div>
         </section>
+
+        <!-- TIME MODAL -->
+        <div class="tp-overlay" id="timeOverlay" onclick="tpBgClose(event,'timeOverlay',closeTimeModal)">
+          <div class="tp-modal">
+            <div class="tp-mhead">
+              <div class="tp-mtitle">
+                <img src="https://ymaanygo.nl/boeken/Photoroom_20260610_133543.png" style="width:20px;height:20px;object-fit:contain;">
+                Ophaalmoment
+              </div>
+              <button class="tp-mclose" onclick="closeTimeModal()">×</button>
+            </div>
+            <div>
+              <div class="tp-slbl">Snel kiezen</div>
+              <div class="tp-chips">
+                <div class="tp-chip selected" id="chip_15" onclick="tpQuickPick(15,this)"><div class="tp-cmain">+ 15 min</div><div class="tp-csub">Zo snel mogelijk</div></div>
+                <div class="tp-chip" id="chip_30" onclick="tpQuickPick(30,this)"><div class="tp-cmain">+ 30 min</div><div class="tp-csub">Straks</div></div>
+                <div class="tp-chip" id="chip_60" onclick="tpQuickPick(60,this)"><div class="tp-cmain">+ 1 uur</div><div class="tp-csub">Later vandaag</div></div>
+                <div class="tp-chip" id="chip_120" onclick="tpQuickPick(120,this)"><div class="tp-cmain">+ 2 uur</div><div class="tp-csub">Vanavond</div></div>
+                <div class="tp-chip" id="chip_1440" onclick="tpQuickPick(1440,this)"><div class="tp-cmain">Morgen</div><div class="tp-csub">Zelfde tijd</div></div>
+                <div class="tp-chip" id="chip_custom" onclick="tpFocusCustom()"><div class="tp-cmain">Eigen tijd</div><div class="tp-csub">Kies datum</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="tp-slbl">Of kies exact</div>
+              <input type="datetime-local" class="tp-dtinput" id="tpDtInput" oninput="tpOnCustom()">
+            </div>
+            <!-- Flexibel -->
+            <div class="tp-flex-row" id="tpFlexRow">
+              <div class="tp-flex-info">
+                <div class="tp-flex-title">Ik ben flexibel</div>
+                <div class="tp-flex-sub" id="tpFlexSub">Ik mag later opgehaald worden</div>
+              </div>
+              <label class="tp-ios-sw" onclick="event.stopPropagation()">
+                <input type="checkbox" id="tpFlexChk" onchange="tpToggleFlex(this.checked)">
+                <div class="tp-ios-track"><div class="tp-ios-knob"></div></div>
+              </label>
+            </div>
+            <div class="tp-flex-chips" id="tpFlexChips">
+              <div class="tp-chip" id="fx_15" onclick="tpPickFlex(15,this)"><div class="tp-cmain">15 min</div></div>
+              <div class="tp-chip" id="fx_30" onclick="tpPickFlex(30,this)"><div class="tp-cmain">30 min</div></div>
+              <div class="tp-chip" id="fx_45" onclick="tpPickFlex(45,this)"><div class="tp-cmain">45 min</div></div>
+              <div class="tp-chip" id="fx_60" onclick="tpPickFlex(60,this)"><div class="tp-cmain">1 uur</div></div>
+            </div>
+            <button class="tp-confirm" onclick="confirmTimeModal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Bevestigen
+            </button>
+          </div>
+        </div>
+
+        <!-- PAX MODAL -->
+        <div class="tp-overlay" id="paxOverlay" onclick="tpBgClose(event,'paxOverlay',closePaxModal)">
+          <div class="tp-modal">
+            <div class="tp-mhead">
+              <div class="tp-mtitle">
+                <img src="https://ymaanygo.nl/boeken/84C2626C-3BE3-4519-9C49-56509F239977.png" style="width:20px;height:20px;object-fit:contain;">
+                Aantal reizigers
+              </div>
+              <button class="tp-mclose" onclick="closePaxModal()">×</button>
+            </div>
+            <div>
+              <div class="tp-slbl">Kies aantal</div>
+              <div class="tp-chips tp-chips-4">
+                <div class="tp-chip selected" id="pc_1" onclick="tpQuickPax(1,this)"><div class="tp-cmain">1</div><div class="tp-csub">passagier</div></div>
+                <div class="tp-chip" id="pc_2" onclick="tpQuickPax(2,this)"><div class="tp-cmain">2</div><div class="tp-csub">passagiers</div></div>
+                <div class="tp-chip" id="pc_3" onclick="tpQuickPax(3,this)"><div class="tp-cmain">3</div><div class="tp-csub">passagiers</div></div>
+                <div class="tp-chip" id="pc_4" onclick="tpQuickPax(4,this)"><div class="tp-cmain">4</div><div class="tp-csub">passagiers</div></div>
+                <div class="tp-chip" id="pc_5" onclick="tpQuickPax(5,this)"><div class="tp-cmain">5</div><div class="tp-csub">passagiers</div></div>
+                <div class="tp-chip" id="pc_6" onclick="tpQuickPax(6,this)"><div class="tp-cmain">6</div><div class="tp-cs
+
 
       </div><!-- end sheet-body -->
 
