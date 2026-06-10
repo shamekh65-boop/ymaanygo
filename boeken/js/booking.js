@@ -587,23 +587,24 @@ async function submitBooking(){
 
   const surge = getSurge(from, to);
 
-  const rideData = {
-    customer_id:    user.id,
-    customer_name:  customerName,
-    customer_phone: customerPhone,
-    customer_email: customerEmail,
-    from_address:   from,
-    to_address:     to,
-    stops:          stopVals,
-    vehicle:        car,
-    passengers:     Number(pax),
-    pickup_time:    new Date(when).toISOString(),
-    price:          priceText,
-    surge_active:   isSurgeActive(),
-    surge_pct:      surge.pct,
-    surge_flat:     surge.flat,
-    status:         "awaiting_payment",
-    payment_status: "unpaid"
+    const rideData = {
+    customer_id:       user.id,
+    customer_name:     customerName,
+    customer_phone:    customerPhone,
+    customer_email:    customerEmail,
+    from_address:      from,
+    to_address:        to,
+    stops:             stopVals,
+    vehicle:           car,
+    passengers:        Number(pax),
+    pickup_time:       new Date(when).toISOString(),
+    price:             priceText,
+    surge_active:      isSurgeActive(),
+    surge_pct:         surge.pct,
+    surge_flat:        surge.flat,
+    flexible_minutes:  typeof s3bFlexMin !== 'undefined' ? s3bFlexMin : 0,
+    status:            "awaiting_payment",
+    payment_status:    "unpaid"
   };
 
   mainBtn.disabled  = true;
