@@ -231,7 +231,7 @@ function openRideDetail(rideId){
             <div style="font-size:13px;font-weight:700">${escapeHtml(r.vehicle || "Standaard")} · ${r.passengers || 1} pax</div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 12px">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border)">
           <div style="width:32px;height:32px;border-radius:9px;background:rgba(47,125,50,.10);display:grid;place-items:center;flex-shrink:0">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
@@ -240,6 +240,17 @@ function openRideDetail(rideId){
             <div style="font-size:13px;font-weight:700">${escapeHtml(r.price || "€0")} · ${r.payment_status === 'paid' ? 'Betaald' : 'Niet betaald'}</div>
           </div>
         </div>
+        ${(r.flexible_minutes && r.flexible_minutes > 0) ? `
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 12px">
+          <div style="width:32px;height:32px;border-radius:9px;background:rgba(59,191,107,.10);display:grid;place-items:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3bbf6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-weight:600">Flexibel ophalen</div>
+            <div style="font-size:13px;font-weight:700;color:#3bbf6b">Tot ${r.flexible_minutes} min later</div>
+          </div>
+        </div>
+        ` : ''}
       </div>
 
     </div>
