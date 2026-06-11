@@ -231,7 +231,7 @@ function openRideDetail(rideId){
             <div style="font-size:13px;font-weight:700">${escapeHtml(r.vehicle || "Standaard")} · ${r.passengers || 1} pax</div>
           </div>
         </div>
-              <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border)">
           <div style="width:32px;height:32px;border-radius:9px;background:rgba(47,125,50,.10);display:grid;place-items:center;flex-shrink:0">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
@@ -262,8 +262,7 @@ function openRideDetail(rideId){
   document.getElementById('spRideDetailBody').innerHTML = detailBody;
   document.getElementById('spRideDetail').classList.add('open');
 
-  // Laad kaart na animatie
-  setTimeout(() => loadCustomerMap(r.from_address, r.to_address), 350);
+  setTimeout(() => loadCustomerMap(r.from_address, r.to_address, Array.isArray(r.stops)?r.stops:[]), 350);
 }
 
 /* =========================
@@ -271,7 +270,7 @@ function openRideDetail(rideId){
 ========================= */
 let customerMapObj = null;
 
-async function loadCustomerMap(fromAddr, toAddr){
+async function loadCustomerMap(fromAddr, toAddr, stops=[]){
   const mapEl = document.getElementById('customerMap');
   if(!mapEl) return;
 
@@ -298,7 +297,10 @@ async function loadCustomerMap(fromAddr, toAddr){
     return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
   }
 
-  const [fromCoord, toCoord] = await Promise.all([geocode(fromAddr), geocode(toAddr)]);
+  const allAddrs = [fromAddr, ...stops, toAddr];
+  const allCoords = await Promise.all(allAddrs.map(a => geocode(a)));
+  const fromCoord = allCoords[0];
+  const toCoord = allCoords[allCoords.length-1];
 
   if(!fromCoord || !toCoord){
     mapEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:12px">Route niet beschikbaar</div>`;
@@ -313,7 +315,7 @@ async function loadCustomerMap(fromAddr, toAddr){
   });
   customerMapObj = map;
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
 
   const dotSize = 14, labelH = 26, gap = 4;
 
@@ -336,18 +338,27 @@ async function loadCustomerMap(fromAddr, toAddr){
   L.marker(fromCoord, {icon:iconFrom}).addTo(map);
   L.marker(toCoord, {icon:iconTo}).addTo(map);
 
+  stops.forEach((s,i) => {
+    const coord = allCoords[i+1]; if(!coord) return;
+    const iconStop = L.divIcon({html:`<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="background:#f59e0b;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.3);font-family:sans-serif;line-height:1">Stop ${i+1}</div><div style="width:11px;height:11px;border-radius:50%;background:#f59e0b;border:2.5px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35)"></div></div>`,className:'',iconAnchor:[5+16,22+3+11]});
+    L.marker(coord, {icon:iconStop}).addTo(map);
+  });
+
   try{
-    const osrm = `https://router.project-osrm.org/route/v1/driving/${fromCoord[1]},${fromCoord[0]};${toCoord[1]},${toCoord[0]}?overview=full&geometries=geojson`;
+    const validCoords = allCoords.filter(Boolean);
+    const waypoints = validCoords.map(c=>`${c[1]},${c[0]}`).join(";");
+    const osrm = `https://router.project-osrm.org/route/v1/driving/${waypoints}?overview=full&geometries=geojson`;
     const rr = await fetch(osrm);
     const rd = await rr.json();
     if(rd.routes && rd.routes[0]){
       const coords = rd.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
       L.polyline(coords,{color:'#2e7d32',weight:4,opacity:.9}).addTo(map);
-      map.fitBounds(L.latLngBounds([fromCoord, toCoord, ...coords.filter((_,i)=>i%10===0)]),{padding:[44,44]});
+      map.fitBounds(L.latLngBounds(validCoords),{padding:[44,44]});
     } else throw new Error();
   }catch{
-    L.polyline([fromCoord, toCoord],{color:'#2e7d32',weight:3,dashArray:'8,6',opacity:.7}).addTo(map);
-    map.fitBounds(L.latLngBounds([fromCoord, toCoord]),{padding:[50,50]});
+    const validCoords = allCoords.filter(Boolean);
+    L.polyline(validCoords,{color:'#2e7d32',weight:3,dashArray:'8,6',opacity:.7}).addTo(map);
+    map.fitBounds(L.latLngBounds(validCoords),{padding:[50,50]});
   }
 }
 
