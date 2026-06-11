@@ -19,7 +19,9 @@ async function loadDetailMap(fromAddr,toAddr,stops=[]){
     const link=document.createElement("link");link.rel="stylesheet";link.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";document.head.appendChild(link);
     await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";s.onload=res;s.onerror=rej;document.head.appendChild(s);});
   }
-  if(detailMapObj){try{detailMapObj.remove();}catch(e){}detailMapObj=null;}
+if(detailMapObj){try{detailMapObj.remove();}catch(e){}detailMapObj=null;}
+geocodeCache.clear();
+
 
   const allAddrs=[fromAddr,...stops,toAddr];
   const allCoords=await Promise.all(allAddrs.map(a=>geocodeAddr(a)));
