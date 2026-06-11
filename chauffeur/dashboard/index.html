@@ -18,22 +18,24 @@
 
 <div class="offline-banner" id="offlineBanner">⚠️ Geen internetverbinding — wijzigingen worden bewaard</div>
 
-<div class="float-btns">
+<header class="top">
+  <div class="top-l">
+    <div class="logo-txt">Ymaany<span>GO</span></div>
+    <div class="dname" id="dname">Chauffeur</div>
+  </div>
   <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
     <span class="ondot"></span><span id="ontxt">Online</span>
   </button>
-  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--G);font-size:18px;cursor:pointer">🔔</button>
-</div>
-
+  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;margin-left:6px">🔔</button>
+</header>
 
 <div class="pages" id="pages">
   <div class="track" id="track">
 
     <!-- Pagina 0: Ritten -->
-  <div class="pg active">
-  <div style="height:max(env(safe-area-inset-top,14px),14px);flex-shrink:0"></div>
-  <div class="sbar"><button class="sbtn a">Ritten <span class="sbadge" id="badge0">0</span></button></div>
-  <div class="scroll"><div class="feed" id="homeFeed"></div></div>
+    <div class="pg active">
+      <div class="sbar"><button class="sbtn a">Ritten <span class="sbadge" id="badge0">0</span></button></div>
+      <div class="scroll"><div class="feed" id="homeFeed"></div></div>
     </div>
 
     <!-- Pagina 1: Agenda -->
