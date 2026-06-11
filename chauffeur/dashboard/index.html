@@ -18,16 +18,13 @@
 
 <div class="offline-banner" id="offlineBanner">⚠️ Geen internetverbinding — wijzigingen worden bewaard</div>
 
-<header class="top">
-  <div class="top-l">
-    <div class="logo-txt">Ymaany<span>GO</span></div>
-    <div class="dname" id="dname">Chauffeur</div>
-  </div>
+<div class="float-btns">
   <button class="onbtn on" id="onbtn" onclick="toggleOnline()">
     <span class="ondot"></span><span id="ontxt">Online</span>
   </button>
-  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;margin-left:6px">🔔</button>
-</header>
+  <button id="notifBtn" onclick="askNotifPermission()" style="display:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--G);font-size:18px;cursor:pointer">🔔</button>
+</div>
+
 
 <div class="pages" id="pages" style="padding-top:62px">
   <div class="track" id="track">
