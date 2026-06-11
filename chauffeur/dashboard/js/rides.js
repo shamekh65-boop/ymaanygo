@@ -78,7 +78,7 @@ function openDetail(id){
       ${mine&&!["completed","cancelled"].includes(r.status)?`<button class="btn bred bw" onclick="qStatus('${rid}','cancelled')">Annuleren</button>`:""}
     </div>`;
   openSP("spDetail");
-  setTimeout(()=>loadDetailMap(fr,to),350);
+setTimeout(()=>loadDetailMap(fr,to,Array.isArray(r.stops)?r.stops:[]),350);
 }
 
 async function acceptRide(id){
