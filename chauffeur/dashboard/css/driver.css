@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:pan-y}
 body{font-family:'Outfit',sans-serif;background:var(--BG);color:var(--INK);display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
-.top{background:var(--G);padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(27,94,32,.4);z-index:50}
+.top{background:rgba(27,94,32,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(27,94,32,.2);z-index:50;position:fixed;top:0;left:0;right:0}
 .top-l{display:flex;flex-direction:column;gap:1px}
 .logo-txt{font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1}
 .logo-txt span{color:#a5d6a7}
