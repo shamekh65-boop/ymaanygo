@@ -26,9 +26,32 @@
 
     if (!session) {
       window.location.replace("/klant-login.html"); // ← مسار صفحة اللوجين
+      return;
+    }
+
+    // تحقق من وجود profile للمستخدم، أنشئه إن لم يكن موجودًا
+    const user = session.user;
+
+    const { data: profile, error: profileError } = await db
+      .from("profiles")
+      .select("*")
+      .eq("email", user.email)
+      .maybeSingle();
+
+    if (!profileError && !profile) {
+      const payload = {
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+        phone: user.user_metadata?.phone || "",
+        role: "klant"
+      };
+
+      await db.from("profiles").upsert(payload, { onConflict: "id" });
     }
   })();
 </script>
+
 
   <!-- Map (always present but hidden on non-home pages) -->
   <div id="map" aria-label="map"></div>
