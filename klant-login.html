@@ -156,7 +156,12 @@ footer{text-align:center;padding:18px;color:var(--muted);font-size:13px;border-t
 <script>
 const SUPABASE_URL = "https://lxbfobdczjgqnotwsnki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_H5HKGlHBe9z3ejn0B-NKsw_9Mo-MIhp";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    flowType: 'pkce',
+    detectSessionInUrl: true
+  }
+});
 
 let mode = "login";
 
