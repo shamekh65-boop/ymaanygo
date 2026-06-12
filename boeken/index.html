@@ -54,6 +54,11 @@
 
       await db.from("profiles").upsert(payload, { onConflict: "id" });
     }
+
+    // تنظيف الرابط من معاملات OAuth (مثل ?code=... أو #access_token=...)
+    if (window.location.search || window.location.hash) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   })();
 </script>
 
