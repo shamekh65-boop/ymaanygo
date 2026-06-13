@@ -1313,3 +1313,74 @@ body.dark .lang-opt.selected .opt-check {
   width: 7px; height: 7px; border-radius: 50%;
   background: #fff; display: block;
 }
+/* ===== Orange Theme Override ===== */
+:root{
+  --accent:#EF8735 !important;
+  --accent2:#FF9B45 !important;
+}
+
+body.dark{
+  --bg:#0f0f0f !important;
+  --card:#181818 !important;
+  --card2:#222 !important;
+  --text:#ffffff !important;
+  --muted:rgba(255,255,255,.60) !important;
+  --border:rgba(255,255,255,.12) !important;
+  --shadow:0 12px 30px rgba(0,0,0,.45) !important;
+
+  --accent:#EF8735 !important;
+  --accent2:#FF9B45 !important;
+}
+
+/* Replace old green hardcoded colors */
+.primary,
+.main-action,
+.confirm,
+.tp-confirm{
+  background:linear-gradient(180deg, #FF9B45, #EF8735) !important;
+}
+
+.tab.active,
+.vcard-price,
+.tp-value.accent,
+.tp-chip.selected .tp-cmain,
+body.dark .lang-code,
+body.dark .lang-arrow,
+body.dark .opt-name,
+body.dark .lang-opt.selected .opt-name{
+  color:#EF8735 !important;
+}
+
+.tab.active,
+.vcard.selected,
+.tp-card.active-card,
+.tp-chip.selected,
+.tp-flex-row.active{
+  background:rgba(239,135,53,.12) !important;
+  border-color:rgba(239,135,53,.45) !important;
+}
+
+.vcard.selected .vcard-check,
+.tp-ios-sw input:checked ~ .tp-ios-track,
+.lang-opt.selected .opt-check,
+body.dark .lang-opt.selected .opt-check{
+  background:#EF8735 !important;
+  border-color:#EF8735 !important;
+}
+
+.badge,
+.chipstep.active{
+  color:#EF8735 !important;
+  border-color:rgba(239,135,53,.35) !important;
+  background:rgba(239,135,53,.10) !important;
+}
+
+.pin::before,
+.pin::after{
+  background:#EF8735 !important;
+}
+
+.tp-icon{
+  background:rgba(239,135,53,.12) !important;
+  border-color:rgba(239,135,53,.25) !important;
+}
