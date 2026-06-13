@@ -324,7 +324,7 @@ body.dark .tab{ color:rgba(255,255,255,.45); }
 
 /* ===== SHEETS behavior ===== */
 .sheet{
-  position:fixed; left:0; right:0; bottom:50px;
+  position:fixed; left:0; right:0; bottom:30px;
   z-index:121;
   padding:0 0 calc(14px + env(safe-area-inset-bottom));
   display:none;
