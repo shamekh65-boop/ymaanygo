@@ -324,7 +324,7 @@ body.dark .tab{ color:rgba(255,255,255,.45); }
 
 /* ===== SHEETS behavior ===== */
 .sheet{
-  position:fixed; left:0; right:0; bottom:80px;
+  position:fixed; left:0; right:0; bottom:70px;
   z-index:121;
   padding:0 0 calc(14px + env(safe-area-inset-bottom));
   display:none;
@@ -400,7 +400,7 @@ body:not(.dark) .sheet-x{
 }
 
 .sheet-footer{
-  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+  padding:12px 14px calc(20px + env(safe-area-inset-bottom));
   border-top:1px solid rgba(255,255,255,.08);
   background:rgba(7,17,12,.55);
   backdrop-filter: blur(14px) saturate(140%);
