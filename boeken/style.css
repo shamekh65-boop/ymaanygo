@@ -400,7 +400,7 @@ body:not(.dark) .sheet-x{
 }
 
 .sheet-footer{
-  padding:12px 14px calc(100px + env(safe-area-inset-bottom));
+  padding:12px 14px calc(130px + env(safe-area-inset-bottom));
   border-top:1px solid rgba(255,255,255,.08);
   background:rgba(7,17,12,.55);
   backdrop-filter: blur(14px) saturate(140%);
