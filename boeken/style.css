@@ -1,4 +1,4 @@
-/* ===== Root variables - نفس مقاسات الكود الثاني ===== */
+ ===== Root variables - نفس مقاسات الكود الثاني ===== */
 :root{
   --bg:#f6f6f6;
   --card:#ffffff;
@@ -1313,6 +1313,7 @@ body.dark .lang-opt.selected .opt-check {
   width: 7px; height: 7px; border-radius: 50%;
   background: #fff; display: block;
 }
+
 /* ===== Orange Theme Override ===== */
 :root{
   --accent:#EF8735 !important;
