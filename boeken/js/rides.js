@@ -64,7 +64,7 @@ async function refreshRidesUI(){
       ${filtered.map(r => {
         const statusColor = {
           pending: '#e67e22', accepted: '#2980b9', on_the_way: '#8e44ad',
-          arrived: '#27ae60', completed: '#27ae60', cancelled: '#e74c3c',
+          arrived: '#EF8735', completed: '#EF8735', cancelled: '#e74c3c',
           awaiting_payment: '#95a5a6'
         }[r.status] || '#95a5a6';
 
@@ -77,8 +77,8 @@ async function refreshRidesUI(){
 
         return `
         <div class="row" style="cursor:pointer" onclick="openRideDetail('${r.id}')">
-          <div class="left" style="background:rgba(47,125,50,.10);border-color:rgba(47,125,50,.20)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="left" style="background:rgba(239,135,53,.10);border-color:rgba(239,135,53,.20)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF8735" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
             </svg>
           </div>
@@ -122,7 +122,7 @@ function openRideDetail(rideId){
 
   const statusColor = {
     pending: '#e67e22', accepted: '#2980b9', on_the_way: '#8e44ad',
-    arrived: '#27ae60', completed: '#27ae60', cancelled: '#e74c3c',
+    arrived: '#EF8735', completed: '#EF8735', cancelled: '#e74c3c',
     awaiting_payment: '#95a5a6'
   }[r.status] || '#95a5a6';
 
@@ -131,13 +131,13 @@ function openRideDetail(rideId){
 
   const driverCard = hasDriver ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px">
-      <div style="padding:12px 14px;border-bottom:1px solid var(--border);background:rgba(47,125,50,.05)">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border);background:rgba(239,135,53,.05)">
         <div style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px">Uw chauffeur</div>
         <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:52px;height:52px;border-radius:50%;background:rgba(47,125,50,.12);border:2px solid rgba(47,125,50,.25);display:grid;place-items:center;flex-shrink:0;overflow:hidden">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(239,135,53,.12);border:2px solid rgba(239,135,53,.25);display:grid;place-items:center;flex-shrink:0;overflow:hidden">
             ${r.driver_avatar_url
               ? `<img src="${escapeHtml(r.driver_avatar_url)}" style="width:100%;height:100%;object-fit:cover" alt="Chauffeur">`
-              : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>`
+              : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF8735" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>`
             }
           </div>
           <div>
@@ -163,9 +163,9 @@ function openRideDetail(rideId){
       </div>
     </div>
   ` : `
-    <div style="background:rgba(47,125,50,.06);border:1px solid rgba(47,125,50,.15);border-radius:var(--radius);padding:14px;margin-bottom:12px;text-align:center">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;opacity:.6"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <div style="font-size:12px;font-weight:900;color:#2f7d32;margin-bottom:3px">Chauffeur wordt toegewezen</div>
+    <div style="background:rgba(239,135,53,.06);border:1px solid rgba(239,135,53,.15);border-radius:var(--radius);padding:14px;margin-bottom:12px;text-align:center">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF8735" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;opacity:.6"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <div style="font-size:12px;font-weight:900;color:#EF8735;margin-bottom:3px">Chauffeur wordt toegewezen</div>
       <div style="font-size:11px;color:var(--muted);line-height:1.5">Uw rit is bevestigd bij ymaanyGO. De gegevens van de chauffeur verschijnen hier zodra deze definitief is toegewezen.</div>
     </div>
   `;
@@ -187,18 +187,18 @@ function openRideDetail(rideId){
     <div style="padding:14px 14px 80px">
 
       <!-- KAART -->
-      <div id="customerMap" style="width:100%;height:190px;border-radius:14px;overflow:hidden;margin-bottom:12px;background:rgba(47,125,50,.06);position:relative">
+      <div id="customerMap" style="width:100%;height:190px;border-radius:14px;overflow:hidden;margin-bottom:12px;background:rgba(239,135,53,.06);position:relative">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">Route laden…</div>
       </div>
 
       <!-- ROUTE TEKST -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px">
-        <div style="height:4px;background:linear-gradient(90deg,#2f7d32,#3bbf6b)"></div>
+        <div style="height:4px;background:linear-gradient(90deg,#EF8735,#FF9B45)"></div>
         <div style="padding:12px">
           <div style="display:flex;align-items:flex-start;gap:9px">
             <div style="display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0;padding-top:3px">
-              <div style="width:10px;height:10px;border-radius:50%;background:#2f7d32;flex-shrink:0"></div>
-              <div style="width:2px;flex:1;min-height:22px;background:repeating-linear-gradient(to bottom,#3bbf6b 0,#3bbf6b 4px,transparent 4px,transparent 8px);opacity:.5;margin:3px 0"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#EF8735;flex-shrink:0"></div>
+              <div style="width:2px;flex:1;min-height:22px;background:repeating-linear-gradient(to bottom,#FF9B45 0,#FF9B45 4px,transparent 4px,transparent 8px);opacity:.5;margin:3px 0"></div>
             </div>
             <div style="flex:1;padding-bottom:8px">
               <div style="font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Ophaallocatie</div>
@@ -223,8 +223,8 @@ function openRideDetail(rideId){
 
       <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px">
         <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border)">
-          <div style="width:32px;height:32px;border-radius:9px;background:rgba(47,125,50,.10);display:grid;place-items:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <div style="width:32px;height:32px;border-radius:9px;background:rgba(239,135,53,.10);display:grid;place-items:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF8735" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           </div>
           <div>
             <div style="font-size:11px;color:var(--muted);font-weight:600">Voertuig · Passagiers</div>
@@ -232,8 +232,8 @@ function openRideDetail(rideId){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border)">
-          <div style="width:32px;height:32px;border-radius:9px;background:rgba(47,125,50,.10);display:grid;place-items:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <div style="width:32px;height:32px;border-radius:9px;background:rgba(239,135,53,.10);display:grid;place-items:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF8735" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <div>
             <div style="font-size:11px;color:var(--muted);font-weight:600">Betaling</div>
@@ -242,12 +242,12 @@ function openRideDetail(rideId){
         </div>
         ${(r.flexible_minutes && r.flexible_minutes > 0) ? `
         <div style="display:flex;align-items:center;gap:10px;padding:11px 12px">
-          <div style="width:32px;height:32px;border-radius:9px;background:rgba(59,191,107,.10);display:grid;place-items:center;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3bbf6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div style="width:32px;height:32px;border-radius:9px;background:rgba(255,155,69,.10);display:grid;place-items:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF9B45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           </div>
           <div>
             <div style="font-size:11px;color:var(--muted);font-weight:600">Flexibel ophalen</div>
-            <div style="font-size:13px;font-weight:700;color:#3bbf6b">Tot ${r.flexible_minutes} min later</div>
+            <div style="font-size:13px;font-weight:700;color:#FF9B45">Tot ${r.flexible_minutes} min later</div>
           </div>
         </div>
         ` : ''}
@@ -321,8 +321,8 @@ async function loadCustomerMap(fromAddr, toAddr, stops=[]){
 
   const iconFrom = L.divIcon({
     html:`<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px">
-      <div style="background:#1b5e20;color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.35);font-family:sans-serif;line-height:1">Vertrek</div>
-      <div style="width:${dotSize}px;height:${dotSize}px;border-radius:50%;background:#1b5e20;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>
+      <div style="background:#b35a1e;color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.35);font-family:sans-serif;line-height:1">Vertrek</div>
+      <div style="width:${dotSize}px;height:${dotSize}px;border-radius:50%;background:#b35a1e;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>
     </div>`,
     className:'', iconAnchor:[dotSize/2 + 10, labelH + gap + dotSize]
   });
@@ -352,12 +352,12 @@ async function loadCustomerMap(fromAddr, toAddr, stops=[]){
     const rd = await rr.json();
     if(rd.routes && rd.routes[0]){
       const coords = rd.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
-      L.polyline(coords,{color:'#2e7d32',weight:4,opacity:.9}).addTo(map);
+      L.polyline(coords,{color:'#EF8735',weight:4,opacity:.9}).addTo(map);
       map.fitBounds(L.latLngBounds(validCoords),{padding:[44,44]});
     } else throw new Error();
   }catch{
     const validCoords = allCoords.filter(Boolean);
-    L.polyline(validCoords,{color:'#2e7d32',weight:3,dashArray:'8,6',opacity:.7}).addTo(map);
+    L.polyline(validCoords,{color:'#EF8735',weight:3,dashArray:'8,6',opacity:.7}).addTo(map);
     map.fitBounds(L.latLngBounds(validCoords),{padding:[50,50]});
   }
 }
